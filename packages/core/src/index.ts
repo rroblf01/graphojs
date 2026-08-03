@@ -51,3 +51,20 @@ export { TreeLayout } from './layout/TreeLayout.ts';
 export type { TreeLayoutOptions } from './layout/TreeLayout.ts';
 export { CircularLayout } from './layout/CircularLayout.ts';
 export type { CircularLayoutOptions } from './layout/CircularLayout.ts';
+
+// Serialization
+export { Serializer } from './serialization/Serializer.ts';
+export type { DiagramJSON } from './serialization/Serializer.ts';
+
+// Undo
+export type { Command } from './undo/Command.ts';
+export { UndoManager } from './undo/UndoManager.ts';
+export type { UndoManagerEvent, UndoManagerEventHandler } from './undo/UndoManager.ts';
+export {
+  AddNodeCommand,
+  RemoveNodeCommand,
+  SetNodePropertyCommand,
+  AddLinkCommand,
+  RemoveLinkCommand,
+  MoveNodeCommand,
+} from './undo/commands.ts';

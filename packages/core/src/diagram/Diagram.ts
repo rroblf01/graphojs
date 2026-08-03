@@ -7,11 +7,14 @@ import { Link } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
 import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
 import type { Renderer } from '../render/Renderer.ts';
+import { Serializer, type DiagramJSON } from '../serialization/Serializer.ts';
 import { ClickSelectingTool } from '../tool/ClickSelectingTool.ts';
 import { DraggingTool } from '../tool/DraggingTool.ts';
 import { PanningTool } from '../tool/PanningTool.ts';
 import { ToolManager } from '../tool/ToolManager.ts';
 import { ZoomingTool } from '../tool/ZoomingTool.ts';
+import { UndoManager } from '../undo/UndoManager.ts';
+import type { Command } from '../undo/Command.ts';
 
 export interface DiagramOptions {
   /** The container element for the diagram. */
@@ -56,6 +59,7 @@ export class Diagram {
 
   private selectedParts: Set<NodeKey> = new Set();
   private toolManager: ToolManager;
+  private undoManager: UndoManager;
 
   constructor(options: DiagramOptions) {
     this.container = options.div;
@@ -85,6 +89,9 @@ export class Diagram {
     this.toolManager = new ToolManager(this);
     this.registerDefaultTools();
 
+    // Create undo manager
+    this.undoManager = new UndoManager();
+
     // Set up event listeners
     this.setupEventListeners();
 
@@ -108,6 +115,26 @@ export class Diagram {
   /** Get the tool manager. */
   getToolManager(): ToolManager {
     return this.toolManager;
+  }
+
+  /** Get the undo manager. */
+  getUndoManager(): UndoManager {
+    return this.undoManager;
+  }
+
+  /** Execute an undoable command. */
+  executeCommand(command: Command): void {
+    this.undoManager.execute(command);
+  }
+
+  /** Undo the last command. */
+  undo(): boolean {
+    return this.undoManager.undo();
+  }
+
+  /** Redo the last undone command. */
+  redo(): boolean {
+    return this.undoManager.redo();
   }
 
   /** Set up DOM event listeners. */
@@ -253,6 +280,25 @@ export class Diagram {
       }
     }
     return result;
+  }
+
+  /** Set the model. */
+  setModel(model: GraphLinksModel): void {
+    this.model.removeChangedListener(this.handleModelChange.bind(this));
+    this.model = model;
+    this.model.addChangedListener(this.handleModelChange.bind(this));
+    this.syncPartsFromModel();
+    this.invalidate();
+  }
+
+  /** Serialize the diagram to JSON. */
+  toJSON(): DiagramJSON {
+    return Serializer.serialize(this);
+  }
+
+  /** Deserialize JSON into the diagram. */
+  fromJSON(json: DiagramJSON): void {
+    Serializer.deserialize(json, this);
   }
 
   /** Invalidate the diagram (triggers re-render). */

@@ -30,7 +30,9 @@ function mockContext() {
 }
 
 beforeAll(() => {
-  HTMLCanvasElement.prototype.getContext = vi.fn(() => mockContext()) as unknown as typeof HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = vi.fn(() =>
+    mockContext(),
+  ) as unknown as typeof HTMLCanvasElement.prototype.getContext;
   HTMLCanvasElement.prototype.getBoundingClientRect = vi.fn(() => ({
     x: 0,
     y: 0,

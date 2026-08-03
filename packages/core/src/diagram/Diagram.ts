@@ -1,6 +1,6 @@
 import type { Rect } from '../geometry/Rect.ts';
 import { Rect as RectClass } from '../geometry/Rect.ts';
-import type { ChangedEvent } from '../model/Model.ts';
+import type { ChangedEvent, NodeData, LinkData } from '../model/Model.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { GraphLinksModel } from '../model/GraphLinksModel.ts';
 import { type Layer, createDefaultLayers, LayerNames } from '../layer/Layer.ts';
@@ -407,7 +407,8 @@ export class Diagram {
 
   /** Handle model changes. */
   private handleModelChange(event: ChangedEvent): void {
-    this.syncPartsFromModel();
+    // Incrementally sync only the changed part
+    this.syncPartFromModelChange(event);
     this.invalidate();
     // Layer cache must be refreshed on model changes
     this.layerCache?.markAllDirty();
@@ -592,6 +593,246 @@ export class Diagram {
         }
       }
     }
+  }
+
+  /**
+   * Incrementally sync parts from a single model change event.
+   * This avoids re-syncing the entire model for each edit.
+   */
+  private syncPartFromModelChange(event: ChangedEvent): void {
+    switch (event.type) {
+      case 'node Added': {
+        if (event.node) this.syncNodeFromModel(event.node);
+        break;
+      }
+      case 'node Removed': {
+        if (event.node) {
+          const key = this.model.getNodeKey(event.node);
+          this.removePartByKey(key);
+        }
+        break;
+      }
+      case 'property Changed': {
+        if (event.node) this.syncNodeFromModel(event.node);
+        break;
+      }
+      case 'link Added': {
+        if (event.link) this.syncLinkFromModel(event.link);
+        break;
+      }
+      case 'link Removed': {
+        if (event.link) {
+          const key = this.model.getLinkKey(event.link);
+          if (key !== undefined) this.removePartByKey(key);
+        }
+        break;
+      }
+    }
+  }
+
+  /** Sync a single node data into its visual part (create if needed). */
+  private syncNodeFromModel(nodeData: NodeData): void {
+    const key = this.model.getNodeKey(nodeData);
+    const isGroup = nodeData.isGroup === true;
+
+    if (isGroup) {
+      let group = this.groups.get(key);
+      if (!group) {
+        group = this.createGroup(nodeData);
+      }
+      this.updateGroupFromData(group, nodeData);
+      this.syncGroupMembers(group);
+      return;
+    }
+
+    let node = this.nodes.get(key);
+    if (!node) {
+      node = this.createNode(nodeData);
+    }
+    this.updateNodeFromData(node, nodeData);
+  }
+
+  /** Sync a single link data into its visual part (create if needed). */
+  private syncLinkFromModel(linkData: LinkData): void {
+    const linkKey = this.model.getLinkKey(linkData);
+    if (linkKey === undefined) return;
+
+    let link = this.links.get(linkKey);
+    if (!link) {
+      link = this.createLink(linkData);
+    }
+    this.updateLinkFromData(link, linkData);
+  }
+
+  private createNode(nodeData: NodeData): Node {
+    const key = this.model.getNodeKey(nodeData);
+    const x = (nodeData.x as number) ?? 0;
+    const y = (nodeData.y as number) ?? 0;
+    const width = (nodeData.width as number) ?? 100;
+    const height = (nodeData.height as number) ?? 50;
+    const node = Node.fromPosAndSize(key, x, y, width, height);
+    const layerName = (nodeData.layer as string) ?? LayerNames.Default;
+    const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
+    if (layer) node.layer = layer;
+    this.parts.set(key, node);
+    this.nodes.set(key, node);
+    this.fireDiagramEvent('PartAdded', node);
+    return node;
+  }
+
+  private createGroup(nodeData: NodeData): Group {
+    const key = this.model.getNodeKey(nodeData);
+    const x = (nodeData.x as number) ?? 0;
+    const y = (nodeData.y as number) ?? 0;
+    const width = (nodeData.width as number) ?? 100;
+    const height = (nodeData.height as number) ?? 50;
+    const group = new Group(key, new RectClass(x, y, width, height));
+    const layerName = (nodeData.layer as string) ?? LayerNames.Default;
+    const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
+    if (layer) group.layer = layer;
+    this.parts.set(key, group);
+    this.groups.set(key, group);
+    this.fireDiagramEvent('PartAdded', group);
+    return group;
+  }
+
+  private createLink(linkData: LinkData): Link {
+    const linkKey = this.model.getLinkKey(linkData);
+    const link = new Link(linkKey as NodeKey, linkData.from, linkData.to);
+    const layerName = (linkData.layer as string) ?? LayerNames.Default;
+    const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
+    if (layer) link.layer = layer;
+    this.parts.set(linkKey as NodeKey, link);
+    this.links.set(linkKey as NodeKey, link);
+    this.fireDiagramEvent('PartAdded', link);
+    return link;
+  }
+
+  private updateNodeFromData(node: Node, nodeData: NodeData): void {
+    const { x, y, width, height } = this.nodeDataBounds(nodeData);
+    node.bounds = new RectClass(x, y, width, height);
+    node.label = (nodeData.label as string) ?? node.label;
+    node.fill = (nodeData.fill as string) ?? node.fill;
+    node.stroke = (nodeData.stroke as string) ?? node.stroke;
+    node.angle = (nodeData.angle as number) ?? node.angle;
+
+    // Add to parent group if specified
+    const groupKey = nodeData.group;
+    if (groupKey !== undefined) {
+      const parentGroup = this.groups.get(groupKey as NodeKey);
+      if (parentGroup && !parentGroup.contains(node)) {
+        parentGroup.add(node);
+      }
+    }
+
+    // Apply bindings
+    if (node.bindings.length > 0) {
+      node.applyBindings(nodeData);
+    }
+    this.fireDiagramEvent('PartMoved', node, { x, y });
+  }
+
+  private updateGroupFromData(group: Group, nodeData: NodeData): void {
+    const { x, y, width, height } = this.nodeDataBounds(nodeData);
+    group.bounds = new RectClass(x, y, width, height);
+    group.fill = (nodeData.fill as string) ?? group.fill;
+    group.stroke = (nodeData.stroke as string) ?? group.stroke;
+  }
+
+  private updateLinkFromData(link: Link, linkData: LinkData): void {
+    const routing = linkData.routing;
+    if (routing === 'orthogonal' || routing === 'curved') {
+      link.routing = routing;
+    }
+    link.fromPortName = linkData.fromPort as string | undefined;
+    link.toPortName = linkData.toPort as string | undefined;
+
+    const arrowhead = linkData.arrowhead;
+    if (
+      arrowhead === 'triangle' ||
+      arrowhead === 'openArrow' ||
+      arrowhead === 'diamond' ||
+      arrowhead === 'circle' ||
+      arrowhead === 'none'
+    ) {
+      link.arrowhead = arrowhead;
+    }
+    link.arrowheadSize = (linkData.arrowheadSize as number) ?? link.arrowheadSize;
+    link.label = (linkData.label as string) ?? '';
+    link.labelColor = (linkData.labelColor as string) ?? link.labelColor;
+    link.labelFont = (linkData.labelFont as string) ?? link.labelFont;
+
+    const fromNode = this.nodes.get(linkData.from);
+    const toNode = this.nodes.get(linkData.to);
+    if (fromNode && toNode) {
+      const fromPoint = fromNode.getConnectionPoint(
+        toNode.center,
+        linkData.fromPort as string | undefined,
+      );
+      const toPoint = toNode.getConnectionPoint(
+        fromNode.center,
+        linkData.toPort as string | undefined,
+      );
+      link.fromPort = fromPoint;
+      link.toPort = toPoint;
+
+      if (link.routing === 'orthogonal') {
+        link.setPathPoints(computeOrthogonalPath(fromPoint, toPoint));
+      } else if (link.routing === 'curved') {
+        link.setPathPoints(computeCurvedPath(fromPoint, toPoint));
+      } else {
+        link.setPathPoints([fromPoint, toPoint]);
+      }
+      link.updateBounds();
+    }
+
+    const groupKey = linkData.group;
+    if (groupKey !== undefined) {
+      const parentGroup = this.groups.get(groupKey as NodeKey);
+      if (parentGroup && !parentGroup.contains(link)) {
+        parentGroup.add(link);
+      }
+    }
+  }
+
+  private syncGroupMembers(group: Group): void {
+    for (const [memberKey, node] of this.nodes) {
+      if (node.containingGroup === group) continue;
+      const memberData = this.model.getNodeData(memberKey);
+      if (memberData && memberData.group === group.key) {
+        group.add(node);
+      }
+    }
+  }
+
+  private removePartByKey(key: NodeKey): void {
+    const part = this.parts.get(key);
+    if (!part) return;
+
+    if (part instanceof Node) {
+      this.nodes.delete(key);
+    } else if (part instanceof Group) {
+      this.groups.delete(key);
+    } else if (part instanceof Link) {
+      this.links.delete(key);
+    }
+    this.parts.delete(key);
+    this.selectedParts.delete(key);
+    this.fireDiagramEvent('PartRemoved', part);
+  }
+
+  private nodeDataBounds(nodeData: NodeData): {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } {
+    return {
+      x: (nodeData.x as number) ?? 0,
+      y: (nodeData.y as number) ?? 0,
+      width: (nodeData.width as number) ?? 100,
+      height: (nodeData.height as number) ?? 50,
+    };
   }
 
   /** Find a part at the given diagram coordinates. */

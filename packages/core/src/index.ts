@@ -16,6 +16,8 @@ export type {
   ChangedEvent,
   ChangedEventHandler,
   ModelJSON,
+  NodeValidationCallback,
+  LinkValidationCallback,
 } from './model/Model.ts';
 export type { GraphLinksModelJSON } from './model/GraphLinksModel.ts';
 

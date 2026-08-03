@@ -17,6 +17,18 @@ export interface ChangedEvent {
 
 export type ChangedEventHandler = (event: ChangedEvent) => void;
 
+/**
+ * Validation callback for node data.
+ * Return false to reject the operation.
+ */
+export type NodeValidationCallback = (nodeData: NodeData) => boolean;
+
+/**
+ * Validation callback for link data.
+ * Return false to reject the operation.
+ */
+export type LinkValidationCallback = (linkData: LinkData) => boolean;
+
 export interface LinkData {
   [key: string]: unknown;
   from: NodeKey;
@@ -86,6 +98,10 @@ export abstract class Model {
 
   /** Add a node. Returns the generated key if none provided. */
   addNode(nodeData: NodeData): NodeKey {
+    if (!this.validateNode(nodeData)) {
+      throw new Error('Node validation failed');
+    }
+
     if (nodeData[this.nodeKeyProperty] === undefined || nodeData[this.nodeKeyProperty] === null) {
       nodeData[this.nodeKeyProperty] = this.generateKey();
     }
@@ -109,7 +125,12 @@ export abstract class Model {
     const index = this.nodeDataArray.findIndex((d) => this.getNodeKey(d) === key);
     if (index === -1) return false;
 
-    const removed = this.nodeDataArray.splice(index, 1)[0];
+    const removed = this.nodeDataArray[index];
+    if (!removed || !this.validateNodeRemoval(removed)) {
+      throw new Error('Node removal validation failed');
+    }
+
+    this.nodeDataArray.splice(index, 1);
     this.emit({
       type: 'node Removed',
       model: this,
@@ -161,6 +182,57 @@ export abstract class Model {
     for (const listener of this.listeners) {
       listener(event);
     }
+  }
+
+  private _isValidNode: NodeValidationCallback | null = null;
+  private _isValidNodeRemoval: NodeValidationCallback | null = null;
+  private _nodeKeyPropertyValidated = true;
+
+  /** Set a callback to validate node data before adding. */
+  set isValidNode(callback: NodeValidationCallback | null) {
+    this._isValidNode = callback;
+  }
+
+  /** Get the node validation callback. */
+  get isValidNode(): NodeValidationCallback | null {
+    return this._isValidNode;
+  }
+
+  /** Set a callback to validate node data before removal. */
+  set isValidNodeRemoval(callback: NodeValidationCallback | null) {
+    this._isValidNodeRemoval = callback;
+  }
+
+  /** Get the node removal validation callback. */
+  get isValidNodeRemoval(): NodeValidationCallback | null {
+    return this._isValidNodeRemoval;
+  }
+
+  /**
+   * Validate a node before it is added.
+   * Returns true if valid (allows insertion).
+   */
+  validateNode(nodeData: NodeData): boolean {
+    if (nodeData[this.nodeKeyProperty] !== undefined && nodeData[this.nodeKeyProperty] !== null) {
+      if (!this._nodeKeyPropertyValidated) {
+        throw new Error('Cannot use invalid node key property');
+      }
+    }
+    if (this._isValidNode) {
+      return this._isValidNode(nodeData);
+    }
+    return true;
+  }
+
+  /**
+   * Validate a node before it is removed.
+   * Returns true if valid (allows removal).
+   */
+  validateNodeRemoval(nodeData: NodeData): boolean {
+    if (this._isValidNodeRemoval) {
+      return this._isValidNodeRemoval(nodeData);
+    }
+    return true;
   }
 
   /** Convert to JSON. */

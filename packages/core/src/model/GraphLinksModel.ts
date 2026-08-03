@@ -1,5 +1,5 @@
 import { Model } from './Model.ts';
-import type { LinkData, ModelJSON, NodeData, NodeKey } from './Model.ts';
+import type { LinkData, LinkValidationCallback, ModelJSON, NodeData, NodeKey } from './Model.ts';
 
 export interface GraphLinksModelJSON extends ModelJSON {
   linkKeyProperty: string;
@@ -23,6 +23,79 @@ export class GraphLinksModel extends Model {
   /** Set the link key property name. */
   setLinkKeyProperty(property: string): void {
     this.linkKeyProperty = property;
+  }
+
+  private _isValidLink: LinkValidationCallback | null = null;
+  private _isValidLinkRemoval: LinkValidationCallback | null = null;
+  private _allowsSelfLoops = true;
+  private _allowsDuplicateLinks = true;
+
+  /** Set a callback to validate link data before adding. */
+  set isValidLink(callback: LinkValidationCallback | null) {
+    this._isValidLink = callback;
+  }
+
+  /** Get the link validation callback. */
+  get isValidLink(): LinkValidationCallback | null {
+    return this._isValidLink;
+  }
+
+  /** Set a callback to validate link data before removal. */
+  set isValidLinkRemoval(callback: LinkValidationCallback | null) {
+    this._isValidLinkRemoval = callback;
+  }
+
+  /** Get the link removal validation callback. */
+  get isValidLinkRemoval(): LinkValidationCallback | null {
+    return this._isValidLinkRemoval;
+  }
+
+  /** Whether self-loops are allowed. Default: true */
+  get allowsSelfLoops(): boolean {
+    return this._allowsSelfLoops;
+  }
+
+  /** Set whether self-loops are allowed. */
+  set allowsSelfLoops(value: boolean) {
+    this._allowsSelfLoops = value;
+  }
+
+  /** Whether duplicate links are allowed. Default: true */
+  get allowsDuplicateLinks(): boolean {
+    return this._allowsDuplicateLinks;
+  }
+
+  /** Set whether duplicate links are allowed. */
+  set allowsDuplicateLinks(value: boolean) {
+    this._allowsDuplicateLinks = value;
+  }
+
+  /**
+   * Validate a link before it is added.
+   * Checks self-loops, duplicates, and the user callback.
+   */
+  validateLink(linkData: LinkData): boolean {
+    if (linkData.from === linkData.to && !this._allowsSelfLoops) {
+      return false;
+    }
+    if (!this._allowsDuplicateLinks && this.containsLink(linkData.from, linkData.to)) {
+      return false;
+    }
+    if (this._isValidLink) {
+      return this._isValidLink(linkData);
+    }
+    return true;
+  }
+
+  /**
+   * Validate a link before it is removed.
+   * Returns true if valid (allows removal).
+   */
+  validateLinkRemoval(linkData: LinkData): boolean {
+    if (this._isValidLinkRemoval) {
+      return this._isValidLinkRemoval(linkData);
+    }
+    return true;
   }
 
   /** Get all link data. */
@@ -64,6 +137,10 @@ export class GraphLinksModel extends Model {
       throw new Error(`Target node ${linkData.to} not found`);
     }
 
+    if (!this.validateLink(linkData)) {
+      throw new Error('Link validation failed');
+    }
+
     if (linkData[this.linkKeyProperty] === undefined || linkData[this.linkKeyProperty] === null) {
       linkData[this.linkKeyProperty] = this.generateLinkKey();
     }
@@ -87,7 +164,12 @@ export class GraphLinksModel extends Model {
     const index = this.linkDataArray.findIndex((d) => this.getLinkKey(d) === key);
     if (index === -1) return false;
 
-    const removed = this.linkDataArray.splice(index, 1)[0];
+    const removed = this.linkDataArray[index];
+    if (!removed || !this.validateLinkRemoval(removed)) {
+      throw new Error('Link removal validation failed');
+    }
+
+    this.linkDataArray.splice(index, 1);
     this.emit({
       type: 'link Removed',
       model: this,

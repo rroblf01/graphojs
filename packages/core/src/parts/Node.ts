@@ -171,4 +171,70 @@ export class Node extends Part {
 
     return { x: cx + dx * s, y: cy + dy * s };
   }
+
+  /**
+   * Shape-aware hit testing: check whether a point is inside the node's
+   * actual shape geometry, not just its bounding box.
+   * Falls back to the bounding box for rect/roundedRect and when the
+   * point is clearly outside.
+   */
+  shapeContainsPoint(point: { x: number; y: number }): boolean {
+    // Fast rejection: outside the bounding box
+    if (!this.bounds.containsPoint(point)) return false;
+
+    const { x, y, width, height } = this.bounds;
+
+    switch (this._shape) {
+      case 'ellipse': {
+        // Point-in-ellipse test
+        const cx = x + width / 2;
+        const cy = y + height / 2;
+        const rx = width / 2;
+        const ry = height / 2;
+        if (rx === 0 || ry === 0) return false;
+        const nx = (point.x - cx) / rx;
+        const ny = (point.y - cy) / ry;
+        return nx * nx + ny * ny <= 1;
+      }
+      case 'roundedRect': {
+        const r = this._cornerRadius || Math.min(width, height) * 0.1;
+        return pointInRoundedRect(point.x, point.y, x, y, width, height, r);
+      }
+      default:
+        // Bounding box already confirmed inside
+        return true;
+    }
+  }
+}
+
+/**
+ * Check whether a point is inside a rounded rectangle.
+ */
+function pointInRoundedRect(
+  px: number,
+  py: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+): boolean {
+  const r = Math.min(radius, width / 2, height / 2);
+  // Inside the central rect
+  if (px >= x + r && px <= x + width - r) return true;
+  if (py >= y + r && py <= y + height - r) return true;
+
+  // Check the corner circles
+  const corners: Array<[number, number]> = [
+    [x + r, y + r],
+    [x + width - r, y + r],
+    [x + r, y + height - r],
+    [x + width - r, y + height - r],
+  ];
+  for (const [cx, cy] of corners) {
+    const dx = px - cx;
+    const dy = py - cy;
+    if (dx * dx + dy * dy <= r * r) return true;
+  }
+  return false;
 }

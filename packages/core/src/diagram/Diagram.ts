@@ -878,7 +878,7 @@ export class Diagram {
         const candidates = this.hitIndex.queryRegion(new RectClass(x - 1, y - 1, 2, 2));
         // Nodes first (on top), then links, then groups
         for (const part of candidates) {
-          if (part instanceof Node && part.containsPoint({ x, y })) return part;
+          if (part instanceof Node && part.shapeContainsPoint({ x, y })) return part;
         }
         for (const part of candidates) {
           if (part instanceof Link && part.containsPoint({ x, y })) return part;
@@ -892,7 +892,7 @@ export class Diagram {
     // Fallback: linear scan (accurate for links/groups crossing the point)
     // Check nodes first (on top)
     for (const [, node] of this.nodes) {
-      if (node.containsPoint({ x, y })) {
+      if (node.shapeContainsPoint({ x, y })) {
         return node;
       }
     }

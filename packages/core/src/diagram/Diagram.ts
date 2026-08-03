@@ -14,6 +14,7 @@ import { Serializer, type DiagramJSON } from '../serialization/Serializer.ts';
 import { ClickSelectingTool } from '../tool/ClickSelectingTool.ts';
 import { DraggingTool } from '../tool/DraggingTool.ts';
 import { PanningTool } from '../tool/PanningTool.ts';
+import { TextEditingTool } from '../tool/TextEditingTool.ts';
 import { ToolManager } from '../tool/ToolManager.ts';
 import { ZoomingTool } from '../tool/ZoomingTool.ts';
 import { UndoManager } from '../undo/UndoManager.ts';
@@ -114,6 +115,7 @@ export class Diagram {
     this.toolManager.registerTool('dragging', new DraggingTool());
     this.toolManager.registerTool('panning', new PanningTool());
     this.toolManager.registerTool('zooming', new ZoomingTool());
+    this.toolManager.registerTool('textEditing', new TextEditingTool());
 
     // Activate default tools
     this.toolManager.activateTool('clickSelecting');
@@ -164,6 +166,15 @@ export class Diagram {
     }
   }
 
+  /** Handle a double-click event (triggers text editing). */
+  private handleDoubleClick(e: MouseEvent): void {
+    e.preventDefault();
+    const textEditing = this.toolManager.getTool('textEditing');
+    if (textEditing instanceof TextEditingTool) {
+      textEditing.doDoubleClick(e);
+    }
+  }
+
   /** Set up DOM event listeners. */
   private setupEventListeners(): void {
     this.canvas.addEventListener('wheel', (e) => this.toolManager.handleMouseWheel(e), {
@@ -174,7 +185,7 @@ export class Diagram {
     this.canvas.addEventListener('mouseup', (e) => this.toolManager.handleMouseUp(e));
     this.canvas.addEventListener('mouseleave', (e) => this.toolManager.handleMouseUp(e));
     this.canvas.addEventListener('click', (e) => this.toolManager.handleClick(e));
-    this.canvas.addEventListener('dblclick', (e) => this.toolManager.handleDoubleClick(e));
+    this.canvas.addEventListener('dblclick', (e) => this.handleDoubleClick(e));
     this.canvas.addEventListener('contextmenu', (e) => this.handleContextMenu(e));
 
     // Resize observer

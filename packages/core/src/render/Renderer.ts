@@ -44,4 +44,7 @@ export interface Renderer {
 
   /** Convert diagram coordinates to screen coordinates. */
   diagramToScreen(diagramX: number, diagramY: number): { x: number; y: number };
+
+  /** Get the underlying canvas element. */
+  getCanvas(): HTMLCanvasElement;
 }

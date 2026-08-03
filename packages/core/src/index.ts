@@ -33,3 +33,11 @@ export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';
 // Diagram
 export { Diagram } from './diagram/Diagram.ts';
 export type { DiagramOptions } from './diagram/Diagram.ts';
+
+// Tools
+export { Tool } from './tool/Tool.ts';
+export { ToolManager } from './tool/ToolManager.ts';
+export { DraggingTool } from './tool/DraggingTool.ts';
+export { ClickSelectingTool } from './tool/ClickSelectingTool.ts';
+export { PanningTool } from './tool/PanningTool.ts';
+export { ZoomingTool } from './tool/ZoomingTool.ts';

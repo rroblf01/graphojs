@@ -7,6 +7,11 @@ import { Link } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
 import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
 import type { Renderer } from '../render/Renderer.ts';
+import { ClickSelectingTool } from '../tool/ClickSelectingTool.ts';
+import { DraggingTool } from '../tool/DraggingTool.ts';
+import { PanningTool } from '../tool/PanningTool.ts';
+import { ToolManager } from '../tool/ToolManager.ts';
+import { ZoomingTool } from '../tool/ZoomingTool.ts';
 
 export interface DiagramOptions {
   /** The container element for the diagram. */
@@ -48,13 +53,9 @@ export class Diagram {
 
   private isDirty = true;
   private animationFrameId: number | null = null;
-  private isPanning = false;
-  private panStartX = 0;
-  private panStartY = 0;
-  private panOffsetX = 0;
-  private panOffsetY = 0;
 
   private selectedParts: Set<NodeKey> = new Set();
+  private toolManager: ToolManager;
 
   constructor(options: DiagramOptions) {
     this.container = options.div;
@@ -80,6 +81,10 @@ export class Diagram {
     // Set initial scale
     this.scale = options.initialScale ?? 1;
 
+    // Create tool manager and register tools
+    this.toolManager = new ToolManager(this);
+    this.registerDefaultTools();
+
     // Set up event listeners
     this.setupEventListeners();
 
@@ -87,13 +92,35 @@ export class Diagram {
     this.startRenderLoop();
   }
 
+  /** Register default interaction tools. */
+  private registerDefaultTools(): void {
+    this.toolManager.registerTool('clickSelecting', new ClickSelectingTool());
+    this.toolManager.registerTool('dragging', new DraggingTool());
+    this.toolManager.registerTool('panning', new PanningTool());
+    this.toolManager.registerTool('zooming', new ZoomingTool());
+
+    // Activate default tools
+    this.toolManager.activateTool('clickSelecting');
+    this.toolManager.activateTool('dragging');
+    this.toolManager.activateTool('zooming');
+  }
+
+  /** Get the tool manager. */
+  getToolManager(): ToolManager {
+    return this.toolManager;
+  }
+
   /** Set up DOM event listeners. */
   private setupEventListeners(): void {
-    this.canvas.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
-    this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
-    this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-    this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
-    this.canvas.addEventListener('mouseleave', this.handleMouseUp.bind(this));
+    this.canvas.addEventListener('wheel', (e) => this.toolManager.handleMouseWheel(e), {
+      passive: false,
+    });
+    this.canvas.addEventListener('mousedown', (e) => this.toolManager.handleMouseDown(e));
+    this.canvas.addEventListener('mousemove', (e) => this.toolManager.handleMouseMove(e));
+    this.canvas.addEventListener('mouseup', (e) => this.toolManager.handleMouseUp(e));
+    this.canvas.addEventListener('mouseleave', (e) => this.toolManager.handleMouseUp(e));
+    this.canvas.addEventListener('click', (e) => this.toolManager.handleClick(e));
+    this.canvas.addEventListener('dblclick', (e) => this.toolManager.handleDoubleClick(e));
 
     // Resize observer
     const resizeObserver = new ResizeObserver(() => {
@@ -171,97 +198,39 @@ export class Diagram {
     }
   }
 
-  /** Handle mouse wheel for zooming. */
-  private handleWheel(e: WheelEvent): void {
-    e.preventDefault();
-
-    const rect = this.canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    // Calculate diagram coordinates before zoom
-    const diagramX = mouseX / this.scale + this.offsetX;
-    const diagramY = mouseY / this.scale + this.offsetY;
-
-    // Apply zoom
-    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = Math.max(this.minScale, Math.min(this.maxScale, this.scale * zoomFactor));
-
-    // Adjust offset to keep mouse position fixed
-    this.offsetX = diagramX - mouseX / newScale;
-    this.offsetY = diagramY - mouseY / newScale;
-    this.scale = newScale;
-
-    this.invalidate();
-  }
-
-  /** Handle mouse down for panning. */
-  private handleMouseDown(e: MouseEvent): void {
-    if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
-      // Middle button or shift+left button for panning
-      this.isPanning = true;
-      this.panStartX = e.clientX;
-      this.panStartY = e.clientY;
-      this.panOffsetX = this.offsetX;
-      this.panOffsetY = this.offsetY;
-      this.canvas.style.cursor = 'grabbing';
-    } else if (e.button === 0) {
-      // Left click for selection
-      this.handleClick(e);
-    }
-  }
-
-  /** Handle mouse move for panning. */
-  private handleMouseMove(e: MouseEvent): void {
-    if (this.isPanning) {
-      const dx = (e.clientX - this.panStartX) / this.scale;
-      const dy = (e.clientY - this.panStartY) / this.scale;
-      this.offsetX = this.panOffsetX - dx;
-      this.offsetY = this.panOffsetY - dy;
-      this.invalidate();
-    }
-  }
-
-  /** Handle mouse up. */
-  private handleMouseUp(): void {
-    this.isPanning = false;
-    this.canvas.style.cursor = 'default';
-  }
-
-  /** Handle click for selection. */
-  private handleClick(e: MouseEvent): void {
-    const rect = this.canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    // Convert to diagram coordinates
-    const diagramX = mouseX / this.scale + this.offsetX;
-    const diagramY = mouseY / this.scale + this.offsetY;
-
-    // Clear selection if not holding Ctrl/Cmd
-    if (!e.ctrlKey && !e.metaKey) {
-      this.clearSelection();
-    }
-
-    // Check if clicked on a node
+  /** Find a part at the given diagram coordinates. */
+  findPartAt(x: number, y: number): Node | Link | null {
+    // Check nodes first (on top)
     for (const [, node] of this.nodes) {
-      if (node.containsPoint({ x: diagramX, y: diagramY })) {
-        node.isSelected = true;
-        this.selectedParts.add(node.key);
-        this.invalidate();
-        return;
+      if (node.containsPoint({ x, y })) {
+        return node;
       }
     }
 
-    // Check if clicked on a link
+    // Check links
     for (const [, link] of this.links) {
-      if (link.containsPoint({ x: diagramX, y: diagramY })) {
-        link.isSelected = true;
-        this.selectedParts.add(link.key);
-        this.invalidate();
-        return;
+      if (link.containsPoint({ x, y })) {
+        return link;
       }
     }
+
+    return null;
+  }
+
+  /** Get a part by key. */
+  getPart(key: NodeKey): Node | Link | undefined {
+    return this.parts.get(key);
+  }
+
+  /** Get mouse position in diagram coordinates. */
+  getDiagramPoint(e: MouseEvent): { x: number; y: number } {
+    const rect = this.canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    return {
+      x: mouseX / this.scale + this.offsetX,
+      y: mouseY / this.scale + this.offsetY,
+    };
   }
 
   /** Clear all selections. */
@@ -420,11 +389,6 @@ export class Diagram {
   /** Destroy the diagram and clean up resources. */
   destroy(): void {
     this.stopRenderLoop();
-    this.canvas.removeEventListener('wheel', this.handleWheel.bind(this));
-    this.canvas.removeEventListener('mousedown', this.handleMouseDown.bind(this));
-    this.canvas.removeEventListener('mousemove', this.handleMouseMove.bind(this));
-    this.canvas.removeEventListener('mouseup', this.handleMouseUp.bind(this));
-    this.canvas.removeEventListener('mouseleave', this.handleMouseUp.bind(this));
     this.container.removeChild(this.canvas);
   }
 }

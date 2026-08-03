@@ -7,6 +7,7 @@ import { type Layer, createDefaultLayers, LayerNames } from '../layer/Layer.ts';
 import { Group } from '../parts/Group.ts';
 import { Link } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
+import type { ContextMenu } from '../export/ContextMenu.ts';
 import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
 import type { Renderer } from '../render/Renderer.ts';
 import { Serializer, type DiagramJSON } from '../serialization/Serializer.ts';
@@ -64,6 +65,7 @@ export class Diagram {
   private toolManager: ToolManager;
   private undoManager: UndoManager;
   private layers: Layer[];
+  private contextMenu: ContextMenu | null = null;
 
   constructor(options: DiagramOptions) {
     this.container = options.div;
@@ -144,6 +146,24 @@ export class Diagram {
     return this.undoManager.redo();
   }
 
+  /** Set a context menu for this diagram. */
+  setContextMenu(menu: ContextMenu | null): void {
+    this.contextMenu = menu;
+  }
+
+  /** Get the current context menu. */
+  getContextMenu(): ContextMenu | null {
+    return this.contextMenu;
+  }
+
+  /** Handle a contextmenu (right-click) event. */
+  private handleContextMenu(e: MouseEvent): void {
+    e.preventDefault();
+    if (this.contextMenu) {
+      this.contextMenu.handleContextMenu(e);
+    }
+  }
+
   /** Set up DOM event listeners. */
   private setupEventListeners(): void {
     this.canvas.addEventListener('wheel', (e) => this.toolManager.handleMouseWheel(e), {
@@ -155,6 +175,7 @@ export class Diagram {
     this.canvas.addEventListener('mouseleave', (e) => this.toolManager.handleMouseUp(e));
     this.canvas.addEventListener('click', (e) => this.toolManager.handleClick(e));
     this.canvas.addEventListener('dblclick', (e) => this.toolManager.handleDoubleClick(e));
+    this.canvas.addEventListener('contextmenu', (e) => this.handleContextMenu(e));
 
     // Resize observer
     const resizeObserver = new ResizeObserver(() => {

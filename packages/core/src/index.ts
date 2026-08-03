@@ -43,6 +43,8 @@ export {
   findPaletteForDiagram,
 } from './export/Palette.ts';
 export { Overview, createOverview } from './export/Overview.ts';
+export { ContextMenu, createDefaultContextMenu } from './export/ContextMenu.ts';
+export type { ContextMenuItem, ContextMenuOptions } from './export/ContextMenu.ts';
 
 // Render
 export type { Renderer } from './render/Renderer.ts';

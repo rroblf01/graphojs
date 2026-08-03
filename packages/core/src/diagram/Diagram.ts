@@ -3,6 +3,7 @@ import { Rect as RectClass } from '../geometry/Rect.ts';
 import type { ChangedEvent } from '../model/Model.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { GraphLinksModel } from '../model/GraphLinksModel.ts';
+import { type Layer, createDefaultLayers, LayerNames } from '../layer/Layer.ts';
 import { Group } from '../parts/Group.ts';
 import { Link } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
@@ -62,6 +63,7 @@ export class Diagram {
   private selectedParts: Set<NodeKey> = new Set();
   private toolManager: ToolManager;
   private undoManager: UndoManager;
+  private layers: Layer[];
 
   constructor(options: DiagramOptions) {
     this.container = options.div;
@@ -93,6 +95,9 @@ export class Diagram {
 
     // Create undo manager
     this.undoManager = new UndoManager();
+
+    // Create layers
+    this.layers = createDefaultLayers();
 
     // Set up event listeners
     this.setupEventListeners();
@@ -204,6 +209,10 @@ export class Diagram {
           group = new Group(key, new RectClass(x, y, width, height));
           group.fill = (nodeData.fill as string) ?? '#f0f0f0';
           group.stroke = (nodeData.stroke as string) ?? '#666666';
+          // Assign to layer
+          const layerName = (nodeData.layer as string) ?? LayerNames.Default;
+          const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
+          if (layer) group.layer = layer;
           this.parts.set(key, group);
           this.groups.set(key, group);
         }
@@ -227,6 +236,10 @@ export class Diagram {
           node.label = (nodeData.label as string) ?? '';
           node.fill = (nodeData.fill as string) ?? '#cccccc';
           node.stroke = (nodeData.stroke as string) ?? '#333333';
+          // Assign to layer
+          const layerName = (nodeData.layer as string) ?? LayerNames.Default;
+          const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
+          if (layer) node.layer = layer;
           this.parts.set(key, node);
           this.nodes.set(key, node);
         }
@@ -250,6 +263,10 @@ export class Diagram {
       let link = this.links.get(linkKey);
       if (!link) {
         link = new Link(linkKey, linkData.from, linkData.to);
+        // Assign to layer
+        const layerName = (linkData.layer as string) ?? LayerNames.Default;
+        const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
+        if (layer) link.layer = layer;
         this.parts.set(linkKey, link);
         this.links.set(linkKey, link);
       }
@@ -357,6 +374,48 @@ export class Diagram {
     this.invalidate();
   }
 
+  /** Get all layers. */
+  getLayers(): readonly Layer[] {
+    return this.layers;
+  }
+
+  /** Get a layer by name. */
+  getLayer(name: string): Layer | undefined {
+    return this.layers.find((l) => l.name === name);
+  }
+
+  /** Add a layer. */
+  addLayer(layer: Layer): void {
+    this.layers.push(layer);
+    this.layers.sort((a, b) => a.zOrder - b.zOrder);
+    this.invalidate();
+  }
+
+  /** Remove a layer by name. */
+  removeLayer(name: string): boolean {
+    const index = this.layers.findIndex((l) => l.name === name);
+    if (index === -1) return false;
+    const layer = this.layers[index];
+    if (!layer) return false;
+    // Move parts to Default layer
+    const defaultLayer = this.getLayer(LayerNames.Default);
+    for (const part of [...layer.parts]) {
+      part.layer = defaultLayer ?? null;
+    }
+    this.layers.splice(index, 1);
+    this.invalidate();
+    return true;
+  }
+
+  /** Move a part to a layer by name. */
+  moveToLayer(part: Node | Link | Group, layerName: string): void {
+    const layer = this.getLayer(layerName);
+    if (layer) {
+      part.layer = layer;
+      this.invalidate();
+    }
+  }
+
   /** Serialize the diagram to JSON. */
   toJSON(): DiagramJSON {
     return Serializer.serialize(this);
@@ -423,19 +482,25 @@ export class Diagram {
       this.renderer.renderGrid(viewport, this.gridSize);
     }
 
-    // Render groups (below everything)
-    for (const [, group] of this.groups) {
-      this.renderer.renderGroup(group);
-    }
+    // Render parts in layer order (lowest z-order first)
+    for (const layer of this.layers) {
+      if (layer.name === LayerNames.Grid) continue;
+      if (layer.partCount === 0) continue;
 
-    // Render links first (below nodes)
-    for (const [, link] of this.links) {
-      this.renderer.renderLink(link);
-    }
+      ctx.save();
+      ctx.globalAlpha = layer.opacity;
 
-    // Render nodes
-    for (const [, node] of this.nodes) {
-      this.renderer.renderNode(node);
+      for (const part of layer.getVisibleParts()) {
+        if (part instanceof Group) {
+          this.renderer.renderGroup(part);
+        } else if (part instanceof Link) {
+          this.renderer.renderLink(part);
+        } else if (part instanceof Node) {
+          this.renderer.renderNode(part);
+        }
+      }
+
+      ctx.restore();
     }
 
     this.renderer.restore();

@@ -2,6 +2,7 @@ import type { Rect } from '../geometry/Rect.ts';
 import type { NodeKey, NodeData } from '../model/Model.ts';
 import type { Binding } from '../binding/Binding.ts';
 import type { Group } from './Group.ts';
+import type { Layer } from '../layer/Layer.ts';
 
 /**
  * Base class for all visual parts in a diagram.
@@ -19,6 +20,7 @@ export abstract class Part {
   private _zOrder = 0;
   private _containingGroup: Group | null = null;
   private _bindings: Binding[] = [];
+  private _layer: Layer | null = null;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -109,6 +111,24 @@ export abstract class Part {
   /** Set the containing group. */
   set containingGroup(value: Group | null) {
     this._containingGroup = value;
+  }
+
+  /** Get the layer this part belongs to. */
+  get layer(): Layer | null {
+    return this._layer;
+  }
+
+  /** Set the layer this part belongs to. */
+  set layer(value: Layer | null) {
+    // Remove from old layer
+    if (this._layer) {
+      this._layer.remove(this);
+    }
+    this._layer = value;
+    // Add to new layer
+    if (value) {
+      value.add(this);
+    }
   }
 
   /** Get all bindings on this part. */

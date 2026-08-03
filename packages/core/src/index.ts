@@ -30,6 +30,9 @@ export type { LinkRouting } from './parts/Link.ts';
 // Data Binding
 export { Binding, bind } from './binding/Binding.ts';
 
+// Layers
+export { Layer, LayerNames, LayerDefaults, createDefaultLayers } from './layer/Layer.ts';
+
 // Render
 export type { Renderer } from './render/Renderer.ts';
 export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';

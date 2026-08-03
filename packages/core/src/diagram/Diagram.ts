@@ -76,6 +76,13 @@ export class Diagram {
   private commandHandler: CommandHandler;
   private virtualization: VirtualizationManager | null = null;
   private partPool: PartPool = new PartPool();
+  private resizeObserver: ResizeObserver | null = null;
+  private modelChangeListener: ((event: ChangedEvent) => void) | null = null;
+  private keyDownListener: ((event: KeyboardEvent) => void) | null = null;
+  private canvasListeners: Array<
+    [string, EventListenerOrEventListenerObject, (AddEventListenerOptions | boolean)?]
+  > = [];
+  private _isDestroyed = false;
 
   constructor(options: DiagramOptions) {
     this.container = options.div;
@@ -291,29 +298,49 @@ export class Diagram {
 
   /** Set up DOM event listeners. */
   private setupEventListeners(): void {
-    this.canvas.addEventListener('wheel', (e) => this.toolManager.handleMouseWheel(e), {
+    this.addCanvasListener('wheel', (e) => this.toolManager.handleMouseWheel(e as WheelEvent), {
       passive: false,
     });
-    this.canvas.addEventListener('mousedown', (e) => this.toolManager.handleMouseDown(e));
-    this.canvas.addEventListener('mousemove', (e) => this.toolManager.handleMouseMove(e));
-    this.canvas.addEventListener('mouseup', (e) => this.toolManager.handleMouseUp(e));
-    this.canvas.addEventListener('mouseleave', (e) => this.toolManager.handleMouseUp(e));
-    this.canvas.addEventListener('click', (e) => this.toolManager.handleClick(e));
-    this.canvas.addEventListener('dblclick', (e) => this.handleDoubleClick(e));
-    this.canvas.addEventListener('contextmenu', (e) => this.handleContextMenu(e));
+    this.addCanvasListener('mousedown', (e) => this.toolManager.handleMouseDown(e as MouseEvent));
+    this.addCanvasListener('mousemove', (e) => this.toolManager.handleMouseMove(e as MouseEvent));
+    this.addCanvasListener('mouseup', (e) => this.toolManager.handleMouseUp(e as MouseEvent));
+    this.addCanvasListener('mouseleave', (e) => this.toolManager.handleMouseUp(e as MouseEvent));
+    this.addCanvasListener('click', (e) => this.toolManager.handleClick(e as MouseEvent));
+    this.addCanvasListener('dblclick', (e) => this.handleDoubleClick(e as MouseEvent));
+    this.addCanvasListener('contextmenu', (e) => this.handleContextMenu(e as MouseEvent));
 
     // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => this.handleKeyDown(e));
+    this.keyDownListener = (e: KeyboardEvent) => this.handleKeyDown(e);
+    document.addEventListener('keydown', this.keyDownListener);
 
     // Resize observer
-    const resizeObserver = new ResizeObserver(() => {
+    this.resizeObserver = new ResizeObserver(() => {
       this.renderer.resize();
       this.invalidate();
     });
-    resizeObserver.observe(this.container);
+    this.resizeObserver.observe(this.container);
 
     // Model change listener
-    this.model.addChangedListener(this.handleModelChange.bind(this));
+    this.modelChangeListener = (event: ChangedEvent) => this.handleModelChange(event);
+    this.model.addChangedListener(this.modelChangeListener);
+  }
+
+  /** Add a canvas event listener and track it for cleanup. */
+  private addCanvasListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: AddEventListenerOptions | boolean,
+  ): void {
+    this.canvas.addEventListener(type, listener, options);
+    this.canvasListeners.push([type, listener, options]);
+  }
+
+  /** Remove all canvas event listeners. */
+  private removeCanvasListeners(): void {
+    for (const [type, listener, options] of this.canvasListeners) {
+      this.canvas.removeEventListener(type, listener, options);
+    }
+    this.canvasListeners = [];
   }
 
   /** Handle model changes. */
@@ -516,9 +543,12 @@ export class Diagram {
 
   /** Set the model. */
   setModel(model: GraphLinksModel): void {
-    this.model.removeChangedListener(this.handleModelChange.bind(this));
+    if (this.modelChangeListener) {
+      this.model.removeChangedListener(this.modelChangeListener);
+    }
     this.model = model;
-    this.model.addChangedListener(this.handleModelChange.bind(this));
+    this.modelChangeListener = (event: ChangedEvent) => this.handleModelChange(event);
+    this.model.addChangedListener(this.modelChangeListener);
     this.syncPartsFromModel();
     this.invalidate();
   }
@@ -738,7 +768,59 @@ export class Diagram {
 
   /** Destroy the diagram and clean up resources. */
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
+
     this.stopRenderLoop();
+
+    // Stop animations
+    this.animationManager.cancelAll();
+
+    // Remove canvas event listeners
+    this.removeCanvasListeners();
+
+    // Remove keyboard listener
+    if (this.keyDownListener) {
+      document.removeEventListener('keydown', this.keyDownListener);
+      this.keyDownListener = null;
+    }
+
+    // Disconnect resize observer
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
+
+    // Remove model change listener
+    if (this.modelChangeListener) {
+      this.model.removeChangedListener(this.modelChangeListener);
+      this.modelChangeListener = null;
+    }
+
+    // Destroy context menu
+    if (this.contextMenu) {
+      this.contextMenu.destroy();
+      this.contextMenu = null;
+    }
+
+    // Clear undo history
+    this.undoManager.clear();
+
+    // Clear parts and caches
+    this.parts.clear();
+    this.nodes.clear();
+    this.groups.clear();
+    this.links.clear();
+    this.selectedParts.clear();
+    this.virtualization?.clear();
+    this.partPool.clear();
+
+    // Remove canvas from DOM
     this.container.removeChild(this.canvas);
+  }
+
+  /** Check whether the diagram has been destroyed. */
+  isDestroyed(): boolean {
+    return this._isDestroyed;
   }
 }

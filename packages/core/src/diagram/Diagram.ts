@@ -3,6 +3,7 @@ import { Rect as RectClass } from '../geometry/Rect.ts';
 import type { ChangedEvent } from '../model/Model.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { GraphLinksModel } from '../model/GraphLinksModel.ts';
+import { Group } from '../parts/Group.ts';
 import { Link } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
 import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
@@ -41,8 +42,9 @@ export class Diagram {
   private canvas: HTMLCanvasElement;
   private renderer: Renderer;
   private model: GraphLinksModel;
-  private parts: Map<NodeKey, Node | Link> = new Map();
+  private parts: Map<NodeKey, Node | Link | Group> = new Map();
   private nodes: Map<NodeKey, Node> = new Map();
+  private groups: Map<NodeKey, Group> = new Map();
   private links: Map<NodeKey, Link> = new Map();
 
   private scale = 1;
@@ -173,6 +175,9 @@ export class Diagram {
       if (part instanceof Node && !this.model.containsNode(key)) {
         this.parts.delete(key);
         this.nodes.delete(key);
+      } else if (part instanceof Group && !this.model.containsNode(key)) {
+        this.parts.delete(key);
+        this.groups.delete(key);
       } else if (part instanceof Link) {
         const linkData = this.model
           .getLinkDataArray()
@@ -184,21 +189,56 @@ export class Diagram {
       }
     }
 
-    // Add/update nodes
+    // Add/update nodes and groups
     for (const nodeData of this.model.getNodeDataArray()) {
       const key = this.model.getNodeKey(nodeData);
-      let node = this.nodes.get(key);
-      if (!node) {
-        const x = (nodeData.x as number) ?? 0;
-        const y = (nodeData.y as number) ?? 0;
-        const width = (nodeData.width as number) ?? 100;
-        const height = (nodeData.height as number) ?? 50;
-        node = Node.fromPosAndSize(key, x, y, width, height);
-        node.label = (nodeData.label as string) ?? '';
-        node.fill = (nodeData.fill as string) ?? '#cccccc';
-        node.stroke = (nodeData.stroke as string) ?? '#333333';
-        this.parts.set(key, node);
-        this.nodes.set(key, node);
+      const isGroup = nodeData.isGroup === true;
+
+      if (isGroup) {
+        let group = this.groups.get(key);
+        if (!group) {
+          const x = (nodeData.x as number) ?? 0;
+          const y = (nodeData.y as number) ?? 0;
+          const width = (nodeData.width as number) ?? 100;
+          const height = (nodeData.height as number) ?? 50;
+          group = new Group(key, new RectClass(x, y, width, height));
+          group.fill = (nodeData.fill as string) ?? '#f0f0f0';
+          group.stroke = (nodeData.stroke as string) ?? '#666666';
+          this.parts.set(key, group);
+          this.groups.set(key, group);
+        }
+
+        // Sync members: add nodes/links whose groupKey matches this group
+        for (const [memberKey, node] of this.nodes) {
+          if (node.containingGroup === group) continue;
+          const memberData = this.model.getNodeData(memberKey);
+          if (memberData && memberData.group === key) {
+            group.add(node);
+          }
+        }
+      } else {
+        let node = this.nodes.get(key);
+        if (!node) {
+          const x = (nodeData.x as number) ?? 0;
+          const y = (nodeData.y as number) ?? 0;
+          const width = (nodeData.width as number) ?? 100;
+          const height = (nodeData.height as number) ?? 50;
+          node = Node.fromPosAndSize(key, x, y, width, height);
+          node.label = (nodeData.label as string) ?? '';
+          node.fill = (nodeData.fill as string) ?? '#cccccc';
+          node.stroke = (nodeData.stroke as string) ?? '#333333';
+          this.parts.set(key, node);
+          this.nodes.set(key, node);
+        }
+
+        // Add to parent group if specified
+        const groupKey = nodeData.group;
+        if (groupKey !== undefined) {
+          const parentGroup = this.groups.get(groupKey as NodeKey);
+          if (parentGroup && !parentGroup.contains(node)) {
+            parentGroup.add(node);
+          }
+        }
       }
     }
 
@@ -222,11 +262,20 @@ export class Diagram {
         link.toPort = toNode.center;
         link.updateBounds();
       }
+
+      // Add to parent group if specified
+      const groupKey = linkData.group;
+      if (groupKey !== undefined) {
+        const parentGroup = this.groups.get(groupKey as NodeKey);
+        if (parentGroup && !parentGroup.contains(link)) {
+          parentGroup.add(link);
+        }
+      }
     }
   }
 
   /** Find a part at the given diagram coordinates. */
-  findPartAt(x: number, y: number): Node | Link | null {
+  findPartAt(x: number, y: number): Node | Link | Group | null {
     // Check nodes first (on top)
     for (const [, node] of this.nodes) {
       if (node.containsPoint({ x, y })) {
@@ -241,11 +290,18 @@ export class Diagram {
       }
     }
 
+    // Check groups (below nodes)
+    for (const [, group] of this.groups) {
+      if (group.containsPoint({ x, y })) {
+        return group;
+      }
+    }
+
     return null;
   }
 
   /** Get a part by key. */
-  getPart(key: NodeKey): Node | Link | undefined {
+  getPart(key: NodeKey): Node | Link | Group | undefined {
     return this.parts.get(key);
   }
 
@@ -271,11 +327,11 @@ export class Diagram {
   }
 
   /** Get selected parts. */
-  getSelectedParts(): (Node | Link)[] {
-    const result: (Node | Link)[] = [];
+  getSelectedParts(): (Node | Link | Group)[] {
+    const result: (Node | Link | Group)[] = [];
     for (const key of this.selectedParts) {
       const part = this.parts.get(key);
-      if (part instanceof Node || part instanceof Link) {
+      if (part instanceof Node || part instanceof Link || part instanceof Group) {
         result.push(part);
       }
     }
@@ -355,6 +411,11 @@ export class Diagram {
         (height * 2) / this.scale,
       );
       this.renderer.renderGrid(viewport, this.gridSize);
+    }
+
+    // Render groups (below everything)
+    for (const [, group] of this.groups) {
+      this.renderer.renderGroup(group);
     }
 
     // Render links first (below nodes)

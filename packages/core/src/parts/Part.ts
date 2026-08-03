@@ -15,6 +15,7 @@ export abstract class Part {
   private _stroke = '#333333';
   private _strokeWidth = 1;
   private _zOrder = 0;
+  private _containingGroup: Part | null = null;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -95,6 +96,16 @@ export abstract class Part {
 
   set zOrder(value: number) {
     this._zOrder = value;
+  }
+
+  /** Get the containing group, or null if top-level. */
+  get containingGroup(): Part | null {
+    return this._containingGroup;
+  }
+
+  /** Set the containing group. */
+  set containingGroup(value: Part | null) {
+    this._containingGroup = value;
   }
 
   /** Check if a point is inside this part. */

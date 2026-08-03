@@ -1,4 +1,5 @@
 import type { Rect } from '../geometry/Rect.ts';
+import type { Group } from '../parts/Group.ts';
 import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
 
@@ -17,6 +18,9 @@ export interface Renderer {
 
   /** Render a link. */
   renderLink(link: Link): void;
+
+  /** Render a group (background bounds). */
+  renderGroup(group: Group): void;
 
   /** Render a selection rectangle. */
   renderSelectionRect(rect: Rect): void;

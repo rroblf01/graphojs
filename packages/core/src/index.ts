@@ -23,6 +23,7 @@ export type { GraphLinksModelJSON } from './model/GraphLinksModel.ts';
 export { Part } from './parts/Part.ts';
 export { Node } from './parts/Node.ts';
 export { Link } from './parts/Link.ts';
+export { Group } from './parts/Group.ts';
 export type { NodeShape } from './parts/Node.ts';
 export type { LinkRouting } from './parts/Link.ts';
 

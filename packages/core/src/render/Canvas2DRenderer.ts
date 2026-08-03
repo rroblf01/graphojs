@@ -214,6 +214,11 @@ export class Canvas2DRenderer implements Renderer {
 
     this.strokePath(points);
 
+    // Arrowhead at the target end
+    if (link.arrowhead !== 'none' && points.length >= 2) {
+      this.renderArrowhead(link, points);
+    }
+
     // Selection highlight
     if (link.isSelected) {
       this.ctx.strokeStyle = '#2196f3';
@@ -223,7 +228,108 @@ export class Canvas2DRenderer implements Renderer {
       this.ctx.setLineDash([]);
     }
 
+    // Link label
+    if (link.label) {
+      const mid = this.midPoint(points);
+      this.renderLabel(link.label, mid.x, mid.y, link.labelColor, link.labelFont);
+    }
+
     this.ctx.restore();
+  }
+
+  private renderArrowhead(link: Link, points: Array<{ x: number; y: number }>): void {
+    const last = points[points.length - 1];
+    const prev = points[points.length - 2];
+    if (!last || !prev) return;
+
+    // Direction of the last segment
+    const dx = last.x - prev.x;
+    const dy = last.y - prev.y;
+    const len = Math.hypot(dx, dy);
+    if (len === 0) return;
+
+    const ux = dx / len;
+    const uy = dy / len;
+    const size = link.arrowheadSize;
+    const tipX = last.x;
+    const tipY = last.y;
+
+    this.ctx.save();
+    this.ctx.fillStyle = link.stroke;
+    this.ctx.strokeStyle = link.stroke;
+    this.ctx.lineWidth = 1;
+
+    switch (link.arrowhead) {
+      case 'circle': {
+        this.ctx.beginPath();
+        this.ctx.arc(tipX, tipY, size / 2, 0, 2 * Math.PI);
+        this.ctx.fill();
+        break;
+      }
+      case 'diamond': {
+        this.ctx.beginPath();
+        this.ctx.moveTo(tipX + ux * size, tipY + uy * size);
+        this.ctx.lineTo(tipX - uy * (size / 2), tipY + ux * (size / 2));
+        this.ctx.lineTo(tipX - ux * size, tipY - uy * size);
+        this.ctx.lineTo(tipX + uy * (size / 2), tipY - ux * (size / 2));
+        this.ctx.closePath();
+        this.ctx.fill();
+        break;
+      }
+      case 'openArrow': {
+        this.ctx.beginPath();
+        this.ctx.moveTo(tipX - ux * size + uy * size * 0.5, tipY - uy * size - ux * size * 0.5);
+        this.ctx.lineTo(tipX, tipY);
+        this.ctx.lineTo(tipX - ux * size - uy * size * 0.5, tipY - uy * size + ux * size * 0.5);
+        this.ctx.stroke();
+        break;
+      }
+      default: {
+        this.ctx.beginPath();
+        this.ctx.moveTo(tipX, tipY);
+        this.ctx.lineTo(tipX - ux * size + uy * (size / 2), tipY - uy * size - ux * (size / 2));
+        this.ctx.lineTo(tipX - ux * size - uy * (size / 2), tipY - uy * size + ux * (size / 2));
+        this.ctx.closePath();
+        this.ctx.fill();
+        break;
+      }
+    }
+
+    this.ctx.restore();
+  }
+
+  private midPoint(points: Array<{ x: number; y: number }>): { x: number; y: number } {
+    if (points.length === 0) return { x: 0, y: 0 };
+    if (points.length === 1) {
+      const p = points[0];
+      return p ? { x: p.x, y: p.y } : { x: 0, y: 0 };
+    }
+
+    // Find total path length
+    let total = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+      const a = points[i];
+      const b = points[i + 1];
+      if (!a || !b) continue;
+      total += Math.hypot(b.x - a.x, b.y - a.y);
+    }
+
+    // Walk to the midpoint
+    let half = total / 2;
+    for (let i = 0; i < points.length - 1; i++) {
+      const a = points[i];
+      const b = points[i + 1];
+      if (!a || !b) continue;
+      const segLen = Math.hypot(b.x - a.x, b.y - a.y);
+      if (half <= segLen) {
+        const t = half / segLen;
+        return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+      }
+      half -= segLen;
+    }
+
+    const last = points[points.length - 1];
+    return last ? { x: last.x, y: last.y } : { x: 0, y: 0 };
   }
 
   private strokePath(points: Array<{ x: number; y: number }>): void {

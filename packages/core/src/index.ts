@@ -29,7 +29,7 @@ export { Group } from './parts/Group.ts';
 export { Port, Ports } from './parts/Port.ts';
 export type { PortAlignment } from './parts/Port.ts';
 export type { NodeShape } from './parts/Node.ts';
-export type { LinkRouting } from './parts/Link.ts';
+export type { LinkRouting, ArrowheadStyle } from './parts/Link.ts';
 
 // Data Binding
 export { Binding, bind } from './binding/Binding.ts';

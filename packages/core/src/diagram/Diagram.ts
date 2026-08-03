@@ -455,6 +455,22 @@ export class Diagram {
       link.fromPortName = linkData.fromPort as string | undefined;
       link.toPortName = linkData.toPort as string | undefined;
 
+      // Arrowhead and label
+      const arrowhead = linkData.arrowhead;
+      if (
+        arrowhead === 'triangle' ||
+        arrowhead === 'openArrow' ||
+        arrowhead === 'diamond' ||
+        arrowhead === 'circle' ||
+        arrowhead === 'none'
+      ) {
+        link.arrowhead = arrowhead;
+      }
+      link.arrowheadSize = (linkData.arrowheadSize as number) ?? link.arrowheadSize;
+      link.label = (linkData.label as string) ?? '';
+      link.labelColor = (linkData.labelColor as string) ?? link.labelColor;
+      link.labelFont = (linkData.labelFont as string) ?? link.labelFont;
+
       // Update link ports based on node positions and port connections
       const fromNode = this.nodes.get(linkData.from);
       const toNode = this.nodes.get(linkData.to);

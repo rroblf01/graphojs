@@ -4,6 +4,7 @@ import type { Spot } from '../geometry/Spot.ts';
 import { Part } from './Part.ts';
 
 export type LinkRouting = 'straight' | 'orthogonal' | 'curved';
+export type ArrowheadStyle = 'triangle' | 'openArrow' | 'diamond' | 'circle' | 'none';
 
 /**
  * A visual link between two nodes.
@@ -19,6 +20,12 @@ export class Link extends Part {
   private _fromSpot: Spot | null = null;
   private _toSpot: Spot | null = null;
   private _pathPoints: Array<{ x: number; y: number }> = [];
+  private _arrowhead: ArrowheadStyle = 'triangle';
+  private _arrowheadSize = 10;
+  private _label = '';
+  private _labelColor = '#333333';
+  private _labelFont = '11px sans-serif';
+  private _corner = 0;
 
   constructor(key: NodeKey, fromKey: NodeKey, toKey: NodeKey) {
     super(key, Rect.zero());
@@ -104,6 +111,60 @@ export class Link extends Part {
   /** Set the computed path points. */
   setPathPoints(points: Array<{ x: number; y: number }>): void {
     this._pathPoints = points;
+  }
+
+  /** The arrowhead style at the target end. */
+  get arrowhead(): ArrowheadStyle {
+    return this._arrowhead;
+  }
+
+  set arrowhead(value: ArrowheadStyle) {
+    this._arrowhead = value;
+  }
+
+  /** The size of the arrowhead. */
+  get arrowheadSize(): number {
+    return this._arrowheadSize;
+  }
+
+  set arrowheadSize(value: number) {
+    this._arrowheadSize = value;
+  }
+
+  /** The label text shown on the link. */
+  get label(): string {
+    return this._label;
+  }
+
+  set label(value: string) {
+    this._label = value;
+  }
+
+  /** The color of the link label. */
+  get labelColor(): string {
+    return this._labelColor;
+  }
+
+  set labelColor(value: string) {
+    this._labelColor = value;
+  }
+
+  /** The font of the link label. */
+  get labelFont(): string {
+    return this._labelFont;
+  }
+
+  set labelFont(value: string) {
+    this._labelFont = value;
+  }
+
+  /** The corner rounding radius for orthogonal routing. */
+  get corner(): number {
+    return this._corner;
+  }
+
+  set corner(value: number) {
+    this._corner = value;
   }
 
   /** Update the bounds based on all path points. */

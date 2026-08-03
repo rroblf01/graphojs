@@ -1,0 +1,13 @@
+GraphoJS - NOTICE
+
+Copyright (c) 2026 Ricardo Robles Fernandez
+
+GraphoJS is an original, independent implementation with an MIT license. It
+is NOT derived from, and does NOT incorporate source code from, the GoJS
+library, which is proprietary software owned by Northwoods Software.
+
+While GraphoJS is inspired by the general capability of interactive
+diagramming libraries such as GoJS (rendering, models, layouts, and
+interactive tools), its architecture, API, and source code are designed from
+scratch. GraphoJS, its name, and this project are the responsibility of
+Ricardo Robles Fernandez and are not affiliated with Northwoods Software.

@@ -1,0 +1,46 @@
+{
+  "name": "@graphojs/react",
+  "version": "0.1.0",
+  "description": "React wrapper for GraphoJS, an open-source, MIT-licensed diagramming library.",
+  "license": "MIT",
+  "author": "Ricardo Robles Fernandez",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rroblf01/graphojs"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "diagram",
+    "diagramming",
+    "graph",
+    "react",
+    "canvas",
+    "graphojs"
+  ],
+  "peerDependencies": {
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
+  },
+  "scripts": {
+    "build": "tsup && pnpm types",
+    "types": "tsc --emitDeclarationOnly --declaration --declarationDir dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  }
+}

@@ -73,6 +73,7 @@ export { Tool } from './tool/Tool.ts';
 export { ToolManager } from './tool/ToolManager.ts';
 export { DraggingTool } from './tool/DraggingTool.ts';
 export { ClickSelectingTool } from './tool/ClickSelectingTool.ts';
+export { DragSelectingTool } from './tool/DragSelectingTool.ts';
 export { PanningTool } from './tool/PanningTool.ts';
 export { ZoomingTool } from './tool/ZoomingTool.ts';
 export { TextEditingTool } from './tool/TextEditingTool.ts';

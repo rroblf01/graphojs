@@ -12,6 +12,7 @@ import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
 import type { Renderer } from '../render/Renderer.ts';
 import { Serializer, type DiagramJSON } from '../serialization/Serializer.ts';
 import { ClickSelectingTool } from '../tool/ClickSelectingTool.ts';
+import { DragSelectingTool } from '../tool/DragSelectingTool.ts';
 import { DraggingTool } from '../tool/DraggingTool.ts';
 import { LinkingTool } from '../tool/LinkingTool.ts';
 import { PanningTool } from '../tool/PanningTool.ts';
@@ -91,6 +92,7 @@ export class Diagram {
   private modelChangeListener: ((event: ChangedEvent) => void) | null = null;
   private keyDownListener: ((event: KeyboardEvent) => void) | null = null;
   private tempLink: { from: { x: number; y: number }; to: { x: number; y: number } } | null = null;
+  private selectionRect: { x: number; y: number; width: number; height: number } | null = null;
   private events: DiagramEvents = new DiagramEvents();
   private layerCache: LayerCache | null = null;
   private layerCacheEnabled = false;
@@ -159,6 +161,7 @@ export class Diagram {
     this.toolManager.registerTool('relinking', new RelinkingTool());
     this.toolManager.registerTool('resizing', new ResizingTool());
     this.toolManager.registerTool('rotating', new RotatingTool());
+    this.toolManager.registerTool('dragSelecting', new DragSelectingTool());
 
     // Activate default tools
     this.toolManager.activateTool('clickSelecting');
@@ -958,6 +961,40 @@ export class Diagram {
     return this.tempLink;
   }
 
+  /** Show a temporary rubber-band selection rectangle. */
+  showSelectionRect(rect: { x: number; y: number; width: number; height: number }): void {
+    this.selectionRect = rect;
+    this.invalidate();
+  }
+
+  /** Hide the temporary selection rectangle. */
+  hideSelectionRect(): void {
+    if (this.selectionRect) {
+      this.selectionRect = null;
+      this.invalidate();
+    }
+  }
+
+  /** Get the current selection rectangle, or null. */
+  getSelectionRect(): { x: number; y: number; width: number; height: number } | null {
+    return this.selectionRect;
+  }
+
+  /** Select all parts intersecting a rectangle. */
+  selectPartsInRect(rect: { x: number; y: number; width: number; height: number }): void {
+    for (const [, node] of this.nodes) {
+      if (node.bounds.intersects(rect as unknown as RectClass)) {
+        node.isSelected = true;
+      }
+    }
+    for (const [, link] of this.links) {
+      if (link.bounds.intersects(rect as unknown as RectClass)) {
+        link.isSelected = true;
+      }
+    }
+    this.invalidate();
+  }
+
   /** Get mouse position in diagram coordinates. */
   getDiagramPoint(e: MouseEvent): { x: number; y: number } {
     const rect = this.canvas.getBoundingClientRect();
@@ -1277,6 +1314,20 @@ export class Diagram {
       ctx.moveTo(this.tempLink.from.x, this.tempLink.from.y);
       ctx.lineTo(this.tempLink.to.x, this.tempLink.to.y);
       ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
+    // Render rubber-band selection rectangle
+    if (this.selectionRect) {
+      const r = this.selectionRect;
+      ctx.save();
+      ctx.fillStyle = 'rgba(33, 150, 243, 0.1)';
+      ctx.strokeStyle = '#2196f3';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.fillRect(r.x, r.y, r.width, r.height);
+      ctx.strokeRect(r.x, r.y, r.width, r.height);
       ctx.setLineDash([]);
       ctx.restore();
     }

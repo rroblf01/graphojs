@@ -191,3 +191,79 @@ describe('RelinkingTool', () => {
     expect(linkData?.to).toBe(3);
   });
 });
+
+describe('LinkingTool cycle prevention', () => {
+  function createChainDiagram(): Diagram {
+    const model = new GraphLinksModel();
+    const undoManager = new UndoManager();
+    model.addNode({ key: 1, x: 0, y: 0, width: 100, height: 50 });
+    model.addNode({ key: 2, x: 200, y: 0, width: 100, height: 50 });
+    model.addNode({ key: 3, x: 400, y: 0, width: 100, height: 50 });
+    model.addLink({ key: 100, from: 1, to: 2 });
+    model.addLink({ key: 101, from: 2, to: 3 });
+
+    const node1 = Node.fromPosAndSize(1, 0, 0, 100, 50);
+    const node2 = Node.fromPosAndSize(2, 200, 0, 100, 50);
+    const node3 = Node.fromPosAndSize(3, 400, 0, 100, 50);
+    const nodes = [node1, node2, node3];
+    const links: Link[] = [];
+
+    return {
+      getModel: () => model,
+      getUndoManager: () => undoManager,
+      getDiagramPoint: () => ({ x: 0, y: 0 }),
+      getPart: (key: string | number) =>
+        nodes.find((n) => n.key === key) ?? links.find((l) => l.key === key),
+      findPartAt: () => null,
+      showTempLink: vi.fn(),
+      hideTempLink: vi.fn(),
+      getTempLink: () => null,
+      getSelectedParts: () => [],
+    } as unknown as Diagram;
+  }
+
+  it('should be disabled by default', () => {
+    const tool = new LinkingTool();
+    expect(tool.preventCycles).toBe(false);
+  });
+
+  it('should allow normal links when cycles allowed', () => {
+    const diagram = createChainDiagram();
+    const tool = new LinkingTool();
+    tool.diagram = diagram;
+    const model = diagram.getModel();
+
+    expect(tool.createLink(diagram.getPart(3) as Node, diagram.getPart(1) as Node)).toBe(true);
+    expect(model.getLinkCount()).toBe(3);
+  });
+
+  it('should prevent cycles when enabled', () => {
+    const diagram = createChainDiagram();
+    const tool = new LinkingTool();
+    tool.diagram = diagram;
+    tool.preventCycles = true;
+    const model = diagram.getModel();
+
+    // 1 -> 2 -> 3, so linking 3 -> 1 would create a cycle
+    expect(tool.createLink(diagram.getPart(3) as Node, diagram.getPart(1) as Node)).toBe(false);
+    expect(model.getLinkCount()).toBe(2);
+
+    // Linking 3 -> 2 also creates a cycle
+    expect(tool.createLink(diagram.getPart(3) as Node, diagram.getPart(2) as Node)).toBe(false);
+
+    // Linking a node to itself is prevented
+    expect(tool.createLink(diagram.getPart(1) as Node, diagram.getPart(1) as Node)).toBe(false);
+  });
+
+  it('should allow non-cycle links when enabled', () => {
+    const diagram = createChainDiagram();
+    const tool = new LinkingTool();
+    tool.diagram = diagram;
+    tool.preventCycles = true;
+    const model = diagram.getModel();
+
+    // Linking 1 -> 3 is fine (no cycle)
+    expect(tool.createLink(diagram.getPart(1) as Node, diagram.getPart(3) as Node)).toBe(true);
+    expect(model.getLinkCount()).toBe(3);
+  });
+});

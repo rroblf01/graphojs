@@ -12,6 +12,7 @@ export class LinkingTool extends Tool {
   private _sourcePoint = { x: 0, y: 0 };
   private _sourcePortName: string | undefined = undefined;
   private _targetNode: Node | null = null;
+  private _preventCycles = false;
 
   /** Whether a linking drag is in progress. */
   get isLinking(): boolean {
@@ -26,6 +27,15 @@ export class LinkingTool extends Tool {
   /** The current target node under the cursor, or null. */
   get targetNode(): Node | null {
     return this._targetNode;
+  }
+
+  /** Whether cycle creation is prevented (a node cannot link to its descendant). */
+  get preventCycles(): boolean {
+    return this._preventCycles;
+  }
+
+  set preventCycles(value: boolean) {
+    this._preventCycles = value;
   }
 
   override doMouseDown(e: MouseEvent): void {
@@ -95,6 +105,11 @@ export class LinkingTool extends Tool {
       return false;
     }
 
+    // Prevent cycles: target must not be reachable from source
+    if (this._preventCycles && this.wouldCreateCycle(source.key, target.key, model)) {
+      return false;
+    }
+
     const linkData: LinkData = {
       from: source.key,
       to: target.key,
@@ -110,6 +125,32 @@ export class LinkingTool extends Tool {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Check whether adding a link from `from` to `to` would create a cycle
+   * (i.e. `to` is reachable from `from` via existing links).
+   */
+  private wouldCreateCycle(
+    from: Node['key'],
+    to: Node['key'],
+    model: { getLinksFrom: (key: Node['key']) => ReadonlyArray<{ to: Node['key'] }> },
+  ): boolean {
+    const visited = new Set<Node['key']>();
+    const stack: Node['key'][] = [to];
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+      if (current === undefined) continue;
+      if (current === from) return true;
+      if (visited.has(current)) continue;
+      visited.add(current);
+
+      for (const link of model.getLinksFrom(current)) {
+        stack.push(link.to);
+      }
+    }
+    return false;
   }
 
   private getNearestPortName(node: Node, point: { x: number; y: number }): string | undefined {

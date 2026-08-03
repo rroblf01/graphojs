@@ -27,6 +27,7 @@ import { AnimationManager } from '../animation/AnimationManager.ts';
 import { CommandHandler } from '../command/CommandHandler.ts';
 import { VirtualizationManager } from '../spatial/VirtualizationManager.ts';
 import { PartPool } from '../spatial/PartPool.ts';
+import { QuadTree } from '../spatial/QuadTree.ts';
 import { DiagramEvents, type DiagramEvent, type DiagramEventType } from './DiagramEvents.ts';
 import { PNGExporter } from '../export/PNGExporter.ts';
 import { LayerCache } from '../render/LayerCache.ts';
@@ -90,6 +91,8 @@ export class Diagram {
   private events: DiagramEvents = new DiagramEvents();
   private layerCache: LayerCache | null = null;
   private layerCacheEnabled = false;
+  private hitIndex: QuadTree<Part> | null = null;
+  private hitIndexDirty = true;
   private canvasListeners: Array<
     [string, EventListenerOrEventListenerObject, (AddEventListenerOptions | boolean)?]
   > = [];
@@ -593,6 +596,8 @@ export class Diagram {
         }
       }
     }
+
+    this.markHitIndexDirty();
   }
 
   /**
@@ -677,6 +682,7 @@ export class Diagram {
     this.parts.set(key, node);
     this.nodes.set(key, node);
     this.fireDiagramEvent('PartAdded', node);
+    this.markHitIndexDirty();
     return node;
   }
 
@@ -693,6 +699,7 @@ export class Diagram {
     this.parts.set(key, group);
     this.groups.set(key, group);
     this.fireDiagramEvent('PartAdded', group);
+    this.markHitIndexDirty();
     return group;
   }
 
@@ -705,10 +712,14 @@ export class Diagram {
     this.parts.set(linkKey as NodeKey, link);
     this.links.set(linkKey as NodeKey, link);
     this.fireDiagramEvent('PartAdded', link);
+    this.markHitIndexDirty();
     return link;
   }
 
   private updateNodeFromData(node: Node, nodeData: NodeData): void {
+    // Update spatial index incrementally if built
+    this.hitIndex?.remove(node);
+
     const { x, y, width, height } = this.nodeDataBounds(nodeData);
     node.bounds = new RectClass(x, y, width, height);
     node.label = (nodeData.label as string) ?? node.label;
@@ -729,6 +740,7 @@ export class Diagram {
     if (node.bindings.length > 0) {
       node.applyBindings(nodeData);
     }
+    this.hitIndex?.insertWithBounds(node.bounds, node);
     this.fireDiagramEvent('PartMoved', node, { x, y });
   }
 
@@ -740,6 +752,7 @@ export class Diagram {
   }
 
   private updateLinkFromData(link: Link, linkData: LinkData): void {
+    this.hitIndex?.remove(link);
     const routing = linkData.routing;
     if (routing === 'orthogonal' || routing === 'curved') {
       link.routing = routing;
@@ -793,6 +806,8 @@ export class Diagram {
         parentGroup.add(link);
       }
     }
+
+    this.hitIndex?.insertWithBounds(link.bounds, link);
   }
 
   private syncGroupMembers(group: Group): void {
@@ -819,6 +834,7 @@ export class Diagram {
     this.parts.delete(key);
     this.selectedParts.delete(key);
     this.fireDiagramEvent('PartRemoved', part);
+    this.markHitIndexDirty();
   }
 
   private nodeDataBounds(nodeData: NodeData): {
@@ -837,6 +853,25 @@ export class Diagram {
 
   /** Find a part at the given diagram coordinates. */
   findPartAt(x: number, y: number): Node | Link | Group | null {
+    // Use spatial index for hit testing when there are many parts
+    if (this.parts.size >= 50) {
+      this.ensureHitIndex();
+      if (this.hitIndex) {
+        const candidates = this.hitIndex.queryRegion(new RectClass(x - 1, y - 1, 2, 2));
+        // Nodes first (on top), then links, then groups
+        for (const part of candidates) {
+          if (part instanceof Node && part.containsPoint({ x, y })) return part;
+        }
+        for (const part of candidates) {
+          if (part instanceof Link && part.containsPoint({ x, y })) return part;
+        }
+        for (const part of candidates) {
+          if (part instanceof Group && part.containsPoint({ x, y })) return part;
+        }
+      }
+    }
+
+    // Fallback: linear scan (accurate for links/groups crossing the point)
     // Check nodes first (on top)
     for (const [, node] of this.nodes) {
       if (node.containsPoint({ x, y })) {
@@ -859,6 +894,38 @@ export class Diagram {
     }
 
     return null;
+  }
+
+  /** Ensure the spatial hit index is built and up to date. */
+  private ensureHitIndex(): void {
+    if (!this.hitIndexDirty) return;
+
+    // Compute world bounds
+    let minX = 0;
+    let minY = 0;
+    let maxX = 1000;
+    let maxY = 1000;
+    if (this.parts.size > 0) {
+      for (const [, part] of this.parts) {
+        minX = Math.min(minX, part.bounds.x);
+        minY = Math.min(minY, part.bounds.y);
+        maxX = Math.max(maxX, part.bounds.right);
+        maxY = Math.max(maxY, part.bounds.bottom);
+      }
+    }
+
+    this.hitIndex = new QuadTree<Part>(
+      new RectClass(minX, minY, maxX - minX || 100, maxY - minY || 100),
+    );
+    for (const [, part] of this.parts) {
+      this.hitIndex.insertWithBounds(part.bounds, part);
+    }
+    this.hitIndexDirty = false;
+  }
+
+  /** Mark the spatial hit index as stale (called when parts change). */
+  private markHitIndexDirty(): void {
+    this.hitIndexDirty = true;
   }
 
   /** Get a part by key. */

@@ -746,6 +746,7 @@ export class Diagram {
     node.fill = (nodeData.fill as string) ?? node.fill;
     node.stroke = (nodeData.stroke as string) ?? node.stroke;
     node.angle = (nodeData.angle as number) ?? node.angle;
+    node.zOrder = (nodeData.zOrder as number) ?? node.zOrder;
 
     // Add to parent group if specified
     const groupKey = nodeData.group;
@@ -1338,8 +1339,12 @@ export class Diagram {
       if (layer.name === LayerNames.Grid) continue;
       if (layer.partCount === 0) continue;
 
-      ctx.save();
-      ctx.globalAlpha = layer.opacity;
+      // Skip save/restore when the layer has full opacity (common case)
+      const layerAlphaApplied = layer.opacity < 1;
+      if (layerAlphaApplied) {
+        ctx.save();
+        ctx.globalAlpha = layer.opacity;
+      }
 
       // Use cached layer rendering when enabled and the layer is cacheable
       if (this.layerCacheEnabled && this.layerCache) {
@@ -1348,7 +1353,7 @@ export class Diagram {
           const cached = this.layerCache.getLayer(layer);
           if (cached) {
             ctx.drawImage(cached.canvas, cached.x, cached.y, cached.width, cached.height);
-            ctx.restore();
+            if (layerAlphaApplied) ctx.restore();
             continue;
           }
         } else {
@@ -1359,8 +1364,18 @@ export class Diagram {
       const visibleParts = layer
         .getVisibleParts()
         .filter((part) => culledParts.size === 0 || culledParts.has(part));
-      // Render in z-order (ascending: lower zOrder first)
-      visibleParts.sort((a, b) => a.zOrder - b.zOrder);
+      // Render in z-order (ascending: lower zOrder first); skip sorting
+      // when no explicit z-order is in use (common case, avoids O(n log n))
+      let needsSort = false;
+      for (const part of visibleParts) {
+        if (part.zOrder !== 0) {
+          needsSort = true;
+          break;
+        }
+      }
+      if (needsSort) {
+        visibleParts.sort((a, b) => a.zOrder - b.zOrder);
+      }
 
       for (const part of visibleParts) {
         if (part instanceof Group) {
@@ -1372,7 +1387,7 @@ export class Diagram {
         }
       }
 
-      ctx.restore();
+      if (layerAlphaApplied) ctx.restore();
     }
 
     // Render temporary link preview (on top of everything)

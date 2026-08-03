@@ -43,6 +43,8 @@ export { Layer, LayerNames, LayerDefaults, createDefaultLayers } from './layer/L
 export { SVGExporter, createSVGExporter, exportToSVG } from './export/SVGExporter.ts';
 export { PNGExporter, createPNGExporter, exportToPNG } from './export/PNGExporter.ts';
 export type { ImageExportOptions } from './export/PNGExporter.ts';
+export { printDiagram } from './export/PrintExporter.ts';
+export type { PrintOptions } from './export/PrintExporter.ts';
 export {
   Palette,
   createDefaultPalette,

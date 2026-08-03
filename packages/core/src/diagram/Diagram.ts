@@ -31,6 +31,7 @@ import { PartPool } from '../spatial/PartPool.ts';
 import { QuadTree } from '../spatial/QuadTree.ts';
 import { DiagramEvents, type DiagramEvent, type DiagramEventType } from './DiagramEvents.ts';
 import { PNGExporter } from '../export/PNGExporter.ts';
+import { printDiagram } from '../export/PrintExporter.ts';
 import { TooltipManager } from '../export/TooltipManager.ts';
 import { LayerCache } from '../render/LayerCache.ts';
 import type { Part } from '../parts/Part.ts';
@@ -1378,6 +1379,20 @@ export class Diagram {
     scale?: number;
   }): HTMLCanvasElement {
     return new PNGExporter(options).makeCanvas(this);
+  }
+
+  /**
+   * Print the diagram by rendering it to an image and opening the
+   * browser's print dialog.
+   */
+  print(options?: {
+    title?: string;
+    background?: string;
+    padding?: number;
+    scale?: number;
+    fitToPage?: boolean;
+  }): void {
+    printDiagram(this, options);
   }
 
   /** Get the current viewport. */

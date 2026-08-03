@@ -112,6 +112,11 @@ export {
 } from './animation/Easing.ts';
 export type { EasingFunction, EasingName } from './animation/Easing.ts';
 
+// Spatial Indexing / Virtualization
+export { QuadTree } from './spatial/QuadTree.ts';
+export { PartPool } from './spatial/PartPool.ts';
+export { VirtualizationManager } from './spatial/VirtualizationManager.ts';
+
 // Shapes
 export type { ShapeType, ShapeDefinition } from './shapes/ShapeTypes.ts';
 export {

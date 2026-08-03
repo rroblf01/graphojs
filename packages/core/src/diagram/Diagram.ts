@@ -21,6 +21,9 @@ import { UndoManager } from '../undo/UndoManager.ts';
 import type { Command } from '../undo/Command.ts';
 import { AnimationManager } from '../animation/AnimationManager.ts';
 import { CommandHandler } from '../command/CommandHandler.ts';
+import { VirtualizationManager } from '../spatial/VirtualizationManager.ts';
+import { PartPool } from '../spatial/PartPool.ts';
+import type { Part } from '../parts/Part.ts';
 
 export interface DiagramOptions {
   /** The container element for the diagram. */
@@ -71,6 +74,8 @@ export class Diagram {
   private contextMenu: ContextMenu | null = null;
   private animationManager: AnimationManager = new AnimationManager();
   private commandHandler: CommandHandler;
+  private virtualization: VirtualizationManager | null = null;
+  private partPool: PartPool = new PartPool();
 
   constructor(options: DiagramOptions) {
     this.container = options.div;
@@ -148,6 +153,60 @@ export class Diagram {
   /** Get the command handler. */
   getCommandHandler(): CommandHandler {
     return this.commandHandler;
+  }
+
+  /** Enable virtualization (viewport culling) with a world bounds. */
+  enableVirtualization(bounds: Rect): void {
+    this.virtualization = new VirtualizationManager(bounds);
+    this.virtualization.isEnabled = true;
+    this.rebuildSpatialIndex();
+    this.invalidate();
+  }
+
+  /** Disable virtualization. */
+  disableVirtualization(): void {
+    this.virtualization = null;
+    this.invalidate();
+  }
+
+  /** Check whether virtualization is enabled. */
+  isVirtualizationEnabled(): boolean {
+    return this.virtualization?.isEnabled ?? false;
+  }
+
+  /** Get the virtualization manager, or null if disabled. */
+  getVirtualizationManager(): VirtualizationManager | null {
+    return this.virtualization;
+  }
+
+  /** Get the part pool. */
+  getPartPool(): PartPool {
+    return this.partPool;
+  }
+
+  /** Rebuild the spatial index from current parts. */
+  private rebuildSpatialIndex(): void {
+    if (!this.virtualization) return;
+
+    let minX = 0;
+    let minY = 0;
+    let maxX = 1000;
+    let maxY = 1000;
+    if (this.nodes.size > 0) {
+      for (const [, node] of this.nodes) {
+        minX = Math.min(minX, node.bounds.x);
+        minY = Math.min(minY, node.bounds.y);
+        maxX = Math.max(maxX, node.bounds.right);
+        maxY = Math.max(maxY, node.bounds.bottom);
+      }
+    }
+    const world = new RectClass(minX, minY, maxX - minX, maxY - minY);
+    const parts: (Node | Link | Group)[] = [
+      ...this.nodes.values(),
+      ...this.links.values(),
+      ...this.groups.values(),
+    ];
+    this.virtualization.rebuild(parts, world);
   }
 
   /** Execute an undoable command. */
@@ -572,6 +631,22 @@ export class Diagram {
       this.renderer.renderGrid(viewport, this.gridSize);
     }
 
+    // Cull parts if virtualization is enabled
+    const culledParts = new Set<Part>();
+    if (this.virtualization?.isEnabled) {
+      const viewportRect = VirtualizationManager.createViewport(
+        this.offsetX,
+        this.offsetY,
+        width / this.scale,
+        height / this.scale,
+        100,
+      );
+      const visible = this.virtualization.cull(viewportRect);
+      for (const part of visible) {
+        culledParts.add(part);
+      }
+    }
+
     // Render parts in layer order (lowest z-order first)
     for (const layer of this.layers) {
       if (layer.name === LayerNames.Grid) continue;
@@ -581,6 +656,9 @@ export class Diagram {
       ctx.globalAlpha = layer.opacity;
 
       for (const part of layer.getVisibleParts()) {
+        // Skip parts outside the viewport when virtualization is enabled
+        if (culledParts.size > 0 && !culledParts.has(part)) continue;
+
         if (part instanceof Group) {
           this.renderer.renderGroup(part);
         } else if (part instanceof Link) {

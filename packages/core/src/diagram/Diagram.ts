@@ -19,6 +19,7 @@ import { ToolManager } from '../tool/ToolManager.ts';
 import { ZoomingTool } from '../tool/ZoomingTool.ts';
 import { UndoManager } from '../undo/UndoManager.ts';
 import type { Command } from '../undo/Command.ts';
+import { AnimationManager } from '../animation/AnimationManager.ts';
 
 export interface DiagramOptions {
   /** The container element for the diagram. */
@@ -67,6 +68,7 @@ export class Diagram {
   private undoManager: UndoManager;
   private layers: Layer[];
   private contextMenu: ContextMenu | null = null;
+  private animationManager: AnimationManager = new AnimationManager();
 
   constructor(options: DiagramOptions) {
     this.container = options.div;
@@ -131,6 +133,11 @@ export class Diagram {
   /** Get the undo manager. */
   getUndoManager(): UndoManager {
     return this.undoManager;
+  }
+
+  /** Get the animation manager. */
+  getAnimationManager(): AnimationManager {
+    return this.animationManager;
   }
 
   /** Execute an undoable command. */

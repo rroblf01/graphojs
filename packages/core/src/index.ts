@@ -92,6 +92,22 @@ export {
   MoveNodeCommand,
 } from './undo/commands.ts';
 
+// Animations
+export { Animation } from './animation/Animation.ts';
+export type { AnimationOptions } from './animation/Animation.ts';
+export { AnimationManager, tween } from './animation/AnimationManager.ts';
+export {
+  linear,
+  easeInQuad,
+  easeOutQuad,
+  easeInOutQuad,
+  easeInCubic,
+  easeOutCubic,
+  easeInOutCubic,
+  getEasing,
+} from './animation/Easing.ts';
+export type { EasingFunction, EasingName } from './animation/Easing.ts';
+
 // Shapes
 export type { ShapeType, ShapeDefinition } from './shapes/ShapeTypes.ts';
 export {

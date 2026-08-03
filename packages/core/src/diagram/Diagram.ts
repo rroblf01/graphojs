@@ -31,6 +31,7 @@ import { PartPool } from '../spatial/PartPool.ts';
 import { QuadTree } from '../spatial/QuadTree.ts';
 import { DiagramEvents, type DiagramEvent, type DiagramEventType } from './DiagramEvents.ts';
 import { PNGExporter } from '../export/PNGExporter.ts';
+import { TooltipManager } from '../export/TooltipManager.ts';
 import { LayerCache } from '../render/LayerCache.ts';
 import type { Part } from '../parts/Part.ts';
 
@@ -96,6 +97,7 @@ export class Diagram {
   private events: DiagramEvents = new DiagramEvents();
   private layerCache: LayerCache | null = null;
   private layerCacheEnabled = false;
+  private tooltipManager: TooltipManager | null = null;
   private hitIndex: QuadTree<Part> | null = null;
   private hitIndexDirty = true;
   private lodLabelThreshold = 0.3;
@@ -376,9 +378,15 @@ export class Diagram {
       passive: false,
     });
     this.addCanvasListener('mousedown', (e) => this.toolManager.handleMouseDown(e as MouseEvent));
-    this.addCanvasListener('mousemove', (e) => this.toolManager.handleMouseMove(e as MouseEvent));
+    this.addCanvasListener('mousemove', (e) => {
+      this.toolManager.handleMouseMove(e as MouseEvent);
+      this.tooltipManager?.handleMouseMove(e as MouseEvent);
+    });
     this.addCanvasListener('mouseup', (e) => this.toolManager.handleMouseUp(e as MouseEvent));
-    this.addCanvasListener('mouseleave', (e) => this.toolManager.handleMouseUp(e as MouseEvent));
+    this.addCanvasListener('mouseleave', (e) => {
+      this.toolManager.handleMouseUp(e as MouseEvent);
+      this.tooltipManager?.handleMouseLeave();
+    });
     this.addCanvasListener('click', (e) => this.handleCanvasClick(e as MouseEvent));
     this.addCanvasListener('dblclick', (e) => this.handleDoubleClick(e as MouseEvent));
     this.addCanvasListener('contextmenu', (e) => this.handleContextMenu(e as MouseEvent));
@@ -1115,6 +1123,22 @@ export class Diagram {
   /** Check whether layer caching is enabled. */
   isLayerCachingEnabled(): boolean {
     return this.layerCacheEnabled;
+  }
+
+  /** Enable hover tooltips for parts with a tooltip text. */
+  enableTooltips(options?: { delay?: number; offset?: number; style?: string }): void {
+    this.tooltipManager = new TooltipManager(this, options);
+  }
+
+  /** Disable hover tooltips. */
+  disableTooltips(): void {
+    this.tooltipManager?.destroy();
+    this.tooltipManager = null;
+  }
+
+  /** Get the tooltip manager, or null if disabled. */
+  getTooltipManager(): TooltipManager | null {
+    return this.tooltipManager;
   }
 
   /** Enable level-of-detail rendering (hides labels when zoomed out). */

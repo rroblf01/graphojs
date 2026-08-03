@@ -22,6 +22,8 @@ export abstract class Part {
   private _containingGroup: Group | null = null;
   private _bindings: Binding[] = [];
   private _layer: Layer | null = null;
+  private _tooltip: string = '';
+  private _tooltipVisible = false;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -139,6 +141,24 @@ export abstract class Part {
     if (value) {
       value.add(this);
     }
+  }
+
+  /** The tooltip text shown when hovering over this part. */
+  get tooltip(): string {
+    return this._tooltip;
+  }
+
+  set tooltip(value: string) {
+    this._tooltip = value;
+  }
+
+  /** Whether the tooltip is currently visible. */
+  get tooltipVisible(): boolean {
+    return this._tooltipVisible;
+  }
+
+  set tooltipVisible(value: boolean) {
+    this._tooltipVisible = value;
   }
 
   /** Get all bindings on this part. */

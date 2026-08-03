@@ -53,6 +53,8 @@ export {
 export { Overview, createOverview } from './export/Overview.ts';
 export { ContextMenu, createDefaultContextMenu } from './export/ContextMenu.ts';
 export type { ContextMenuItem, ContextMenuOptions } from './export/ContextMenu.ts';
+export { TooltipManager, createTooltipManager } from './export/TooltipManager.ts';
+export type { TooltipOptions } from './export/TooltipManager.ts';
 
 // Render
 export type { Renderer } from './render/Renderer.ts';

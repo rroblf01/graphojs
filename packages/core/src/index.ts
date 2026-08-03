@@ -27,6 +27,9 @@ export { Group } from './parts/Group.ts';
 export type { NodeShape } from './parts/Node.ts';
 export type { LinkRouting } from './parts/Link.ts';
 
+// Data Binding
+export { Binding, bind } from './binding/Binding.ts';
+
 // Render
 export type { Renderer } from './render/Renderer.ts';
 export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';

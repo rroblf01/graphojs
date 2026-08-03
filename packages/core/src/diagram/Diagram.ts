@@ -272,6 +272,16 @@ export class Diagram {
         }
       }
     }
+
+    // Apply bindings to all parts
+    for (const [key, part] of this.parts) {
+      if (part.bindings.length > 0) {
+        const nodeData = this.model.getNodeData(key);
+        if (nodeData) {
+          part.applyBindings(nodeData);
+        }
+      }
+    }
   }
 
   /** Find a part at the given diagram coordinates. */

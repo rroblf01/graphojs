@@ -1,5 +1,7 @@
 import type { Rect } from '../geometry/Rect.ts';
-import type { NodeKey } from '../model/Model.ts';
+import type { NodeKey, NodeData } from '../model/Model.ts';
+import type { Binding } from '../binding/Binding.ts';
+import type { Group } from './Group.ts';
 
 /**
  * Base class for all visual parts in a diagram.
@@ -15,7 +17,8 @@ export abstract class Part {
   private _stroke = '#333333';
   private _strokeWidth = 1;
   private _zOrder = 0;
-  private _containingGroup: Part | null = null;
+  private _containingGroup: Group | null = null;
+  private _bindings: Binding[] = [];
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -104,8 +107,59 @@ export abstract class Part {
   }
 
   /** Set the containing group. */
-  set containingGroup(value: Part | null) {
+  set containingGroup(value: Group | null) {
     this._containingGroup = value;
+  }
+
+  /** Get all bindings on this part. */
+  get bindings(): readonly Binding[] {
+    return this._bindings;
+  }
+
+  /** Add a binding to this part. */
+  addBinding(binding: Binding): this {
+    this._bindings.push(binding);
+    return this;
+  }
+
+  /** Remove a binding from this part. */
+  removeBinding(binding: Binding): boolean {
+    const index = this._bindings.indexOf(binding);
+    if (index === -1) return false;
+    this._bindings.splice(index, 1);
+    return true;
+  }
+
+  /** Remove all bindings from this part. */
+  clearBindings(): void {
+    this._bindings.length = 0;
+  }
+
+  /** Find a binding targeting a specific property. */
+  findBinding(targetProperty: string): Binding | undefined {
+    return this._bindings.find((b) => b.targetProperty === targetProperty);
+  }
+
+  /** Apply all bindings from model data to this part. Returns the number of properties set. */
+  applyBindings(nodeData: NodeData): number {
+    let count = 0;
+    for (const binding of this._bindings) {
+      if (binding.applyToPart(this, nodeData)) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  /** Apply TwoWay bindings: write Part properties back to model data. */
+  applyTwoWayBindings(nodeData: NodeData): number {
+    let count = 0;
+    for (const binding of this._bindings) {
+      if (binding.applyToModel(this, nodeData)) {
+        count++;
+      }
+    }
+    return count;
   }
 
   /** Check if a point is inside this part. */

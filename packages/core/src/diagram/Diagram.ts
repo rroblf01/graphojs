@@ -28,6 +28,7 @@ import { CommandHandler } from '../command/CommandHandler.ts';
 import { VirtualizationManager } from '../spatial/VirtualizationManager.ts';
 import { PartPool } from '../spatial/PartPool.ts';
 import { DiagramEvents, type DiagramEvent, type DiagramEventType } from './DiagramEvents.ts';
+import { PNGExporter } from '../export/PNGExporter.ts';
 import type { Part } from '../parts/Part.ts';
 
 export interface DiagramOptions {
@@ -849,6 +850,17 @@ export class Diagram {
   /** Get the renderer. */
   getRenderer(): Renderer {
     return this.renderer;
+  }
+
+  /**
+   * Generate a raster image (canvas) of the diagram content.
+   */
+  makeImage(options?: {
+    background?: string;
+    padding?: number;
+    scale?: number;
+  }): HTMLCanvasElement {
+    return new PNGExporter(options).makeCanvas(this);
   }
 
   /** Get the current viewport. */

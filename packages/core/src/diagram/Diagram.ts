@@ -29,6 +29,7 @@ import { VirtualizationManager } from '../spatial/VirtualizationManager.ts';
 import { PartPool } from '../spatial/PartPool.ts';
 import { DiagramEvents, type DiagramEvent, type DiagramEventType } from './DiagramEvents.ts';
 import { PNGExporter } from '../export/PNGExporter.ts';
+import { LayerCache } from '../render/LayerCache.ts';
 import type { Part } from '../parts/Part.ts';
 
 export interface DiagramOptions {
@@ -87,6 +88,8 @@ export class Diagram {
   private keyDownListener: ((event: KeyboardEvent) => void) | null = null;
   private tempLink: { from: { x: number; y: number }; to: { x: number; y: number } } | null = null;
   private events: DiagramEvents = new DiagramEvents();
+  private layerCache: LayerCache | null = null;
+  private layerCacheEnabled = false;
   private canvasListeners: Array<
     [string, EventListenerOrEventListenerObject, (AddEventListenerOptions | boolean)?]
   > = [];
@@ -406,10 +409,20 @@ export class Diagram {
   private handleModelChange(event: ChangedEvent): void {
     this.syncPartsFromModel();
     this.invalidate();
+    // Layer cache must be refreshed on model changes
+    this.layerCache?.markAllDirty();
     this.fireDiagramEvent('ModelChanged', null, {
       changeType: event.type,
       propertyName: event.propertyName,
     });
+  }
+
+  /** Check whether a layer contains any selected parts. */
+  private layerHasSelectedParts(layer: Layer): boolean {
+    for (const part of layer.getVisibleParts()) {
+      if (part.isSelected) return true;
+    }
+    return false;
   }
 
   /** Sync visual parts from the model. */
@@ -734,6 +747,25 @@ export class Diagram {
     this.isDirty = true;
   }
 
+  /** Enable layer caching (renders static layers to offscreen canvases). */
+  enableLayerCaching(scale?: number): void {
+    this.layerCacheEnabled = true;
+    this.layerCache = new LayerCache(scale ?? (globalThis.devicePixelRatio || 1));
+    this.invalidate();
+  }
+
+  /** Disable layer caching. */
+  disableLayerCaching(): void {
+    this.layerCacheEnabled = false;
+    this.layerCache = null;
+    this.invalidate();
+  }
+
+  /** Check whether layer caching is enabled. */
+  isLayerCachingEnabled(): boolean {
+    return this.layerCacheEnabled;
+  }
+
   /** Start the render loop. */
   private startRenderLoop(): void {
     const render = () => {
@@ -809,6 +841,21 @@ export class Diagram {
       ctx.save();
       ctx.globalAlpha = layer.opacity;
 
+      // Use cached layer rendering when enabled and the layer is cacheable
+      if (this.layerCacheEnabled && this.layerCache) {
+        const cacheable = !this.layerHasSelectedParts(layer) && this.tempLink === null;
+        if (cacheable) {
+          const cached = this.layerCache.getLayer(layer);
+          if (cached) {
+            ctx.drawImage(cached.canvas, cached.x, cached.y, cached.width, cached.height);
+            ctx.restore();
+            continue;
+          }
+        } else {
+          this.layerCache.markDirty(layer.name);
+        }
+      }
+
       for (const part of layer.getVisibleParts()) {
         // Skip parts outside the viewport when virtualization is enabled
         if (culledParts.size > 0 && !culledParts.has(part)) continue;
@@ -881,6 +928,8 @@ export class Diagram {
     this.offsetY = y;
     if (scale !== undefined) {
       this.scale = Math.max(this.minScale, Math.min(this.maxScale, scale));
+      // Layer cache must be re-rendered at the new scale
+      this.layerCache?.setScale(this.scale * (globalThis.devicePixelRatio || 1));
     }
     this.invalidate();
     this.fireDiagramEvent('ViewportChanged', null, { x, y, scale: this.scale });
@@ -964,6 +1013,7 @@ export class Diagram {
     this.selectedParts.clear();
     this.virtualization?.clear();
     this.partPool.clear();
+    this.layerCache = null;
 
     // Remove canvas from DOM
     this.container.removeChild(this.canvas);

@@ -91,6 +91,8 @@ export { TreeLayout } from './layout/TreeLayout.ts';
 export type { TreeLayoutOptions } from './layout/TreeLayout.ts';
 export { CircularLayout } from './layout/CircularLayout.ts';
 export type { CircularLayoutOptions } from './layout/CircularLayout.ts';
+export { LayeredDigraphLayout } from './layout/LayeredDigraphLayout.ts';
+export type { LayeredDigraphLayoutOptions } from './layout/LayeredDigraphLayout.ts';
 
 // Serialization
 export { Serializer } from './serialization/Serializer.ts';

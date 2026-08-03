@@ -3,6 +3,7 @@ import { LayerNames } from '../layer/Layer.ts';
 import { Group } from '../parts/Group.ts';
 import { Link } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
+import type { Part } from '../parts/Part.ts';
 
 export interface ImageExportOptions {
   /** Background color. Default: '#ffffff' */
@@ -104,7 +105,7 @@ export class PNGExporter {
     return canvas;
   }
 
-  private renderPart(ctx: CanvasRenderingContext2D, part: Link | Node | Group): void {
+  private renderPart(ctx: CanvasRenderingContext2D, part: Part): void {
     ctx.save();
     ctx.globalAlpha = part.opacity;
 

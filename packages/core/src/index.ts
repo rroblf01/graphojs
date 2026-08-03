@@ -9,6 +9,8 @@ export { Margin } from './geometry/Margin.ts';
 // Model
 export { Model } from './model/Model.ts';
 export { GraphLinksModel } from './model/GraphLinksModel.ts';
+export { TreeModel } from './model/TreeModel.ts';
+export type { TreeModelJSON } from './model/TreeModel.ts';
 export type {
   NodeKey,
   NodeData,

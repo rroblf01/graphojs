@@ -83,6 +83,7 @@ export type { DiagramJSON } from './serialization/Serializer.ts';
 export type { Command } from './undo/Command.ts';
 export { UndoManager } from './undo/UndoManager.ts';
 export type { UndoManagerEvent, UndoManagerEventHandler } from './undo/UndoManager.ts';
+export { Transaction, createTransaction } from './undo/Transaction.ts';
 export {
   AddNodeCommand,
   RemoveNodeCommand,

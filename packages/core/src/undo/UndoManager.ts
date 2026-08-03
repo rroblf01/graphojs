@@ -1,4 +1,5 @@
 import type { Command } from './Command.ts';
+import { Transaction } from './Transaction.ts';
 
 /**
  * Event fired when undo/redo state changes.
@@ -25,6 +26,7 @@ export class UndoManager {
   private maxHistorySize: number;
   private isExecuting = false;
   private listeners: UndoManagerEventHandler[] = [];
+  private transactionStack: Transaction[] = [];
 
   constructor(maxHistorySize = 100) {
     this.maxHistorySize = maxHistorySize;
@@ -33,6 +35,14 @@ export class UndoManager {
   /** Execute a command and add it to the undo stack. */
   execute(command: Command): void {
     if (this.isExecuting) return;
+
+    // If inside a transaction, add to the current transaction
+    const currentTransaction = this.transactionStack[this.transactionStack.length - 1];
+    if (currentTransaction) {
+      currentTransaction.add(command);
+      command.execute();
+      return;
+    }
 
     this.isExecuting = true;
     try {
@@ -49,6 +59,69 @@ export class UndoManager {
     } finally {
       this.isExecuting = false;
     }
+  }
+
+  /** Begin a transaction. Commands executed afterward are grouped into one undo unit. */
+  beginTransaction(name = 'Transaction'): void {
+    this.transactionStack.push(new Transaction(name));
+  }
+
+  /**
+   * Commit the current transaction as a single undoable command.
+   * Returns the committed transaction, or null if no transaction is open.
+   */
+  commitTransaction(): Transaction | null {
+    const transaction = this.transactionStack.pop();
+    if (!transaction) return null;
+
+    // If nested, add this transaction to the parent instead of pushing to history
+    const parent = this.transactionStack[this.transactionStack.length - 1];
+    if (parent) {
+      if (!transaction.isEmpty) {
+        parent.add(transaction);
+      }
+      return transaction;
+    }
+
+    if (!transaction.isEmpty) {
+      this.isExecuting = true;
+      try {
+        this.undoStack.push(transaction);
+        this.redoStack = [];
+        if (this.undoStack.length > this.maxHistorySize) {
+          this.undoStack.shift();
+        }
+        this.emit();
+      } finally {
+        this.isExecuting = false;
+      }
+    }
+    return transaction;
+  }
+
+  /**
+   * Roll back (cancel) the current transaction, undoing its commands.
+   * Returns true if a transaction was rolled back.
+   */
+  rollbackTransaction(): boolean {
+    const transaction = this.transactionStack.pop();
+    if (!transaction) return false;
+
+    if (!transaction.isEmpty) {
+      transaction.undo();
+    }
+    this.emit();
+    return true;
+  }
+
+  /** Check whether a transaction is currently open. */
+  isTransactionOpen(): boolean {
+    return this.transactionStack.length > 0;
+  }
+
+  /** Get the depth of open transactions. */
+  getTransactionDepth(): number {
+    return this.transactionStack.length;
   }
 
   /** Undo the last command. */

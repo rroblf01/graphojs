@@ -140,6 +140,12 @@ export { VirtualizationManager } from './spatial/VirtualizationManager.ts';
 
 // Rendering Optimizations
 export { LayerCache, createLayerCache } from './render/LayerCache.ts';
+export {
+  PathCache,
+  TextMeasureCache,
+  createPathCache,
+  createTextMeasureCache,
+} from './render/RenderCache.ts';
 
 // Panels
 export { GraphObject } from './panel/GraphObject.ts';

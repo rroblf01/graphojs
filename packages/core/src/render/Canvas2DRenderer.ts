@@ -5,6 +5,7 @@ import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
 import type { Renderer } from './Renderer.ts';
 import type { Panel } from '../panel/Panel.ts';
+import { PathCache, TextMeasureCache } from './RenderCache.ts';
 
 /**
  * Canvas 2D renderer for diagram parts.
@@ -18,6 +19,8 @@ export class Canvas2DRenderer implements Renderer {
   private devicePixelRatio = 1;
   private dirtyRects: RectClass[] = [];
   private useDirtyRects = false;
+  private pathCache: PathCache = new PathCache();
+  private textMeasureCache: TextMeasureCache = new TextMeasureCache();
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -49,6 +52,16 @@ export class Canvas2DRenderer implements Renderer {
   /** Get the rendering context. */
   getContext(): CanvasRenderingContext2D {
     return this.ctx;
+  }
+
+  /** Get the path cache. */
+  getPathCache(): PathCache {
+    return this.pathCache;
+  }
+
+  /** Get the text measure cache. */
+  getTextMeasureCache(): TextMeasureCache {
+    return this.textMeasureCache;
   }
 
   clear(): void {

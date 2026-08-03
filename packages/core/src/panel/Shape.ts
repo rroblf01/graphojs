@@ -2,7 +2,11 @@ import type { Size } from '../geometry/Size.ts';
 import { Size as SizeClass } from '../geometry/Size.ts';
 import type { ShapeType } from '../shapes/ShapeTypes.ts';
 import { ShapeRenderer } from '../shapes/ShapeRenderer.ts';
+import { PathCache } from '../render/RenderCache.ts';
 import { GraphObject } from './GraphObject.ts';
+
+/** Shared path cache for all panel shapes (avoids recomputing complex paths). */
+const sharedPathCache = new PathCache();
 
 /**
  * A geometric shape element in a panel.
@@ -118,11 +122,18 @@ export class Shape extends GraphObject {
       ctx.fill();
       ctx.stroke();
     } else {
-      // Use ShapeRenderer for complex shapes
-      const renderer = new ShapeRenderer(ctx);
-      renderer.renderShape(this._shape, x, y, width, height);
-      ctx.fill();
-      ctx.stroke();
+      // Use cached Path2D for complex shapes when available
+      const path = sharedPathCache.getPath(this._shape, width, height);
+      if (path) {
+        ctx.translate(x, y);
+        ctx.fill(path);
+        ctx.stroke(path);
+      } else {
+        const renderer = new ShapeRenderer(ctx);
+        renderer.renderShape(this._shape, x, y, width, height);
+        ctx.fill();
+        ctx.stroke();
+      }
     }
 
     ctx.restore();

@@ -41,3 +41,13 @@ export { DraggingTool } from './tool/DraggingTool.ts';
 export { ClickSelectingTool } from './tool/ClickSelectingTool.ts';
 export { PanningTool } from './tool/PanningTool.ts';
 export { ZoomingTool } from './tool/ZoomingTool.ts';
+
+// Layouts
+export { Layout } from './layout/Layout.ts';
+export type { LayoutOptions } from './layout/Layout.ts';
+export { ForceDirectedLayout } from './layout/ForceDirectedLayout.ts';
+export type { ForceDirectedLayoutOptions } from './layout/ForceDirectedLayout.ts';
+export { TreeLayout } from './layout/TreeLayout.ts';
+export type { TreeLayoutOptions } from './layout/TreeLayout.ts';
+export { CircularLayout } from './layout/CircularLayout.ts';
+export type { CircularLayoutOptions } from './layout/CircularLayout.ts';

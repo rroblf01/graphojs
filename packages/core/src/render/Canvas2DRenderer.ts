@@ -207,28 +207,37 @@ export class Canvas2DRenderer implements Renderer {
     this.ctx.globalAlpha = link.opacity;
     this.ctx.strokeStyle = link.stroke;
     this.ctx.lineWidth = link.strokeWidth;
+    this.ctx.lineJoin = 'round';
+    this.ctx.lineCap = 'round';
 
-    const from = link.fromPort;
-    const to = link.toPort;
+    const points = link.pathPoints.length > 0 ? link.pathPoints : [link.fromPort, link.toPort];
 
-    this.ctx.beginPath();
-    this.ctx.moveTo(from.x, from.y);
-    this.ctx.lineTo(to.x, to.y);
-    this.ctx.stroke();
+    this.strokePath(points);
 
     // Selection highlight
     if (link.isSelected) {
       this.ctx.strokeStyle = '#2196f3';
       this.ctx.lineWidth = link.strokeWidth + 2;
       this.ctx.setLineDash([4, 4]);
-      this.ctx.beginPath();
-      this.ctx.moveTo(from.x, from.y);
-      this.ctx.lineTo(to.x, to.y);
-      this.ctx.stroke();
+      this.strokePath(points);
       this.ctx.setLineDash([]);
     }
 
     this.ctx.restore();
+  }
+
+  private strokePath(points: Array<{ x: number; y: number }>): void {
+    if (points.length === 0) return;
+    const first = points[0];
+    if (!first) return;
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(first.x, first.y);
+    for (let i = 1; i < points.length; i++) {
+      const p = points[i];
+      if (p) this.ctx.lineTo(p.x, p.y);
+    }
+    this.ctx.stroke();
   }
 
   renderGroup(group: Group): void {

@@ -447,12 +447,37 @@ export class Diagram {
         this.links.set(linkKey, link);
       }
 
-      // Update link ports based on node positions
+      // Link routing / ports / spots from model data
+      const routing = linkData.routing;
+      if (routing === 'orthogonal' || routing === 'curved') {
+        link.routing = routing;
+      }
+      link.fromPortName = linkData.fromPort as string | undefined;
+      link.toPortName = linkData.toPort as string | undefined;
+
+      // Update link ports based on node positions and port connections
       const fromNode = this.nodes.get(linkData.from);
       const toNode = this.nodes.get(linkData.to);
       if (fromNode && toNode) {
-        link.fromPort = fromNode.center;
-        link.toPort = toNode.center;
+        const fromPoint = fromNode.getConnectionPoint(
+          toNode.center,
+          linkData.fromPort as string | undefined,
+        );
+        const toPoint = toNode.getConnectionPoint(
+          fromNode.center,
+          linkData.toPort as string | undefined,
+        );
+        link.fromPort = fromPoint;
+        link.toPort = toPoint;
+
+        // Compute path points based on routing
+        if (link.routing === 'orthogonal') {
+          link.setPathPoints(computeOrthogonalPath(fromPoint, toPoint));
+        } else if (link.routing === 'curved') {
+          link.setPathPoints(computeCurvedPath(fromPoint, toPoint));
+        } else {
+          link.setPathPoints([fromPoint, toPoint]);
+        }
         link.updateBounds();
       }
 
@@ -823,4 +848,48 @@ export class Diagram {
   isDestroyed(): boolean {
     return this._isDestroyed;
   }
+}
+
+/**
+ * Compute an orthogonal (Manhattan-style) path between two points.
+ * Produces a horizontal-vertical-horizontal or vertical-horizontal-vertical route.
+ */
+function computeOrthogonalPath(
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+): Array<{ x: number; y: number }> {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+
+  if (dx === 0 || dy === 0) {
+    return [from, to];
+  }
+
+  // Route horizontally first, then vertically
+  const midX = from.x + dx / 2;
+  return [from, { x: midX, y: from.y }, { x: midX, y: to.y }, to];
+}
+
+/**
+ * Compute a curved (bezier-like) path between two points.
+ * Produces a set of interpolated points along a quadratic curve.
+ */
+function computeCurvedPath(
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+): Array<{ x: number; y: number }> {
+  const dx = to.x - from.x;
+  const controlX = from.x + dx / 2;
+  const controlY = from.y;
+
+  const points: Array<{ x: number; y: number }> = [];
+  const segments = 12;
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const mt = 1 - t;
+    const x = mt * mt * from.x + 2 * mt * t * controlX + t * t * to.x;
+    const y = mt * mt * from.y + 2 * mt * t * controlY + t * t * to.y;
+    points.push({ x, y });
+  }
+  return points;
 }

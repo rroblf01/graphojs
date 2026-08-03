@@ -26,6 +26,8 @@ export { Part } from './parts/Part.ts';
 export { Node } from './parts/Node.ts';
 export { Link } from './parts/Link.ts';
 export { Group } from './parts/Group.ts';
+export { Port, Ports } from './parts/Port.ts';
+export type { PortAlignment } from './parts/Port.ts';
 export type { NodeShape } from './parts/Node.ts';
 export type { LinkRouting } from './parts/Link.ts';
 

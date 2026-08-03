@@ -2,6 +2,7 @@ import { Rect } from '../geometry/Rect.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { Part } from './Part.ts';
 import type { Panel } from '../panel/Panel.ts';
+import type { Port } from './Port.ts';
 
 export type NodeShape = 'rect' | 'ellipse' | 'roundedRect';
 
@@ -15,6 +16,7 @@ export class Node extends Part {
   private _labelFont = '12px sans-serif';
   private _cornerRadius = 0;
   private _panel: Panel | null = null;
+  private _ports: Port[] = [];
 
   /** Create a Node from position and size. */
   static fromPosAndSize(key: NodeKey, x: number, y: number, width: number, height: number): Node {
@@ -74,5 +76,99 @@ export class Node extends Part {
   /** Check whether this node uses a panel for rendering. */
   get hasPanel(): boolean {
     return this._panel !== null;
+  }
+
+  /** Get all ports on this node. */
+  get ports(): readonly Port[] {
+    return this._ports;
+  }
+
+  /** Get the number of ports. */
+  get portCount(): number {
+    return this._ports.length;
+  }
+
+  /** Add a port to this node. */
+  addPort(port: Port): this {
+    this._ports.push(port);
+    return this;
+  }
+
+  /** Remove a port by reference. */
+  removePort(port: Port): boolean {
+    const index = this._ports.indexOf(port);
+    if (index === -1) return false;
+    this._ports.splice(index, 1);
+    return true;
+  }
+
+  /** Remove all ports. */
+  clearPorts(): void {
+    this._ports = [];
+  }
+
+  /** Find a port by name. */
+  findPort(name: string): Port | undefined {
+    return this._ports.find((p) => p.name === name);
+  }
+
+  /**
+   * Compute the point of a port in diagram coordinates.
+   * If no port name is given, returns the node center.
+   */
+  getPortPoint(name?: string): { x: number; y: number } {
+    if (name !== undefined) {
+      const port = this.findPort(name);
+      if (port) {
+        return port.computePoint(
+          this.bounds.x,
+          this.bounds.y,
+          this.bounds.width,
+          this.bounds.height,
+        );
+      }
+    }
+    return this.center;
+  }
+
+  /**
+   * Get the point where a link from this node should connect,
+   * given a target direction. Uses the port if specified, otherwise
+   * computes the edge point toward the target.
+   */
+  getConnectionPoint(
+    target: { x: number; y: number },
+    portName?: string,
+  ): { x: number; y: number } {
+    if (portName !== undefined) {
+      const port = this.findPort(portName);
+      if (port) {
+        return port.computePoint(
+          this.bounds.x,
+          this.bounds.y,
+          this.bounds.width,
+          this.bounds.height,
+        );
+      }
+    }
+
+    // Compute the edge point toward the target for rectangular nodes
+    const cx = this.bounds.x + this.bounds.width / 2;
+    const cy = this.bounds.y + this.bounds.height / 2;
+    const dx = target.x - cx;
+    const dy = target.y - cy;
+
+    if (dx === 0 && dy === 0) return { x: cx, y: cy };
+
+    // Scale the direction vector to intersect the rectangle edge
+    const halfW = this.bounds.width / 2;
+    const halfH = this.bounds.height / 2;
+    const scale = Math.min(
+      Math.abs(dx) > 0 ? halfW / Math.abs(dx) : Infinity,
+      Math.abs(dy) > 0 ? halfH / Math.abs(dy) : Infinity,
+    );
+    const s = scale < Infinity ? scale : 0;
+
+    return { x: cx + dx * s, y: cy + dy * s };
   }
 }

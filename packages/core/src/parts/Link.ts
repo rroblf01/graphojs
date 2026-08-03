@@ -1,5 +1,6 @@
 import { Rect } from '../geometry/Rect.ts';
 import type { NodeKey } from '../model/Model.ts';
+import type { Spot } from '../geometry/Spot.ts';
 import { Part } from './Part.ts';
 
 export type LinkRouting = 'straight' | 'orthogonal' | 'curved';
@@ -13,6 +14,11 @@ export class Link extends Part {
   private _routing: LinkRouting = 'straight';
   private _fromPort = { x: 0, y: 0 };
   private _toPort = { x: 0, y: 0 };
+  private _fromPortName: string | undefined = undefined;
+  private _toPortName: string | undefined = undefined;
+  private _fromSpot: Spot | null = null;
+  private _toSpot: Spot | null = null;
+  private _pathPoints: Array<{ x: number; y: number }> = [];
 
   constructor(key: NodeKey, fromKey: NodeKey, toKey: NodeKey) {
     super(key, Rect.zero());
@@ -54,12 +60,113 @@ export class Link extends Part {
     this._toPort = value;
   }
 
-  /** Update the bounds based on port positions. */
+  /** The name of the source port on the from-node. */
+  get fromPortName(): string | undefined {
+    return this._fromPortName;
+  }
+
+  set fromPortName(value: string | undefined) {
+    this._fromPortName = value;
+  }
+
+  /** The name of the target port on the to-node. */
+  get toPortName(): string | undefined {
+    return this._toPortName;
+  }
+
+  set toPortName(value: string | undefined) {
+    this._toPortName = value;
+  }
+
+  /** The spot on the from-node where this link connects. */
+  get fromSpot(): Spot | null {
+    return this._fromSpot;
+  }
+
+  set fromSpot(value: Spot | null) {
+    this._fromSpot = value;
+  }
+
+  /** The spot on the to-node where this link connects. */
+  get toSpot(): Spot | null {
+    return this._toSpot;
+  }
+
+  set toSpot(value: Spot | null) {
+    this._toSpot = value;
+  }
+
+  /** The computed path points for this link. */
+  get pathPoints(): Array<{ x: number; y: number }> {
+    return this._pathPoints;
+  }
+
+  /** Set the computed path points. */
+  setPathPoints(points: Array<{ x: number; y: number }>): void {
+    this._pathPoints = points;
+  }
+
+  /** Update the bounds based on all path points. */
   updateBounds(): void {
-    const x = Math.min(this._fromPort.x, this._toPort.x);
-    const y = Math.min(this._fromPort.y, this._toPort.y);
-    const width = Math.abs(this._toPort.x - this._fromPort.x) || 1;
-    const height = Math.abs(this._toPort.y - this._fromPort.y) || 1;
-    this.bounds = new Rect(x, y, width, height);
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
+    const points = this._pathPoints.length > 0 ? this._pathPoints : [this._fromPort, this._toPort];
+
+    for (const p of points) {
+      minX = Math.min(minX, p.x);
+      minY = Math.min(minY, p.y);
+      maxX = Math.max(maxX, p.x);
+      maxY = Math.max(maxY, p.y);
+    }
+
+    if (minX === Infinity) {
+      this.bounds = Rect.zero();
+      return;
+    }
+
+    this.bounds = new Rect(minX, minY, maxX - minX || 1, maxY - minY || 1);
+  }
+
+  /** Get the center point of the link. */
+  override get center(): { x: number; y: number } {
+    return this.bounds.center;
+  }
+
+  /** Check if a point is near the link path. */
+  override containsPoint(point: { x: number; y: number }): boolean {
+    const points = this._pathPoints.length > 0 ? this._pathPoints : [this._fromPort, this._toPort];
+    const threshold = Math.max(4, this.strokeWidth);
+
+    for (let i = 0; i < points.length - 1; i++) {
+      const a = points[i];
+      const b = points[i + 1];
+      if (!a || !b) continue;
+      const dist = this.distanceToSegment(point.x, point.y, a.x, a.y, b.x, b.y);
+      if (dist <= threshold) return true;
+    }
+    return false;
+  }
+
+  private distanceToSegment(
+    px: number,
+    py: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): number {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const lenSq = dx * dx + dy * dy;
+    if (lenSq === 0) return Math.hypot(px - x1, py - y1);
+
+    let t = ((px - x1) * dx + (py - y1) * dy) / lenSq;
+    t = Math.max(0, Math.min(1, t));
+    const cx = x1 + t * dx;
+    const cy = y1 + t * dy;
+    return Math.hypot(px - cx, py - cy);
   }
 }

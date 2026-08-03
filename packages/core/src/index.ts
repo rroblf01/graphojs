@@ -33,6 +33,9 @@ export { Binding, bind } from './binding/Binding.ts';
 // Layers
 export { Layer, LayerNames, LayerDefaults, createDefaultLayers } from './layer/Layer.ts';
 
+// Export
+export { SVGExporter, createSVGExporter, exportToSVG } from './export/SVGExporter.ts';
+
 // Render
 export type { Renderer } from './render/Renderer.ts';
 export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';

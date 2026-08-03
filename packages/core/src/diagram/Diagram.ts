@@ -99,6 +99,8 @@ export class Diagram {
   private layerCache: LayerCache | null = null;
   private layerCacheEnabled = false;
   private tooltipManager: TooltipManager | null = null;
+  private backBuffer: HTMLCanvasElement | null = null;
+  private backBufferEnabled = false;
   private hitIndex: QuadTree<Part> | null = null;
   private hitIndexDirty = true;
   private lodLabelThreshold = 0.3;
@@ -1142,6 +1144,24 @@ export class Diagram {
     return this.tooltipManager;
   }
 
+  /** Enable double-buffered rendering (render offscreen then blit). */
+  enableDoubleBuffering(): void {
+    this.backBufferEnabled = true;
+    this.invalidate();
+  }
+
+  /** Disable double-buffered rendering. */
+  disableDoubleBuffering(): void {
+    this.backBufferEnabled = false;
+    this.backBuffer = null;
+    this.invalidate();
+  }
+
+  /** Check whether double-buffered rendering is enabled. */
+  isDoubleBufferingEnabled(): boolean {
+    return this.backBufferEnabled;
+  }
+
   /** Enable level-of-detail rendering (hides labels when zoomed out). */
   enableLOD(threshold?: number): void {
     this.lodEnabled = true;
@@ -1241,17 +1261,43 @@ export class Diagram {
     const width = rect.width;
     const height = rect.height;
 
+    if (this.backBufferEnabled) {
+      // Double buffering: render to an offscreen canvas, then blit
+      if (!this.backBuffer) {
+        this.backBuffer = document.createElement('canvas');
+      }
+      const dpr = globalThis.devicePixelRatio || 1;
+      if (
+        this.backBuffer.width !== Math.round(width * dpr) ||
+        this.backBuffer.height !== Math.round(height * dpr)
+      ) {
+        this.backBuffer.width = Math.round(width * dpr);
+        this.backBuffer.height = Math.round(height * dpr);
+      }
+      const offRenderer = new Canvas2DRenderer(this.backBuffer);
+      this.renderTo(offRenderer, width, height);
+      const ctx = (this.renderer as Canvas2DRenderer).getContext();
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(this.backBuffer, 0, 0, width, height);
+      return;
+    }
+
+    this.renderTo(this.renderer, width, height);
+  }
+
+  /** Render the diagram content to a given renderer. */
+  private renderTo(target: Renderer, width: number, height: number): void {
     // Set background
-    this.renderer.save();
-    this.renderer.setViewport(this.offsetX, this.offsetY, this.scale);
+    target.save();
+    target.setViewport(this.offsetX, this.offsetY, this.scale);
 
     // Apply LOD label visibility
-    if (this.renderer instanceof Canvas2DRenderer) {
-      this.renderer.setLabelsVisible(this.shouldShowLabels());
+    if (target instanceof Canvas2DRenderer) {
+      target.setLabelsVisible(this.shouldShowLabels());
     }
 
     // Clear with background color
-    const ctx = (this.renderer as Canvas2DRenderer).getContext();
+    const ctx = (target as Canvas2DRenderer).getContext();
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(
       this.offsetX - width / this.scale,
@@ -1268,7 +1314,7 @@ export class Diagram {
         (width * 2) / this.scale,
         (height * 2) / this.scale,
       );
-      this.renderer.renderGrid(viewport, this.gridSize);
+      target.renderGrid(viewport, this.gridSize);
     }
 
     // Cull parts if virtualization is enabled
@@ -1318,11 +1364,11 @@ export class Diagram {
 
       for (const part of visibleParts) {
         if (part instanceof Group) {
-          this.renderer.renderGroup(part);
+          target.renderGroup(part);
         } else if (part instanceof Link) {
-          this.renderer.renderLink(part);
+          target.renderLink(part);
         } else if (part instanceof Node) {
-          this.renderer.renderNode(part);
+          target.renderNode(part);
         }
       }
 
@@ -1357,7 +1403,7 @@ export class Diagram {
       ctx.restore();
     }
 
-    this.renderer.restore();
+    target.restore();
   }
 
   /** Get the underlying model. */

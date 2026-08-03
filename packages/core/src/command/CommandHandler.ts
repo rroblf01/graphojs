@@ -7,6 +7,7 @@ import {
   RemoveLinkCommand,
   AddNodeCommand,
   SetNodePropertyCommand,
+  SetZOrderCommand,
 } from '../undo/commands.ts';
 
 export type Alignment = 'left' | 'right' | 'top' | 'bottom' | 'centerH' | 'centerV';
@@ -354,6 +355,92 @@ export class CommandHandler {
       cursor += node.bounds.height + gap;
     }
 
+    undoManager.commitTransaction();
+    this.diagram.invalidate();
+    return true;
+  }
+
+  /** Bring the selected parts to the front (highest z-order in their layer). */
+  bringToFront(): boolean {
+    const selected = this.diagram.getSelectedParts();
+    if (selected.length === 0) return false;
+
+    const model = this.diagram.getModel();
+    const undoManager = this.diagram.getUndoManager();
+    const layer = selected[0]?.layer;
+
+    // Compute the max z-order in the layer
+    let maxZ = 0;
+    if (layer) {
+      for (const part of layer.parts) {
+        if (!selected.includes(part as never)) {
+          maxZ = Math.max(maxZ, part.zOrder);
+        }
+      }
+    }
+    maxZ += 10;
+
+    undoManager.beginTransaction(`Bring to front (${selected.length} parts)`);
+    for (const part of selected) {
+      part.zOrder = maxZ;
+      undoManager.execute(new SetZOrderCommand(model, part.key, maxZ));
+    }
+    undoManager.commitTransaction();
+    this.diagram.invalidate();
+    return true;
+  }
+
+  /** Send the selected parts to the back (lowest z-order in their layer). */
+  sendToBack(): boolean {
+    const selected = this.diagram.getSelectedParts();
+    if (selected.length === 0) return false;
+
+    const model = this.diagram.getModel();
+    const undoManager = this.diagram.getUndoManager();
+    const layer = selected[0]?.layer;
+
+    let minZ = 0;
+    if (layer) {
+      for (const part of layer.parts) {
+        if (!selected.includes(part as never)) {
+          minZ = Math.min(minZ, part.zOrder);
+        }
+      }
+    }
+    minZ -= 10;
+
+    undoManager.beginTransaction(`Send to back (${selected.length} parts)`);
+    for (const part of selected) {
+      part.zOrder = minZ;
+      undoManager.execute(new SetZOrderCommand(model, part.key, minZ));
+    }
+    undoManager.commitTransaction();
+    this.diagram.invalidate();
+    return true;
+  }
+
+  /** Raise the selected parts by one z-order step. */
+  raise(): boolean {
+    return this.changeZOrder(1);
+  }
+
+  /** Lower the selected parts by one z-order step. */
+  lower(): boolean {
+    return this.changeZOrder(-1);
+  }
+
+  private changeZOrder(delta: number): boolean {
+    const selected = this.diagram.getSelectedParts();
+    if (selected.length === 0) return false;
+
+    const model = this.diagram.getModel();
+    const undoManager = this.diagram.getUndoManager();
+    undoManager.beginTransaction(`Change z-order (${selected.length} parts)`);
+    for (const part of selected) {
+      const newZ = part.zOrder + delta;
+      part.zOrder = newZ;
+      undoManager.execute(new SetZOrderCommand(model, part.key, newZ));
+    }
     undoManager.commitTransaction();
     this.diagram.invalidate();
     return true;

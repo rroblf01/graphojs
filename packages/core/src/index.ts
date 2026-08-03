@@ -112,6 +112,7 @@ export {
   MoveNodeCommand,
   SetLinkPropertyCommand,
   ResizeNodeCommand,
+  SetZOrderCommand,
 } from './undo/commands.ts';
 
 // Command System

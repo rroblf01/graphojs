@@ -1248,10 +1248,13 @@ export class Diagram {
         }
       }
 
-      for (const part of layer.getVisibleParts()) {
-        // Skip parts outside the viewport when virtualization is enabled
-        if (culledParts.size > 0 && !culledParts.has(part)) continue;
+      const visibleParts = layer
+        .getVisibleParts()
+        .filter((part) => culledParts.size === 0 || culledParts.has(part));
+      // Render in z-order (ascending: lower zOrder first)
+      visibleParts.sort((a, b) => a.zOrder - b.zOrder);
 
+      for (const part of visibleParts) {
         if (part instanceof Group) {
           this.renderer.renderGroup(part);
         } else if (part instanceof Link) {

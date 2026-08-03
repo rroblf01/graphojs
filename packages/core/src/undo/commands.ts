@@ -290,3 +290,32 @@ export class ResizeNodeCommand implements Command {
     return `Resize node ${String(this.nodeKey)} to ${this.newWidth}x${this.newHeight}`;
   }
 }
+
+/**
+ * Command to change a part's z-order within its layer.
+ */
+export class SetZOrderCommand implements Command {
+  private model: GraphLinksModel;
+  private key: string | number;
+  private newZOrder: number;
+  private oldZOrder = 0;
+
+  constructor(model: GraphLinksModel, key: string | number, newZOrder: number) {
+    this.model = model;
+    this.key = key;
+    this.newZOrder = newZOrder;
+  }
+
+  execute(): void {
+    this.oldZOrder = (this.model.getNodeProperty(this.key, 'zOrder') as number) ?? 0;
+    this.model.setNodeProperty(this.key, 'zOrder', this.newZOrder);
+  }
+
+  undo(): void {
+    this.model.setNodeProperty(this.key, 'zOrder', this.oldZOrder);
+  }
+
+  describe(): string {
+    return `Set z-order of ${String(this.key)} to ${this.newZOrder}`;
+  }
+}

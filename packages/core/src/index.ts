@@ -68,3 +68,26 @@ export {
   RemoveLinkCommand,
   MoveNodeCommand,
 } from './undo/commands.ts';
+
+// Shapes
+export type { ShapeType, ShapeDefinition } from './shapes/ShapeTypes.ts';
+export {
+  SHAPES,
+  getShapeDefinition,
+  getAllShapeTypes,
+  getShapesByCategory,
+} from './shapes/ShapeTypes.ts';
+export { ShapeRenderer } from './shapes/ShapeRenderer.ts';
+
+// Templates
+export type { Template } from './template/Template.ts';
+export { templateToNodeData } from './template/Template.ts';
+export {
+  basicShapes,
+  flowchartShapes,
+  dataFlowShapes,
+  getAllTemplates,
+  getTemplatesByCategory,
+  getTemplateById,
+  getTemplateCategories,
+} from './template/TemplateCollection.ts';

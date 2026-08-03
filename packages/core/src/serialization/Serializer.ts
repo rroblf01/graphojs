@@ -44,11 +44,7 @@ export function deserializeDiagram(json: DiagramJSON, diagram: Diagram): void {
 
   if (json.options) {
     if (json.options.scale !== undefined) {
-      diagram.setViewport(
-        json.options.offsetX ?? 0,
-        json.options.offsetY ?? 0,
-        json.options.scale,
-      );
+      diagram.setViewport(json.options.offsetX ?? 0, json.options.offsetY ?? 0, json.options.scale);
     }
   }
 }

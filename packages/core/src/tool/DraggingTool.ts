@@ -65,9 +65,16 @@ export class DraggingTool extends Tool {
     for (const [keyStr, origin] of this.nodeOrigin) {
       const node = this.getNodeByKeyStr(keyStr);
       if (node) {
+        let newX = origin.x + dx;
+        let newY = origin.y + dy;
+        // Snap to grid if enabled
+        if (diagram.isSnapToGridEnabled()) {
+          newX = diagram.snapValue(newX);
+          newY = diagram.snapValue(newY);
+        }
         node.bounds = {
-          x: origin.x + dx,
-          y: origin.y + dy,
+          x: newX,
+          y: newY,
           width: node.bounds.width,
           height: node.bounds.height,
         } as never;

@@ -46,6 +46,8 @@ export interface DiagramOptions {
   gridSize?: number;
   /** Show grid background. Default: true */
   showGrid?: boolean;
+  /** Snap parts to the grid when moving. Default: false */
+  snapToGrid?: boolean;
   /** Background color. Default: '#ffffff' */
   backgroundColor?: string;
 }
@@ -70,6 +72,7 @@ export class Diagram {
   private maxScale: number;
   private gridSize: number;
   private showGrid: boolean;
+  private snapToGrid: boolean;
   private backgroundColor: string;
 
   private isDirty = true;
@@ -106,6 +109,7 @@ export class Diagram {
     this.maxScale = options.maxScale ?? 10;
     this.gridSize = options.gridSize ?? 20;
     this.showGrid = options.showGrid ?? true;
+    this.snapToGrid = options.snapToGrid ?? false;
     this.backgroundColor = options.backgroundColor ?? '#ffffff';
 
     // Create canvas
@@ -1103,6 +1107,44 @@ export class Diagram {
   /** Get the LOD label threshold. */
   getLODLabelThreshold(): number {
     return this.lodLabelThreshold;
+  }
+
+  /** Enable grid snapping for moved parts. */
+  enableSnapToGrid(): void {
+    this.snapToGrid = true;
+  }
+
+  /** Disable grid snapping. */
+  disableSnapToGrid(): void {
+    this.snapToGrid = false;
+  }
+
+  /** Check whether grid snapping is enabled. */
+  isSnapToGridEnabled(): boolean {
+    return this.snapToGrid;
+  }
+
+  /** Set the grid size used for snapping. */
+  setGridSize(size: number): void {
+    this.gridSize = Math.max(1, size);
+    this.invalidate();
+  }
+
+  /** Get the grid size. */
+  getGridSize(): number {
+    return this.gridSize;
+  }
+
+  /** Snap a value to the nearest grid line. */
+  snapValue(value: number): number {
+    if (!this.snapToGrid) return value;
+    return Math.round(value / this.gridSize) * this.gridSize;
+  }
+
+  /** Snap a coordinate to the nearest grid line. */
+  snapPoint(point: { x: number; y: number }): { x: number; y: number } {
+    if (!this.snapToGrid) return { x: point.x, y: point.y };
+    return { x: this.snapValue(point.x), y: this.snapValue(point.y) };
   }
 
   /** Check whether labels should be shown at the current zoom level. */

@@ -57,6 +57,12 @@ export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';
 // Diagram
 export { Diagram } from './diagram/Diagram.ts';
 export type { DiagramOptions } from './diagram/Diagram.ts';
+export { DiagramEvents, createDiagramEvents } from './diagram/DiagramEvents.ts';
+export type {
+  DiagramEvent,
+  DiagramEventType,
+  DiagramEventHandler,
+} from './diagram/DiagramEvents.ts';
 
 // Tools
 export { Tool } from './tool/Tool.ts';

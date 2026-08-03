@@ -27,6 +27,7 @@ import { AnimationManager } from '../animation/AnimationManager.ts';
 import { CommandHandler } from '../command/CommandHandler.ts';
 import { VirtualizationManager } from '../spatial/VirtualizationManager.ts';
 import { PartPool } from '../spatial/PartPool.ts';
+import { DiagramEvents, type DiagramEvent, type DiagramEventType } from './DiagramEvents.ts';
 import type { Part } from '../parts/Part.ts';
 
 export interface DiagramOptions {
@@ -84,6 +85,7 @@ export class Diagram {
   private modelChangeListener: ((event: ChangedEvent) => void) | null = null;
   private keyDownListener: ((event: KeyboardEvent) => void) | null = null;
   private tempLink: { from: { x: number; y: number }; to: { x: number; y: number } } | null = null;
+  private events: DiagramEvents = new DiagramEvents();
   private canvasListeners: Array<
     [string, EventListenerOrEventListenerObject, (AddEventListenerOptions | boolean)?]
   > = [];
@@ -171,6 +173,40 @@ export class Diagram {
   /** Get the command handler. */
   getCommandHandler(): CommandHandler {
     return this.commandHandler;
+  }
+
+  /** Add a diagram event listener. */
+  addDiagramListener(type: DiagramEventType, handler: (event: DiagramEvent) => void): void {
+    this.events.addListener(type, handler);
+  }
+
+  /** Add a listener for all diagram events. */
+  addAnyDiagramListener(handler: (event: DiagramEvent) => void): void {
+    this.events.addAnyListener(handler);
+  }
+
+  /** Remove a diagram event listener. */
+  removeDiagramListener(type: DiagramEventType, handler: (event: DiagramEvent) => void): boolean {
+    return this.events.removeListener(type, handler);
+  }
+
+  /** Remove a listener from all diagram events. */
+  removeAnyDiagramListener(handler: (event: DiagramEvent) => void): void {
+    this.events.removeAnyListener(handler);
+  }
+
+  /** Check whether there are listeners for a diagram event type. */
+  hasDiagramListeners(type: DiagramEventType): boolean {
+    return this.events.hasListeners(type);
+  }
+
+  /** Fire a diagram event. */
+  fireDiagramEvent(
+    type: DiagramEventType,
+    part?: Part | null,
+    data?: Record<string, unknown>,
+  ): void {
+    this.events.fire(this, type, part, data);
   }
 
   /** Enable virtualization (viewport culling) with a world bounds. */
@@ -269,6 +305,17 @@ export class Diagram {
     }
   }
 
+  /** Handle a click event. */
+  private handleCanvasClick(e: MouseEvent): void {
+    this.toolManager.handleClick(e);
+    // Fire background click if the click was on empty space
+    const point = this.getDiagramPoint(e);
+    const part = this.findPartAt(point.x, point.y);
+    if (!part) {
+      this.fireDiagramEvent('BackgroundSingleClicked', null, { x: point.x, y: point.y });
+    }
+  }
+
   /** Handle keyboard shortcuts. */
   private handleKeyDown(e: KeyboardEvent): void {
     const target = e.target as HTMLElement;
@@ -316,7 +363,7 @@ export class Diagram {
     this.addCanvasListener('mousemove', (e) => this.toolManager.handleMouseMove(e as MouseEvent));
     this.addCanvasListener('mouseup', (e) => this.toolManager.handleMouseUp(e as MouseEvent));
     this.addCanvasListener('mouseleave', (e) => this.toolManager.handleMouseUp(e as MouseEvent));
-    this.addCanvasListener('click', (e) => this.toolManager.handleClick(e as MouseEvent));
+    this.addCanvasListener('click', (e) => this.handleCanvasClick(e as MouseEvent));
     this.addCanvasListener('dblclick', (e) => this.handleDoubleClick(e as MouseEvent));
     this.addCanvasListener('contextmenu', (e) => this.handleContextMenu(e as MouseEvent));
 
@@ -355,9 +402,13 @@ export class Diagram {
   }
 
   /** Handle model changes. */
-  private handleModelChange(_event: ChangedEvent): void {
+  private handleModelChange(event: ChangedEvent): void {
     this.syncPartsFromModel();
     this.invalidate();
+    this.fireDiagramEvent('ModelChanged', null, {
+      changeType: event.type,
+      propertyName: event.propertyName,
+    });
   }
 
   /** Sync visual parts from the model. */
@@ -598,6 +649,7 @@ export class Diagram {
     }
     this.selectedParts.clear();
     this.invalidate();
+    this.fireDiagramEvent('SelectionChanged', null);
   }
 
   /** Get selected parts. */
@@ -819,6 +871,7 @@ export class Diagram {
       this.scale = Math.max(this.minScale, Math.min(this.maxScale, scale));
     }
     this.invalidate();
+    this.fireDiagramEvent('ViewportChanged', null, { x, y, scale: this.scale });
   }
 
   /** Zoom to fit all content. */

@@ -1,0 +1,562 @@
+import type { Size } from '../geometry/Size.ts';
+import { Size as SizeClass } from '../geometry/Size.ts';
+import type { Margin } from '../geometry/Margin.ts';
+import { Spot } from '../geometry/Spot.ts';
+import type { Rect } from '../geometry/Rect.ts';
+import { GraphObject } from './GraphObject.ts';
+import { Shape } from './Shape.ts';
+
+/**
+ * Panel layout types (mirrors GoJS panel types).
+ */
+export type PanelType = 'Auto' | 'Table' | 'Spot' | 'Vertical' | 'Horizontal' | 'Viewbox';
+
+/**
+ * A Panel is a GraphObject that contains and lays out other GraphObjects.
+ */
+export class Panel extends GraphObject {
+  private _type: PanelType;
+  private _elements: GraphObject[] = [];
+  private _padding: Margin | null = null;
+  private _spacing = 0;
+  private _background: string | null = null;
+  private _rowCount = 0;
+  private _columnCount = 0;
+  private _gradient: CanvasGradient | null = null;
+
+  constructor(type: PanelType = 'Auto') {
+    super();
+    this._type = type;
+  }
+
+  get type(): PanelType {
+    return this._type;
+  }
+
+  set type(value: PanelType) {
+    this._type = value;
+  }
+
+  /** The elements contained in this panel. */
+  get elements(): readonly GraphObject[] {
+    return this._elements;
+  }
+
+  /** The number of elements in this panel. */
+  get elementCount(): number {
+    return this._elements.length;
+  }
+
+  /** The padding of this panel. */
+  get padding(): Margin | null {
+    return this._padding;
+  }
+
+  set padding(value: Margin | null) {
+    this._padding = value;
+  }
+
+  /** The spacing between elements (for Vertical/Horizontal panels). */
+  get spacing(): number {
+    return this._spacing;
+  }
+
+  set spacing(value: number) {
+    this._spacing = value;
+  }
+
+  /** The background color of this panel. */
+  get background(): string | null {
+    return this._background;
+  }
+
+  set background(value: string | null) {
+    this._background = value;
+  }
+
+  /** A canvas gradient used as the background. */
+  get gradient(): CanvasGradient | null {
+    return this._gradient;
+  }
+
+  set gradient(value: CanvasGradient | null) {
+    this._gradient = value;
+  }
+
+  /** The number of rows (for Table panels). */
+  get rowCount(): number {
+    return this._rowCount;
+  }
+
+  /** The number of columns (for Table panels). */
+  get columnCount(): number {
+    return this._columnCount;
+  }
+
+  /** Add an element to this panel. */
+  add(element: GraphObject): this {
+    this._elements.push(element);
+    this.recountGrid();
+    return this;
+  }
+
+  /** Remove an element from this panel. */
+  remove(element: GraphObject): boolean {
+    const index = this._elements.indexOf(element);
+    if (index === -1) return false;
+    this._elements.splice(index, 1);
+    this.recountGrid();
+    return true;
+  }
+
+  /** Remove all elements. */
+  clear(): void {
+    this._elements = [];
+    this._rowCount = 0;
+    this._columnCount = 0;
+  }
+
+  /** Check if an element is in this panel. */
+  contains(element: GraphObject): boolean {
+    return this._elements.includes(element);
+  }
+
+  /** Fluent add of an element. */
+  append(element: GraphObject): this {
+    return this.add(element);
+  }
+
+  /** Fluent setter for padding. */
+  setPadding(value: Margin | null): this {
+    this._padding = value;
+    return this;
+  }
+
+  /** Fluent setter for spacing. */
+  setSpacing(value: number): this {
+    this._spacing = value;
+    return this;
+  }
+
+  /** Fluent setter for background. */
+  setBackground(value: string | null): this {
+    this._background = value;
+    return this;
+  }
+
+  private recountGrid(): void {
+    if (this._type !== 'Table') return;
+    let rows = 0;
+    let cols = 0;
+    for (const el of this._elements) {
+      const data = el as GraphObject & { row?: number; column?: number };
+      if (data.row !== undefined) rows = Math.max(rows, data.row + 1);
+      if (data.column !== undefined) cols = Math.max(cols, data.column + 1);
+    }
+    this._rowCount = rows;
+    this._columnCount = cols;
+  }
+
+  /** Get the first element of this panel (used by Auto panels as background). */
+  get mainElement(): GraphObject | null {
+    return this._elements[0] ?? null;
+  }
+
+  override measure(): Size {
+    const size = this.measurePanel();
+    if (this.width > 0) size.width = this.width;
+    if (this.height > 0) size.height = this.height;
+    return size;
+  }
+
+  private measurePanel(): Size {
+    const pad = this._padding;
+    const padW = pad ? pad.left + pad.right : 0;
+    const padH = pad ? pad.top + pad.bottom : 0;
+
+    switch (this._type) {
+      case 'Vertical':
+      case 'Horizontal':
+        return this.measureStack(padW, padH);
+      case 'Auto': {
+        const main = this.mainElement;
+        if (!main) return new SizeClass(padW, padH);
+        const s = main.measureWithMargin();
+        return new SizeClass(s.width + padW, s.height + padH);
+      }
+      case 'Viewbox': {
+        const main = this.mainElement;
+        if (!main) return new SizeClass(padW, padH);
+        const s = main.measureWithMargin();
+        return new SizeClass(s.width + padW, s.height + padH);
+      }
+      case 'Spot': {
+        let maxW = 0;
+        let maxH = 0;
+        for (const el of this._elements) {
+          const s = el.measureWithMargin();
+          maxW = Math.max(maxW, s.width);
+          maxH = Math.max(maxH, s.height);
+        }
+        return new SizeClass(maxW + padW, maxH + padH);
+      }
+      case 'Table':
+        return this.measureTable(padW, padH);
+      default:
+        return new SizeClass(padW, padH);
+    }
+  }
+
+  private measureStack(padW: number, padH: number): Size {
+    let maxCross = 0;
+    let totalMain = 0;
+    const vertical = this._type === 'Vertical';
+
+    for (const el of this._elements) {
+      const s = el.measureWithMargin();
+      if (vertical) {
+        maxCross = Math.max(maxCross, s.width);
+        totalMain += s.height;
+      } else {
+        maxCross = Math.max(maxCross, s.height);
+        totalMain += s.width;
+      }
+    }
+
+    const spacingTotal =
+      this._elements.length > 1 ? this._spacing * (this._elements.length - 1) : 0;
+    const main = totalMain + spacingTotal;
+
+    if (vertical) {
+      return new SizeClass(maxCross + padW, main + padH);
+    }
+    return new SizeClass(main + padW, maxCross + padH);
+  }
+
+  private measureTable(padW: number, padH: number): Size {
+    // Compute max width per column and max height per row
+    const colWidths = new Array<number>(this._columnCount).fill(0);
+    const rowHeights = new Array<number>(this._rowCount).fill(0);
+
+    for (const el of this._elements) {
+      const data = el as GraphObject & {
+        row?: number;
+        column?: number;
+        rowSpan?: number;
+        columnSpan?: number;
+      };
+      const row = data.row ?? 0;
+      const col = data.column ?? 0;
+      const s = el.measureWithMargin();
+      if (col >= 0 && col < colWidths.length)
+        colWidths[col] = Math.max(colWidths[col] ?? 0, s.width);
+      if (row >= 0 && row < rowHeights.length)
+        rowHeights[row] = Math.max(rowHeights[row] ?? 0, s.height);
+    }
+
+    const totalW = colWidths.reduce((a, b) => a + (b ?? 0), 0);
+    const totalH = rowHeights.reduce((a, b) => a + (b ?? 0), 0);
+    return new SizeClass(totalW + padW, totalH + padH);
+  }
+
+  override draw(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    ctx.save();
+
+    // Background
+    if (this._background) {
+      ctx.fillStyle = this._background;
+      ctx.fillRect(x, y, width, height);
+    } else if (this._gradient) {
+      ctx.fillStyle = this._gradient;
+      ctx.fillRect(x, y, width, height);
+    }
+
+    // Layout elements
+    this.layoutElements(ctx, x, y, width, height);
+
+    ctx.restore();
+  }
+
+  private layoutElements(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    const pad = this._padding;
+    const padL = pad?.left ?? 0;
+    const padT = pad?.top ?? 0;
+    const padR = pad?.right ?? 0;
+    const padB = pad?.bottom ?? 0;
+
+    const contentX = x + padL;
+    const contentY = y + padT;
+    const contentW = width - padL - padR;
+    const contentH = height - padT - padB;
+
+    switch (this._type) {
+      case 'Vertical':
+      case 'Horizontal':
+        this.layoutStack(ctx, contentX, contentY, contentW, contentH);
+        break;
+      case 'Auto':
+        this.layoutAuto(ctx, contentX, contentY, contentW, contentH);
+        break;
+      case 'Spot':
+        this.layoutSpot(ctx, contentX, contentY, contentW, contentH);
+        break;
+      case 'Viewbox':
+        this.layoutViewbox(ctx, contentX, contentY, contentW, contentH);
+        break;
+      case 'Table':
+        this.layoutTable(ctx, contentX, contentY, contentW, contentH);
+        break;
+    }
+  }
+
+  private layoutStack(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    const vertical = this._type === 'Vertical';
+
+    // Total main size
+    let totalMain = 0;
+    for (const el of this._elements) {
+      const s = el.measureWithMargin();
+      totalMain += vertical ? s.height : s.width;
+    }
+    const spacingTotal =
+      this._elements.length > 1 ? this._spacing * (this._elements.length - 1) : 0;
+
+    // Start position (center within content area)
+    let cursorMain = vertical
+      ? y + (height - totalMain - spacingTotal) / 2
+      : x + (width - totalMain - spacingTotal) / 2;
+
+    for (const el of this._elements) {
+      const s = el.measureWithMargin();
+      const m = el.margin;
+      const mTop = m?.top ?? 0;
+      const mLeft = m?.left ?? 0;
+
+      let elX: number;
+      let elY: number;
+      let elW: number;
+      let elH: number;
+
+      if (vertical) {
+        elW = Math.min(s.width - (mLeft + (m?.right ?? 0)), width);
+        elH = s.height - (mTop + (m?.bottom ?? 0));
+        elX = x + (width - elW) / 2 + mLeft;
+        elY = cursorMain + mTop;
+      } else {
+        elW = s.width - (mLeft + (m?.right ?? 0));
+        elH = Math.min(s.height - (mTop + (m?.bottom ?? 0)), height);
+        elX = cursorMain + mLeft;
+        elY = y + (height - elH) / 2 + mTop;
+      }
+
+      el.setPosition(elX, elY);
+      el.setActualSize(elW, elH);
+
+      el.draw(ctx, elX, elY, elW, elH);
+
+      cursorMain +=
+        (vertical ? elH : elW) + (mTop + (vertical ? (m?.bottom ?? 0) : 0)) + this._spacing;
+    }
+  }
+
+  private layoutAuto(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    if (this._elements.length === 0) return;
+
+    // First element is the background (fills the panel)
+    const main = this._elements[0];
+    if (!main) return;
+    main.setPosition(x, y);
+    main.setActualSize(width, height);
+    main.draw(ctx, x, y, width, height);
+
+    // Remaining elements are centered
+    for (let i = 1; i < this._elements.length; i++) {
+      const el = this._elements[i];
+      if (!el) continue;
+      const s = el.measureWithMargin();
+      const elW = Math.min(s.width, width);
+      const elH = Math.min(s.height, height);
+      const elX = x + (width - elW) / 2;
+      const elY = y + (height - elH) / 2;
+      el.setPosition(elX, elY);
+      el.setActualSize(elW, elH);
+      el.draw(ctx, elX, elY, elW, elH);
+    }
+  }
+
+  private layoutSpot(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    for (const el of this._elements) {
+      const s = el.measureWithMargin();
+      const spot = el.alignment ?? Spot.Center;
+      const point = spot.computePoint(x, y, width, height);
+      const elW = Math.min(s.width, width);
+      const elH = Math.min(s.height, height);
+      const elX = point.x - elW * spot.x;
+      const elY = point.y - elH * spot.y;
+      el.setPosition(elX, elY);
+      el.setActualSize(elW, elH);
+      el.draw(ctx, elX, elY, elW, elH);
+    }
+  }
+
+  private layoutViewbox(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    if (this._elements.length === 0) return;
+    const main = this._elements[0];
+    if (!main) return;
+    main.setPosition(x, y);
+    main.setActualSize(width, height);
+    main.draw(ctx, x, y, width, height);
+  }
+
+  private layoutTable(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    // Compute column widths and row heights
+    const colWidths = new Array<number>(Math.max(1, this._columnCount)).fill(0);
+    const rowHeights = new Array<number>(Math.max(1, this._rowCount)).fill(0);
+
+    for (const el of this._elements) {
+      const data = el as GraphObject & { row?: number; column?: number };
+      const row = data.row ?? 0;
+      const col = data.column ?? 0;
+      const s = el.measureWithMargin();
+      if (col >= 0 && col < colWidths.length) {
+        colWidths[col] = Math.max(colWidths[col] ?? 0, s.width);
+      }
+      if (row >= 0 && row < rowHeights.length) {
+        rowHeights[row] = Math.max(rowHeights[row] ?? 0, s.height);
+      }
+    }
+
+    // Distribute extra width/height proportionally
+    const totalW = colWidths.reduce((a, b) => a + (b ?? 0), 0);
+    const totalH = rowHeights.reduce((a, b) => a + (b ?? 0), 0);
+    const extraW = Math.max(0, width - totalW);
+    const extraH = Math.max(0, height - totalH);
+    if (extraW > 0 && totalW > 0) {
+      for (let i = 0; i < colWidths.length; i++) {
+        colWidths[i] = (colWidths[i] ?? 0) + (extraW * (colWidths[i] ?? 0)) / totalW;
+      }
+    }
+    if (extraH > 0 && totalH > 0) {
+      for (let i = 0; i < rowHeights.length; i++) {
+        rowHeights[i] = (rowHeights[i] ?? 0) + (extraH * (rowHeights[i] ?? 0)) / totalH;
+      }
+    }
+
+    // Column x-positions
+    const colX = new Array<number>(colWidths.length);
+    let cx = x;
+    for (let i = 0; i < colWidths.length; i++) {
+      colX[i] = cx;
+      cx += colWidths[i] ?? 0;
+    }
+    // Row y-positions
+    const rowY = new Array<number>(rowHeights.length);
+    let cy = y;
+    for (let i = 0; i < rowHeights.length; i++) {
+      rowY[i] = cy;
+      cy += rowHeights[i] ?? 0;
+    }
+
+    for (const el of this._elements) {
+      const data = el as GraphObject & {
+        row?: number;
+        column?: number;
+        rowSpan?: number;
+        columnSpan?: number;
+      };
+      const row = data.row ?? 0;
+      const col = data.column ?? 0;
+      const elX = colX[col] ?? x;
+      const elY = rowY[row] ?? y;
+      const elW = colWidths[col] ?? 0;
+      const elH = rowHeights[row] ?? 0;
+      el.setPosition(elX, elY);
+      el.setActualSize(elW, elH);
+      el.draw(ctx, elX, elY, elW, elH);
+    }
+  }
+
+  /**
+   * Find the top-most GraphObject at a point, or null.
+   */
+  hitTest(px: number, py: number): GraphObject | null {
+    // Check in reverse order (top-most first)
+    for (let i = this._elements.length - 1; i >= 0; i--) {
+      const el = this._elements[i];
+      if (!el) continue;
+      if (el instanceof Panel) {
+        const hit = el.hitTest(px, py);
+        if (hit) return hit;
+      } else if (el.containsPoint(px, py)) {
+        return el;
+      }
+    }
+    return null;
+  }
+
+  /** The bounds of this panel within the parent coordinate space. */
+  override getBounds(): Rect {
+    return {
+      x: this.position.x,
+      y: this.position.y,
+      width: this.actualSize.width,
+      height: this.actualSize.height,
+    } as Rect;
+  }
+}
+
+/**
+ * Helper to construct a Panel with a fluent API.
+ */
+export function panel(type: PanelType = 'Auto'): Panel {
+  return new Panel(type);
+}
+
+/**
+ * Helper to create a shape element for a panel.
+ */
+export function shape(shape?: Shape['shape']): Shape {
+  return new Shape(shape);
+}

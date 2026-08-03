@@ -4,6 +4,7 @@ import type { Group } from '../parts/Group.ts';
 import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
 import type { Renderer } from './Renderer.ts';
+import type { Panel } from '../panel/Panel.ts';
 
 /**
  * Canvas 2D renderer for diagram parts.
@@ -115,22 +116,41 @@ export class Canvas2DRenderer implements Renderer {
 
     const { x, y, width, height } = node.bounds;
 
-    // Fill
-    this.ctx.fillStyle = node.fill;
-    this.ctx.strokeStyle = node.stroke;
-    this.ctx.lineWidth = node.strokeWidth;
+    // If the node has a panel, render it instead of the flat representation
+    const panel = node.panel;
+    if (panel) {
+      panel.setPosition(0, 0);
+      panel.setActualSize(width, height);
+      panel.draw(this.ctx, x, y, width, height);
+    } else {
+      // Fill
+      this.ctx.fillStyle = node.fill;
+      this.ctx.strokeStyle = node.stroke;
+      this.ctx.lineWidth = node.strokeWidth;
 
-    switch (node.shape) {
-      case 'ellipse':
-        this.renderEllipse(x, y, width, height);
-        break;
-      case 'roundedRect':
-        this.renderRoundedRect(x, y, width, height, node.cornerRadius);
-        break;
-      default:
-        this.ctx.fillRect(x, y, width, height);
-        this.ctx.strokeRect(x, y, width, height);
-        break;
+      switch (node.shape) {
+        case 'ellipse':
+          this.renderEllipse(x, y, width, height);
+          break;
+        case 'roundedRect':
+          this.renderRoundedRect(x, y, width, height, node.cornerRadius);
+          break;
+        default:
+          this.ctx.fillRect(x, y, width, height);
+          this.ctx.strokeRect(x, y, width, height);
+          break;
+      }
+
+      // Label
+      if (node.label) {
+        this.renderLabel(
+          node.label,
+          x + width / 2,
+          y + height / 2,
+          node.labelColor,
+          node.labelFont,
+        );
+      }
     }
 
     // Selection highlight
@@ -142,12 +162,12 @@ export class Canvas2DRenderer implements Renderer {
       this.ctx.setLineDash([]);
     }
 
-    // Label
-    if (node.label) {
-      this.renderLabel(node.label, x + width / 2, y + height / 2, node.labelColor, node.labelFont);
-    }
-
     this.ctx.restore();
+  }
+
+  /** Render a panel at the given position and size. */
+  renderPanel(panel: Panel, x: number, y: number, width: number, height: number): void {
+    panel.draw(this.ctx, x, y, width, height);
   }
 
   private renderEllipse(x: number, y: number, width: number, height: number): void {

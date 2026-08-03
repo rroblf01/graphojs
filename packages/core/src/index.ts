@@ -120,6 +120,15 @@ export { VirtualizationManager } from './spatial/VirtualizationManager.ts';
 // Rendering Optimizations
 export { LayerCache, createLayerCache } from './render/LayerCache.ts';
 
+// Panels
+export { GraphObject } from './panel/GraphObject.ts';
+export { Shape } from './panel/Shape.ts';
+export { TextBlock } from './panel/TextBlock.ts';
+export { Picture } from './panel/Picture.ts';
+export { Panel, panel, shape } from './panel/Panel.ts';
+export type { PanelType } from './panel/Panel.ts';
+export { Spot } from './geometry/Spot.ts';
+
 // Shapes
 export type { ShapeType, ShapeDefinition } from './shapes/ShapeTypes.ts';
 export {

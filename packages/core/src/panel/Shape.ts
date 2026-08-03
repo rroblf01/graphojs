@@ -1,0 +1,130 @@
+import type { Size } from '../geometry/Size.ts';
+import { Size as SizeClass } from '../geometry/Size.ts';
+import type { ShapeType } from '../shapes/ShapeTypes.ts';
+import { ShapeRenderer } from '../shapes/ShapeRenderer.ts';
+import { GraphObject } from './GraphObject.ts';
+
+/**
+ * A geometric shape element in a panel.
+ */
+export class Shape extends GraphObject {
+  private _shape: ShapeType = 'rect';
+  private _fill = '#cccccc';
+  private _stroke = '#333333';
+  private _strokeWidth = 1;
+  private _cornerRadius = 0;
+
+  constructor(shape?: ShapeType) {
+    super();
+    if (shape) this._shape = shape;
+  }
+
+  get shape(): ShapeType {
+    return this._shape;
+  }
+
+  set shape(value: ShapeType) {
+    this._shape = value;
+  }
+
+  get fill(): string {
+    return this._fill;
+  }
+
+  set fill(value: string) {
+    this._fill = value;
+  }
+
+  get stroke(): string {
+    return this._stroke;
+  }
+
+  set stroke(value: string) {
+    this._stroke = value;
+  }
+
+  get strokeWidth(): number {
+    return this._strokeWidth;
+  }
+
+  set strokeWidth(value: number) {
+    this._strokeWidth = value;
+  }
+
+  get cornerRadius(): number {
+    return this._cornerRadius;
+  }
+
+  set cornerRadius(value: number) {
+    this._cornerRadius = value;
+  }
+
+  /** Fluent setter for fill. */
+  setFill(value: string): this {
+    this._fill = value;
+    return this;
+  }
+
+  /** Fluent setter for stroke. */
+  setStroke(value: string): this {
+    this._stroke = value;
+    return this;
+  }
+
+  /** Fluent setter for stroke width. */
+  setStrokeWidth(value: number): this {
+    this._strokeWidth = value;
+    return this;
+  }
+
+  /** Fluent setter for corner radius. */
+  setCornerRadius(value: number): this {
+    this._cornerRadius = value;
+    return this;
+  }
+
+  override measure(): Size {
+    const w = this.width > 0 ? this.width : 100;
+    const h = this.height > 0 ? this.height : 60;
+    return new SizeClass(w, h);
+  }
+
+  override draw(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    ctx.save();
+    ctx.fillStyle = this._fill;
+    ctx.strokeStyle = this._stroke;
+    ctx.lineWidth = this._strokeWidth;
+
+    if (this._shape === 'rect' || this._shape === 'roundedRect') {
+      if (this._shape === 'roundedRect') {
+        const r = this._cornerRadius || Math.min(width, height) * 0.1;
+        ctx.beginPath();
+        ctx.roundRect(x, y, width, height, r);
+        ctx.fill();
+        ctx.stroke();
+      } else {
+        ctx.fillRect(x, y, width, height);
+        ctx.strokeRect(x, y, width, height);
+      }
+    } else if (this._shape === 'ellipse') {
+      ctx.beginPath();
+      ctx.ellipse(x + width / 2, y + height / 2, width / 2, height / 2, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      // Use ShapeRenderer for complex shapes
+      const renderer = new ShapeRenderer(ctx);
+      renderer.renderShape(this._shape, x, y, width, height);
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+}

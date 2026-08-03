@@ -137,6 +137,7 @@ export type { EasingFunction, EasingName } from './animation/Easing.ts';
 export { QuadTree } from './spatial/QuadTree.ts';
 export { PartPool } from './spatial/PartPool.ts';
 export { VirtualizationManager } from './spatial/VirtualizationManager.ts';
+export { RectPool, createRectPool } from './spatial/RectPool.ts';
 
 // Rendering Optimizations
 export { LayerCache, createLayerCache } from './render/LayerCache.ts';

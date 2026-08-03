@@ -21,6 +21,17 @@ export class Canvas2DRenderer implements Renderer {
   private useDirtyRects = false;
   private pathCache: PathCache = new PathCache();
   private textMeasureCache: TextMeasureCache = new TextMeasureCache();
+  private labelsVisible = true;
+
+  /** Set whether node labels should be rendered (used for LOD). */
+  setLabelsVisible(value: boolean): void {
+    this.labelsVisible = value;
+  }
+
+  /** Check whether labels are currently visible. */
+  getLabelsVisible(): boolean {
+    return this.labelsVisible;
+  }
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -164,7 +175,7 @@ export class Canvas2DRenderer implements Renderer {
       }
 
       // Label
-      if (node.label) {
+      if (node.label && this.labelsVisible) {
         this.renderLabel(
           node.label,
           x + width / 2,

@@ -93,6 +93,8 @@ export class Diagram {
   private layerCacheEnabled = false;
   private hitIndex: QuadTree<Part> | null = null;
   private hitIndexDirty = true;
+  private lodLabelThreshold = 0.3;
+  private lodEnabled = false;
   private canvasListeners: Array<
     [string, EventListenerOrEventListenerObject, (AddEventListenerOptions | boolean)?]
   > = [];
@@ -1074,6 +1076,41 @@ export class Diagram {
     return this.layerCacheEnabled;
   }
 
+  /** Enable level-of-detail rendering (hides labels when zoomed out). */
+  enableLOD(threshold?: number): void {
+    this.lodEnabled = true;
+    if (threshold !== undefined) this.lodLabelThreshold = threshold;
+    this.invalidate();
+  }
+
+  /** Disable level-of-detail rendering. */
+  disableLOD(): void {
+    this.lodEnabled = false;
+    this.invalidate();
+  }
+
+  /** Check whether LOD rendering is enabled. */
+  isLODEnabled(): boolean {
+    return this.lodEnabled;
+  }
+
+  /** Set the zoom threshold below which labels are hidden. */
+  setLODLabelThreshold(threshold: number): void {
+    this.lodLabelThreshold = threshold;
+    this.invalidate();
+  }
+
+  /** Get the LOD label threshold. */
+  getLODLabelThreshold(): number {
+    return this.lodLabelThreshold;
+  }
+
+  /** Check whether labels should be shown at the current zoom level. */
+  private shouldShowLabels(): boolean {
+    if (!this.lodEnabled) return true;
+    return this.scale >= this.lodLabelThreshold;
+  }
+
   /** Start the render loop. */
   private startRenderLoop(): void {
     const render = () => {
@@ -1103,6 +1140,11 @@ export class Diagram {
     // Set background
     this.renderer.save();
     this.renderer.setViewport(this.offsetX, this.offsetY, this.scale);
+
+    // Apply LOD label visibility
+    if (this.renderer instanceof Canvas2DRenderer) {
+      this.renderer.setLabelsVisible(this.shouldShowLabels());
+    }
 
     // Clear with background color
     const ctx = (this.renderer as Canvas2DRenderer).getContext();
@@ -1238,6 +1280,10 @@ export class Diagram {
       this.scale = Math.max(this.minScale, Math.min(this.maxScale, scale));
       // Layer cache must be re-rendered at the new scale
       this.layerCache?.setScale(this.scale * (globalThis.devicePixelRatio || 1));
+      // Update LOD label visibility immediately
+      if (this.renderer instanceof Canvas2DRenderer) {
+        this.renderer.setLabelsVisible(this.shouldShowLabels());
+      }
     }
     this.invalidate();
     this.fireDiagramEvent('ViewportChanged', null, { x, y, scale: this.scale });

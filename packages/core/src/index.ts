@@ -35,6 +35,14 @@ export { Layer, LayerNames, LayerDefaults, createDefaultLayers } from './layer/L
 
 // Export
 export { SVGExporter, createSVGExporter, exportToSVG } from './export/SVGExporter.ts';
+export {
+  Palette,
+  createDefaultPalette,
+  handleDrop,
+  registerPalette,
+  findPaletteForDiagram,
+} from './export/Palette.ts';
+export { Overview, createOverview } from './export/Overview.ts';
 
 // Render
 export type { Renderer } from './render/Renderer.ts';

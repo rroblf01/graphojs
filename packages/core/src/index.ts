@@ -66,6 +66,8 @@ export { ClickSelectingTool } from './tool/ClickSelectingTool.ts';
 export { PanningTool } from './tool/PanningTool.ts';
 export { ZoomingTool } from './tool/ZoomingTool.ts';
 export { TextEditingTool } from './tool/TextEditingTool.ts';
+export { LinkingTool } from './tool/LinkingTool.ts';
+export { RelinkingTool } from './tool/RelinkingTool.ts';
 
 // Layouts
 export { Layout } from './layout/Layout.ts';

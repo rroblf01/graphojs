@@ -13,7 +13,9 @@ import type { Renderer } from '../render/Renderer.ts';
 import { Serializer, type DiagramJSON } from '../serialization/Serializer.ts';
 import { ClickSelectingTool } from '../tool/ClickSelectingTool.ts';
 import { DraggingTool } from '../tool/DraggingTool.ts';
+import { LinkingTool } from '../tool/LinkingTool.ts';
 import { PanningTool } from '../tool/PanningTool.ts';
+import { RelinkingTool } from '../tool/RelinkingTool.ts';
 import { TextEditingTool } from '../tool/TextEditingTool.ts';
 import { ToolManager } from '../tool/ToolManager.ts';
 import { ZoomingTool } from '../tool/ZoomingTool.ts';
@@ -79,6 +81,7 @@ export class Diagram {
   private resizeObserver: ResizeObserver | null = null;
   private modelChangeListener: ((event: ChangedEvent) => void) | null = null;
   private keyDownListener: ((event: KeyboardEvent) => void) | null = null;
+  private tempLink: { from: { x: number; y: number }; to: { x: number; y: number } } | null = null;
   private canvasListeners: Array<
     [string, EventListenerOrEventListenerObject, (AddEventListenerOptions | boolean)?]
   > = [];
@@ -135,6 +138,8 @@ export class Diagram {
     this.toolManager.registerTool('panning', new PanningTool());
     this.toolManager.registerTool('zooming', new ZoomingTool());
     this.toolManager.registerTool('textEditing', new TextEditingTool());
+    this.toolManager.registerTool('linking', new LinkingTool());
+    this.toolManager.registerTool('relinking', new RelinkingTool());
 
     // Activate default tools
     this.toolManager.activateTool('clickSelecting');
@@ -549,6 +554,25 @@ export class Diagram {
     return this.parts.get(key);
   }
 
+  /** Show a temporary link preview (used by linking tools). */
+  showTempLink(from: { x: number; y: number }, to: { x: number; y: number }): void {
+    this.tempLink = { from, to };
+    this.invalidate();
+  }
+
+  /** Hide the temporary link preview. */
+  hideTempLink(): void {
+    if (this.tempLink) {
+      this.tempLink = null;
+      this.invalidate();
+    }
+  }
+
+  /** Get the current temporary link, or null. */
+  getTempLink(): { from: { x: number; y: number }; to: { x: number; y: number } } | null {
+    return this.tempLink;
+  }
+
   /** Get mouse position in diagram coordinates. */
   getDiagramPoint(e: MouseEvent): { x: number; y: number } {
     const rect = this.canvas.getBoundingClientRect();
@@ -739,6 +763,20 @@ export class Diagram {
         }
       }
 
+      ctx.restore();
+    }
+
+    // Render temporary link preview (on top of everything)
+    if (this.tempLink) {
+      ctx.save();
+      ctx.strokeStyle = '#2196f3';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(this.tempLink.from.x, this.tempLink.from.y);
+      ctx.lineTo(this.tempLink.to.x, this.tempLink.to.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
       ctx.restore();
     }
 

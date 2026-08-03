@@ -118,6 +118,36 @@ export class GraphLinksModel extends Model {
     linkData[this.linkKeyProperty] = key;
   }
 
+  /** Get a property from a link. */
+  getLinkProperty(key: NodeKey, propertyName: string): unknown {
+    const linkData = this.getLinkData(key);
+    if (!linkData) return undefined;
+    return linkData[propertyName];
+  }
+
+  /** Set a property on a link. */
+  setLinkProperty(key: NodeKey, propertyName: string, value: unknown): void {
+    const linkData = this.getLinkData(key);
+    if (!linkData) return;
+
+    const oldValue = linkData[propertyName];
+    linkData[propertyName] = value;
+
+    this.emit({
+      type: 'property Changed',
+      model: this,
+      propertyName,
+      oldValue,
+      newValue: value,
+      link: linkData,
+    });
+  }
+
+  /** Get a link data object by key. */
+  getLinkData(key: NodeKey): LinkData | undefined {
+    return this.linkDataArray.find((l) => this.getLinkKey(l) === key);
+  }
+
   /** Generate a unique link key. */
   private generateLinkKey(): NodeKey {
     return this.linkKeyCounter++;

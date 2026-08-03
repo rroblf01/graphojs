@@ -1,6 +1,15 @@
 import type { Diagram } from '../diagram/Diagram.ts';
 import type { NodeData, NodeKey } from '../model/Model.ts';
-import { RemoveNodeCommand, RemoveLinkCommand, AddNodeCommand } from '../undo/commands.ts';
+import { Node } from '../parts/Node.ts';
+import { Rect } from '../geometry/Rect.ts';
+import {
+  RemoveNodeCommand,
+  RemoveLinkCommand,
+  AddNodeCommand,
+  SetNodePropertyCommand,
+} from '../undo/commands.ts';
+
+export type Alignment = 'left' | 'right' | 'top' | 'bottom' | 'centerH' | 'centerV';
 
 /**
  * Handles high-level editing commands for a diagram.
@@ -198,6 +207,156 @@ export class CommandHandler {
   /** Clear the clipboard. */
   clearClipboard(): void {
     this.clipboard = [];
+  }
+
+  /** Get the selected nodes for alignment operations. */
+  private getSelectedNodes(): Node[] {
+    return this.diagram.getSelectedParts().filter((p): p is Node => p instanceof Node);
+  }
+
+  /** Set a node's position preserving its size. */
+  private setNodePos(node: Node, x: number, y: number): void {
+    node.bounds = new Rect(x, y, node.bounds.width, node.bounds.height);
+  }
+
+  /** Align selected nodes (needs at least 2). Returns true if aligned. */
+  align(alignment: Alignment): boolean {
+    const nodes = this.getSelectedNodes();
+    if (nodes.length < 2) return false;
+
+    const model = this.diagram.getModel();
+    const undoManager = this.diagram.getUndoManager();
+
+    // Compute target positions
+    let targetX: number | null = null;
+    let targetY: number | null = null;
+    const first = nodes[0];
+    if (!first) return false;
+
+    switch (alignment) {
+      case 'left':
+        targetX = Math.min(...nodes.map((n) => n.bounds.x));
+        break;
+      case 'right':
+        targetX = Math.max(...nodes.map((n) => n.bounds.right)) - first.bounds.width;
+        break;
+      case 'top':
+        targetY = Math.min(...nodes.map((n) => n.bounds.y));
+        break;
+      case 'bottom':
+        targetY = Math.max(...nodes.map((n) => n.bounds.bottom)) - first.bounds.height;
+        break;
+      case 'centerH': {
+        const minX = Math.min(...nodes.map((n) => n.bounds.x));
+        const maxX = Math.max(...nodes.map((n) => n.bounds.right));
+        const center = (minX + maxX) / 2;
+        undoManager.beginTransaction(`Align centerH (${nodes.length} nodes)`);
+        for (const node of nodes) {
+          const newX = center - node.bounds.width / 2;
+          this.setNodePos(node, newX, node.bounds.y);
+          undoManager.execute(new SetNodePropertyCommand(model, node.key, 'x', newX));
+        }
+        undoManager.commitTransaction();
+        this.diagram.invalidate();
+        return true;
+      }
+      case 'centerV': {
+        const minY = Math.min(...nodes.map((n) => n.bounds.y));
+        const maxY = Math.max(...nodes.map((n) => n.bounds.bottom));
+        const center = (minY + maxY) / 2;
+        undoManager.beginTransaction(`Align centerV (${nodes.length} nodes)`);
+        for (const node of nodes) {
+          const newY = center - node.bounds.height / 2;
+          this.setNodePos(node, node.bounds.x, newY);
+          undoManager.execute(new SetNodePropertyCommand(model, node.key, 'y', newY));
+        }
+        undoManager.commitTransaction();
+        this.diagram.invalidate();
+        return true;
+      }
+    }
+
+    if (targetX !== null || targetY !== null) {
+      undoManager.beginTransaction(`Align ${alignment} (${nodes.length} nodes)`);
+      for (const node of nodes) {
+        if (targetX !== null) {
+          this.setNodePos(node, targetX, node.bounds.y);
+          undoManager.execute(new SetNodePropertyCommand(model, node.key, 'x', targetX));
+        }
+        if (targetY !== null) {
+          this.setNodePos(node, node.bounds.x, targetY);
+          undoManager.execute(new SetNodePropertyCommand(model, node.key, 'y', targetY));
+        }
+      }
+      undoManager.commitTransaction();
+      this.diagram.invalidate();
+    }
+
+    return true;
+  }
+
+  /** Distribute selected nodes evenly along the horizontal axis. Returns true if done. */
+  distributeHorizontally(): boolean {
+    const nodes = this.getSelectedNodes();
+    if (nodes.length < 3) return false;
+
+    const sorted = [...nodes].sort((a, b) => a.bounds.x - b.bounds.x);
+    const first = sorted[0];
+    const last = sorted[sorted.length - 1];
+    if (!first || !last) return false;
+
+    const left = first.bounds.x;
+    const right = last.bounds.right;
+    const totalWidth = right - left;
+    const totalNodeWidth = sorted.reduce((sum, n) => sum + n.bounds.width, 0);
+    const gap = (totalWidth - totalNodeWidth) / (sorted.length - 1);
+
+    const model = this.diagram.getModel();
+    const undoManager = this.diagram.getUndoManager();
+    undoManager.beginTransaction(`Distribute horizontally (${nodes.length} nodes)`);
+
+    let cursor = left;
+    for (const node of sorted) {
+      this.setNodePos(node, cursor, node.bounds.y);
+      undoManager.execute(new SetNodePropertyCommand(model, node.key, 'x', cursor));
+      cursor += node.bounds.width + gap;
+    }
+
+    undoManager.commitTransaction();
+    this.diagram.invalidate();
+    return true;
+  }
+
+  /** Distribute selected nodes evenly along the vertical axis. Returns true if done. */
+  distributeVertically(): boolean {
+    const nodes = this.getSelectedNodes();
+    if (nodes.length < 3) return false;
+
+    const sorted = [...nodes].sort((a, b) => a.bounds.y - b.bounds.y);
+    const first = sorted[0];
+    const last = sorted[sorted.length - 1];
+    if (!first || !last) return false;
+
+    const top = first.bounds.y;
+    const bottom = last.bounds.bottom;
+    const totalHeight = bottom - top;
+    const totalNodeHeight = sorted.reduce((sum, n) => sum + n.bounds.height, 0);
+    const gap = (totalHeight - totalNodeHeight) / (sorted.length - 1);
+
+    const model = this.diagram.getModel();
+    const undoManager = this.diagram.getUndoManager();
+    undoManager.beginTransaction(`Distribute vertically (${nodes.length} nodes)`);
+
+    let cursor = top;
+    for (const node of sorted) {
+      this.setNodePos(node, node.bounds.x, cursor);
+      undoManager.execute(new SetNodePropertyCommand(model, node.key, 'y', cursor));
+      cursor += node.bounds.height + gap;
+    }
+
+    undoManager.commitTransaction();
+    this.diagram.invalidate();
+    return true;
   }
 }
 

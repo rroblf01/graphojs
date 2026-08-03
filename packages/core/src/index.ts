@@ -116,6 +116,7 @@ export {
 
 // Command System
 export { CommandHandler, createCommandHandler } from './command/CommandHandler.ts';
+export type { Alignment } from './command/CommandHandler.ts';
 
 // Animations
 export { Animation } from './animation/Animation.ts';

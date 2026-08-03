@@ -18,3 +18,18 @@ export type {
   ModelJSON,
 } from './model/Model.ts';
 export type { GraphLinksModelJSON } from './model/GraphLinksModel.ts';
+
+// Parts
+export { Part } from './parts/Part.ts';
+export { Node } from './parts/Node.ts';
+export { Link } from './parts/Link.ts';
+export type { NodeShape } from './parts/Node.ts';
+export type { LinkRouting } from './parts/Link.ts';
+
+// Render
+export type { Renderer } from './render/Renderer.ts';
+export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';
+
+// Diagram
+export { Diagram } from './diagram/Diagram.ts';
+export type { DiagramOptions } from './diagram/Diagram.ts';

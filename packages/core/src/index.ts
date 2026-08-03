@@ -92,6 +92,9 @@ export {
   MoveNodeCommand,
 } from './undo/commands.ts';
 
+// Command System
+export { CommandHandler, createCommandHandler } from './command/CommandHandler.ts';
+
 // Animations
 export { Animation } from './animation/Animation.ts';
 export type { AnimationOptions } from './animation/Animation.ts';

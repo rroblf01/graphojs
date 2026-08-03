@@ -20,6 +20,7 @@ import { ZoomingTool } from '../tool/ZoomingTool.ts';
 import { UndoManager } from '../undo/UndoManager.ts';
 import type { Command } from '../undo/Command.ts';
 import { AnimationManager } from '../animation/AnimationManager.ts';
+import { CommandHandler } from '../command/CommandHandler.ts';
 
 export interface DiagramOptions {
   /** The container element for the diagram. */
@@ -69,6 +70,7 @@ export class Diagram {
   private layers: Layer[];
   private contextMenu: ContextMenu | null = null;
   private animationManager: AnimationManager = new AnimationManager();
+  private commandHandler: CommandHandler;
 
   constructor(options: DiagramOptions) {
     this.container = options.div;
@@ -100,6 +102,9 @@ export class Diagram {
 
     // Create undo manager
     this.undoManager = new UndoManager();
+
+    // Create command handler
+    this.commandHandler = new CommandHandler(this);
 
     // Create layers
     this.layers = createDefaultLayers();
@@ -138,6 +143,11 @@ export class Diagram {
   /** Get the animation manager. */
   getAnimationManager(): AnimationManager {
     return this.animationManager;
+  }
+
+  /** Get the command handler. */
+  getCommandHandler(): CommandHandler {
+    return this.commandHandler;
   }
 
   /** Execute an undoable command. */
@@ -182,6 +192,44 @@ export class Diagram {
     }
   }
 
+  /** Handle keyboard shortcuts. */
+  private handleKeyDown(e: KeyboardEvent): void {
+    const target = e.target as HTMLElement;
+    // Don't intercept when editing text
+    if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+      return;
+    }
+
+    const ctrlOrCmd = e.ctrlKey || e.metaKey;
+
+    if (ctrlOrCmd && e.key === 'z') {
+      e.preventDefault();
+      if (e.shiftKey) {
+        this.commandHandler.redo();
+      } else {
+        this.commandHandler.undo();
+      }
+    } else if (ctrlOrCmd && e.key === 'y') {
+      e.preventDefault();
+      this.commandHandler.redo();
+    } else if (ctrlOrCmd && e.key === 'c') {
+      e.preventDefault();
+      this.commandHandler.copySelection();
+    } else if (ctrlOrCmd && e.key === 'x') {
+      e.preventDefault();
+      this.commandHandler.cutSelection();
+    } else if (ctrlOrCmd && e.key === 'v') {
+      e.preventDefault();
+      this.commandHandler.pasteClipboard();
+    } else if (ctrlOrCmd && e.key === 'a') {
+      e.preventDefault();
+      this.commandHandler.selectAll();
+    } else if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      this.commandHandler.deleteSelection();
+    }
+  }
+
   /** Set up DOM event listeners. */
   private setupEventListeners(): void {
     this.canvas.addEventListener('wheel', (e) => this.toolManager.handleMouseWheel(e), {
@@ -194,6 +242,9 @@ export class Diagram {
     this.canvas.addEventListener('click', (e) => this.toolManager.handleClick(e));
     this.canvas.addEventListener('dblclick', (e) => this.handleDoubleClick(e));
     this.canvas.addEventListener('contextmenu', (e) => this.handleContextMenu(e));
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => this.handleKeyDown(e));
 
     // Resize observer
     const resizeObserver = new ResizeObserver(() => {

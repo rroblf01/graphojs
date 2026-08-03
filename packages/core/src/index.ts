@@ -98,6 +98,8 @@ export {
   AddLinkCommand,
   RemoveLinkCommand,
   MoveNodeCommand,
+  SetLinkPropertyCommand,
+  ResizeNodeCommand,
 } from './undo/commands.ts';
 
 // Command System

@@ -1,4 +1,5 @@
 import { Node } from '../parts/Node.ts';
+import { MoveNodeCommand } from '../undo/commands.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -60,26 +61,18 @@ export class DraggingTool extends Tool {
     const diagram = this.diagram;
     if (!diagram) return;
 
-    // Move all dragged nodes
-    for (const [keyStr] of this.nodeOrigin) {
-      const nodeData = diagram
-        .getModel()
-        .getNodeDataArray()
-        .find((n) => {
-          const k = diagram.getModel().getNodeKey(n);
-          return String(k) === keyStr;
-        });
-
-      if (nodeData) {
-        const node = diagram.getPart(diagram.getModel().getNodeKey(nodeData));
-        if (node) {
-          node.bounds = node.bounds.offset(dx, dy);
-        }
+    // Move all dragged nodes visually
+    for (const [keyStr, origin] of this.nodeOrigin) {
+      const node = this.getNodeByKeyStr(keyStr);
+      if (node) {
+        node.bounds = {
+          x: origin.x + dx,
+          y: origin.y + dy,
+          width: node.bounds.width,
+          height: node.bounds.height,
+        } as never;
       }
     }
-
-    // Update positions in model
-    this.updateModelPositions(dx, dy);
 
     diagram.invalidate();
   }
@@ -88,30 +81,48 @@ export class DraggingTool extends Tool {
     if (!this._isDragging) return;
 
     this._isDragging = false;
+
+    // Persist positions to the model as undoable commands
+    const diagram = this.diagram;
+    if (diagram) {
+      const model = diagram.getModel();
+      const undoManager = diagram.getUndoManager();
+      const moved: Array<{ keyStr: string; origin: { x: number; y: number } }> = [];
+
+      for (const [keyStr, origin] of this.nodeOrigin) {
+        const node = this.getNodeByKeyStr(keyStr);
+        if (node) {
+          const dx = node.bounds.x - origin.x;
+          const dy = node.bounds.y - origin.y;
+          if (dx !== 0 || dy !== 0) {
+            moved.push({ keyStr, origin });
+          }
+        }
+      }
+
+      if (moved.length > 0) {
+        undoManager.beginTransaction('Drag nodes');
+        for (const { keyStr } of moved) {
+          const node = this.getNodeByKeyStr(keyStr);
+          if (node) {
+            const key = Number(keyStr) || keyStr;
+            undoManager.execute(new MoveNodeCommand(model, key, node.bounds.x, node.bounds.y));
+          }
+        }
+        undoManager.commitTransaction();
+      }
+    }
+
     this.nodeOrigin.clear();
     const canvas = this.diagram?.getRenderer().getCanvas();
     if (canvas) canvas.style.cursor = 'default';
   }
 
-  private updateModelPositions(dx: number, dy: number): void {
+  private getNodeByKeyStr(keyStr: string): Node | null {
     const diagram = this.diagram;
-    if (!diagram) return;
-
-    const model = diagram.getModel();
-
-    for (const [keyStr, origin] of this.nodeOrigin) {
-      const key = Number(keyStr) || keyStr;
-      const newX = origin.x + dx;
-      const newY = origin.y + dy;
-
-      // Update model data
-      for (const nodeData of model.getNodeDataArray()) {
-        if (model.getNodeKey(nodeData) === key) {
-          nodeData.x = newX;
-          nodeData.y = newY;
-          break;
-        }
-      }
-    }
+    if (!diagram) return null;
+    const key = Number(keyStr) || keyStr;
+    const part = diagram.getPart(key);
+    return part instanceof Node ? part : null;
   }
 }

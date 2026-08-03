@@ -1,4 +1,5 @@
 import { Node } from '../parts/Node.ts';
+import { SetNodePropertyCommand } from '../undo/commands.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -67,13 +68,15 @@ export class RotatingTool extends Tool {
   override doMouseUp(_e: MouseEvent): void {
     if (!this._isRotating || !this._node) return;
 
-    // Persist angle to model
+    // Persist angle to model as an undoable command
     const diagram = this.diagram;
     if (diagram) {
       const node = this._node;
       const model = diagram.getModel();
       if (model.containsNode(node.key)) {
-        model.setNodeProperty(node.key, 'angle', node.angle);
+        diagram
+          .getUndoManager()
+          .execute(new SetNodePropertyCommand(model, node.key, 'angle', node.angle));
       }
     }
 

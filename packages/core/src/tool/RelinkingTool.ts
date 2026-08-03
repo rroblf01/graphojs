@@ -1,5 +1,6 @@
 import { Node } from '../parts/Node.ts';
 import { Link } from '../parts/Link.ts';
+import { SetLinkPropertyCommand } from '../undo/commands.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -92,7 +93,10 @@ export class RelinkingTool extends Tool {
     const newValue = newEnd.key;
     if (linkData[propertyName] === newValue) return false;
 
-    model.setLinkProperty(linkKey, propertyName, newValue);
+    // Execute as an undoable command
+    diagram
+      .getUndoManager()
+      .execute(new SetLinkPropertyCommand(model, linkKey, propertyName, newValue));
     return true;
   }
 

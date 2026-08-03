@@ -1,5 +1,6 @@
 import { Node } from '../parts/Node.ts';
 import type { LinkData } from '../model/Model.ts';
+import { AddLinkCommand } from '../undo/commands.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -103,7 +104,8 @@ export class LinkingTool extends Tool {
     }
 
     try {
-      model.addLink(linkData);
+      // Execute as an undoable command
+      diagram.getUndoManager().execute(new AddLinkCommand(model, linkData));
       return true;
     } catch {
       return false;

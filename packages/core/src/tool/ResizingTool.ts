@@ -1,4 +1,5 @@
 import { Node } from '../parts/Node.ts';
+import { ResizeNodeCommand } from '../undo/commands.ts';
 import { Tool } from './Tool.ts';
 
 export type ResizeHandle = 'nw' | 'ne' | 'sw' | 'se' | 'n' | 's' | 'e' | 'w';
@@ -160,16 +161,24 @@ export class ResizingTool extends Tool {
   override doMouseUp(_e: MouseEvent): void {
     if (!this._isResizing || !this._node) return;
 
-    // Persist new bounds to the model
+    // Persist new bounds to the model as an undoable command
     const diagram = this.diagram;
     if (diagram) {
       const node = this._node;
       const model = diagram.getModel();
       if (model.containsNode(node.key)) {
-        model.setNodeProperty(node.key, 'x', node.bounds.x);
-        model.setNodeProperty(node.key, 'y', node.bounds.y);
-        model.setNodeProperty(node.key, 'width', node.bounds.width);
-        model.setNodeProperty(node.key, 'height', node.bounds.height);
+        diagram
+          .getUndoManager()
+          .execute(
+            new ResizeNodeCommand(
+              model,
+              node.key,
+              node.bounds.x,
+              node.bounds.y,
+              node.bounds.width,
+              node.bounds.height,
+            ),
+          );
       }
     }
 

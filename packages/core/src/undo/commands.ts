@@ -107,7 +107,7 @@ export class AddLinkCommand implements Command {
   }
 
   execute(): void {
-    this.model.addLink({ ...this.linkData });
+    this.model.addLink(this.linkData);
   }
 
   undo(): void {
@@ -194,5 +194,99 @@ export class MoveNodeCommand implements Command {
 
   describe(): string {
     return `Move node ${String(this.nodeKey)} to (${this.newX}, ${this.newY})`;
+  }
+}
+
+/**
+ * Command to change a link property.
+ */
+export class SetLinkPropertyCommand implements Command {
+  private model: GraphLinksModel;
+  private linkKey: string | number;
+  private propertyName: string;
+  private newValue: unknown;
+  private oldValue: unknown = undefined;
+
+  constructor(
+    model: GraphLinksModel,
+    linkKey: string | number,
+    propertyName: string,
+    newValue: unknown,
+  ) {
+    this.model = model;
+    this.linkKey = linkKey;
+    this.propertyName = propertyName;
+    this.newValue = newValue;
+  }
+
+  execute(): void {
+    this.oldValue = this.model.getLinkProperty(this.linkKey, this.propertyName);
+    this.model.setLinkProperty(this.linkKey, this.propertyName, this.newValue);
+  }
+
+  undo(): void {
+    this.model.setLinkProperty(this.linkKey, this.propertyName, this.oldValue);
+  }
+
+  describe(): string {
+    return `Set ${this.propertyName} on link ${String(this.linkKey)}`;
+  }
+}
+
+/**
+ * Command to resize a node.
+ */
+export class ResizeNodeCommand implements Command {
+  private model: GraphLinksModel;
+  private nodeKey: string | number;
+  private newX: number;
+  private newY: number;
+  private newWidth: number;
+  private newHeight: number;
+  private initialized = false;
+  private oldX = 0;
+  private oldY = 0;
+  private oldWidth = 0;
+  private oldHeight = 0;
+
+  constructor(
+    model: GraphLinksModel,
+    nodeKey: string | number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) {
+    this.model = model;
+    this.nodeKey = nodeKey;
+    this.newX = x;
+    this.newY = y;
+    this.newWidth = width;
+    this.newHeight = height;
+  }
+
+  execute(): void {
+    if (!this.initialized) {
+      this.oldX = (this.model.getNodeProperty(this.nodeKey, 'x') as number) ?? 0;
+      this.oldY = (this.model.getNodeProperty(this.nodeKey, 'y') as number) ?? 0;
+      this.oldWidth = (this.model.getNodeProperty(this.nodeKey, 'width') as number) ?? 100;
+      this.oldHeight = (this.model.getNodeProperty(this.nodeKey, 'height') as number) ?? 50;
+      this.initialized = true;
+    }
+    this.model.setNodeProperty(this.nodeKey, 'x', this.newX);
+    this.model.setNodeProperty(this.nodeKey, 'y', this.newY);
+    this.model.setNodeProperty(this.nodeKey, 'width', this.newWidth);
+    this.model.setNodeProperty(this.nodeKey, 'height', this.newHeight);
+  }
+
+  undo(): void {
+    this.model.setNodeProperty(this.nodeKey, 'x', this.oldX);
+    this.model.setNodeProperty(this.nodeKey, 'y', this.oldY);
+    this.model.setNodeProperty(this.nodeKey, 'width', this.oldWidth);
+    this.model.setNodeProperty(this.nodeKey, 'height', this.oldHeight);
+  }
+
+  describe(): string {
+    return `Resize node ${String(this.nodeKey)} to ${this.newWidth}x${this.newHeight}`;
   }
 }

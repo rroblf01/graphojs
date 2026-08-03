@@ -4,10 +4,12 @@ import { ResizingTool } from '../../src/tool/ResizingTool.ts';
 import { RotatingTool } from '../../src/tool/RotatingTool.ts';
 import { Node } from '../../src/parts/Node.ts';
 import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
+import { UndoManager } from '../../src/undo/UndoManager.ts';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
 
 function createMockDiagram(node: Node): Diagram {
   const model = new GraphLinksModel();
+  const undoManager = new UndoManager();
   model.addNode({
     key: node.key,
     x: node.bounds.x,
@@ -17,6 +19,7 @@ function createMockDiagram(node: Node): Diagram {
   });
   return {
     getModel: () => model,
+    getUndoManager: () => undoManager,
     getDiagramPoint: () => ({ x: 0, y: 0 }),
     findPartAt: (x: number, y: number) => (node.containsPoint({ x, y }) ? node : null),
     getPart: () => node,

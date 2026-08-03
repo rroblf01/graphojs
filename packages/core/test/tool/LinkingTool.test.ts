@@ -5,10 +5,12 @@ import { RelinkingTool } from '../../src/tool/RelinkingTool.ts';
 import { Node } from '../../src/parts/Node.ts';
 import { Link } from '../../src/parts/Link.ts';
 import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
+import { UndoManager } from '../../src/undo/UndoManager.ts';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
 
 function createMockDiagram(): Diagram {
   const model = new GraphLinksModel();
+  const undoManager = new UndoManager();
   model.addNode({ key: 1, x: 0, y: 0, width: 100, height: 50 });
   model.addNode({ key: 2, x: 200, y: 0, width: 100, height: 50 });
   model.addNode({ key: 3, x: 200, y: 200, width: 100, height: 50 });
@@ -21,6 +23,7 @@ function createMockDiagram(): Diagram {
 
   return {
     getModel: () => model,
+    getUndoManager: () => undoManager,
     getDiagramPoint: () => ({ x: 0, y: 0 }),
     findPartAt: (x: number, y: number) => {
       for (const n of nodes) {

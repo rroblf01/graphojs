@@ -1,4 +1,5 @@
 import type { Rect } from '../geometry/Rect.ts';
+import { Rect as RectClass } from '../geometry/Rect.ts';
 import type { Group } from '../parts/Group.ts';
 import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
@@ -14,6 +15,8 @@ export class Canvas2DRenderer implements Renderer {
   private offsetX = 0;
   private offsetY = 0;
   private devicePixelRatio = 1;
+  private dirtyRects: RectClass[] = [];
+  private useDirtyRects = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -48,8 +51,60 @@ export class Canvas2DRenderer implements Renderer {
   }
 
   clear(): void {
+    if (this.useDirtyRects && this.dirtyRects.length > 0) {
+      // Only clear the dirty regions
+      for (const rect of this.dirtyRects) {
+        this.ctx.clearRect(rect.x, rect.y, rect.width, rect.height);
+      }
+      this.dirtyRects = [];
+      return;
+    }
     const rect = this.canvas.getBoundingClientRect();
     this.ctx.clearRect(0, 0, rect.width, rect.height);
+  }
+
+  /** Enable dirty-rectangle rendering. */
+  enableDirtyRects(): void {
+    this.useDirtyRects = true;
+  }
+
+  /** Disable dirty-rectangle rendering (full clear each frame). */
+  disableDirtyRects(): void {
+    this.useDirtyRects = false;
+    this.dirtyRects = [];
+  }
+
+  /** Check whether dirty-rectangle rendering is enabled. */
+  isDirtyRectEnabled(): boolean {
+    return this.useDirtyRects;
+  }
+
+  /** Add a dirty rectangle in diagram coordinates (converted to screen space). */
+  markDirty(x: number, y: number, width: number, height: number): void {
+    if (!this.useDirtyRects) return;
+
+    // Convert to screen coordinates
+    const sx = (x - this.offsetX) * this.scale;
+    const sy = (y - this.offsetY) * this.scale;
+    const sw = width * this.scale;
+    const sh = height * this.scale;
+
+    this.dirtyRects.push(new RectClass(sx, sy, sw, sh));
+  }
+
+  /** Mark an entire part's bounds as dirty. */
+  markDirtyRect(bounds: Rect): void {
+    this.markDirty(bounds.x, bounds.y, bounds.width, bounds.height);
+  }
+
+  /** Get the number of pending dirty rectangles. */
+  get dirtyRectCount(): number {
+    return this.dirtyRects.length;
+  }
+
+  /** Clear all pending dirty rectangles without clearing the canvas. */
+  clearDirtyRects(): void {
+    this.dirtyRects = [];
   }
 
   renderNode(node: Node): void {

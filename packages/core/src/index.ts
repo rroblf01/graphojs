@@ -117,6 +117,9 @@ export { QuadTree } from './spatial/QuadTree.ts';
 export { PartPool } from './spatial/PartPool.ts';
 export { VirtualizationManager } from './spatial/VirtualizationManager.ts';
 
+// Rendering Optimizations
+export { LayerCache, createLayerCache } from './render/LayerCache.ts';
+
 // Shapes
 export type { ShapeType, ShapeDefinition } from './shapes/ShapeTypes.ts';
 export {

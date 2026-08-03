@@ -116,6 +116,15 @@ export class Canvas2DRenderer implements Renderer {
 
     const { x, y, width, height } = node.bounds;
 
+    // Apply rotation around the node center
+    if (node.angle !== 0) {
+      const cx = x + width / 2;
+      const cy = y + height / 2;
+      this.ctx.translate(cx, cy);
+      this.ctx.rotate((node.angle * Math.PI) / 180);
+      this.ctx.translate(-cx, -cy);
+    }
+
     // If the node has a panel, render it instead of the flat representation
     const panel = node.panel;
     if (panel) {
@@ -160,9 +169,56 @@ export class Canvas2DRenderer implements Renderer {
       this.ctx.setLineDash([4, 4]);
       this.ctx.strokeRect(x - 2, y - 2, width + 4, height + 4);
       this.ctx.setLineDash([]);
+      this.renderSelectionHandles(x, y, width, height);
     }
 
     this.ctx.restore();
+  }
+
+  /** Render resize handles and rotation handle for a selected node. */
+  renderSelectionHandles(x: number, y: number, width: number, height: number): void {
+    const size = 8;
+    const half = size / 2;
+
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.strokeStyle = '#2196f3';
+    this.ctx.lineWidth = 1;
+
+    const corners: Array<[number, number]> = [
+      [x, y],
+      [x + width, y],
+      [x, y + height],
+      [x + width, y + height],
+    ];
+    for (const [hx, hy] of corners) {
+      this.ctx.fillRect(hx - half, hy - half, size, size);
+      this.ctx.strokeRect(hx - half, hy - half, size, size);
+    }
+
+    // Edge handles
+    const edges: Array<[number, number]> = [
+      [x + width / 2, y],
+      [x + width / 2, y + height],
+      [x, y + height / 2],
+      [x + width, y + height / 2],
+    ];
+    for (const [hx, hy] of edges) {
+      this.ctx.fillRect(hx - half, hy - half, size, size);
+      this.ctx.strokeRect(hx - half, hy - half, size, size);
+    }
+
+    // Rotation handle (above the top-center)
+    const rx = x + width / 2;
+    const ry = y - 20;
+    this.ctx.beginPath();
+    this.ctx.arc(rx, ry, 5, 0, 2 * Math.PI);
+    this.ctx.fill();
+    this.ctx.stroke();
+    // Stem connecting rotation handle to the node
+    this.ctx.beginPath();
+    this.ctx.moveTo(rx, ry + 5);
+    this.ctx.lineTo(rx, y);
+    this.ctx.stroke();
   }
 
   /** Render a panel at the given position and size. */

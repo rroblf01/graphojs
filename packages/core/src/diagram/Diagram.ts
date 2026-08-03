@@ -16,6 +16,8 @@ import { DraggingTool } from '../tool/DraggingTool.ts';
 import { LinkingTool } from '../tool/LinkingTool.ts';
 import { PanningTool } from '../tool/PanningTool.ts';
 import { RelinkingTool } from '../tool/RelinkingTool.ts';
+import { ResizingTool } from '../tool/ResizingTool.ts';
+import { RotatingTool } from '../tool/RotatingTool.ts';
 import { TextEditingTool } from '../tool/TextEditingTool.ts';
 import { ToolManager } from '../tool/ToolManager.ts';
 import { ZoomingTool } from '../tool/ZoomingTool.ts';
@@ -140,11 +142,15 @@ export class Diagram {
     this.toolManager.registerTool('textEditing', new TextEditingTool());
     this.toolManager.registerTool('linking', new LinkingTool());
     this.toolManager.registerTool('relinking', new RelinkingTool());
+    this.toolManager.registerTool('resizing', new ResizingTool());
+    this.toolManager.registerTool('rotating', new RotatingTool());
 
     // Activate default tools
     this.toolManager.activateTool('clickSelecting');
     this.toolManager.activateTool('dragging');
     this.toolManager.activateTool('zooming');
+    this.toolManager.activateTool('resizing');
+    this.toolManager.activateTool('rotating');
   }
 
   /** Get the tool manager. */

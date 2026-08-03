@@ -18,6 +18,7 @@ export abstract class Part {
   private _stroke = '#333333';
   private _strokeWidth = 1;
   private _zOrder = 0;
+  private _angle = 0;
   private _containingGroup: Group | null = null;
   private _bindings: Binding[] = [];
   private _layer: Layer | null = null;
@@ -101,6 +102,15 @@ export abstract class Part {
 
   set zOrder(value: number) {
     this._zOrder = value;
+  }
+
+  /** The rotation angle in degrees. */
+  get angle(): number {
+    return this._angle;
+  }
+
+  set angle(value: number) {
+    this._angle = value;
   }
 
   /** Get the containing group, or null if top-level. */

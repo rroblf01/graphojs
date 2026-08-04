@@ -1,13 +1,17 @@
 import type { Diagram } from '../diagram/Diagram.ts';
 import { Node } from '../parts/Node.ts';
+import { Panel } from '../panel/Panel.ts';
+import { TextBlock } from '../panel/TextBlock.ts';
 import { Tool } from './Tool.ts';
 
 /**
- * Tool for editing node labels in place.
- * Double-clicking a node shows an HTML input overlay for editing its label.
+ * Tool for editing text in place (GoJS-compatible).
+ * Double-clicking a node with an `editable` TextBlock in its visual tree
+ * shows an HTML input overlay for editing that TextBlock's text.
  */
 export class TextEditingTool extends Tool {
   private input: HTMLInputElement | null = null;
+  private textBlock: TextBlock | null = null;
   private node: Node | null = null;
   private _isEditing = false;
 
@@ -21,13 +25,41 @@ export class TextEditingTool extends Tool {
     return this.node;
   }
 
-  /** Start editing the label of a node. */
+  /** Get the TextBlock currently being edited, or null. */
+  get editingTextBlock(): TextBlock | null {
+    return this.textBlock;
+  }
+
+  /** Find the first editable TextBlock in a node's visual tree. */
+  findEditableTextBlock(node: Node): TextBlock | null {
+    const panel = node.panel;
+    if (!panel) return null;
+    return this.findEditableInPanel(panel);
+  }
+
+  private findEditableInPanel(panel: Panel): TextBlock | null {
+    for (const el of panel.elements) {
+      if (el instanceof TextBlock && el.editable) {
+        return el;
+      }
+      if (el instanceof Panel) {
+        const found = this.findEditableInPanel(el);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  /** Start editing the text of a node (its editable TextBlock or its label). */
   editNode(node: Node): void {
     const diagram = this.diagram;
     if (!diagram || this._isEditing) return;
     if (!node.selectable) return;
 
+    // Prefer an editable TextBlock in the visual tree; fall back to the node label
+    const textBlock = this.findEditableTextBlock(node);
     this.node = node;
+    this.textBlock = textBlock;
     this.showEditor(diagram);
     this._isEditing = true;
   }
@@ -40,21 +72,46 @@ export class TextEditingTool extends Tool {
     const value = this.input.value;
 
     if (commit && diagram) {
-      const key = this.node.key;
-      const model = diagram.getModel();
-      if (model.getNodeData(key)) {
-        // Update model (triggers sync + re-render)
-        model.setNodeProperty(key, 'label', value);
+      if (this.textBlock) {
+        this.commitTextBlock(diagram, this.node, this.textBlock, value);
       } else {
-        // Fallback: update the part directly
-        this.node.label = value;
-        diagram.invalidate();
+        this.commitNodeLabel(diagram, this.node, value);
       }
     }
 
     this.hideEditor();
     this._isEditing = false;
     this.node = null;
+    this.textBlock = null;
+  }
+
+  /** Commit an edited TextBlock back to the model when it has a source binding. */
+  private commitTextBlock(diagram: Diagram, node: Node, textBlock: TextBlock, value: string): void {
+    textBlock.text = value;
+    diagram.invalidate();
+
+    // If the TextBlock has a binding to a model property, write the value back
+    for (const binding of textBlock.bindings) {
+      if (binding.targetProperty === 'text') {
+        const nodeData = node.data;
+        if (nodeData) {
+          diagram.getModel().setDataProperty(nodeData, binding.sourceProperty, value);
+        }
+        return;
+      }
+    }
+  }
+
+  /** Commit a node label edit to the model. */
+  private commitNodeLabel(diagram: Diagram, node: Node, value: string): void {
+    const key = node.key;
+    const model = diagram.getModel();
+    if (model.getNodeData(key)) {
+      model.setNodeProperty(key, 'label', value);
+    } else {
+      node.label = value;
+      diagram.invalidate();
+    }
   }
 
   /** Cancel editing without committing. */
@@ -62,26 +119,27 @@ export class TextEditingTool extends Tool {
     this.stopEditing(false);
   }
 
-  /** Show the HTML input overlay over the node's label. */
+  /** Show the HTML input overlay over the target's bounds. */
   private showEditor(diagram: Diagram): void {
     if (!this.node) return;
 
     const canvas = diagram.getRenderer().getCanvas();
     const rect = canvas.getBoundingClientRect();
+    const viewport = diagram.getViewport();
 
-    // Position the input over the node's bounds in screen space
+    // TextBlock bounds are in panel coordinates; use node bounds for the overlay
+    const w = this.node.bounds.width;
+    const h = this.node.bounds.height;
+
     const screen = {
-      x: (this.node.bounds.x - diagram.getViewport().x) * diagram.getViewport().scale,
-      y: (this.node.bounds.y - diagram.getViewport().y) * diagram.getViewport().scale,
+      x: (this.node.bounds.x - viewport.x) * viewport.scale,
+      y: (this.node.bounds.y - viewport.y) * viewport.scale,
     };
-    const size = {
-      width: this.node.bounds.width * diagram.getViewport().scale,
-      height: this.node.bounds.height * diagram.getViewport().scale,
-    };
+    const size = { width: w * viewport.scale, height: h * viewport.scale };
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.value = this.node.label;
+    input.value = this.textBlock ? this.textBlock.text : this.node.label;
     input.className = 'graphojs-text-editing';
     input.style.cssText = `
       position:fixed;
@@ -90,8 +148,8 @@ export class TextEditingTool extends Tool {
       width:${size.width}px;
       height:${size.height}px;
       box-sizing:border-box;
-      font:${this.node.labelFont};
-      color:${this.node.labelColor};
+      font:${this.textBlock?.font ?? this.node.labelFont};
+      color:${this.textBlock?.color ?? this.node.labelColor};
       text-align:center;
       border:2px solid #2196f3;
       outline:none;

@@ -439,4 +439,29 @@ describe('GoJS Compatibility', () => {
       expect(t.text).toBe('RED');
     });
   });
+
+  describe('TextBlock GoJS properties', () => {
+    it('should support stroke as an alias for color', () => {
+      const t = new TextBlock('Hello');
+      t.stroke = 'red';
+      expect(t.color).toBe('red');
+      expect(t.stroke).toBe('red');
+      t.color = 'blue';
+      expect(t.stroke).toBe('blue');
+    });
+
+    it('should support editable flag', () => {
+      const t = new TextBlock('Hello');
+      expect(t.editable).toBe(false);
+      t.editable = true;
+      expect(t.editable).toBe(true);
+    });
+
+    it('should clone editable flag', () => {
+      const t = new TextBlock('Hello');
+      t.editable = true;
+      const clone = t.clone();
+      expect(clone.editable).toBe(true);
+    });
+  });
 });

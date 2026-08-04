@@ -11,6 +11,7 @@ export class TextBlock extends GraphObject {
   private _font = '12px sans-serif';
   private _textAlign: 'left' | 'center' | 'right' = 'center';
   private _multiline = true;
+  private _editable = false;
 
   constructor(text?: string) {
     super();
@@ -31,6 +32,24 @@ export class TextBlock extends GraphObject {
 
   set color(value: string) {
     this._color = value;
+  }
+
+  /** GoJS-compatible: Alias for the text color (GoJS uses `stroke`). */
+  get stroke(): string {
+    return this._color;
+  }
+
+  set stroke(value: string) {
+    this._color = value;
+  }
+
+  /** GoJS-compatible: Whether this text can be edited in-place by the user. */
+  get editable(): boolean {
+    return this._editable;
+  }
+
+  set editable(value: boolean) {
+    this._editable = value;
   }
 
   get font(): string {
@@ -83,6 +102,7 @@ export class TextBlock extends GraphObject {
     cloned._font = this._font;
     cloned._textAlign = this._textAlign;
     cloned._multiline = this._multiline;
+    cloned._editable = this._editable;
     return cloned;
   }
 

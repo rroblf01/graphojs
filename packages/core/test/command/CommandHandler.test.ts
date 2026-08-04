@@ -49,7 +49,7 @@ describe('CommandHandler', () => {
     expect(handler.getDiagram()).toBe(diagram);
     expect(handler.canCopy()).toBe(false);
     expect(handler.canPaste()).toBe(false);
-    expect(handler.getClipboard()).toHaveLength(0);
+    expect(handler.getClipboard().nodes).toHaveLength(0);
   });
 
   it('should select all', () => {
@@ -102,7 +102,7 @@ describe('CommandHandler', () => {
     (diagram.getPart(101) as Node).isSelected = true;
     expect(handler.copySelection()).toBe(true);
     expect(handler.canPaste()).toBe(true);
-    expect(handler.getClipboard()).toHaveLength(1);
+    expect(handler.getClipboard().nodes).toHaveLength(1);
 
     const countBefore = model.getNodeCount();
     expect(handler.pasteClipboard()).toBe(true);
@@ -130,14 +130,14 @@ describe('CommandHandler', () => {
 
     handler.clearClipboard();
     expect(handler.canPaste()).toBe(false);
-    expect(handler.getClipboard()).toHaveLength(0);
+    expect(handler.getClipboard().nodes).toHaveLength(0);
   });
 
   it('should set clipboard', () => {
     const diagram = createMockDiagram();
     const handler = new CommandHandler(diagram);
     handler.setClipboard([{ key: 99, label: 'X' }]);
-    expect(handler.getClipboard()).toHaveLength(1);
+    expect(handler.getClipboard().nodes).toHaveLength(1);
   });
 
   it('should not delete when nothing selected', () => {

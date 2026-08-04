@@ -1,11 +1,13 @@
 import type { Diagram } from '../diagram/Diagram.ts';
 import type { NodeData, NodeKey } from '../model/Model.ts';
 import { Node } from '../parts/Node.ts';
+import { Group } from '../parts/Group.ts';
 import { Rect } from '../geometry/Rect.ts';
 import {
   RemoveNodeCommand,
   RemoveLinkCommand,
   AddNodeCommand,
+  AddLinkCommand,
   SetNodePropertyCommand,
   SetZOrderCommand,
   MoveNodeCommand,
@@ -19,7 +21,12 @@ export type Alignment = 'left' | 'right' | 'top' | 'bottom' | 'centerH' | 'cente
  */
 export class CommandHandler {
   private diagram: Diagram;
-  private clipboard: NodeData[] = [];
+  /** Clipboard contents: copied node data and any connected link data. */
+  private clipboard: { nodes: NodeData[]; links: NodeData[]; oldKeys: unknown[] } = {
+    nodes: [],
+    links: [],
+    oldKeys: [],
+  };
 
   constructor(diagram: Diagram) {
     this.diagram = diagram;
@@ -37,7 +44,7 @@ export class CommandHandler {
 
   /** Whether there is content on the clipboard to paste. */
   canPaste(): boolean {
-    return this.clipboard.length > 0;
+    return this.clipboard.nodes.length > 0;
   }
 
   /** Whether mutating commands are allowed (diagram enabled and not read-only). */
@@ -122,27 +129,42 @@ export class CommandHandler {
     return true;
   }
 
-  /** Copy the selected parts to the clipboard. */
+  /** Copy the selected parts (and their connected links) to the clipboard. */
   copySelection(): boolean {
     const selected = this.diagram.getSelectedParts();
     if (selected.length === 0) return false;
 
     const model = this.diagram.getModel();
-    const nodeData: NodeData[] = [];
+    const nodes: NodeData[] = [];
+    const oldKeys: unknown[] = [];
+    const selectedKeys = new Set<unknown>();
 
     for (const part of selected) {
       if (part.key === undefined) continue;
+      selectedKeys.add(part.key);
       const data = model.getNodeData(part.key);
       if (data) {
         // Remove the key so the pasted copy gets a new one
+        oldKeys.push(data[model.getNodeKeyProperty()]);
         const copy = { ...data };
         delete copy[model.getNodeKeyProperty()];
-        nodeData.push(copy);
+        nodes.push(copy);
       }
     }
 
-    this.clipboard = nodeData;
-    const count = nodeData.length;
+    // Copy links that connect two selected nodes
+    const links: NodeData[] = [];
+    const linkArray = model.getLinkDataArray();
+    for (const linkData of linkArray) {
+      if (selectedKeys.has(linkData.from) && selectedKeys.has(linkData.to)) {
+        const copy = { ...linkData };
+        delete copy[model.getLinkKeyProperty?.() ?? 'key'];
+        links.push(copy);
+      }
+    }
+
+    this.clipboard = { nodes, links, oldKeys };
+    const count = nodes.length;
     this.diagram.fireDiagramEvent('ClipboardChanged', null, { count });
     this.diagram.fireDiagramEvent('SelectionCopied', null, { count });
     return count > 0;
@@ -155,30 +177,50 @@ export class CommandHandler {
     return this.deleteSelectionNoUndo();
   }
 
-  /** Paste the clipboard into the diagram (undoable). */
+  /** Paste the clipboard (nodes + links) into the diagram (undoable). */
   pasteClipboard(offset = 20): boolean {
     if (!this.canModify()) return false;
-    if (this.clipboard.length === 0) return false;
+    if (this.clipboard.nodes.length === 0) return false;
 
     const model = this.diagram.getModel();
     const undoManager = this.diagram.getUndoManager();
+    const keyMap = new Map<unknown, unknown>();
 
-    for (const data of this.clipboard) {
-      const copy: NodeData = { ...data };
-      const newKey = model.generateKey();
-      copy[model.getNodeKeyProperty()] = newKey;
+    undoManager.beginTransaction('paste');
+    try {
+      for (let i = 0; i < this.clipboard.nodes.length; i++) {
+        const data = this.clipboard.nodes[i]!;
+        const copy: NodeData = { ...data };
+        const oldKey = this.clipboard.oldKeys[i];
+        const newKey = model.generateKey();
+        copy[model.getNodeKeyProperty()] = newKey;
+        if (oldKey !== undefined) keyMap.set(oldKey, newKey);
 
-      // Offset the pasted node
-      const x = (copy.x as number) ?? 0;
-      const y = (copy.y as number) ?? 0;
-      copy.x = x + offset;
-      copy.y = y + offset;
+        // Offset the pasted node
+        const x = (copy.x as number) ?? 0;
+        const y = (copy.y as number) ?? 0;
+        copy.x = x + offset;
+        copy.y = y + offset;
 
-      undoManager.execute(new AddNodeCommand(model, copy));
+        undoManager.execute(new AddNodeCommand(model, copy));
+      }
+
+      // Paste connected links, remapping endpoints
+      const linkKeyProperty = model.getLinkKeyProperty();
+      for (const linkData of this.clipboard.links) {
+        const fromKey = keyMap.get(linkData.from);
+        const toKey = keyMap.get(linkData.to);
+        if (fromKey === undefined || toKey === undefined) continue;
+        const copy: NodeData = { ...linkData };
+        delete copy[linkKeyProperty];
+        undoManager.execute(new AddLinkCommand(model, copy as Parameters<typeof model.addLink>[0]));
+      }
+    } finally {
+      undoManager.commitTransaction();
     }
 
     // GoJS-compatible: fire ClipboardPasted after a successful paste
-    this.diagram.fireDiagramEvent('ClipboardPasted', null, { count: this.clipboard.length });
+    this.diagram.fireDiagramEvent('ClipboardPasted', null, { count: this.clipboard.nodes.length });
     return true;
   }
 
@@ -217,18 +259,20 @@ export class CommandHandler {
   }
 
   /** Get the current clipboard contents. */
-  getClipboard(): readonly NodeData[] {
+  getClipboard(): { nodes: readonly NodeData[]; links: readonly NodeData[] } {
     return this.clipboard;
   }
 
   /** Set the clipboard contents. */
-  setClipboard(data: NodeData[]): void {
-    this.clipboard = data;
+  setClipboard(data: NodeData[] | { nodes: NodeData[]; links: NodeData[] }): void {
+    this.clipboard = Array.isArray(data)
+      ? { nodes: data, links: [], oldKeys: [] }
+      : { nodes: data.nodes, links: data.links, oldKeys: [] };
   }
 
   /** Clear the clipboard. */
   clearClipboard(): void {
-    this.clipboard = [];
+    this.clipboard = { nodes: [], links: [], oldKeys: [] };
   }
 
   /** Get the selected nodes for alignment operations. */
@@ -516,12 +560,112 @@ export class CommandHandler {
   }
 
   canPasteSelection(): boolean {
-    return this.clipboard.length > 0;
+    return this.clipboard.nodes.length > 0;
   }
 
   /** GoJS-compatible: Select all parts in the diagram. */
   selectAllInDiagram(): boolean {
     return this.selectAll();
+  }
+
+  /** GoJS-compatible: Whether groupSelection is possible (>=1 selected node). */
+  canGroupSelection(): boolean {
+    return this.diagram.getSelectedParts().some((p) => p instanceof Node);
+  }
+
+  /** GoJS-compatible: Group the selected nodes into a new Group part. */
+  groupSelection(): boolean {
+    if (!this.canModify()) return false;
+    const nodes = this.diagram.getSelectedParts().filter((p): p is Node => p instanceof Node);
+    if (nodes.length === 0) return false;
+
+    const diagram = this.diagram;
+    const model = diagram.getModel();
+
+    // Bounds of the selected nodes
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    for (const node of nodes) {
+      minX = Math.min(minX, node.bounds.x);
+      minY = Math.min(minY, node.bounds.y);
+      maxX = Math.max(maxX, node.bounds.right);
+      maxY = Math.max(maxY, node.bounds.bottom);
+    }
+    if (minX === Infinity) return false;
+
+    const padding = 10;
+    const groupKey = model.generateKey();
+    const groupData: NodeData = {
+      key: groupKey,
+      isGroup: true,
+      x: minX - padding,
+      y: minY - padding,
+      width: maxX - minX + padding * 2,
+      height: maxY - minY + padding * 2,
+    };
+
+    model.addNode(groupData);
+
+    // Assign the selected nodes to the group
+    for (const node of nodes) {
+      const nodeData = node.data;
+      if (nodeData) {
+        model.setDataProperty(nodeData, 'group', groupKey);
+      }
+    }
+
+    diagram.clearSelection();
+    const group = diagram.findGroupForKey(groupKey);
+    if (group) diagram.select(group);
+    diagram.fireDiagramEvent('SelectionGrouped', group);
+    diagram.invalidate();
+    return true;
+  }
+
+  /** GoJS-compatible: Whether ungroupSelection is possible (>=1 selected group). */
+  canUngroupSelection(): boolean {
+    return this.diagram.getSelectedParts().some((p) => p instanceof Group);
+  }
+
+  /** GoJS-compatible: Ungroup the selected groups, releasing their members. */
+  ungroupSelection(): boolean {
+    if (!this.canModify()) return false;
+    const groups = this.diagram.getSelectedParts().filter((p): p is Group => p instanceof Group);
+    if (groups.length === 0) return false;
+
+    const model = this.diagram.getModel();
+    for (const group of groups) {
+      // Release members from the group
+      for (const member of group.memberParts) {
+        const data = member.data;
+        if (data) {
+          model.setDataProperty(data, 'group', undefined);
+        }
+      }
+      // Remove the group
+      const key = group.key;
+      if (model.containsNode(key)) {
+        model.removeNode(key);
+      }
+    }
+    this.diagram.fireDiagramEvent('SelectionUngrouped');
+    this.diagram.invalidate();
+    return true;
+  }
+
+  /** GoJS-compatible: Whether duplicateSelection is possible. */
+  canDuplicateSelection(): boolean {
+    return this.diagram.getSelectedParts().length > 0;
+  }
+
+  /** GoJS-compatible: Duplicate the selection at a small offset. */
+  duplicateSelection(): boolean {
+    if (!this.canModify()) return false;
+    if (this.diagram.getSelectedParts().length === 0) return false;
+    this.copySelection();
+    return this.pasteClipboard(20);
   }
 }
 

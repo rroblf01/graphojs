@@ -3,13 +3,7 @@ import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest
 import React, { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { Diagram, Palette, Overview, version } from '../src/index.tsx';
-import {
-  GraphLinksModel,
-  Diagram as GoDiagram,
-  GraphObject,
-  Shape,
-  Panel,
-} from 'graphojs';
+import { GraphLinksModel, Diagram as GoDiagram, GraphObject, Shape, Panel } from 'graphojs';
 
 const roots: Root[] = [];
 

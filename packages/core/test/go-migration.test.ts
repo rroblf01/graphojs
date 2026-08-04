@@ -918,6 +918,62 @@ describe('GoJS Getting Started tutorial migration', () => {
     expect(link.toPortName).toBe('in');
   });
 
+  it('supports groupSelection, ungroupSelection and duplicateSelection', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+    });
+    myDiagram.model = model;
+
+    myDiagram.select(myDiagram.findNodeForKey(1) as never, true);
+    myDiagram.select(myDiagram.findNodeForKey(2) as never, true);
+
+    expect(myDiagram.commandHandler.groupSelection()).toBe(true);
+    // A group part should exist
+    const groupKey = model.getNodeDataArray().find((d) => d.isGroup === true)?.key as number;
+    expect(groupKey).toBeDefined();
+    const group = myDiagram.findGroupForKey(groupKey);
+    expect(group).not.toBeNull();
+    expect(group!.memberCount).toBe(2);
+
+    // Ungroup
+    myDiagram.select(group as never);
+    expect(myDiagram.commandHandler.ungroupSelection()).toBe(true);
+    expect(model.getNodeDataArray().filter((d) => d.isGroup === true).length).toBe(0);
+
+    // Duplicate
+    myDiagram.select(myDiagram.findNodeForKey(1) as never);
+    expect(myDiagram.commandHandler.duplicateSelection()).toBe(true);
+    expect(model.getNodeCount()).toBeGreaterThan(2);
+  });
+
+  it('copies and pastes links along with nodes', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    myDiagram.model = model;
+
+    const countBefore = model.getNodeCount();
+    const linksBefore = model.getLinkCount();
+
+    myDiagram.select(myDiagram.findNodeForKey(1) as never, true);
+    myDiagram.select(myDiagram.findNodeForKey(2) as never, true);
+    myDiagram.commandHandler.copySelection();
+
+    expect(myDiagram.commandHandler.pasteClipboard()).toBe(true);
+    // Two new nodes plus one new link (endpoints remapped)
+    expect(model.getNodeCount()).toBe(countBefore + 2);
+    expect(model.getLinkCount()).toBe(linksBefore + 1);
+  });
+
   it('enforces isReadOnly/allowMove in interaction tools', () => {
     const myDiagram = createDiagram();
     const model = new go.GraphLinksModel({

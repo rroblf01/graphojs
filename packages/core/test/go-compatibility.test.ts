@@ -414,4 +414,29 @@ describe('GoJS Compatibility', () => {
       expect(group.isGroup).toBe(true);
     });
   });
+
+  describe('Binding path expressions', () => {
+    it('should resolve dot paths on the data object', () => {
+      const t = new TextBlock();
+      const b = new Binding('text', 'data.name');
+      const data = { data: { name: 'Nested' } };
+      b.applyToTarget(t, data as never);
+      expect(t.text).toBe('Nested');
+    });
+
+    it('should default sourceProperty to targetProperty', () => {
+      const b = new Binding('text');
+      expect(b.sourceProperty).toBe('text');
+      const t = new TextBlock();
+      b.applyToTarget(t, { text: 'Hello' } as never);
+      expect(t.text).toBe('Hello');
+    });
+
+    it('should apply converters after path resolution', () => {
+      const t = new TextBlock();
+      const b = new Binding('text', 'meta.color', (v: unknown) => String(v).toUpperCase());
+      b.applyToTarget(t, { meta: { color: 'red' } } as never);
+      expect(t.text).toBe('RED');
+    });
+  });
 });

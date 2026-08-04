@@ -21,9 +21,16 @@ export class Binding {
   private _twoWay = false;
   private _backConverter: ((value: unknown, target: BindingTarget) => unknown) | null = null;
 
-  constructor(targetProperty: string, sourceProperty: string) {
+  /** GoJS-compatible: sourceProperty is optional and defaults to targetProperty;
+   *  the optional third argument is the converter function. */
+  constructor(
+    targetProperty: string,
+    sourceProperty?: string,
+    converter?: (value: unknown, data: NodeData) => unknown,
+  ) {
     this._targetProperty = targetProperty;
-    this._sourceProperty = sourceProperty;
+    this._sourceProperty = sourceProperty ?? targetProperty;
+    this._converter = converter ?? null;
   }
 
   /** The target property name to set. */
@@ -65,7 +72,7 @@ export class Binding {
    * Returns true if the property was set.
    */
   applyToTarget(target: BindingTarget, nodeData: NodeData): boolean {
-    const sourceValue = nodeData[this._sourceProperty];
+    const sourceValue = this.getSourceValue(nodeData);
     let targetValue = sourceValue;
 
     if (this._converter) {
@@ -104,13 +111,27 @@ export class Binding {
 
   /**
    * Read the source property from model data, applying the converter if present.
+   * Supports dot paths (e.g. "data.name", "meta.color").
    */
   getSourceValue(nodeData: NodeData): unknown {
-    const raw = nodeData[this._sourceProperty];
+    const raw = this.resolvePath(nodeData, this._sourceProperty);
     if (this._converter) {
       return this._converter(raw, nodeData);
     }
     return raw;
+  }
+
+  /** Resolve a dotted path on the data object, e.g. "a.b.c". */
+  private resolvePath(data: unknown, path: string): unknown {
+    if (path.includes('.')) {
+      let current: unknown = data;
+      for (const segment of path.split('.')) {
+        if (current === null || current === undefined) return undefined;
+        current = (current as Record<string, unknown>)[segment];
+      }
+      return current;
+    }
+    return (data as Record<string, unknown>)?.[path];
   }
 
   /**

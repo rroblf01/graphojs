@@ -1,5 +1,6 @@
 import type { Rect } from '../geometry/Rect.ts';
 import { Rect as RectClass } from '../geometry/Rect.ts';
+import { Spot } from '../geometry/Spot.ts';
 import type { ChangedEvent, NodeData, LinkData } from '../model/Model.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { GraphLinksModel } from '../model/GraphLinksModel.ts';
@@ -56,6 +57,30 @@ export interface DiagramOptions {
   snapToGrid?: boolean;
   /** Background color. Default: '#ffffff' */
   backgroundColor?: string;
+  /** GoJS-compatible: Whether the diagram can be modified. Default: true */
+  isReadOnly?: boolean;
+  /** GoJS-compatible: Whether the diagram is enabled. Default: true */
+  isEnabled?: boolean;
+  /** GoJS-compatible: Whether parts can be moved. Default: true */
+  allowMove?: boolean;
+  /** GoJS-compatible: Whether parts can be copied. Default: true */
+  allowCopy?: boolean;
+  /** GoJS-compatible: Whether parts can be deleted. Default: true */
+  allowDelete?: boolean;
+  /** GoJS-compatible: Whether parts can be dropped. Default: true */
+  allowDrop?: boolean;
+  /** GoJS-compatible: Whether zooming is allowed. Default: true */
+  allowZoom?: boolean;
+  /** GoJS-compatible: Whether horizontal scrolling is allowed. Default: true */
+  allowHorizontalScroll?: boolean;
+  /** GoJS-compatible: Whether vertical scrolling is allowed. Default: true */
+  allowVerticalScroll?: boolean;
+  /** GoJS-compatible: Scroll mode: 'document' or 'infinite'. Default: 'document' */
+  scrollMode?: 'document' | 'infinite';
+  /** GoJS-compatible: Initial content alignment spot. */
+  initialContentAlignment?: Spot;
+  /** GoJS-compatible: Content alignment offset. */
+  initialContentAlignmentOffset?: { x: number; y: number };
 }
 
 /**
@@ -122,6 +147,9 @@ export class Diagram {
   private _allowVerticalScroll = true;
   private _isEnabled = true;
   private _isModified = false;
+  private _scrollMode: 'document' | 'infinite' = 'document';
+  private _initialContentAlignment: Spot | null = null;
+  private _initialContentAlignmentOffset: { x: number; y: number } | null = null;
   private backBuffer: HTMLCanvasElement | null = null;
   private backBufferEnabled = false;
   private hitIndex: QuadTree<Part> | null = null;
@@ -178,6 +206,20 @@ export class Diagram {
     this.showGrid = resolvedOptions.showGrid ?? true;
     this.snapToGrid = resolvedOptions.snapToGrid ?? false;
     this.backgroundColor = resolvedOptions.backgroundColor ?? '#ffffff';
+
+    // GoJS-compatible options
+    this._isReadOnly = resolvedOptions.isReadOnly ?? false;
+    this._isEnabled = resolvedOptions.isEnabled ?? true;
+    this._allowMove = resolvedOptions.allowMove ?? true;
+    this._allowCopy = resolvedOptions.allowCopy ?? true;
+    this._allowDelete = resolvedOptions.allowDelete ?? true;
+    this._allowDrop = resolvedOptions.allowDrop ?? true;
+    this._allowZoom = resolvedOptions.allowZoom ?? true;
+    this._allowHorizontalScroll = resolvedOptions.allowHorizontalScroll ?? true;
+    this._allowVerticalScroll = resolvedOptions.allowVerticalScroll ?? true;
+    this._scrollMode = resolvedOptions.scrollMode ?? 'document';
+    this._initialContentAlignment = resolvedOptions.initialContentAlignment ?? null;
+    this._initialContentAlignmentOffset = resolvedOptions.initialContentAlignmentOffset ?? null;
 
     // Create canvas
     this.canvas = document.createElement('canvas');
@@ -567,6 +609,33 @@ export class Diagram {
     this._isEnabled = value;
   }
 
+  /** GoJS-compatible: The scroll mode ('document' or 'infinite'). */
+  get scrollMode(): 'document' | 'infinite' {
+    return this._scrollMode;
+  }
+
+  set scrollMode(value: 'document' | 'infinite') {
+    this._scrollMode = value;
+  }
+
+  /** GoJS-compatible: The initial content alignment spot. */
+  get initialContentAlignment(): Spot | null {
+    return this._initialContentAlignment;
+  }
+
+  set initialContentAlignment(value: Spot | null) {
+    this._initialContentAlignment = value;
+  }
+
+  /** GoJS-compatible: The initial content alignment offset. */
+  get initialContentAlignmentOffset(): { x: number; y: number } | null {
+    return this._initialContentAlignmentOffset;
+  }
+
+  set initialContentAlignmentOffset(value: { x: number; y: number } | null) {
+    this._initialContentAlignmentOffset = value;
+  }
+
   /** Handle a contextmenu (right-click) event. */
   private handleContextMenu(e: MouseEvent): void {
     e.preventDefault();
@@ -810,7 +879,7 @@ export class Diagram {
     this.invalidate();
     // Layer cache must be refreshed on model changes
     this.layerCache?.markAllDirty();
-    this._isModified = true;
+    this.isModified = true;
     this.fireDiagramEvent('ModelChanged', null, {
       changeType: event.type,
       propertyName: event.propertyName,
@@ -1007,6 +1076,7 @@ export class Diagram {
       }
       case 'property Changed': {
         if (event.node) this.syncNodeFromModel(event.node);
+        if (event.link) this.syncLinkFromModel(event.link);
         break;
       }
       case 'link Added': {
@@ -1619,7 +1689,9 @@ export class Diagram {
   }
 
   set isModified(value: boolean) {
+    if (this._isModified === value) return;
     this._isModified = value;
+    this.fireDiagramEvent('Modified', null, { value });
   }
 
   /** GoJS-compatible: Register a model changed listener. */

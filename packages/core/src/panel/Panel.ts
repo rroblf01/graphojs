@@ -32,6 +32,11 @@ export class Panel extends GraphObject {
   private _columnCount = 0;
   private _gradient: CanvasGradient | null = null;
 
+  // GoJS-compatible data panels
+  private _itemArray: unknown[] = [];
+  private _itemTemplate: GraphObject | null = null;
+  private _generatedItems: GraphObject[] = [];
+
   /**
    * Extra properties to apply to the created part when this panel is used
    * as a node/link/group template (e.g. link routing, corner, arrowhead).
@@ -41,6 +46,62 @@ export class Panel extends GraphObject {
   constructor(type: PanelType = 'Auto') {
     super();
     this._type = type;
+  }
+
+  /** GoJS-compatible: The data array used to generate item elements. */
+  get itemArray(): readonly unknown[] {
+    return this._itemArray;
+  }
+
+  set itemArray(value: unknown[]) {
+    this._itemArray = value;
+    this.updateItems();
+  }
+
+  /** GoJS-compatible: The template used to create one element per item. */
+  get itemTemplate(): GraphObject | null {
+    return this._itemTemplate;
+  }
+
+  set itemTemplate(value: GraphObject | null) {
+    this._itemTemplate = value;
+    this.updateItems();
+  }
+
+  /** Rebuild the item-generated child elements from itemArray + itemTemplate. */
+  private updateItems(): void {
+    // Remove previously generated items
+    for (const gen of this._generatedItems) {
+      this.remove(gen);
+    }
+    this._generatedItems = [];
+
+    const template = this._itemTemplate;
+    if (!template || this._itemArray.length === 0) return;
+
+    for (const item of this._itemArray) {
+      const el = template.clone();
+      // Apply bindings using the item as the data source
+      if (typeof item === 'object' && item !== null) {
+        el.applyBindings(item as import('../model/Model.ts').NodeData);
+      }
+      this._elements.push(el);
+      this._generatedItems.push(el);
+    }
+    this.recountGrid();
+  }
+
+  /** Apply bindings to generated item elements using each item's data. */
+  private applyItemBindings(): void {
+    const template = this._itemTemplate;
+    if (!template) return;
+    for (let i = 0; i < this._generatedItems.length && i < this._itemArray.length; i++) {
+      const el = this._generatedItems[i];
+      const item = this._itemArray[i];
+      if (el && typeof item === 'object' && item !== null) {
+        el.applyBindings(item as import('../model/Model.ts').NodeData);
+      }
+    }
   }
 
   get type(): PanelType {
@@ -589,11 +650,28 @@ export class Panel extends GraphObject {
     cloned._spacing = this._spacing;
     cloned._background = this._background;
     cloned.templateProperties = { ...this.templateProperties };
+    // Clone static elements (generated items are recreated below)
     for (const el of this._elements) {
+      if (this._generatedItems.includes(el)) continue;
       cloned._elements.push(el.clone());
     }
     cloned._rowCount = this._rowCount;
     cloned._columnCount = this._columnCount;
+    cloned._itemArray = [...this._itemArray];
+    cloned._itemTemplate = this._itemTemplate ? this._itemTemplate.clone() : null;
+    // Regenerate items from the cloned template so each clone has its own copies
+    if (cloned._itemTemplate && cloned._itemArray.length > 0) {
+      cloned._generatedItems = [];
+      for (const item of cloned._itemArray) {
+        const el = cloned._itemTemplate.clone();
+        if (typeof item === 'object' && item !== null) {
+          el.applyBindings(item as import('../model/Model.ts').NodeData);
+        }
+        cloned._elements.push(el);
+        cloned._generatedItems.push(el);
+      }
+      cloned.recountGrid();
+    }
     return cloned;
   }
 
@@ -601,8 +679,11 @@ export class Panel extends GraphObject {
   override applyBindings(nodeData: import('../model/Model.ts').NodeData): number {
     let count = super.applyBindings(nodeData);
     for (const el of this._elements) {
+      // Item-generated elements are bound to item data, not the panel's node data
+      if (this._generatedItems.includes(el)) continue;
       count += el.applyBindings(nodeData);
     }
+    this.applyItemBindings();
     return count;
   }
 }

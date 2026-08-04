@@ -32,7 +32,20 @@ export type ShapeType =
   | 'merge'
   | 'extract'
   | 'or'
-  | 'summingJunction';
+  | 'summingJunction'
+  | 'x'
+  | 'plus'
+  | 'minus'
+  | 'line'
+  | 'circle'
+  | 'doubleArrow'
+  | 'person'
+  | 'ring'
+  | 'rhombus'
+  | 'kite'
+  | 'club'
+  | 'spade'
+  | 'piePiece';
 
 /**
  * Shape definition with drawing instructions.
@@ -304,6 +317,103 @@ export const SHAPES: Record<ShapeType, ShapeDefinition> = {
     resizable: false,
     hasPorts: true,
   },
+  x: { type: 'x', name: 'X', defaultWidth: 60, defaultHeight: 60, resizable: true, hasPorts: true },
+  plus: {
+    type: 'plus',
+    name: 'Plus',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  minus: {
+    type: 'minus',
+    name: 'Minus',
+    defaultWidth: 80,
+    defaultHeight: 40,
+    resizable: true,
+    hasPorts: true,
+  },
+  line: {
+    type: 'line',
+    name: 'Line',
+    defaultWidth: 100,
+    defaultHeight: 2,
+    resizable: true,
+    hasPorts: false,
+  },
+  circle: {
+    type: 'circle',
+    name: 'Circle',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  doubleArrow: {
+    type: 'doubleArrow',
+    name: 'Double Arrow',
+    defaultWidth: 120,
+    defaultHeight: 40,
+    resizable: true,
+    hasPorts: false,
+  },
+  person: {
+    type: 'person',
+    name: 'Person',
+    defaultWidth: 60,
+    defaultHeight: 70,
+    resizable: true,
+    hasPorts: false,
+  },
+  ring: {
+    type: 'ring',
+    name: 'Ring',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  rhombus: {
+    type: 'rhombus',
+    name: 'Rhombus',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  kite: {
+    type: 'kite',
+    name: 'Kite',
+    defaultWidth: 80,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  club: {
+    type: 'club',
+    name: 'Club',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  spade: {
+    type: 'spade',
+    name: 'Spade',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  piePiece: {
+    type: 'piePiece',
+    name: 'Pie Piece',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
 };
 
 /**
@@ -381,10 +491,8 @@ const GOJS_FIGURE_ALIASES: Record<string, ShapeType> = {
   rectangle: 'rect',
   roundedrectangle: 'roundedRect',
   roundedrect: 'roundedRect',
-  circle: 'ellipse',
   ellipsis: 'ellipse',
   oval: 'ellipse',
-  line: 'rect',
   triangleup: 'triangle',
   triangledown: 'triangle',
   diamond: 'diamond',
@@ -414,4 +522,17 @@ const GOJS_FIGURE_ALIASES: Record<string, ShapeType> = {
   extract: 'extract',
   or: 'or',
   summingjunction: 'summingJunction',
+  x: 'x',
+  plus: 'plus',
+  minus: 'minus',
+  line: 'line',
+  circle: 'circle',
+  doublearrow: 'doubleArrow',
+  person: 'person',
+  ring: 'ring',
+  rhombus: 'rhombus',
+  kite: 'kite',
+  club: 'club',
+  spade: 'spade',
+  piepiece: 'piePiece',
 };

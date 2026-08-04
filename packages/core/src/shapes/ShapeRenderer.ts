@@ -110,7 +110,134 @@ export class ShapeRenderer {
       case 'summingJunction':
         this.renderSummingJunction(x, y, width, height);
         break;
+      case 'x':
+        this.renderX(x, y, width, height);
+        break;
+      case 'plus':
+        this.renderPlus(x, y, width, height);
+        break;
+      case 'minus':
+        this.renderMinus(x, y, width, height);
+        break;
+      case 'line':
+        this.ctx.moveTo(x, y + height / 2);
+        this.ctx.lineTo(x + width, y + height / 2);
+        break;
+      case 'circle':
+        this.renderEllipse(x, y, width, height);
+        break;
+      case 'doubleArrow':
+        this.renderDoubleArrow(x, y, width, height);
+        break;
+      case 'person':
+        this.renderPerson(x, y, width, height);
+        break;
+      case 'ring':
+        this.renderRing(x, y, width, height);
+        break;
+      case 'rhombus':
+        this.renderRhombus(x, y, width, height);
+        break;
+      case 'kite':
+        this.renderKite(x, y, width, height);
+        break;
+      case 'club':
+        this.renderClub(x, y, width, height);
+        break;
+      case 'spade':
+        this.renderSpade(x, y, width, height);
+        break;
+      case 'piePiece':
+        this.renderPiePiece(x, y, width, height);
+        break;
     }
+  }
+
+  private renderX(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + width, y + height);
+    this.ctx.moveTo(x + width, y);
+    this.ctx.lineTo(x, y + height);
+  }
+
+  private renderPlus(x: number, y: number, width: number, height: number): void {
+    const armX = Math.min(width, height) * 0.25;
+    this.ctx.rect(x + width / 2 - armX / 2, y, armX, height);
+  }
+
+  private renderMinus(x: number, y: number, width: number, height: number): void {
+    const armY = Math.min(width, height) * 0.25;
+    this.ctx.rect(x, y + height / 2 - armY / 2, width, armY);
+  }
+
+  private renderDoubleArrow(x: number, y: number, width: number, height: number): void {
+    const h = height;
+    this.ctx.moveTo(x + width / 2, y);
+    this.ctx.lineTo(x, y + h / 2);
+    this.ctx.lineTo(x + width / 2, y + h);
+    this.ctx.moveTo(x + width / 2, y);
+    this.ctx.lineTo(x + width, y + h / 2);
+    this.ctx.lineTo(x + width / 2, y + h);
+  }
+
+  private renderPerson(x: number, y: number, width: number, height: number): void {
+    const headR = Math.min(width, height) * 0.2;
+    const cx = x + width / 2;
+    this.ctx.ellipse(cx, y + headR, headR, headR, 0, 0, 2 * Math.PI);
+    this.ctx.moveTo(cx, y + headR * 2);
+    this.ctx.arc(cx, y + height * 0.7, width * 0.35, Math.PI, 0, true);
+  }
+
+  private renderRing(x: number, y: number, width: number, height: number): void {
+    this.ctx.ellipse(x + width / 2, y + height / 2, width / 2, height / 2, 0, 0, 2 * Math.PI);
+  }
+
+  private renderRhombus(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y + height / 2);
+    this.ctx.lineTo(x + width / 2, y);
+    this.ctx.lineTo(x + width, y + height / 2);
+    this.ctx.lineTo(x + width / 2, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderKite(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y + height / 2);
+    this.ctx.lineTo(x + width / 2, y);
+    this.ctx.lineTo(x + width, y + height / 2);
+    this.ctx.lineTo(x + width / 2, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderClub(x: number, y: number, width: number, height: number): void {
+    const r = Math.min(width, height) * 0.25;
+    const cx = x + width / 2;
+    const cy = y + height * 0.55;
+    this.ctx.ellipse(cx - r, cy, r, r, 0, 0, 2 * Math.PI);
+    this.ctx.ellipse(cx + r, cy, r, r, 0, 0, 2 * Math.PI);
+    this.ctx.ellipse(cx, cy - r, r, r, 0, 0, 2 * Math.PI);
+    this.ctx.rect(cx - r * 0.3, cy, r * 0.6, height * 0.35);
+  }
+
+  private renderSpade(x: number, y: number, width: number, height: number): void {
+    const r = Math.min(width, height) * 0.25;
+    const cx = x + width / 2;
+    this.ctx.moveTo(cx, y);
+    this.ctx.lineTo(cx - r * 1.2, y + height * 0.4);
+    this.ctx.quadraticCurveTo(cx - r * 1.2, y + height * 0.7, cx - r * 0.4, y + height * 0.55);
+    this.ctx.quadraticCurveTo(cx, y + height * 0.5, cx + r * 0.4, y + height * 0.55);
+    this.ctx.quadraticCurveTo(cx + r * 1.2, y + height * 0.7, cx + r * 1.2, y + height * 0.4);
+    this.ctx.closePath();
+    this.ctx.moveTo(cx - r * 0.3, y + height * 0.7);
+    this.ctx.rect(cx - r * 0.3, y + height * 0.65, r * 0.6, height * 0.3);
+  }
+
+  private renderPiePiece(x: number, y: number, width: number, height: number): void {
+    const cx = x + width / 2;
+    const cy = y + height / 2;
+    const r = Math.min(width, height) / 2;
+    this.ctx.moveTo(cx, cy);
+    this.ctx.arc(cx, cy, r, 0, Math.PI / 2);
+    this.ctx.closePath();
   }
 
   private renderEllipse(x: number, y: number, width: number, height: number): void {

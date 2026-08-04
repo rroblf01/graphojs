@@ -17,7 +17,6 @@ export class Shape extends GraphObject {
   static readonly Rectangle = 'rect';
   static readonly RoundedRectangle = 'roundedRect';
   static readonly Ellipse = 'ellipse';
-  static readonly Circle = 'ellipse';
   static readonly Diamond = 'diamond';
   static readonly Hexagon = 'hexagon';
   static readonly Octagon = 'octagon';
@@ -45,6 +44,19 @@ export class Shape extends GraphObject {
   static readonly Extract = 'extract';
   static readonly Or = 'or';
   static readonly SummingJunction = 'summingJunction';
+  static readonly X = 'x';
+  static readonly Plus = 'plus';
+  static readonly Minus = 'minus';
+  static readonly Line = 'line';
+  static readonly Circle = 'circle';
+  static readonly DoubleArrow = 'doubleArrow';
+  static readonly Person = 'person';
+  static readonly Ring = 'ring';
+  static readonly Rhombus = 'rhombus';
+  static readonly Kite = 'kite';
+  static readonly Club = 'club';
+  static readonly Spade = 'spade';
+  static readonly PiePiece = 'piePiece';
 
   private _shape: ShapeType = 'rect';
   private _fill = '#cccccc';

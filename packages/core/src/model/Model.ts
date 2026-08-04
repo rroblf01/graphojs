@@ -1,5 +1,13 @@
 export type NodeKey = string | number;
 
+/** Structural interface for models that support links (GraphLinksModel). */
+export interface LinkCapableModel {
+  getLinkDataArray(): readonly LinkData[];
+  getLinkKey(linkData: LinkData): NodeKey | undefined;
+  addLink(linkData: LinkData): NodeKey;
+  removeLink(key: NodeKey): boolean;
+}
+
 export interface NodeData {
   [key: string]: unknown;
   key?: NodeKey;
@@ -222,8 +230,67 @@ export abstract class Model {
   }
 
   private flushEvent(event: ChangedEvent): void {
+    this.changedEventLog.push(event);
     for (const listener of this.listeners) {
       listener(event);
+    }
+  }
+
+  /** GoJS-compatible: The log of changed events since the last clear. */
+  changedEventLog: ChangedEvent[] = [];
+
+  /** GoJS-compatible: Clear the changed event log. */
+  clearChangedEventLog(): void {
+    this.changedEventLog = [];
+  }
+
+  /**
+   * GoJS-compatible: Merge the changed events recorded by another model
+   * (or by this model's change log) into this model.
+   */
+  mergeChanges(changes: Model | ChangedEvent[]): void {
+    const events = Array.isArray(changes) ? changes : changes.changedEventLog;
+    for (const event of events) {
+      this.applyChangeEvent(event);
+    }
+  }
+
+  private applyChangeEvent(event: ChangedEvent): void {
+    switch (event.type) {
+      case 'node Added':
+        if (event.node && !this.containsNode(this.getNodeKey(event.node))) {
+          this.addNode({ ...event.node });
+        }
+        break;
+      case 'node Removed':
+        if (event.node) this.removeNode(this.getNodeKey(event.node));
+        break;
+      case 'property Changed':
+        if (event.node && event.propertyName !== undefined) {
+          const key = this.getNodeKey(event.node);
+          if (this.containsNode(key)) {
+            this.setNodeProperty(key, event.propertyName, event.newValue);
+          }
+        }
+        break;
+      case 'link Added': {
+        const linkModel = this as unknown as LinkCapableModel;
+        if (event.link && 'addLink' in linkModel) {
+          const exists = linkModel
+            .getLinkDataArray()
+            .some((l) => linkModel.getLinkKey(l) === linkModel.getLinkKey(event.link as LinkData));
+          if (!exists) linkModel.addLink({ ...event.link });
+        }
+        break;
+      }
+      case 'link Removed': {
+        const linkModel = this as unknown as LinkCapableModel;
+        if (event.link && 'getLinkKey' in linkModel) {
+          const key = linkModel.getLinkKey(event.link);
+          if (key !== undefined) linkModel.removeLink(key);
+        }
+        break;
+      }
     }
   }
 
@@ -342,12 +409,15 @@ export abstract class Model {
     const oldValue = data[propertyName];
     data[propertyName] = value;
 
+    const isNode = this._nodeDataArray.includes(data as NodeData);
     this.emit({
       type: 'property Changed',
       model: this,
       propertyName,
       oldValue,
       newValue: value,
+      node: isNode ? (data as NodeData) : undefined,
+      link: !isNode ? (data as LinkData) : undefined,
     });
   }
 }

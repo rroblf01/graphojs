@@ -312,6 +312,80 @@ export class GraphLinksModel extends Model {
     };
   }
 
+  /**
+   * GoJS-compatible: Produce an incremental JSON representation based on
+   * the current change log. Falls back to a full snapshot when no log exists.
+   */
+  toIncrementalJson(): {
+    modifiedNodeData?: NodeData[];
+    removedNodeIds?: NodeKey[];
+    modifiedLinkData?: LinkData[];
+    removedLinkIds?: NodeKey[];
+  } {
+    const modifiedNodeData: NodeData[] = [];
+    const removedNodeIds: NodeKey[] = [];
+    const modifiedLinkData: LinkData[] = [];
+    const removedLinkIds: NodeKey[] = [];
+
+    for (const event of this.changedEventLog) {
+      if (event.node) {
+        const key = this.getNodeKey(event.node);
+        if (event.type === 'node Removed') {
+          if (!removedNodeIds.includes(key)) removedNodeIds.push(key);
+        } else if (!modifiedNodeData.some((n) => this.getNodeKey(n) === key)) {
+          modifiedNodeData.push({ ...event.node });
+        }
+      }
+      if (event.link) {
+        const key = this.getLinkKey(event.link);
+        if (key === undefined) continue;
+        if (event.type === 'link Removed') {
+          if (!removedLinkIds.includes(key)) removedLinkIds.push(key);
+        } else if (!modifiedLinkData.some((l) => this.getLinkKey(l) === key)) {
+          modifiedLinkData.push({ ...event.link });
+        }
+      }
+    }
+
+    return { modifiedNodeData, removedNodeIds, modifiedLinkData, removedLinkIds };
+  }
+
+  /**
+   * GoJS-compatible: Apply an incremental JSON representation produced by
+   * toIncrementalJson (or a full GraphLinksModelJSON snapshot).
+   */
+  applyIncrementalJson(json: {
+    modifiedNodeData?: NodeData[];
+    removedNodeIds?: NodeKey[];
+    modifiedLinkData?: LinkData[];
+    removedLinkIds?: NodeKey[];
+  }): void {
+    for (const key of json.removedNodeIds ?? []) {
+      if (this.containsNode(key)) this.removeNode(key);
+    }
+    for (const nodeData of json.modifiedNodeData ?? []) {
+      const key = this.getNodeKey(nodeData);
+      if (this.containsNode(key)) {
+        this.removeNode(key);
+        this.addNode({ ...nodeData });
+      } else {
+        this.addNode({ ...nodeData });
+      }
+    }
+    for (const key of json.removedLinkIds ?? []) {
+      this.removeLink(key);
+    }
+    for (const linkData of json.modifiedLinkData ?? []) {
+      const key = this.getLinkKey(linkData);
+      if (key !== undefined && this.getLinkData(key)) {
+        this.removeLink(key);
+        this.addLink({ ...linkData });
+      } else {
+        this.addLink({ ...linkData });
+      }
+    }
+  }
+
   /** Create from JSON. */
   static override fromJSON(json: GraphLinksModelJSON): GraphLinksModel {
     const model = new GraphLinksModel();

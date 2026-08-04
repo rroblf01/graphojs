@@ -454,4 +454,135 @@ describe('GoJS Getting Started tutorial migration', () => {
     myDiagram.layout = new go.GridLayout({ spacing: 20 });
     expect(myDiagram.layout).not.toBeNull();
   });
+
+  it('merges changes from another model via the change log', () => {
+    const source = new go.GraphLinksModel();
+    source.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
+    source.setDataProperty(source.nodeDataArray[0]!, 'name', 'Alpha');
+    source.clearChangedEventLog();
+    source.nodeDataArray = [
+      { key: 1, x: 0, y: 0, width: 100, height: 50, name: 'Alpha' },
+      { key: 2, x: 200, y: 0, width: 100, height: 50, name: 'Beta' },
+    ];
+
+    const target = new go.GraphLinksModel();
+    target.mergeChanges(source);
+    expect(target.getNodeData(1)?.name).toBe('Alpha');
+    expect(target.getNodeData(2)?.name).toBe('Beta');
+  });
+
+  it('produces and applies incremental JSON', () => {
+    const model = new go.GraphLinksModel();
+    model.nodeDataArray = [
+      { key: 1, x: 0, y: 0, width: 100, height: 50, name: 'A' },
+      { key: 2, x: 200, y: 0, width: 100, height: 50, name: 'B' },
+    ];
+    model.clearChangedEventLog();
+    model.setDataProperty(model.nodeDataArray[0]!, 'name', 'A2');
+    model.removeNode(2);
+
+    const inc = model.toIncrementalJson();
+    expect(inc.modifiedNodeData?.some((n) => n.name === 'A2')).toBe(true);
+    expect(inc.removedNodeIds).toContain(2);
+
+    const other = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50, name: 'A' },
+        { key: 2, x: 200, y: 0, width: 100, height: 50, name: 'B' },
+        { key: 3, x: 300, y: 0, width: 100, height: 50, name: 'C' },
+      ],
+    });
+    other.applyIncrementalJson(inc);
+    expect(other.getNodeData(1)?.name).toBe('A2');
+    expect(other.getNodeData(2)).toBeUndefined();
+    expect(other.getNodeData(3)?.name).toBe('C');
+  });
+
+  it('creates node templates with data panels (itemArray/itemTemplate)', () => {
+    const myDiagram = createDiagram();
+    const $ = go.GraphObject.make;
+
+    myDiagram.nodeTemplate = $(
+      go.Node,
+      'Vertical',
+      $(go.TextBlock, 'Title', { name: 'title' }, new go.Binding('text', 'name')),
+      $(go.Panel, 'Vertical', {
+        itemArray: [{ text: 'Item A' }, { text: 'Item B' }],
+        itemTemplate: $(go.TextBlock, 'item', new go.Binding('text', 'text')),
+      }),
+    );
+
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [{ key: 1, name: 'Node 1', x: 0, y: 0, width: 150, height: 100 }],
+    });
+    myDiagram.model = model;
+
+    const node = myDiagram.findNodeForKey(1) as import('../src/parts/Node.ts').Node;
+    expect(node).not.toBeNull();
+    expect(node.panel?.elementCount).toBe(2); // title + items panel
+
+    const itemsPanel = node.panel?.elements[1] as import('../src/panel/Panel.ts').Panel;
+    expect(itemsPanel.elementCount).toBe(2);
+    expect((itemsPanel.elements[0] as import('../src/panel/TextBlock.ts').TextBlock).text).toBe(
+      'Item A',
+    );
+  });
+
+  it('supports new GoJS shape figures', () => {
+    const s1 = new go.Shape('X');
+    expect(s1.shape).toBe('x');
+    const s2 = new go.Shape('Plus');
+    expect(s2.shape).toBe('plus');
+    const s3 = new go.Shape('Person');
+    expect(s3.shape).toBe('person');
+    const s4 = new go.Shape('Line');
+    expect(s4.shape).toBe('line');
+    expect(go.Shape.Circle).toBe('circle');
+  });
+
+  it('supports link tree properties', () => {
+    const link = new go.Link(1, 1, 2);
+    expect(link.isTreeLink).toBe(false);
+    link.isTreeLink = true;
+    link.treeLinkRoute = 'straight';
+    expect(link.isTreeLink).toBe(true);
+    expect(link.treeLinkRoute).toBe('straight');
+  });
+
+  it('fires Modified event when isModified changes', () => {
+    const myDiagram = createDiagram();
+    let modifiedCount = 0;
+    myDiagram.addDiagramListener('Modified', () => modifiedCount++);
+
+    const model = new go.GraphLinksModel();
+    model.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
+    myDiagram.model = model;
+
+    model.setDataProperty(model.nodeDataArray[0]!, 'x', 5);
+    expect(myDiagram.isModified).toBe(true);
+    expect(modifiedCount).toBeGreaterThan(0);
+  });
+
+  it('exposes command handler capability shortcuts', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel();
+    model.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
+    myDiagram.model = model;
+
+    expect(myDiagram.commandHandler.canDeleteSelection()).toBe(false);
+    myDiagram.select(myDiagram.getPart(1) as never);
+    expect(myDiagram.commandHandler.canDeleteSelection()).toBe(true);
+    expect(myDiagram.commandHandler.canSelectAll()).toBe(true);
+  });
+
+  it('exposes all go namespace exports', () => {
+    expect(go.DiagramEvents).toBeDefined();
+    expect(go.QuadTree).toBeDefined();
+    expect(go.PartPool).toBeDefined();
+    expect(go.VirtualizationManager).toBeDefined();
+    expect(go.LayerCache).toBeDefined();
+    expect(go.ShapeRenderer).toBeDefined();
+    expect(go.normalizeShapeType).toBeDefined();
+    expect(go.version).toBeDefined();
+  });
 });

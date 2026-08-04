@@ -44,6 +44,12 @@ export { Panel, panel, shape } from './panel/Panel.ts';
 // Diagram
 export { Diagram } from './diagram/Diagram.ts';
 export type { DiagramOptions } from './diagram/Diagram.ts';
+export { DiagramEvents, createDiagramEvents } from './diagram/DiagramEvents.ts';
+export type {
+  DiagramEvent,
+  DiagramEventType,
+  DiagramEventHandler,
+} from './diagram/DiagramEvents.ts';
 
 // Tools
 export { Tool } from './tool/Tool.ts';
@@ -82,10 +88,59 @@ export { CommandHandler, createCommandHandler } from './command/CommandHandler.t
 // Animations
 export { Animation } from './animation/Animation.ts';
 export { AnimationManager, tween } from './animation/AnimationManager.ts';
+export {
+  linear,
+  easeInQuad,
+  easeOutQuad,
+  easeInOutQuad,
+  easeInCubic,
+  easeOutCubic,
+  easeInOutCubic,
+  getEasing,
+} from './animation/Easing.ts';
+export type { EasingFunction, EasingName } from './animation/Easing.ts';
+
+// Serialization / Undo commands
+export {
+  AddNodeCommand,
+  RemoveNodeCommand,
+  SetNodePropertyCommand,
+  AddLinkCommand,
+  RemoveLinkCommand,
+  MoveNodeCommand,
+  SetLinkPropertyCommand,
+  ResizeNodeCommand,
+  SetZOrderCommand,
+} from './undo/commands.ts';
+
+export const version = '0.1.0';
 
 // Shapes
-export { SHAPES, getShapeDefinition } from './shapes/ShapeTypes.ts';
-export type { ShapeType } from './shapes/ShapeTypes.ts';
+export {
+  SHAPES,
+  getShapeDefinition,
+  normalizeShapeType,
+  getAllShapeTypes,
+  getShapesByCategory,
+} from './shapes/ShapeTypes.ts';
+export type { ShapeType, ShapeDefinition } from './shapes/ShapeTypes.ts';
+export { ShapeRenderer } from './shapes/ShapeRenderer.ts';
+
+// Spatial Indexing / Virtualization
+export { QuadTree } from './spatial/QuadTree.ts';
+export { PartPool } from './spatial/PartPool.ts';
+export { VirtualizationManager } from './spatial/VirtualizationManager.ts';
+export { RectPool, createRectPool } from './spatial/RectPool.ts';
+
+// Rendering Optimizations
+export { LayerCache, createLayerCache } from './render/LayerCache.ts';
+export {
+  PathCache,
+  TextMeasureCache,
+  createPathCache,
+  createTextMeasureCache,
+} from './render/RenderCache.ts';
+export { LinkPathCache, CanvasPool, throttle, debounce } from './render/PerformanceCache.ts';
 
 // Export
 export { SVGExporter, exportToSVG } from './export/SVGExporter.ts';

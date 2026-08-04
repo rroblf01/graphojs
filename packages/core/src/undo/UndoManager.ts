@@ -42,6 +42,15 @@ export class UndoManager {
     this._isEnabled = value;
   }
 
+  /** GoJS-compatible: The maximum number of undo/redo steps kept in history. */
+  get maxHistoryLength(): number {
+    return this.maxHistorySize;
+  }
+
+  set maxHistoryLength(value: number) {
+    this.maxHistorySize = Math.max(1, value);
+  }
+
   /** Execute a command and add it to the undo stack. */
   execute(command: Command): void {
     if (this.isExecuting) return;

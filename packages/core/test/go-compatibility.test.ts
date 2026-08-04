@@ -464,4 +464,46 @@ describe('GoJS Compatibility', () => {
       expect(clone.editable).toBe(true);
     });
   });
+
+  describe('Panel data panels (itemArray/itemTemplate)', () => {
+    it('should generate one element per item from the template', () => {
+      const panel = new Panel('Vertical');
+      const template = new TextBlock('item');
+      template.setBinding(new Binding('text', 'text'));
+      panel.itemTemplate = template;
+      panel.itemArray = [{ text: 'A' }, { text: 'B' }, { text: 'C' }];
+
+      expect(panel.elementCount).toBe(3);
+      const texts = panel.elements.map((e) => (e as TextBlock).text);
+      expect(texts).toEqual(['A', 'B', 'C']);
+    });
+
+    it('should regenerate items when the array changes', () => {
+      const panel = new Panel('Vertical');
+      const template = new TextBlock('item');
+      template.setBinding(new Binding('text', 'text'));
+      panel.itemTemplate = template;
+      panel.itemArray = [{ text: 'A' }];
+      expect(panel.elementCount).toBe(1);
+
+      panel.itemArray = [{ text: 'X' }, { text: 'Y' }];
+      expect(panel.elementCount).toBe(2);
+      expect((panel.elements[0] as TextBlock).text).toBe('X');
+      expect((panel.elements[1] as TextBlock).text).toBe('Y');
+    });
+
+    it('should clone item templates in clone()', () => {
+      const panel = new Panel('Vertical');
+      const template = new TextBlock('item');
+      template.setBinding(new Binding('text', 'text'));
+      panel.itemTemplate = template;
+      panel.itemArray = [{ text: 'A' }, { text: 'B' }];
+
+      const clone = panel.clone();
+      expect(clone.elementCount).toBe(2);
+      expect((clone.elements[0] as TextBlock).text).toBe('A');
+      // Clones should be independent instances
+      expect(clone.elements[0]).not.toBe(panel.elements[0]);
+    });
+  });
 });

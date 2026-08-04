@@ -487,6 +487,32 @@ export class CommandHandler {
     this.diagram.invalidate();
     return true;
   }
+
+  // GoJS-compatible capability shortcuts
+  canDeleteSelection(): boolean {
+    return this.diagram.getSelectedParts().length > 0;
+  }
+
+  canCopySelection(): boolean {
+    return this.diagram.getSelectedParts().length > 0;
+  }
+
+  canCutSelection(): boolean {
+    return this.diagram.getSelectedParts().length > 0;
+  }
+
+  canSelectAll(): boolean {
+    return this.diagram.getModel().getNodeCount() > 0;
+  }
+
+  canPasteSelection(): boolean {
+    return this.clipboard.length > 0;
+  }
+
+  /** GoJS-compatible: Select all parts in the diagram. */
+  selectAllInDiagram(): boolean {
+    return this.selectAll();
+  }
 }
 
 /** Create a command handler for a diagram. */

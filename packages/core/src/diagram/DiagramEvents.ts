@@ -38,7 +38,17 @@ export type DiagramEventType =
   | 'ClipboardChanged'
   | 'ClipboardPasted'
   | 'InitialLayoutCompleted'
-  | 'ExternalObjectsDropped';
+  | 'ExternalObjectsDropped'
+  | 'TreeCollapsed'
+  | 'TreeExpanded'
+  | 'SubGraphCollapsed'
+  | 'SubGraphExpanded'
+  | 'AnimationStarting'
+  | 'AnimationFinished'
+  | 'Modified'
+  | 'GainedFocus'
+  | 'LostFocus'
+  | 'ScrollChanged';
 
 /**
  * Event payload for diagram events.
@@ -161,6 +171,16 @@ const ALL_EVENT_TYPES: DiagramEventType[] = [
   'ClipboardPasted',
   'InitialLayoutCompleted',
   'ExternalObjectsDropped',
+  'TreeCollapsed',
+  'TreeExpanded',
+  'SubGraphCollapsed',
+  'SubGraphExpanded',
+  'AnimationStarting',
+  'AnimationFinished',
+  'Modified',
+  'GainedFocus',
+  'LostFocus',
+  'ScrollChanged',
 ];
 
 /** Create a diagram events manager. */

@@ -44,6 +44,8 @@ export class Link extends Part {
   private _labelSide: 'top' | 'bottom' | 'left' | 'right' | 'auto' = 'auto';
   private _labelAlignment: 'start' | 'middle' | 'end' = 'middle';
   private _curviness = 0;
+  private _isTreeLink = false;
+  private _treeLinkRoute: 'orthogonal' | 'straight' | 'angled' = 'orthogonal';
   private _avoidObstacles = false;
   private _jumpOver = false;
 
@@ -256,6 +258,24 @@ export class Link extends Part {
 
   set curviness(value: number) {
     this._curviness = value;
+  }
+
+  /** GoJS-compatible: Whether this link is a tree link (parent-child). */
+  get isTreeLink(): boolean {
+    return this._isTreeLink;
+  }
+
+  set isTreeLink(value: boolean) {
+    this._isTreeLink = value;
+  }
+
+  /** GoJS-compatible: The routing style for tree links. */
+  get treeLinkRoute(): 'orthogonal' | 'straight' | 'angled' {
+    return this._treeLinkRoute;
+  }
+
+  set treeLinkRoute(value: 'orthogonal' | 'straight' | 'angled') {
+    this._treeLinkRoute = value;
   }
 
   /** Whether this link should route around obstacles (nodes). */

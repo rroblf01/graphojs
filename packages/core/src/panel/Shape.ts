@@ -4,6 +4,7 @@ import type { ShapeType } from '../shapes/ShapeTypes.ts';
 import { ShapeRenderer } from '../shapes/ShapeRenderer.ts';
 import { PathCache } from '../render/RenderCache.ts';
 import { GraphObject } from './GraphObject.ts';
+import { normalizeShapeType } from '../shapes/ShapeTypes.ts';
 
 /** Shared path cache for all panel shapes (avoids recomputing complex paths). */
 const sharedPathCache = new PathCache();
@@ -12,23 +13,56 @@ const sharedPathCache = new PathCache();
  * A geometric shape element in a panel.
  */
 export class Shape extends GraphObject {
+  // GoJS-compatible figure constants
+  static readonly Rectangle = 'rect';
+  static readonly RoundedRectangle = 'roundedRect';
+  static readonly Ellipse = 'ellipse';
+  static readonly Circle = 'ellipse';
+  static readonly Diamond = 'diamond';
+  static readonly Hexagon = 'hexagon';
+  static readonly Octagon = 'octagon';
+  static readonly Star = 'star';
+  static readonly Triangle = 'triangle';
+  static readonly Cross = 'cross';
+  static readonly Arrow = 'arrow';
+  static readonly Cloud = 'cloud';
+  static readonly Parallelogram = 'parallelogram';
+  static readonly Trapezoid = 'trapezoid';
+  static readonly Pentagon = 'pentagon';
+  static readonly Heart = 'heart';
+  static readonly Cylinder = 'cylinder';
+  static readonly Process = 'process';
+  static readonly Document = 'document';
+  static readonly Decision = 'decision';
+  static readonly Start = 'start';
+  static readonly End = 'end';
+  static readonly Io = 'io';
+  static readonly Card = 'card';
+  static readonly Display = 'display';
+  static readonly Delay = 'delay';
+  static readonly ManualOperation = 'manualOperation';
+  static readonly Merge = 'merge';
+  static readonly Extract = 'extract';
+  static readonly Or = 'or';
+  static readonly SummingJunction = 'summingJunction';
+
   private _shape: ShapeType = 'rect';
   private _fill = '#cccccc';
   private _stroke = '#333333';
   private _strokeWidth = 1;
   private _cornerRadius = 0;
 
-  constructor(shape?: ShapeType) {
+  constructor(shape?: string) {
     super();
-    if (shape) this._shape = shape;
+    if (shape) this._shape = normalizeShapeType(shape);
   }
 
   get shape(): ShapeType {
     return this._shape;
   }
 
-  set shape(value: ShapeType) {
-    this._shape = value;
+  set shape(value: string) {
+    this._shape = normalizeShapeType(value);
   }
 
   get fill(): string {

@@ -34,6 +34,25 @@ export class Margin {
     return new Margin(obj.top, obj.right, obj.bottom, obj.left);
   }
 
+  /**
+   * GoJS-compatible: Parse a string of 1, 2, or 4 numbers.
+   * 1 value = all sides; 2 values = vertical, horizontal; 4 values = top, right, bottom, left.
+   */
+  static parse(value: string): Margin {
+    const nums = value
+      .split(/[,\s]+/)
+      .map(Number)
+      .filter((n) => Number.isFinite(n));
+    if (nums.length >= 4) {
+      return new Margin(nums[0] ?? 0, nums[1] ?? 0, nums[2] ?? 0, nums[3] ?? 0);
+    }
+    if (nums.length === 2) {
+      return new Margin(nums[0] ?? 0, nums[1] ?? 0, nums[0] ?? 0, nums[1] ?? 0);
+    }
+    const v = nums[0] ?? 0;
+    return new Margin(v, v, v, v);
+  }
+
   /** Check if this margin equals another margin. */
   equals(other: Margin): boolean {
     return (

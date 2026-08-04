@@ -15,6 +15,14 @@ export type PanelType = 'Auto' | 'Table' | 'Spot' | 'Vertical' | 'Horizontal' | 
  * A Panel is a GraphObject that contains and lays out other GraphObjects.
  */
 export class Panel extends GraphObject {
+  // GoJS-compatible panel type constants
+  static readonly Auto = 'Auto';
+  static readonly Vertical = 'Vertical';
+  static readonly Horizontal = 'Horizontal';
+  static readonly Spot = 'Spot';
+  static readonly Table = 'Table';
+  static readonly Viewbox = 'Viewbox';
+
   private _type: PanelType;
   private _elements: GraphObject[] = [];
   private _padding: Margin | null = null;
@@ -23,6 +31,12 @@ export class Panel extends GraphObject {
   private _rowCount = 0;
   private _columnCount = 0;
   private _gradient: CanvasGradient | null = null;
+
+  /**
+   * Extra properties to apply to the created part when this panel is used
+   * as a node/link/group template (e.g. link routing, corner, arrowhead).
+   */
+  templateProperties: Record<string, unknown> = {};
 
   constructor(type: PanelType = 'Auto') {
     super();
@@ -96,6 +110,13 @@ export class Panel extends GraphObject {
   /** Add an element to this panel. */
   add(element: GraphObject): this {
     this._elements.push(element);
+    this.recountGrid();
+    return this;
+  }
+
+  /** GoJS-compatible: Insert an element at a specific index. */
+  insertAt(index: number, element: GraphObject): this {
+    this._elements.splice(index, 0, element);
     this.recountGrid();
     return this;
   }
@@ -567,12 +588,22 @@ export class Panel extends GraphObject {
     cloned._padding = this._padding;
     cloned._spacing = this._spacing;
     cloned._background = this._background;
+    cloned.templateProperties = { ...this.templateProperties };
     for (const el of this._elements) {
       cloned._elements.push(el.clone());
     }
     cloned._rowCount = this._rowCount;
     cloned._columnCount = this._columnCount;
     return cloned;
+  }
+
+  /** Apply bindings to this panel and recursively to all child elements. */
+  override applyBindings(nodeData: import('../model/Model.ts').NodeData): number {
+    let count = super.applyBindings(nodeData);
+    for (const el of this._elements) {
+      count += el.applyBindings(nodeData);
+    }
+    return count;
   }
 }
 
@@ -589,3 +620,7 @@ export function panel(type: PanelType = 'Auto'): Panel {
 export function shape(shape?: Shape['shape']): Shape {
   return new Shape(shape);
 }
+
+// Register the panel factory for GraphObject.make to use (avoids import cycles)
+import { registerPanelFactory } from './PanelRegistry.ts';
+registerPanelFactory((type?: string) => new Panel(type as PanelType));

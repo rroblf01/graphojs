@@ -3,6 +3,10 @@ import { Size as SizeClass } from '../geometry/Size.ts';
 import type { Margin } from '../geometry/Margin.ts';
 import type { Spot } from '../geometry/Spot.ts';
 import type { Rect } from '../geometry/Rect.ts';
+import type { Binding } from '../binding/Binding.ts';
+import type { NodeData } from '../model/Model.ts';
+import { getPanelFactory } from './PanelRegistry.ts';
+import { Binding as BindingClass } from '../binding/Binding.ts';
 
 /**
  * Base class for all visual elements that can appear in a Panel.
@@ -19,6 +23,7 @@ export abstract class GraphObject {
   private _opacity = 1;
   private _angle = 0;
   private _cursor: string = '';
+  private _bindings: Binding[] = [];
 
   /** The name of this graph object, used for findObject() lookups. */
   get name(): string {
@@ -27,6 +32,46 @@ export abstract class GraphObject {
 
   set name(value: string) {
     this._name = value;
+  }
+
+  /** GoJS-compatible: The bindings attached to this graph object. */
+  get bindings(): readonly Binding[] {
+    return this._bindings;
+  }
+
+  /**
+   * GoJS-compatible: Set a binding on this graph object, replacing any
+   * existing binding with the same target property.
+   */
+  setBinding(binding: Binding): this {
+    this._bindings = this._bindings.filter((b) => b.targetProperty !== binding.targetProperty);
+    this._bindings.push(binding);
+    return this;
+  }
+
+  /** Add a binding to this graph object (keeps existing bindings). */
+  addBinding(binding: Binding): this {
+    this._bindings.push(binding);
+    return this;
+  }
+
+  /** Remove a binding by target property. Returns true if removed. */
+  removeBinding(targetProperty: string): boolean {
+    const index = this._bindings.findIndex((b) => b.targetProperty === targetProperty);
+    if (index === -1) return false;
+    this._bindings.splice(index, 1);
+    return true;
+  }
+
+  /** Apply all bindings from model data to this graph object. */
+  applyBindings(nodeData: NodeData): number {
+    let count = 0;
+    for (const binding of this._bindings) {
+      if (binding.applyToTarget(this, nodeData)) {
+        count++;
+      }
+    }
+    return count;
   }
 
   /**
@@ -38,10 +83,24 @@ export abstract class GraphObject {
    *   const panel = $(go.Panel, "Auto", shape, $(go.TextBlock, "Hello"));
    */
   static make<T extends GraphObject>(ctor: new (...args: unknown[]) => T, ...args: unknown[]): T {
+    // GoJS-compatible: $(go.Node/'go.Link'/'go.Group', panelType, ...children, props)
+    // builds a template Panel carrying the part properties to apply on instantiation.
+    const ctorName = ctor.name;
+    if (ctorName === 'Node' || ctorName === 'Link' || ctorName === 'Group') {
+      return GraphObject.makePartTemplate(args) as unknown as T;
+    }
+
     const obj = new ctor();
 
     for (const arg of args) {
       if (arg === null || arg === undefined) continue;
+
+      if (arg instanceof BindingClass) {
+        // GoJS-compatible: attach a Binding to the object
+        const setter = (obj as unknown as { setBinding?: (b: Binding) => unknown }).setBinding;
+        if (setter) setter.call(obj, arg);
+        continue;
+      }
 
       if (arg instanceof GraphObject) {
         // Child element: add to panel if applicable
@@ -67,6 +126,43 @@ export abstract class GraphObject {
     }
 
     return obj;
+  }
+
+  /**
+   * Build a template Panel for Part constructors (Node/Link/Group).
+   * Children are added to the panel; property maps are applied to the panel
+   * when the key exists there, otherwise stored as templateProperties.
+   */
+  private static makePartTemplate(args: unknown[]): GraphObject {
+    const makePanel = getPanelFactory();
+    const panel = makePanel('Auto');
+
+    for (const arg of args) {
+      if (arg === null || arg === undefined) continue;
+
+      if (arg instanceof BindingClass) {
+        // A Binding on the part itself (rare, but support it)
+        panel.templateProperties['__binding__'] = arg;
+        continue;
+      }
+
+      if (arg instanceof GraphObject) {
+        panel.add(arg);
+      } else if (typeof arg === 'string') {
+        panel.type = arg as 'Auto' | 'Table' | 'Spot' | 'Vertical' | 'Horizontal' | 'Viewbox';
+      } else if (typeof arg === 'object') {
+        const props = arg as Record<string, unknown>;
+        for (const [key, value] of Object.entries(props)) {
+          if (key in panel && key !== 'templateProperties') {
+            (panel as unknown as Record<string, unknown>)[key] = value;
+          } else {
+            panel.templateProperties[key] = value;
+          }
+        }
+      }
+    }
+
+    return panel;
   }
 
   /** Whether this object is visible. */
@@ -236,6 +332,7 @@ export abstract class GraphObject {
     this._opacity = source._opacity;
     this._angle = source._angle;
     this._cursor = source._cursor;
+    this._bindings = source._bindings.map((b) => b.copy());
   }
 
   /**

@@ -27,9 +27,19 @@ export class UndoManager {
   private isExecuting = false;
   private listeners: UndoManagerEventHandler[] = [];
   private transactionStack: Transaction[] = [];
+  private _isEnabled = true;
 
   constructor(maxHistorySize = 100) {
     this.maxHistorySize = maxHistorySize;
+  }
+
+  /** GoJS-compatible: Whether undo/redo is enabled. */
+  get isEnabled(): boolean {
+    return this._isEnabled;
+  }
+
+  set isEnabled(value: boolean) {
+    this._isEnabled = value;
   }
 
   /** Execute a command and add it to the undo stack. */

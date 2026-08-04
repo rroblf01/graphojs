@@ -18,6 +18,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./go": {
+      "types": "./dist/go.d.ts",
+      "import": "./dist/go.js",
+      "require": "./dist/go.cjs"
     }
   },
   "files": [

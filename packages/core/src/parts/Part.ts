@@ -295,6 +295,11 @@ export abstract class Part {
     this._adornments.set(name, adornment);
   }
 
+  /** GoJS-compatible: Find an adornment by name, or null if not present. */
+  findAdornmentNamed(name: string): Adornment | null {
+    return this._adornments.get(name as AdornmentName) ?? null;
+  }
+
   /** Remove an adornment from this part. */
   removeAdornment(name: AdornmentName): boolean {
     return this._adornments.delete(name);
@@ -341,6 +346,10 @@ export abstract class Part {
       if (binding.applyToPart(this, nodeData)) {
         count++;
       }
+    }
+    // Apply element-level bindings in the visual tree
+    if (this._panel) {
+      count += this._panel.applyBindings(nodeData);
     }
     return count;
   }

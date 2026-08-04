@@ -372,10 +372,12 @@ export function routeOrthogonalAvoidingObstacles(
   if (routes.length > 0) {
     routes.sort((a, b) => a.cost - b.cost);
     const best = routes[0];
-    if (corner > 0 && best.points.length > 2) {
+    if (best && corner > 0 && best.points.length > 2) {
       return roundCorners(best.points, corner);
     }
-    return best.points;
+    if (best) {
+      return best.points;
+    }
   }
 
   // Fallback to standard orthogonal routing
@@ -408,6 +410,7 @@ function isPathBlockedMulti(
   for (let i = 0; i < points.length - 1; i++) {
     const a = points[i];
     const b = points[i + 1];
+    if (!a || !b) continue;
     if (isPathBlocked(a, b, obstacles)) {
       return true;
     }
@@ -450,6 +453,7 @@ function routeCost(points: Array<{ x: number; y: number }>): number {
   for (let i = 0; i < points.length - 1; i++) {
     const a = points[i];
     const b = points[i + 1];
+    if (!a || !b) continue;
     cost += Math.hypot(b.x - a.x, b.y - a.y);
   }
   return cost;
@@ -613,10 +617,12 @@ export function computeJumpoverPoints(
   for (let i = 0; i < linkPoints.length - 1; i++) {
     const a1 = linkPoints[i];
     const a2 = linkPoints[i + 1];
+    if (!a1 || !a2) continue;
 
     for (let j = 0; j < crossingLinkPoints.length - 1; j++) {
       const b1 = crossingLinkPoints[j];
       const b2 = crossingLinkPoints[j + 1];
+      if (!b1 || !b2) continue;
 
       const intersection = lineLineIntersection(a1, a2, b1, b2);
       if (intersection) {
@@ -673,6 +679,7 @@ export function splitPathAtJumps(
   for (const jump of jumps) {
     const segStart = points[jump.index];
     const segEnd = points[jump.index + 1];
+    if (!segStart || !segEnd) continue;
     const segDx = segEnd.x - segStart.x;
     const segDy = segEnd.y - segStart.y;
     const segLen = Math.hypot(segDx, segDy);

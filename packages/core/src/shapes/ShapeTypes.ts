@@ -354,3 +354,64 @@ export function getShapesByCategory(category: string): ShapeDefinition[] {
   if (category === 'basic') return basic;
   return Object.values(SHAPES);
 }
+
+/**
+ * Normalize a GoJS-style figure name (e.g. "RoundedRectangle", "ManualOperation")
+ * or an existing ShapeType into a valid ShapeType.
+ * Falls back to 'rect' for unknown names.
+ */
+export function normalizeShapeType(value: string): ShapeType {
+  if ((SHAPES as Record<string, ShapeDefinition>)[value]) {
+    return value as ShapeType;
+  }
+  const normalized = value.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const alias = GOJS_FIGURE_ALIASES[normalized];
+  if (alias) return alias;
+  for (const type of Object.keys(SHAPES)) {
+    const key = type.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (key === normalized) {
+      return type as ShapeType;
+    }
+  }
+  return 'rect';
+}
+
+/** GoJS figure names that don't match our internal keys exactly. */
+const GOJS_FIGURE_ALIASES: Record<string, ShapeType> = {
+  rectangle: 'rect',
+  roundedrectangle: 'roundedRect',
+  roundedrect: 'roundedRect',
+  circle: 'ellipse',
+  ellipsis: 'ellipse',
+  oval: 'ellipse',
+  line: 'rect',
+  triangleup: 'triangle',
+  triangledown: 'triangle',
+  diamond: 'diamond',
+  hexagon: 'hexagon',
+  octagon: 'octagon',
+  star: 'star',
+  cross: 'cross',
+  arrow: 'arrow',
+  cloud: 'cloud',
+  parallelogram: 'parallelogram',
+  trapezoid: 'trapezoid',
+  pentagon: 'pentagon',
+  heart: 'heart',
+  cylinder: 'cylinder',
+  process: 'process',
+  document: 'document',
+  predefinedprocess: 'predefinedProcess',
+  decision: 'decision',
+  start: 'start',
+  end: 'end',
+  io: 'io',
+  card: 'card',
+  display: 'display',
+  delay: 'delay',
+  manualoperation: 'manualOperation',
+  merge: 'merge',
+  extract: 'extract',
+  or: 'or',
+  summingjunction: 'summingJunction',
+};

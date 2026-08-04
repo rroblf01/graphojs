@@ -14,6 +14,71 @@ An open-source, MIT-licensed alternative to GoJS for building interactive diagra
 
 **Work in progress** — not yet published. See the [Roadmap](#roadmap) for planned features.
 
+## GoJS Compatibility
+
+GraphoJS exposes a drop-in, GoJS-compatible API. Most GoJS code migrates by
+changing only the import:
+
+```diff
+- import * as go from 'gojs';
++ import * as go from 'graphojs/go';
+```
+
+The full GoJS programming model is supported:
+
+```typescript
+const $ = go.GraphObject.make;
+
+const myDiagram = $(go.Diagram, "myDiagramDiv", {
+  "undoManager.isEnabled": true,
+});
+
+myDiagram.nodeTemplate = $(
+  go.Node,
+  "Auto",
+  $(go.Shape, "RoundedRectangle", { fill: "white", stroke: "gray" }),
+  $(go.TextBlock, "Default Text", { margin: 12 }, new go.Binding("text", "name")),
+);
+
+myDiagram.linkTemplate = $(
+  go.Link,
+  { routing: go.Link.Orthogonal, corner: 5 },
+  $(go.Shape, { strokeWidth: 3 }),
+  $(go.Shape, "Arrow", { toArrow: go.Link.StandardArrowHead }),
+);
+
+myDiagram.model = new go.GraphLinksModel({
+  nodeDataArray: [
+    { key: "A", name: "Alpha", x: 0, y: 0, width: 100, height: 50 },
+    { key: "B", name: "Beta", x: 200, y: 0, width: 100, height: 50 },
+  ],
+  linkDataArray: [{ from: "A", to: "B" }],
+});
+
+myDiagram.addDiagramListener("SelectionChanged", (e) => {
+  console.log("Selected:", e.subject);
+});
+
+myDiagram.commit((d) => {
+  d.model.setDataProperty(d.model.nodeDataArray[0], "name", "Alpha Updated");
+}, "update name");
+```
+
+### Implemented compatibility surface
+
+- `go.*` namespace (`import * as go from 'graphojs/go'`)
+- `go.GraphObject.make` declarative construction
+- `go.Node` / `go.Link` / `go.Group` / `go.Panel` / `go.Shape` / `go.TextBlock` templates
+- `go.Binding` at the Part and element level (with converters & TwoWay)
+- `nodeTemplate` / `linkTemplate` / `groupTemplate` / `nodeTemplateMap` / `linkTemplateMap`
+- `go.Link.Orthogonal`, `go.Shape.RoundedRectangle`, `go.Panel.Auto` enum constants
+- `go.Point.parse`, `go.Rect.parse`, `go.Size.parse`, `go.Margin.parse`
+- `diagram.model` property assignment, `diagram.commit`, `startTransaction`/`commitTransaction`
+- `diagram.undoManager` / `commandHandler` / `toolManager` / `animationManager` accessors
+- Diagram events: `SelectionChanged`, `ObjectSingleClicked`, `LinkDrawn`, `PartResized`, and more
+- Touch panning, pinch-to-zoom, arrow-key nudging
+- `Part.location` / `locationSpot`, `Link.fromNode`/`toNode`, `fromEndSegmentLength`, `reshapable`
+
 ## Tech Stack
 
 - **TypeScript** 7.0.2
@@ -57,15 +122,14 @@ pnpm test:e2e
 
 ## Roadmap
 
-- [x] Phase 0 — Project setup & tooling
-- [ ] Phase 1 — Geometry primitives & data model
-- [ ] Phase 2 — Canvas 2D rendering engine
-- [ ] Phase 3 — Interaction tools (pan, zoom, select, drag)
-- [ ] Phase 4 — Layouts (Grid, Tree)
-- [ ] Phase 5 — React wrapper
-- [ ] Phase 6 — Vue wrapper
-- [ ] Phase 7 — npm publication & documentation
-- [ ] Phase 8 — Post-MVP features (UndoManager, Groups, advanced layouts)
+- [x] Geometry primitives, data model & rendering engine
+- [x] Interaction tools (pan, zoom, select, drag, link, resize, rotate)
+- [x] Layouts (Grid, Tree, Circular, ForceDirected, LayeredDigraph, Spot)
+- [x] Undo/redo, groups, bindings, templates, events, virtualization
+- [x] GoJS-compatible API (`graphojs/go`)
+- [ ] React / Vue wrappers
+- [ ] npm publication & documentation
+- [ ] Performance benchmarks on large graphs
 
 ## License
 

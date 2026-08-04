@@ -20,6 +20,15 @@ export class Point {
     return new Point(0, 0);
   }
 
+  /** GoJS-compatible: Parse a string like "100, 200" or "100 200". */
+  static parse(value: string): Point {
+    const nums = value
+      .split(/[,\s]+/)
+      .map(Number)
+      .filter((n) => Number.isFinite(n));
+    return new Point(nums[0] ?? 0, nums[1] ?? 0);
+  }
+
   /** Create a point where x === y. */
   static of(value: number): Point {
     return new Point(value, value);

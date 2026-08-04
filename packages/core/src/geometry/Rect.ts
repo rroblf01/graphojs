@@ -36,6 +36,15 @@ export class Rect {
     return new Rect(0, 0, 0, 0);
   }
 
+  /** GoJS-compatible: Parse a string like "x, y, w, h" or "x y w h". */
+  static parse(value: string): Rect {
+    const nums = value
+      .split(/[,\s]+/)
+      .map(Number)
+      .filter((n) => Number.isFinite(n));
+    return new Rect(nums[0] ?? 0, nums[1] ?? 0, nums[2] ?? 0, nums[3] ?? 0);
+  }
+
   /** Check if this rect equals another rect. */
   equals(other: Rect): boolean {
     return (

@@ -10,7 +10,11 @@ import {
   Point,
   Spot,
   Binding,
+  Rect,
+  Size,
+  Margin,
 } from '../src/index.ts';
+import { Group } from '../src/parts/Group.ts';
 
 describe('GoJS Compatibility', () => {
   describe('go namespace', () => {
@@ -39,7 +43,7 @@ describe('GoJS Compatibility', () => {
         cornerRadius: 5,
       });
       expect(s).toBeInstanceOf(Shape);
-      expect(s.shape).toBe('RoundedRectangle');
+      expect(s.shape).toBe('roundedRect');
       expect(s.fill).toBe('white');
       expect(s.stroke).toBe('gray');
       expect(s.cornerRadius).toBe(5);
@@ -261,6 +265,153 @@ describe('GoJS Compatibility', () => {
       expect(s.cursor).toBe('');
       s.cursor = 'pointer';
       expect(s.cursor).toBe('pointer');
+    });
+  });
+
+  describe('GoJS enum constants', () => {
+    it('should expose Link routing constants', () => {
+      expect(Link.Orthogonal).toBe('orthogonal');
+      expect(Link.Curved).toBe('curved');
+      expect(Link.Straight).toBe('straight');
+      const link = new Link(1, 1, 2);
+      link.routing = Link.Orthogonal;
+      expect(link.routing).toBe('orthogonal');
+    });
+
+    it('should expose Link arrowhead constants', () => {
+      expect(Link.StandardArrowHead).toBe('triangle');
+      expect(Link.DiamondArrowHead).toBe('diamond');
+      expect(Link.CircleArrowHead).toBe('circle');
+      expect(Link.None).toBe('none');
+      const link = new Link(1, 1, 2);
+      link.arrowhead = Link.DiamondArrowHead;
+      expect(link.arrowhead).toBe('diamond');
+    });
+
+    it('should expose Shape figure constants', () => {
+      expect(Shape.Rectangle).toBe('rect');
+      expect(Shape.RoundedRectangle).toBe('roundedRect');
+      expect(Shape.Ellipse).toBe('ellipse');
+      expect(Shape.Diamond).toBe('diamond');
+    });
+
+    it('should expose Panel type constants', () => {
+      expect(Panel.Auto).toBe('Auto');
+      expect(Panel.Spot).toBe('Spot');
+      expect(Panel.Table).toBe('Table');
+      const p = new Panel(Panel.Auto);
+      expect(p.type).toBe('Auto');
+    });
+  });
+
+  describe('GoJS geometry parse', () => {
+    it('should parse Point from string', () => {
+      const p = Point.parse('10, 20');
+      expect(p.x).toBe(10);
+      expect(p.y).toBe(20);
+    });
+
+    it('should parse Rect from string', () => {
+      const r = Rect.parse('1 2 3 4');
+      expect(r).toEqual(new Rect(1, 2, 3, 4));
+    });
+
+    it('should parse Size from string', () => {
+      const s = Size.parse('50, 30');
+      expect(s.width).toBe(50);
+      expect(s.height).toBe(30);
+    });
+
+    it('should parse Margin with 1, 2, or 4 values', () => {
+      expect(Margin.parse('5')).toEqual(new Margin(5, 5, 5, 5));
+      expect(Margin.parse('1, 2')).toEqual(new Margin(1, 2, 1, 2));
+      expect(Margin.parse('1 2 3 4')).toEqual(new Margin(1, 2, 3, 4));
+    });
+  });
+
+  describe('GoJS shape normalization', () => {
+    it('should normalize GoJS figure names', () => {
+      const s = new Shape('RoundedRectangle');
+      expect(s.shape).toBe('roundedRect');
+      const d = new Shape('Diamond');
+      expect(d.shape).toBe('diamond');
+      const unknown = new Shape('NotARealShape');
+      expect(unknown.shape).toBe('rect');
+    });
+  });
+
+  describe('Panel.insertAt', () => {
+    it('should insert an element at a specific index', () => {
+      const p = new Panel('Vertical');
+      const a = new Shape('rect');
+      const b = new Shape('ellipse');
+      const c = new Shape('diamond');
+      p.add(a);
+      p.add(c);
+      p.insertAt(1, b);
+      expect(p.elements[0]).toBe(a);
+      expect(p.elements[1]).toBe(b);
+      expect(p.elements[2]).toBe(c);
+    });
+  });
+
+  describe('Part.findAdornmentNamed', () => {
+    it('should return null for missing adornments', () => {
+      const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
+      expect(node.findAdornmentNamed('selection')).toBeNull();
+    });
+  });
+
+  describe('GraphObject.setBinding', () => {
+    it('should attach a binding to an element', () => {
+      const t = new TextBlock('Hello');
+      const b = new Binding('text', 'name');
+      t.setBinding(b);
+      expect(t.bindings.length).toBe(1);
+      expect(t.bindings[0]).toBe(b);
+    });
+
+    it('should replace a binding with the same target property', () => {
+      const t = new TextBlock('Hello');
+      t.setBinding(new Binding('text', 'name'));
+      t.setBinding(new Binding('text', 'title'));
+      expect(t.bindings.length).toBe(1);
+      expect(t.bindings[0].sourceProperty).toBe('title');
+    });
+  });
+
+  describe('GraphObject.make with Part templates', () => {
+    it('should build a template panel from go.Node', () => {
+      const $ = GraphObject.make;
+      const template = $(Node, 'Auto', $(Shape, 'RoundedRectangle'));
+      expect(template).toBeInstanceOf(Panel);
+      expect(template.type).toBe('Auto');
+      expect(template.elementCount).toBe(1);
+    });
+
+    it('should store template properties on the panel', () => {
+      const $ = GraphObject.make;
+      const template = $(Link, { routing: 'orthogonal', corner: 5 }, $(Shape, 'rect'));
+      const panel = template as Panel;
+      expect(panel.templateProperties.routing).toBe('orthogonal');
+      expect(panel.templateProperties.corner).toBe(5);
+    });
+
+    it('should attach bindings to elements inside a template', () => {
+      const $ = GraphObject.make;
+      const template = $(Node, 'Auto', $(TextBlock, 'x', new Binding('text', 'name')));
+      const panel = template as Panel;
+      const text = panel.elements[0] as TextBlock;
+      expect(text.bindings.length).toBe(1);
+      expect(text.bindings[0].sourceProperty).toBe('name');
+    });
+  });
+
+  describe('Group extends Part', () => {
+    it('should be constructible', () => {
+      const group = new Group(1);
+      expect(group.key).toBe(1);
+      expect(group.isGroup).toBe(true);
     });
   });
 });

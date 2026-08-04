@@ -406,7 +406,47 @@ export class Canvas2DRenderer implements Renderer {
       this.renderLabel(link.label, labelPos.x, labelPos.y, link.labelColor, link.labelFont);
     }
 
+    // Render the link's visual tree (from linkTemplate) if present
+    if (link.panel && points.length > 0) {
+      this.renderLinkPanel(link, points);
+    }
+
     this.ctx.restore();
+  }
+
+  /** Render a link's panel (linkTemplate) centered on the path midpoint. */
+  private renderLinkPanel(link: Link, points: Array<{ x: number; y: number }>): void {
+    const panel = link.panel;
+    if (!panel) return;
+
+    // Compute the midpoint of the path
+    let midX = 0;
+    let midY = 0;
+    const total = points.length;
+    if (total >= 2) {
+      const midIndex = Math.floor((total - 1) / 2);
+      const a = points[midIndex];
+      const b = points[midIndex + 1];
+      if (a && b) {
+        midX = (a.x + b.x) / 2;
+        midY = (a.y + b.y) / 2;
+      }
+    } else if (total === 1) {
+      const p = points[0];
+      if (p) {
+        midX = p.x;
+        midY = p.y;
+      }
+    }
+
+    const width = Math.max(link.bounds.width, 1);
+    const height = Math.max(link.bounds.height, 1);
+    const x = midX - width / 2;
+    const y = midY - height / 2;
+
+    panel.setPosition(x, y);
+    panel.setActualSize(width, height);
+    panel.draw(this.ctx, x, y, width, height);
   }
 
   private renderArrowhead(link: Link, points: Array<{ x: number; y: number }>): void {

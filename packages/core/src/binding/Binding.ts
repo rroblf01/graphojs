@@ -1,13 +1,17 @@
 import type { NodeData } from '../model/Model.ts';
 import type { Part } from '../parts/Part.ts';
+import type { GraphObject } from '../panel/GraphObject.ts';
+
+/** An object that can be the target of a binding: a Part or a GraphObject. */
+export type BindingTarget = Part | GraphObject;
 
 /**
- * A binding connects a model data property to a Part property.
+ * A binding connects a model data property to a Part or GraphObject property.
  *
  * When the model changes, the binding reads `sourceProperty` from the
- * node data and writes it to `targetProperty` on the Part.
+ * node data and writes it to `targetProperty` on the target.
  *
- * For TwoWay bindings, changes to the Part property are written back
+ * For TwoWay bindings, changes to the target property are written back
  * to the model.
  */
 export class Binding {
@@ -15,14 +19,14 @@ export class Binding {
   private _sourceProperty: string;
   private _converter: ((value: unknown, data: NodeData) => unknown) | null = null;
   private _twoWay = false;
-  private _backConverter: ((value: unknown, part: Part) => unknown) | null = null;
+  private _backConverter: ((value: unknown, target: BindingTarget) => unknown) | null = null;
 
   constructor(targetProperty: string, sourceProperty: string) {
     this._targetProperty = targetProperty;
     this._sourceProperty = sourceProperty;
   }
 
-  /** The Part property name to set. */
+  /** The target property name to set. */
   get targetProperty(): string {
     return this._targetProperty;
   }
@@ -37,30 +41,30 @@ export class Binding {
     return this._twoWay;
   }
 
-  /** Set a converter function that transforms model data → Part property. */
+  /** Set a converter function that transforms model data → target property. */
   ofConverter(converter: (value: unknown, data: NodeData) => unknown): this {
     this._converter = converter;
     return this;
   }
 
-  /** Make this a TwoWay binding so Part property changes flow back to the model. */
+  /** Make this a TwoWay binding so target property changes flow back to the model. */
   makeTwoWay(): this {
     this._twoWay = true;
     return this;
   }
 
-  /** Set a back-converter for TwoWay bindings that transforms Part property → model data. */
-  ofBackConverter(backConverter: (value: unknown, part: Part) => unknown): this {
+  /** Set a back-converter for TwoWay bindings that transforms target property → model data. */
+  ofBackConverter(backConverter: (value: unknown, target: BindingTarget) => unknown): this {
     this._backConverter = backConverter;
     this._twoWay = true;
     return this;
   }
 
   /**
-   * Apply this binding: read from model data and set on the Part.
+   * Apply this binding: read from model data and set on the target.
    * Returns true if the property was set.
    */
-  applyToPart(part: Part, nodeData: NodeData): boolean {
+  applyToTarget(target: BindingTarget, nodeData: NodeData): boolean {
     const sourceValue = nodeData[this._sourceProperty];
     let targetValue = sourceValue;
 
@@ -72,22 +76,22 @@ export class Binding {
       return false;
     }
 
-    (part as unknown as Record<string, unknown>)[this._targetProperty] = targetValue;
+    (target as unknown as Record<string, unknown>)[this._targetProperty] = targetValue;
     return true;
   }
 
   /**
-   * Apply TwoWay: read Part property and write back to model data.
+   * Apply TwoWay: read target property and write back to model data.
    * Returns true if the property was set on the model.
    */
-  applyToModel(part: Part, nodeData: NodeData): boolean {
+  applyToModel(target: BindingTarget, nodeData: NodeData): boolean {
     if (!this._twoWay) return false;
 
-    const partValue = (part as unknown as Record<string, unknown>)[this._targetProperty];
-    let modelValue = partValue;
+    const targetValue = (target as unknown as Record<string, unknown>)[this._targetProperty];
+    let modelValue = targetValue;
 
     if (this._backConverter) {
-      modelValue = this._backConverter(partValue, part);
+      modelValue = this._backConverter(targetValue, target);
     }
 
     if (modelValue === undefined) {
@@ -110,21 +114,21 @@ export class Binding {
   }
 
   /**
-   * Write a value to the Part, applying the back-converter if present.
+   * Write a value to the target, applying the back-converter if present.
    */
-  setTargetValue(part: Part, value: unknown): void {
-    (part as unknown as Record<string, unknown>)[this._targetProperty] = value;
+  setTargetValue(target: BindingTarget, value: unknown): void {
+    (target as unknown as Record<string, unknown>)[this._targetProperty] = value;
   }
 
   /**
-   * Read the Part property and write to model data, applying back-converter if present.
+   * Read the target property and write to model data, applying back-converter if present.
    */
-  getSourceValueFromPart(part: Part): unknown {
-    const partValue = (part as unknown as Record<string, unknown>)[this._targetProperty];
+  getSourceValueFromTarget(target: BindingTarget): unknown {
+    const targetValue = (target as unknown as Record<string, unknown>)[this._targetProperty];
     if (this._backConverter) {
-      return this._backConverter(partValue, part);
+      return this._backConverter(targetValue, target);
     }
-    return partValue;
+    return targetValue;
   }
 
   /** Check if two bindings are equivalent. */
@@ -134,6 +138,16 @@ export class Binding {
       this._sourceProperty === other._sourceProperty &&
       this._twoWay === other._twoWay
     );
+  }
+
+  /** @deprecated Use applyToTarget instead. */
+  applyToPart(part: Part, nodeData: NodeData): boolean {
+    return this.applyToTarget(part, nodeData);
+  }
+
+  /** @deprecated Use getSourceValueFromTarget instead. */
+  getSourceValueFromPart(part: Part): unknown {
+    return this.getSourceValueFromTarget(part);
   }
 
   /** Create a deep copy of this binding. */

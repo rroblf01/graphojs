@@ -25,6 +25,15 @@ export class Size {
     return new Size(value, value);
   }
 
+  /** GoJS-compatible: Parse a string like "100, 200" or "100 200". */
+  static parse(value: string): Size {
+    const nums = value
+      .split(/[,\s]+/)
+      .map(Number)
+      .filter((n) => Number.isFinite(n));
+    return new Size(nums[0] ?? 0, nums[1] ?? 0);
+  }
+
   /** Check if this size equals another size. */
   equals(other: Size): boolean {
     return this.width === other.width && this.height === other.height;

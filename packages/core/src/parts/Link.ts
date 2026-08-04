@@ -10,6 +10,19 @@ export type ArrowheadStyle = 'triangle' | 'openArrow' | 'diamond' | 'circle' | '
  * A visual link between two nodes.
  */
 export class Link extends Part {
+  // GoJS-compatible routing constants
+  static readonly Straight = 'straight';
+  static readonly Orthogonal = 'orthogonal';
+  static readonly Curved = 'curved';
+
+  // GoJS-compatible arrowhead constants
+  static readonly None = 'none';
+  static readonly TriangleArrowHead = 'triangle';
+  static readonly OpenTriangleArrowHead = 'openArrow';
+  static readonly StandardArrowHead = 'triangle';
+  static readonly DiamondArrowHead = 'diamond';
+  static readonly CircleArrowHead = 'circle';
+
   private _fromKey: NodeKey;
   private _toKey: NodeKey;
   private _routing: LinkRouting = 'straight';

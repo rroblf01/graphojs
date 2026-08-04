@@ -63,7 +63,7 @@ export class Diagram {
   private container: HTMLDivElement;
   private canvas: HTMLCanvasElement;
   private renderer: Renderer;
-  private model: GraphLinksModel;
+  private _model: GraphLinksModel;
   private parts: Map<NodeKey, Node | Link | Group> = new Map();
   private nodes: Map<NodeKey, Node> = new Map();
   private groups: Map<NodeKey, Group> = new Map();
@@ -83,12 +83,12 @@ export class Diagram {
   private animationFrameId: number | null = null;
 
   private selectedParts: Set<NodeKey> = new Set();
-  private toolManager: ToolManager;
-  private undoManager: UndoManager;
+  private _toolManager: ToolManager;
+  private _undoManager: UndoManager;
   private layers: Layer[];
   private contextMenu: ContextMenu | null = null;
-  private animationManager: AnimationManager = new AnimationManager();
-  private commandHandler: CommandHandler;
+  private _animationManager: AnimationManager = new AnimationManager();
+  private _commandHandler: CommandHandler;
   private virtualization: VirtualizationManager | null = null;
   private partPool: PartPool = new PartPool();
   private resizeObserver: ResizeObserver | null = null;
@@ -131,14 +131,24 @@ export class Diagram {
   private _nodeTemplateMap: Map<string, Panel> = new Map();
   private _linkTemplateMap: Map<string, Panel> = new Map();
 
-  constructor(options: DiagramOptions) {
-    this.container = options.div;
-    this.minScale = options.minScale ?? 0.1;
-    this.maxScale = options.maxScale ?? 10;
-    this.gridSize = options.gridSize ?? 20;
-    this.showGrid = options.showGrid ?? true;
-    this.snapToGrid = options.snapToGrid ?? false;
-    this.backgroundColor = options.backgroundColor ?? '#ffffff';
+  constructor(options: DiagramOptions | HTMLDivElement) {
+    // GoJS-compatible: accept an element directly (duck-typed for robustness)
+    const isElement =
+      typeof options === 'object' &&
+      options !== null &&
+      'appendChild' in (options as object) &&
+      !('div' in (options as object));
+    const resolvedOptions: DiagramOptions = isElement
+      ? ({ div: options as HTMLDivElement } as DiagramOptions)
+      : (options as DiagramOptions);
+
+    this.container = resolvedOptions.div;
+    this.minScale = resolvedOptions.minScale ?? 0.1;
+    this.maxScale = resolvedOptions.maxScale ?? 10;
+    this.gridSize = resolvedOptions.gridSize ?? 20;
+    this.showGrid = resolvedOptions.showGrid ?? true;
+    this.snapToGrid = resolvedOptions.snapToGrid ?? false;
+    this.backgroundColor = resolvedOptions.backgroundColor ?? '#ffffff';
 
     // Create canvas
     this.canvas = document.createElement('canvas');
@@ -151,20 +161,20 @@ export class Diagram {
     this.renderer = new Canvas2DRenderer(this.canvas);
 
     // Create model
-    this.model = new GraphLinksModel();
+    this._model = new GraphLinksModel();
 
     // Set initial scale
-    this.scale = options.initialScale ?? 1;
+    this.scale = resolvedOptions.initialScale ?? 1;
 
     // Create tool manager and register tools
-    this.toolManager = new ToolManager(this);
+    this._toolManager = new ToolManager(this);
     this.registerDefaultTools();
 
     // Create undo manager
-    this.undoManager = new UndoManager();
+    this._undoManager = new UndoManager();
 
     // Create command handler
-    this.commandHandler = new CommandHandler(this);
+    this._commandHandler = new CommandHandler(this);
 
     // Create layers
     this.layers = createDefaultLayers();
@@ -178,43 +188,63 @@ export class Diagram {
 
   /** Register default interaction tools. */
   private registerDefaultTools(): void {
-    this.toolManager.registerTool('clickSelecting', new ClickSelectingTool());
-    this.toolManager.registerTool('dragging', new DraggingTool());
-    this.toolManager.registerTool('panning', new PanningTool());
-    this.toolManager.registerTool('zooming', new ZoomingTool());
-    this.toolManager.registerTool('textEditing', new TextEditingTool());
-    this.toolManager.registerTool('linking', new LinkingTool());
-    this.toolManager.registerTool('relinking', new RelinkingTool());
-    this.toolManager.registerTool('resizing', new ResizingTool());
-    this.toolManager.registerTool('rotating', new RotatingTool());
-    this.toolManager.registerTool('dragSelecting', new DragSelectingTool());
+    this._toolManager.registerTool('clickSelecting', new ClickSelectingTool());
+    this._toolManager.registerTool('dragging', new DraggingTool());
+    this._toolManager.registerTool('panning', new PanningTool());
+    this._toolManager.registerTool('zooming', new ZoomingTool());
+    this._toolManager.registerTool('textEditing', new TextEditingTool());
+    this._toolManager.registerTool('linking', new LinkingTool());
+    this._toolManager.registerTool('relinking', new RelinkingTool());
+    this._toolManager.registerTool('resizing', new ResizingTool());
+    this._toolManager.registerTool('rotating', new RotatingTool());
+    this._toolManager.registerTool('dragSelecting', new DragSelectingTool());
 
     // Activate default tools
-    this.toolManager.activateTool('clickSelecting');
-    this.toolManager.activateTool('dragging');
-    this.toolManager.activateTool('zooming');
-    this.toolManager.activateTool('resizing');
-    this.toolManager.activateTool('rotating');
+    this._toolManager.activateTool('clickSelecting');
+    this._toolManager.activateTool('dragging');
+    this._toolManager.activateTool('zooming');
+    this._toolManager.activateTool('resizing');
+    this._toolManager.activateTool('rotating');
   }
 
   /** Get the tool manager. */
   getToolManager(): ToolManager {
-    return this.toolManager;
+    return this._toolManager;
+  }
+
+  /** GoJS-compatible: The tool manager. */
+  get toolManager(): ToolManager {
+    return this._toolManager;
   }
 
   /** Get the undo manager. */
   getUndoManager(): UndoManager {
-    return this.undoManager;
+    return this._undoManager;
+  }
+
+  /** GoJS-compatible: The undo manager. */
+  get undoManager(): UndoManager {
+    return this._undoManager;
   }
 
   /** Get the animation manager. */
   getAnimationManager(): AnimationManager {
-    return this.animationManager;
+    return this._animationManager;
+  }
+
+  /** GoJS-compatible: The animation manager. */
+  get animationManager(): AnimationManager {
+    return this._animationManager;
   }
 
   /** Get the command handler. */
   getCommandHandler(): CommandHandler {
-    return this.commandHandler;
+    return this._commandHandler;
+  }
+
+  /** GoJS-compatible: The command handler. */
+  get commandHandler(): CommandHandler {
+    return this._commandHandler;
   }
 
   /** GoJS-compatible: Get the default node template. */
@@ -373,28 +403,28 @@ export class Diagram {
 
   /** Execute an undoable command. */
   executeCommand(command: Command): void {
-    this.undoManager.execute(command);
+    this._undoManager.execute(command);
   }
 
   /** Undo the last command. */
   undo(): boolean {
-    return this.undoManager.undo();
+    return this._undoManager.undo();
   }
 
   /** Redo the last undone command. */
   redo(): boolean {
-    return this.undoManager.redo();
+    return this._undoManager.redo();
   }
 
   /** GoJS-compatible: Begin a transaction. Commands are grouped into one undo unit. */
   startTransaction(name = 'Transaction'): boolean {
-    this.undoManager.beginTransaction(name);
+    this._undoManager.beginTransaction(name);
     return true;
   }
 
   /** GoJS-compatible: Commit the current transaction. */
   commitTransaction(_name = ''): boolean {
-    this.undoManager.commitTransaction();
+    this._undoManager.commitTransaction();
     return true;
   }
 
@@ -438,7 +468,7 @@ export class Diagram {
   /** Handle a double-click event (triggers text editing). */
   private handleDoubleClick(e: MouseEvent): void {
     e.preventDefault();
-    const textEditing = this.toolManager.getTool('textEditing');
+    const textEditing = this._toolManager.getTool('textEditing');
     if (textEditing instanceof TextEditingTool) {
       textEditing.doDoubleClick(e);
     }
@@ -454,7 +484,7 @@ export class Diagram {
 
   /** Handle a click event. */
   private handleCanvasClick(e: MouseEvent): void {
-    this.toolManager.handleClick(e);
+    this._toolManager.handleClick(e);
     // Fire background click or object click
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);
@@ -478,28 +508,28 @@ export class Diagram {
     if (ctrlOrCmd && e.key === 'z') {
       e.preventDefault();
       if (e.shiftKey) {
-        this.commandHandler.redo();
+        this._commandHandler.redo();
       } else {
-        this.commandHandler.undo();
+        this._commandHandler.undo();
       }
     } else if (ctrlOrCmd && e.key === 'y') {
       e.preventDefault();
-      this.commandHandler.redo();
+      this._commandHandler.redo();
     } else if (ctrlOrCmd && e.key === 'c') {
       e.preventDefault();
-      this.commandHandler.copySelection();
+      this._commandHandler.copySelection();
     } else if (ctrlOrCmd && e.key === 'x') {
       e.preventDefault();
-      this.commandHandler.cutSelection();
+      this._commandHandler.cutSelection();
     } else if (ctrlOrCmd && e.key === 'v') {
       e.preventDefault();
-      this.commandHandler.pasteClipboard();
+      this._commandHandler.pasteClipboard();
     } else if (ctrlOrCmd && e.key === 'a') {
       e.preventDefault();
-      this.commandHandler.selectAll();
+      this._commandHandler.selectAll();
     } else if (e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
-      this.commandHandler.deleteSelection();
+      this._commandHandler.deleteSelection();
     } else if (
       e.key === 'ArrowUp' ||
       e.key === 'ArrowDown' ||
@@ -509,7 +539,7 @@ export class Diagram {
       e.preventDefault();
       const dx = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0;
       const dy = e.key === 'ArrowUp' ? -1 : e.key === 'ArrowDown' ? 1 : 0;
-      this.commandHandler.nudgeSelection(dx, dy, this.scale);
+      this._commandHandler.nudgeSelection(dx, dy, this.scale);
     }
   }
 
@@ -598,17 +628,17 @@ export class Diagram {
 
   /** Set up DOM event listeners. */
   private setupEventListeners(): void {
-    this.addCanvasListener('wheel', (e) => this.toolManager.handleMouseWheel(e as WheelEvent), {
+    this.addCanvasListener('wheel', (e) => this._toolManager.handleMouseWheel(e as WheelEvent), {
       passive: false,
     });
-    this.addCanvasListener('mousedown', (e) => this.toolManager.handleMouseDown(e as MouseEvent));
+    this.addCanvasListener('mousedown', (e) => this._toolManager.handleMouseDown(e as MouseEvent));
     this.addCanvasListener('mousemove', (e) => {
-      this.toolManager.handleMouseMove(e as MouseEvent);
+      this._toolManager.handleMouseMove(e as MouseEvent);
       this.tooltipManager?.handleMouseMove(e as MouseEvent);
     });
-    this.addCanvasListener('mouseup', (e) => this.toolManager.handleMouseUp(e as MouseEvent));
+    this.addCanvasListener('mouseup', (e) => this._toolManager.handleMouseUp(e as MouseEvent));
     this.addCanvasListener('mouseleave', (e) => {
-      this.toolManager.handleMouseUp(e as MouseEvent);
+      this._toolManager.handleMouseUp(e as MouseEvent);
       this.tooltipManager?.handleMouseLeave();
     });
     this.addCanvasListener('click', (e) => this.handleCanvasClick(e as MouseEvent));
@@ -642,7 +672,7 @@ export class Diagram {
 
     // Model change listener
     this.modelChangeListener = (event: ChangedEvent) => this.handleModelChange(event);
-    this.model.addChangedListener(this.modelChangeListener);
+    this._model.addChangedListener(this.modelChangeListener);
   }
 
   /** Add a canvas event listener and track it for cleanup. */
@@ -688,16 +718,16 @@ export class Diagram {
   private syncPartsFromModel(): void {
     // Remove parts that no longer exist in model
     for (const [key, part] of this.parts) {
-      if (part instanceof Node && !this.model.containsNode(key)) {
+      if (part instanceof Node && !this._model.containsNode(key)) {
         this.parts.delete(key);
         this.nodes.delete(key);
-      } else if (part instanceof Group && !this.model.containsNode(key)) {
+      } else if (part instanceof Group && !this._model.containsNode(key)) {
         this.parts.delete(key);
         this.groups.delete(key);
       } else if (part instanceof Link) {
-        const linkData = this.model
+        const linkData = this._model
           .getLinkDataArray()
-          .find((l) => this.model.getLinkKey(l) === key);
+          .find((l) => this._model.getLinkKey(l) === key);
         if (!linkData) {
           this.parts.delete(key);
           this.links.delete(key);
@@ -706,8 +736,8 @@ export class Diagram {
     }
 
     // Add/update nodes and groups
-    for (const nodeData of this.model.getNodeDataArray()) {
-      const key = this.model.getNodeKey(nodeData);
+    for (const nodeData of this._model.getNodeDataArray()) {
+      const key = this._model.getNodeKey(nodeData);
       const isGroup = nodeData.isGroup === true;
 
       if (isGroup) {
@@ -719,7 +749,7 @@ export class Diagram {
         // Sync members: add nodes/links whose groupKey matches this group
         for (const [memberKey, node] of this.nodes) {
           if (node.containingGroup === group) continue;
-          const memberData = this.model.getNodeData(memberKey);
+          const memberData = this._model.getNodeData(memberKey);
           if (memberData && memberData.group === key) {
             group.add(node);
           }
@@ -742,8 +772,8 @@ export class Diagram {
     }
 
     // Add/update links
-    for (const linkData of this.model.getLinkDataArray()) {
-      const linkKey = this.model.getLinkKey(linkData);
+    for (const linkData of this._model.getLinkDataArray()) {
+      const linkKey = this._model.getLinkKey(linkData);
       if (linkKey === undefined) continue;
 
       let link = this.links.get(linkKey);
@@ -813,8 +843,8 @@ export class Diagram {
 
     // Apply bindings to all parts
     for (const [key, part] of this.parts) {
-      if (part.bindings.length > 0) {
-        const nodeData = this.model.getNodeData(key);
+      if (part.bindings.length > 0 || part.panel !== null) {
+        const nodeData = this._model.getNodeData(key);
         if (nodeData) {
           part.applyBindings(nodeData);
         }
@@ -836,7 +866,7 @@ export class Diagram {
       }
       case 'node Removed': {
         if (event.node) {
-          const key = this.model.getNodeKey(event.node);
+          const key = this._model.getNodeKey(event.node);
           this.removePartByKey(key);
         }
         break;
@@ -851,7 +881,7 @@ export class Diagram {
       }
       case 'link Removed': {
         if (event.link) {
-          const key = this.model.getLinkKey(event.link);
+          const key = this._model.getLinkKey(event.link);
           if (key !== undefined) this.removePartByKey(key);
         }
         break;
@@ -861,7 +891,7 @@ export class Diagram {
 
   /** Sync a single node data into its visual part (create if needed). */
   private syncNodeFromModel(nodeData: NodeData): void {
-    const key = this.model.getNodeKey(nodeData);
+    const key = this._model.getNodeKey(nodeData);
     const isGroup = nodeData.isGroup === true;
 
     if (isGroup) {
@@ -883,7 +913,7 @@ export class Diagram {
 
   /** Sync a single link data into its visual part (create if needed). */
   private syncLinkFromModel(linkData: LinkData): void {
-    const linkKey = this.model.getLinkKey(linkData);
+    const linkKey = this._model.getLinkKey(linkData);
     if (linkKey === undefined) return;
 
     let link = this.links.get(linkKey);
@@ -894,7 +924,7 @@ export class Diagram {
   }
 
   private createNode(nodeData: NodeData): Node {
-    const key = this.model.getNodeKey(nodeData);
+    const key = this._model.getNodeKey(nodeData);
     const x = (nodeData.x as number) ?? 0;
     const y = (nodeData.y as number) ?? 0;
     const width = (nodeData.width as number) ?? 100;
@@ -907,7 +937,10 @@ export class Diagram {
       (category !== undefined ? this._nodeTemplateMap.get(category) : undefined) ??
       this._nodeTemplate;
     if (template) {
-      node.panel = template.clone();
+      const cloned = template.clone();
+      node.panel = cloned;
+      // Apply template properties to the part
+      this.applyTemplateProperties(node, cloned.templateProperties);
     }
 
     const layerName = (nodeData.layer as string) ?? LayerNames.Default;
@@ -920,8 +953,19 @@ export class Diagram {
     return node;
   }
 
+  /** Apply templateProperties (e.g. routing, corner) to a created part. */
+  private applyTemplateProperties(part: Part, props: Record<string, unknown>): void {
+    for (const [key, value] of Object.entries(props)) {
+      if (key === '__binding__') {
+        (part as unknown as { addBinding: (b: unknown) => void }).addBinding(value);
+        continue;
+      }
+      (part as unknown as Record<string, unknown>)[key] = value;
+    }
+  }
+
   private createGroup(nodeData: NodeData): Group {
-    const key = this.model.getNodeKey(nodeData);
+    const key = this._model.getNodeKey(nodeData);
     const x = (nodeData.x as number) ?? 0;
     const y = (nodeData.y as number) ?? 0;
     const width = (nodeData.width as number) ?? 100;
@@ -933,7 +977,9 @@ export class Diagram {
     const template = category !== undefined ? this._nodeTemplateMap.get(category) : undefined;
     const groupTemplate = this._groupTemplate ?? template;
     if (groupTemplate) {
-      group.panel = groupTemplate.clone();
+      const cloned = groupTemplate.clone();
+      group.panel = cloned;
+      this.applyTemplateProperties(group, cloned.templateProperties);
     }
 
     const layerName = (nodeData.layer as string) ?? LayerNames.Default;
@@ -947,7 +993,7 @@ export class Diagram {
   }
 
   private createLink(linkData: LinkData): Link {
-    const linkKey = this.model.getLinkKey(linkData);
+    const linkKey = this._model.getLinkKey(linkData);
     const link = new Link(linkKey as NodeKey, linkData.from, linkData.to);
 
     // Apply GoJS-compatible link template if set
@@ -956,7 +1002,9 @@ export class Diagram {
       (category !== undefined ? this._linkTemplateMap.get(category) : undefined) ??
       this._linkTemplate;
     if (template) {
-      link.panel = template.clone();
+      const cloned = template.clone();
+      link.panel = cloned;
+      this.applyTemplateProperties(link, cloned.templateProperties);
     }
 
     const layerName = (linkData.layer as string) ?? LayerNames.Default;
@@ -1067,7 +1115,7 @@ export class Diagram {
   private syncGroupMembers(group: Group): void {
     for (const [memberKey, node] of this.nodes) {
       if (node.containingGroup === group) continue;
-      const memberData = this.model.getNodeData(memberKey);
+      const memberData = this._model.getNodeData(memberKey);
       if (memberData && memberData.group === group.key) {
         group.add(node);
       }
@@ -1291,13 +1339,23 @@ export class Diagram {
   /** Set the model. */
   setModel(model: GraphLinksModel): void {
     if (this.modelChangeListener) {
-      this.model.removeChangedListener(this.modelChangeListener);
+      this._model.removeChangedListener(this.modelChangeListener);
     }
-    this.model = model;
+    this._model = model;
     this.modelChangeListener = (event: ChangedEvent) => this.handleModelChange(event);
-    this.model.addChangedListener(this.modelChangeListener);
+    this._model.addChangedListener(this.modelChangeListener);
     this.syncPartsFromModel();
     this.invalidate();
+  }
+
+  /** GoJS-compatible: Get the model. */
+  get model(): GraphLinksModel {
+    return this._model;
+  }
+
+  /** GoJS-compatible: Set the model. */
+  set model(value: GraphLinksModel) {
+    this.setModel(value);
   }
 
   /** Get all layers. */
@@ -1692,7 +1750,7 @@ export class Diagram {
 
   /** Get the underlying model. */
   getModel(): GraphLinksModel {
-    return this.model;
+    return this._model;
   }
 
   /** Get the renderer. */
@@ -1848,7 +1906,7 @@ export class Diagram {
     this.stopRenderLoop();
 
     // Stop animations
-    this.animationManager.cancelAll();
+    this._animationManager.cancelAll();
 
     // Remove canvas event listeners
     this.removeCanvasListeners();
@@ -1867,7 +1925,7 @@ export class Diagram {
 
     // Remove model change listener
     if (this.modelChangeListener) {
-      this.model.removeChangedListener(this.modelChangeListener);
+      this._model.removeChangedListener(this.modelChangeListener);
       this.modelChangeListener = null;
     }
 
@@ -1878,7 +1936,7 @@ export class Diagram {
     }
 
     // Clear undo history
-    this.undoManager.clear();
+    this._undoManager.clear();
 
     // Clear parts and caches
     this.parts.clear();

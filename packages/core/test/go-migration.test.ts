@@ -702,4 +702,81 @@ describe('GoJS Getting Started tutorial migration', () => {
     model.isReadOnly = true;
     expect(model.isReadOnly).toBe(true);
   });
+
+  it('runs a realistic GoJS app: palette, overview, layout, events, undo, validation', () => {
+    const div = document.createElement('div');
+    const diagram = new go.Diagram({ div });
+    diagrams.push(diagram);
+
+    const $ = go.GraphObject.make;
+
+    // Validation
+    const model = new go.GraphLinksModel();
+    model.isValidNode = (d) => typeof d.key !== 'undefined';
+    expect(model.isValidNode({})).toBe(false);
+    expect(model.isValidNode({ key: 1 })).toBe(true);
+
+    // Templates
+    diagram.nodeTemplate = $(
+      go.Node,
+      'Auto',
+      $(go.Shape, 'RoundedRectangle', { fill: 'white', stroke: 'gray' }),
+      $(go.TextBlock, 'label', { margin: 8, editable: true }, new go.Binding('text', 'name')),
+    );
+    diagram.linkTemplate = $(
+      go.Link,
+      { routing: go.Link.Orthogonal },
+      $(go.Shape, { strokeWidth: 3 }),
+      $(go.Shape, 'Arrow', { toArrow: 'Triangle' }),
+    );
+
+    // Layout
+    diagram.layout = new go.GridLayout({ spacing: 30 });
+
+    // Model
+    model.nodeDataArray = [
+      { key: 1, name: 'Alpha', x: 0, y: 0, width: 120, height: 60 },
+      { key: 2, name: 'Beta', x: 0, y: 0, width: 120, height: 60 },
+      { key: 3, name: 'Gamma', x: 0, y: 0, width: 120, height: 60 },
+    ];
+    model.linkDataArray = [
+      { from: 1, to: 2 },
+      { from: 2, to: 3 },
+    ];
+    diagram.model = model;
+
+    // Events
+    let clickEvents = 0;
+    diagram.addDiagramListener('ObjectSingleClicked', () => clickEvents++);
+    diagram.addDiagramListener('LinkDrawn', () => {});
+
+    // Undo
+    const beforeUndo = diagram.getModel().getNodeCount();
+    diagram.startTransaction('add');
+    diagram.getModel().addNode({ key: 4, name: 'Delta', x: 0, y: 0, width: 120, height: 60 });
+    diagram.commitTransaction();
+    expect(diagram.getModel().getNodeCount()).toBe(beforeUndo + 1);
+    diagram.undo();
+    expect(diagram.getModel().getNodeCount()).toBe(beforeUndo);
+
+    // find by key
+    expect(diagram.findNodeForKey(1)).not.toBeNull();
+    expect(
+      diagram.findLinkForKey(
+        diagram.getModel().getLinkKey(diagram.getModel().getLinkDataArray()[0]!)!,
+      ),
+    ).not.toBeNull();
+
+    // Palette & Overview construct with a div
+    const paletteDiv = document.createElement('div');
+    const palette = new go.Palette(paletteDiv);
+    expect(palette).toBeDefined();
+    const overviewDiv = document.createElement('div');
+    const overview = new go.Overview(overviewDiv);
+    expect(overview).toBeDefined();
+
+    // Command handler shortcuts
+    diagram.select(diagram.findNodeForKey(1) as never);
+    expect(diagram.commandHandler.canDeleteSelection()).toBe(true);
+  });
 });

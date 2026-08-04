@@ -26,6 +26,7 @@ import { TextEditingTool } from '../tool/TextEditingTool.ts';
 import { ToolManager } from '../tool/ToolManager.ts';
 import { ZoomingTool } from '../tool/ZoomingTool.ts';
 import { UndoManager } from '../undo/UndoManager.ts';
+import { ModelTransactionCommand } from '../undo/ModelTransactionCommand.ts';
 import type { Command } from '../undo/Command.ts';
 import { AnimationManager } from '../animation/AnimationManager.ts';
 import { CommandHandler } from '../command/CommandHandler.ts';
@@ -154,6 +155,8 @@ export class Diagram {
   private _allowTextEdit = true;
   private _allowLink = true;
   private _allowRelink = true;
+  private _transactionEvents: ChangedEvent[] | null = null;
+  private _transactionName = '';
   private backBuffer: HTMLCanvasElement | null = null;
   private backBufferEnabled = false;
   private hitIndex: QuadTree<Part> | null = null;
@@ -493,12 +496,24 @@ export class Diagram {
 
   /** GoJS-compatible: Begin a transaction. Commands are grouped into one undo unit. */
   startTransaction(name = 'Transaction'): boolean {
+    this._transactionEvents = [];
+    this._transactionName = name;
     this._undoManager.beginTransaction(name);
     return true;
   }
 
   /** GoJS-compatible: Commit the current transaction. */
-  commitTransaction(_name = ''): boolean {
+  commitTransaction(name = ''): boolean {
+    const events = this._transactionEvents;
+    this._transactionEvents = [];
+
+    // If model changes were made without explicit commands, wrap them in an
+    // undoable ModelTransactionCommand so undo/redo works (GoJS behavior).
+    if (events && events.length > 0) {
+      this._undoManager.execute(
+        new ModelTransactionCommand(this._model, events, name || this._transactionName),
+      );
+    }
     this._undoManager.commitTransaction();
     return true;
   }
@@ -905,6 +920,10 @@ export class Diagram {
 
   /** Handle model changes. */
   private handleModelChange(event: ChangedEvent): void {
+    // Record model changes for undoable transactions
+    if (this._transactionEvents) {
+      this._transactionEvents.push(event);
+    }
     // Incrementally sync only the changed part
     this.syncPartFromModelChange(event);
     this.invalidate();

@@ -1,4 +1,4 @@
-import type { Diagram } from '../diagram/Diagram.ts';
+import { Diagram } from '../diagram/Diagram.ts';
 import type { Template } from '../template/Template.ts';
 import { templateToNodeData } from '../template/Template.ts';
 import { getAllTemplates, getTemplateById } from '../template/TemplateCollection.ts';
@@ -16,12 +16,21 @@ export class Palette {
 
   constructor(
     container: HTMLElement,
-    diagram: Diagram,
-    templates: Template[],
+    diagram?: Diagram,
+    templates?: Template[],
     options?: { showCategories?: boolean },
   ) {
-    this.diagram = diagram;
-    this.templates = templates;
+    // GoJS-compatible: a Palette creates its own internal diagram when none given
+    if (diagram) {
+      this.diagram = diagram;
+    } else {
+      const internalDiv = document.createElement('div');
+      internalDiv.style.width = '100%';
+      internalDiv.style.height = '100%';
+      container.appendChild(internalDiv);
+      this.diagram = new Diagram({ div: internalDiv });
+    }
+    this.templates = templates ?? [];
     this.showCategories = options?.showCategories ?? true;
 
     this.element = document.createElement('div');
@@ -30,7 +39,7 @@ export class Palette {
       'overflow-y:auto;user-select:none;background:#fafafa;border:1px solid #ddd;';
     container.appendChild(this.element);
 
-    registerPalette(diagram, this);
+    registerPalette(this.diagram, this);
     this.render();
     this.setupDragEvents();
   }

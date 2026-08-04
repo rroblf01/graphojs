@@ -1,4 +1,4 @@
-import type { Diagram } from '../diagram/Diagram.ts';
+import { Diagram } from '../diagram/Diagram.ts';
 import { LayerNames } from '../layer/Layer.ts';
 import { Group } from '../parts/Group.ts';
 import { Link } from '../parts/Link.ts';
@@ -19,10 +19,15 @@ export class Overview {
 
   constructor(
     container: HTMLElement,
-    diagram: Diagram,
+    diagram?: Diagram,
     options?: { width?: number; height?: number },
   ) {
-    this.diagram = diagram;
+    if (diagram) {
+      this.diagram = diagram;
+    } else {
+      // GoJS-compatible: create an internal diagram when none is observed yet
+      this.diagram = new Diagram({ div: container as HTMLDivElement });
+    }
     this.width = options?.width ?? 200;
     this.height = options?.height ?? 150;
 

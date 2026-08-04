@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphoJS Demo — GoJS-Style Flowchart</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 0;
+        background: #f5f5f5;
+      }
+      header {
+        padding: 16px 24px;
+        background: #2196f3;
+        color: white;
+      }
+      #app {
+        display: flex;
+        gap: 16px;
+        padding: 16px;
+      }
+      #paletteDiv {
+        width: 180px;
+        height: 560px;
+        background: #fafafa;
+        border: 1px solid #ddd;
+      }
+      #diagramDiv {
+        flex: 1;
+        height: 560px;
+        background: white;
+        border: 1px solid #ddd;
+      }
+      #status {
+        padding: 0 24px 16px;
+        color: #555;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <header><h1>GraphoJS Demo — Flowchart</h1></header>
+    <div id="app">
+      <div id="paletteDiv"></div>
+      <div id="diagramDiv"></div>
+    </div>
+    <div id="status"></div>
+    <script type="module">
+      import * as go from '../packages/core/dist/go.js';
+
+      const $ = go.GraphObject.make;
+
+      // ------- Palette -------
+      const palette = new go.Palette(document.getElementById('paletteDiv'));
+      palette.setTemplates([
+        { id: 'process', name: 'Process', category: 'flowchart', shape: 'rect', width: 100, height: 50, fill: '#e3f2fd', stroke: '#1976d2', strokeWidth: 2 },
+        { id: 'decision', name: 'Decision', category: 'flowchart', shape: 'diamond', width: 90, height: 60, fill: '#fff9c4', stroke: '#f9a825', strokeWidth: 2 },
+        { id: 'terminator', name: 'Terminator', category: 'flowchart', shape: 'roundedRect', width: 100, height: 50, fill: '#c8e6c9', stroke: '#388e3c', strokeWidth: 2 },
+      ]);
+
+      // ------- Main diagram -------
+      const myDiagram = new go.Diagram('diagramDiv');
+
+      myDiagram.nodeTemplateMap.set('process', $(
+        go.Node,
+        'Auto',
+        $(go.Shape, 'Rectangle', { fill: '#e3f2fd', stroke: '#1976d2', strokeWidth: 2 }),
+        $(go.TextBlock, { margin: 8, editable: true }, new go.Binding('text', 'name')),
+      ));
+      myDiagram.nodeTemplateMap.set('decision', $(
+        go.Node,
+        'Auto',
+        $(go.Shape, 'Diamond', { fill: '#fff9c4', stroke: '#f9a825', strokeWidth: 2 }),
+        $(go.TextBlock, { margin: 8, editable: true }, new go.Binding('text', 'name')),
+      ));
+      myDiagram.nodeTemplateMap.set('terminator', $(
+        go.Node,
+        'Auto',
+        $(go.Shape, 'RoundedRectangle', { fill: '#c8e6c9', stroke: '#388e3c', strokeWidth: 2 }),
+        $(go.TextBlock, { margin: 8 }, new go.Binding('text', 'name')),
+      ));
+
+      myDiagram.linkTemplate = $(
+        go.Link,
+        { routing: go.Link.Orthogonal, corner: 5 },
+        $(go.Shape, { strokeWidth: 2, stroke: '#333333' }),
+        $(go.Shape, 'Arrow', { toArrow: 'Triangle' }),
+      );
+
+      myDiagram.layout = new go.GridLayout({ spacing: 40, padding: 30 });
+
+      myDiagram.model = new go.GraphLinksModel({
+        nodeDataArray: [
+          { key: 1, category: 'terminator', name: 'Start' },
+          { key: 2, category: 'process', name: 'Read input' },
+          { key: 3, category: 'decision', name: 'Valid?' },
+          { key: 4, category: 'process', name: 'Process data' },
+          { key: 5, category: 'process', name: 'Show error' },
+          { key: 6, category: 'terminator', name: 'End' },
+        ],
+        linkDataArray: [
+          { from: 1, to: 2 },
+          { from: 2, to: 3 },
+          { from: 3, to: 4, toPort: 'yes' },
+          { from: 3, to: 5 },
+          { from: 4, to: 6 },
+          { from: 5, to: 2 },
+        ],
+      });
+
+      const status = document.getElementById('status');
+      myDiagram.addDiagramListener('SelectionChanged', () => {
+        status.textContent = `${myDiagram.getSelectedParts().length} selected`;
+      });
+      myDiagram.addDiagramListener('ObjectDoubleClicked', (e) => {
+        status.textContent = `Double-clicked: ${e.subject?.data?.name ?? 'background'}`;
+      });
+    </script>
+  </body>
+</html>

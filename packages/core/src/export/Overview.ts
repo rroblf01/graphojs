@@ -36,7 +36,6 @@ export class Overview {
     container.style.overflow = 'hidden';
     container.style.border = '1px solid #ccc';
     container.style.background = '#ffffff';
-
     // Canvas
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.width;
@@ -58,6 +57,17 @@ export class Overview {
   /** Get the overview canvas element. */
   getCanvas(): HTMLCanvasElement {
     return this.canvas;
+  }
+
+  /** GoJS-compatible: Get the observed diagram. */
+  get observed(): Diagram {
+    return this.diagram;
+  }
+
+  /** GoJS-compatible: Set the diagram this overview observes. */
+  set observed(value: Diagram) {
+    this.diagram = value;
+    this.render();
   }
 
   /** Set up mouse events for panning. */

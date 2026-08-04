@@ -406,6 +406,15 @@ export abstract class Part {
     return { x: this._bounds.x, y: this._bounds.y };
   }
 
+  /** Set the position (top-left), preserving size. */
+  set position(value: { x: number; y: number }) {
+    this._bounds = {
+      ...this._bounds,
+      x: value.x,
+      y: value.y,
+    } as Rect;
+  }
+
   /** Get the size. */
   get size(): { width: number; height: number } {
     return { width: this._bounds.width, height: this._bounds.height };

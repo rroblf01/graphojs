@@ -1730,8 +1730,23 @@ export class Diagram {
     this.invalidate();
   }
 
+  /** GoJS-compatible: Run the diagram layout (or the given layout) on all parts. */
+  layoutDiagram(layout?: Layout): void {
+    const target = layout ?? this._layout;
+    if (!target) return;
+    const nodes = Array.from(this.nodes.values());
+    const links = Array.from(this.links.values());
+    target.apply(nodes, links);
+    this.invalidate();
+  }
+
   /** GoJS-compatible: The HTML element this diagram renders into. */
   get div(): HTMLDivElement {
+    return this.container;
+  }
+
+  /** GoJS-compatible: Get the HTML element this diagram renders into. */
+  getDiagramDiv(): HTMLDivElement {
     return this.container;
   }
 
@@ -2318,6 +2333,21 @@ export class Diagram {
     this.offsetY = minY - padding + (rect.height / this._scale - contentHeight) / 2;
 
     this.invalidate();
+  }
+
+  /** GoJS-compatible: Zoom the view so the given rect fills the viewport. */
+  zoomToRect(rect: { x: number; y: number; width: number; height: number }, padding = 50): void {
+    if (rect.width <= 0 || rect.height <= 0) return;
+    const view = this.canvas.getBoundingClientRect();
+    const contentWidth = rect.width + padding * 2;
+    const contentHeight = rect.height + padding * 2;
+    const scaleX = view.width / contentWidth;
+    const scaleY = view.height / contentHeight;
+    this._scale = Math.max(this.minScale, Math.min(this.maxScale, Math.min(scaleX, scaleY)));
+    this.offsetX = rect.x - padding + (view.width / this._scale - contentWidth) / 2;
+    this.offsetY = rect.y - padding + (view.height / this._scale - contentHeight) / 2;
+    this.invalidate();
+    this.fireDiagramEvent('ViewportChanged', null, { scale: this._scale });
   }
 
   /** Scroll the viewport to show a specific part. */

@@ -14,6 +14,7 @@ export class TextBlock extends GraphObject {
   private _editable = false;
   private _wrap: 'Wrap' | 'None' | 'Ellipsis' = 'Wrap';
   private _isMultiline = true;
+  private _strokeWidth = 0;
 
   constructor(text?: string) {
     super();
@@ -43,6 +44,15 @@ export class TextBlock extends GraphObject {
 
   set stroke(value: string) {
     this._color = value;
+  }
+
+  /** GoJS-compatible: The width of the text outline (0 = no outline). */
+  get strokeWidth(): number {
+    return this._strokeWidth;
+  }
+
+  set strokeWidth(value: number) {
+    this._strokeWidth = value;
   }
 
   /** GoJS-compatible: Whether this text can be edited in-place by the user. */
@@ -156,6 +166,7 @@ export class TextBlock extends GraphObject {
     cloned._editable = this._editable;
     cloned._isMultiline = this._isMultiline;
     cloned._wrap = this._wrap;
+    cloned._strokeWidth = this._strokeWidth;
     return cloned;
   }
 

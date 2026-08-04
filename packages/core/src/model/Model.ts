@@ -398,6 +398,11 @@ export abstract class Model {
   /** Convert to JSON. */
   abstract toJSON(): ModelJSON;
 
+  /** GoJS-compatible: Alias for toJSON (GoJS uses toJson). */
+  toJson(): ModelJSON {
+    return this.toJSON();
+  }
+
   /** Create from JSON. */
   static fromJSON(_json: ModelJSON): Model {
     throw new Error('fromJSON must be implemented by subclass');

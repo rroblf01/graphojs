@@ -20,6 +20,7 @@ export class Binding {
   private _converter: ((value: unknown, data: NodeData) => unknown) | null = null;
   private _twoWay = false;
   private _backConverter: ((value: unknown, target: BindingTarget) => unknown) | null = null;
+  private _sourceObjectName = 'data';
 
   /** GoJS-compatible: sourceProperty is optional and defaults to targetProperty;
    *  the optional third argument is the converter function. */
@@ -31,6 +32,21 @@ export class Binding {
     this._targetProperty = targetProperty;
     this._sourceProperty = sourceProperty ?? targetProperty;
     this._converter = converter ?? null;
+  }
+
+  /**
+   * GoJS-compatible: Specify which object is the source of the binding.
+   * Common values: "data" (the part's model data, the default), "parent"
+   * (the parent panel's data). Named GraphObjects are resolved when possible.
+   */
+  ofObject(name: string): this {
+    this._sourceObjectName = name;
+    return this;
+  }
+
+  /** The name of the source object (default "data"). */
+  get sourceObjectName(): string {
+    return this._sourceObjectName;
   }
 
   /** The target property name to set. */
@@ -177,6 +193,7 @@ export class Binding {
     cloned._twoWay = this._twoWay;
     cloned._converter = this._converter;
     cloned._backConverter = this._backConverter;
+    cloned._sourceObjectName = this._sourceObjectName;
     return cloned;
   }
 }

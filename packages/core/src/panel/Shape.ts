@@ -118,6 +118,27 @@ export class Shape extends GraphObject {
     this._strokeWidth = value;
   }
 
+  private _strokeCap: 'butt' | 'round' | 'square' = 'butt';
+  private _strokeJoin: 'miter' | 'round' | 'bevel' = 'miter';
+
+  /** GoJS-compatible: The cap style for stroking the outline. */
+  get strokeCap(): 'butt' | 'round' | 'square' {
+    return this._strokeCap;
+  }
+
+  set strokeCap(value: 'butt' | 'round' | 'square') {
+    this._strokeCap = value;
+  }
+
+  /** GoJS-compatible: The join style for stroking the outline. */
+  get strokeJoin(): 'miter' | 'round' | 'bevel' {
+    return this._strokeJoin;
+  }
+
+  set strokeJoin(value: 'miter' | 'round' | 'bevel') {
+    this._strokeJoin = value;
+  }
+
   get cornerRadius(): number {
     return this._cornerRadius;
   }

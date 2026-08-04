@@ -779,4 +779,36 @@ describe('GoJS Getting Started tutorial migration', () => {
     diagram.select(diagram.findNodeForKey(1) as never);
     expect(diagram.commandHandler.canDeleteSelection()).toBe(true);
   });
+
+  it('supports getDiagramDiv, layoutDiagram, zoomToRect, toJson, Overview.observed', () => {
+    const myDiagram = createDiagram();
+    expect(myDiagram.getDiagramDiv()).toBeInstanceOf(HTMLDivElement);
+
+    // Model.toJson alias
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    const json = model.toJson();
+    expect(json.nodeDataArray.length).toBe(1);
+
+    // layoutDiagram
+    const model2 = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 0, y: 0, width: 100, height: 50 },
+        { key: 3, x: 0, y: 0, width: 100, height: 50 },
+      ],
+    });
+    myDiagram.model = model2;
+    myDiagram.layoutDiagram(new go.GridLayout({ spacing: 20 }));
+
+    // zoomToRect
+    myDiagram.zoomToRect({ x: 0, y: 0, width: 200, height: 100 });
+
+    // Overview.observed
+    const overviewDiv = document.createElement('div');
+    const overview = new go.Overview(overviewDiv);
+    overview.observed = myDiagram;
+    expect(overview.observed).toBe(myDiagram);
+  });
 });

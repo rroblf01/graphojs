@@ -485,6 +485,35 @@ describe('GoJS Compatibility', () => {
     });
   });
 
+  describe('More GoJS 1:1 properties', () => {
+    it('should support Binding.ofObject', () => {
+      const b = new Binding('itemArray', 'items').ofObject('data');
+      expect(b.sourceObjectName).toBe('data');
+      const copy = b.copy();
+      expect(copy.sourceObjectName).toBe('data');
+    });
+
+    it('should support Part.position setter', () => {
+      const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
+      node.position = { x: 50, y: 60 };
+      expect(node.bounds.x).toBe(50);
+      expect(node.bounds.y).toBe(60);
+      expect(node.bounds.width).toBe(100);
+    });
+
+    it('should support Shape.strokeCap/strokeJoin and TextBlock.strokeWidth', () => {
+      const s = new Shape('rect');
+      s.strokeCap = 'round';
+      s.strokeJoin = 'bevel';
+      expect(s.strokeCap).toBe('round');
+      expect(s.strokeJoin).toBe('bevel');
+
+      const t = new TextBlock('x');
+      t.strokeWidth = 2;
+      expect(t.strokeWidth).toBe(2);
+    });
+  });
+
   describe('Panel data panels (itemArray/itemTemplate)', () => {
     it('should generate one element per item from the template', () => {
       const panel = new Panel('Vertical');

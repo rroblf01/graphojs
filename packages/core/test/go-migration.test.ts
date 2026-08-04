@@ -811,4 +811,24 @@ describe('GoJS Getting Started tutorial migration', () => {
     overview.observed = myDiagram;
     expect(overview.observed).toBe(myDiagram);
   });
+
+  it('supports makeSvg, makeImageData, zoomFactor and isUndoingRedoing', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    myDiagram.model = model;
+
+    const svg = myDiagram.makeSvg();
+    expect(typeof svg).toBe('string');
+
+    const canvas = myDiagram.makeImage();
+    expect(canvas).toBeInstanceOf(HTMLCanvasElement);
+
+    myDiagram.zoomFactor = 1.5;
+    expect(myDiagram.zoomFactor).toBe(1.5);
+    expect(myDiagram.scale).toBe(1.5);
+
+    expect(myDiagram.undoManager.isUndoingRedoing).toBe(false);
+  });
 });

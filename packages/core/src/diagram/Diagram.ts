@@ -36,6 +36,7 @@ import { PartPool } from '../spatial/PartPool.ts';
 import { QuadTree } from '../spatial/QuadTree.ts';
 import { DiagramEvents, type DiagramEvent, type DiagramEventType } from './DiagramEvents.ts';
 import { PNGExporter } from '../export/PNGExporter.ts';
+import { exportToSVG } from '../export/SVGExporter.ts';
 import { printDiagram } from '../export/PrintExporter.ts';
 import { TooltipManager } from '../export/TooltipManager.ts';
 import { LayerCache } from '../render/LayerCache.ts';
@@ -2212,6 +2213,26 @@ export class Diagram {
     scale?: number;
   }): HTMLCanvasElement {
     return new PNGExporter(options).makeCanvas(this);
+  }
+
+  /** GoJS-compatible: Render the diagram as a PNG data URL string. */
+  makeImageData(options?: { background?: string; padding?: number; scale?: number }): string {
+    return this.makeImage(options).toDataURL('image/png');
+  }
+
+  /** GoJS-compatible: Render the diagram as an SVG string. */
+  makeSvg(): string {
+    return exportToSVG(this);
+  }
+
+  /** GoJS-compatible: The current zoom factor (alias for scale). */
+  get zoomFactor(): number {
+    return this._scale;
+  }
+
+  set zoomFactor(value: number) {
+    this._scale = Math.max(this.minScale, Math.min(this.maxScale, value));
+    this.invalidate();
   }
 
   /**

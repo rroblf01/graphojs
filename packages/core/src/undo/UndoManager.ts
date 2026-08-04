@@ -51,6 +51,11 @@ export class UndoManager {
     this.maxHistorySize = Math.max(1, value);
   }
 
+  /** GoJS-compatible: Whether the UndoManager is currently undoing or redoing. */
+  get isUndoingRedoing(): boolean {
+    return this.isExecuting;
+  }
+
   /** Execute a command and add it to the undo stack. */
   execute(command: Command): void {
     if (this.isExecuting) return;

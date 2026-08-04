@@ -73,7 +73,7 @@ export class LinkingBaseTool extends Tool {
   /**
    * Check whether adding a link from `from` to `to` would create a cycle.
    */
-  protected wouldCreateCycle(
+  wouldCreateCycle(
     from: string | number,
     to: string | number,
     model: { getLinksFrom: (key: string | number) => ReadonlyArray<{ to: string | number }> },

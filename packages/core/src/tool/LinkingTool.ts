@@ -48,7 +48,9 @@ export class LinkingTool extends LinkingBaseTool {
     if (part instanceof Node && part !== this._sourceNode) {
       this._targetNode = part;
       const targetPoint = this.getConnectionPoint(part, this._sourcePoint);
-      this._isValidLink = this.validateLink(this._sourceNode!, part, this.diagram!.getModel());
+      if (this._sourceNode && this.diagram) {
+        this._isValidLink = this.validateLink(this._sourceNode, part, this.diagram.getModel());
+      }
       this.showTempLink(this._sourcePoint, targetPoint);
     } else {
       this._targetNode = null;

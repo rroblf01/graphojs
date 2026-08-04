@@ -7,7 +7,14 @@ import type { Renderer } from './Renderer.ts';
 import type { Panel } from '../panel/Panel.ts';
 import { PathCache, TextMeasureCache } from './RenderCache.ts';
 import { LinkPathCache } from './PerformanceCache.ts';
-import { routeOrthogonal, routeCurved, routeStraight, computeLabelPosition } from './LinkRouter.ts';
+import {
+  routeOrthogonal,
+  routeCurved,
+  routeStraight,
+  computeLabelPosition,
+  routeOrthogonalAvoidingObstacles,
+  type RoutingObstacle,
+} from './LinkRouter.ts';
 
 /**
  * Canvas 2D renderer for diagram parts.
@@ -329,15 +336,33 @@ export class Canvas2DRenderer implements Renderer {
         const fromNode = this.getNodeBounds(link.fromKey);
         const toNode = this.getNodeBounds(link.toKey);
 
-        switch (link.routing) {
-          case 'orthogonal':
-            points = routeOrthogonal(link.fromPort, link.toPort, fromNode, toNode, link.corner);
-            break;
-          case 'curved':
-            points = routeCurved(link.fromPort, link.toPort, fromNode, toNode);
-            break;
-          default:
-            points = routeStraight(link.fromPort, link.toPort);
+        if (link.avoidObstacles && link.routing === 'orthogonal') {
+          // Get all node bounds as obstacles
+          const obstacles: RoutingObstacle[] = [];
+          for (const [key, bounds] of this.nodeBoundsMap) {
+            if (key !== link.fromKey && key !== link.toKey) {
+              obstacles.push(bounds);
+            }
+          }
+          points = routeOrthogonalAvoidingObstacles(
+            link.fromPort,
+            link.toPort,
+            fromNode,
+            toNode,
+            obstacles,
+            link.corner,
+          );
+        } else {
+          switch (link.routing) {
+            case 'orthogonal':
+              points = routeOrthogonal(link.fromPort, link.toPort, fromNode, toNode, link.corner);
+              break;
+            case 'curved':
+              points = routeCurved(link.fromPort, link.toPort, fromNode, toNode);
+              break;
+            default:
+              points = routeStraight(link.fromPort, link.toPort);
+          }
         }
 
         // Cache the computed path

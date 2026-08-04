@@ -30,6 +30,9 @@ export class Link extends Part {
   private _labelSegmentIndex = -1;
   private _labelSide: 'top' | 'bottom' | 'left' | 'right' | 'auto' = 'auto';
   private _labelAlignment: 'start' | 'middle' | 'end' = 'middle';
+  private _curviness = 0;
+  private _avoidObstacles = false;
+  private _jumpOver = false;
 
   constructor(key: NodeKey, fromKey: NodeKey, toKey: NodeKey) {
     super(key, Rect.zero());
@@ -205,6 +208,33 @@ export class Link extends Part {
 
   set labelAlignment(value: 'start' | 'middle' | 'end') {
     this._labelAlignment = value;
+  }
+
+  /** Controls the tightness of curved routing. 0 = default, positive = tighter, negative = looser. */
+  get curviness(): number {
+    return this._curviness;
+  }
+
+  set curviness(value: number) {
+    this._curviness = value;
+  }
+
+  /** Whether this link should route around obstacles (nodes). */
+  get avoidObstacles(): boolean {
+    return this._avoidObstacles;
+  }
+
+  set avoidObstacles(value: boolean) {
+    this._avoidObstacles = value;
+  }
+
+  /** Whether this link should jump over other links at crossings. */
+  get jumpOver(): boolean {
+    return this._jumpOver;
+  }
+
+  set jumpOver(value: boolean) {
+    this._jumpOver = value;
   }
 
   /** Update the bounds based on all path points. */

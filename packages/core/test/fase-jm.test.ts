@@ -82,9 +82,9 @@ describe('LinkingBaseTool', () => {
         return [];
       },
     };
-    expect(tool['wouldCreateCycle'](1, 3, model)).toBe(false);
-    expect(tool['wouldCreateCycle'](1, 4, model)).toBe(false);
-    expect(tool['wouldCreateCycle'](3, 1, model)).toBe(true);
+    expect(tool.wouldCreateCycle(1, 3, model)).toBe(false);
+    expect(tool.wouldCreateCycle(1, 4, model)).toBe(false);
+    expect(tool.wouldCreateCycle(3, 1, model)).toBe(true);
   });
 });
 

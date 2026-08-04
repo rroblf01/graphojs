@@ -36,7 +36,7 @@ import { PartPool } from '../spatial/PartPool.ts';
 import { QuadTree } from '../spatial/QuadTree.ts';
 import { DiagramEvents, type DiagramEvent, type DiagramEventType } from './DiagramEvents.ts';
 import { PNGExporter } from '../export/PNGExporter.ts';
-import { exportToSVG } from '../export/SVGExporter.ts';
+import { makeSvgElement } from '../export/SVGExporter.ts';
 import { printDiagram } from '../export/PrintExporter.ts';
 import { TooltipManager } from '../export/TooltipManager.ts';
 import { LayerCache } from '../render/LayerCache.ts';
@@ -157,8 +157,15 @@ export class Diagram {
   private _allowTextEdit = true;
   private _allowLink = true;
   private _allowRelink = true;
+  private _allowGroup = true;
+  private _allowInsert = true;
+  private _allowResize = true;
+  private _allowRotate = true;
+  private _allowArrange = true;
+  private _maxSelectionCount = Infinity;
   private _transactionEvents: ChangedEvent[] | null = null;
   private _transactionName = '';
+  private _contextMenuEl: HTMLElement | null = null;
   private backBuffer: HTMLCanvasElement | null = null;
   private backBufferEnabled = false;
   private hitIndex: QuadTree<Part> | null = null;
@@ -721,6 +728,60 @@ export class Diagram {
     this._allowRelink = value;
   }
 
+  /** GoJS-compatible: Whether nodes can be grouped. */
+  get allowGroup(): boolean {
+    return this._allowGroup;
+  }
+
+  set allowGroup(value: boolean) {
+    this._allowGroup = value;
+  }
+
+  /** GoJS-compatible: Whether new nodes can be inserted. */
+  get allowInsert(): boolean {
+    return this._allowInsert;
+  }
+
+  set allowInsert(value: boolean) {
+    this._allowInsert = value;
+  }
+
+  /** GoJS-compatible: Whether nodes can be resized. */
+  get allowResize(): boolean {
+    return this._allowResize;
+  }
+
+  set allowResize(value: boolean) {
+    this._allowResize = value;
+  }
+
+  /** GoJS-compatible: Whether nodes can be rotated. */
+  get allowRotate(): boolean {
+    return this._allowRotate;
+  }
+
+  set allowRotate(value: boolean) {
+    this._allowRotate = value;
+  }
+
+  /** GoJS-compatible: Whether parts can be rearranged. */
+  get allowArrange(): boolean {
+    return this._allowArrange;
+  }
+
+  set allowArrange(value: boolean) {
+    this._allowArrange = value;
+  }
+
+  /** GoJS-compatible: The maximum number of parts that can be selected. */
+  get maxSelectionCount(): number {
+    return this._maxSelectionCount;
+  }
+
+  set maxSelectionCount(value: number) {
+    this._maxSelectionCount = Math.max(0, value);
+  }
+
   /** Handle a contextmenu (right-click) event. */
   private handleContextMenu(e: MouseEvent): void {
     e.preventDefault();
@@ -731,8 +792,54 @@ export class Diagram {
       const obj = this.findHitGraphObject(part, point);
       if (obj?.contextClick) obj.contextClick(e, obj);
     }
-    if (this.contextMenu) {
+    // Part-level context menu template takes precedence
+    if (part?.contextMenu) {
+      this.showPartContextMenu(part, e);
+    } else if (this.contextMenu) {
       this.contextMenu.handleContextMenu(e);
+    }
+  }
+
+  /** Show a floating context menu rendered from a part's contextMenu template. */
+  private showPartContextMenu(part: Part, e: MouseEvent): void {
+    const template = part.contextMenu;
+    if (!template) return;
+    this.hideContextMenu();
+
+    const el = document.createElement('div');
+    el.style.cssText =
+      'position:fixed;z-index:10000;background:white;border:1px solid #999;box-shadow:2px 2px 6px rgba(0,0,0,0.3);';
+    const canvas = document.createElement('canvas');
+    canvas.width = 160;
+    canvas.height = 200;
+    canvas.style.display = 'block';
+    el.appendChild(canvas);
+    el.style.left = `${e.clientX}px`;
+    el.style.top = `${e.clientY}px`;
+    document.body.appendChild(el);
+
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      template.setPosition(0, 0);
+      template.setActualSize(160, 200);
+      template.draw(ctx, 0, 0, 160, 200);
+    }
+    this._contextMenuEl = el;
+
+    const dismiss = (): void => {
+      this.hideContextMenu();
+      window.removeEventListener('mousedown', dismiss);
+      window.removeEventListener('wheel', dismiss);
+    };
+    window.addEventListener('mousedown', dismiss);
+    window.addEventListener('wheel', dismiss);
+  }
+
+  /** Hide any floating part context menu. */
+  hideContextMenu(): void {
+    if (this._contextMenuEl) {
+      this._contextMenuEl.remove();
+      this._contextMenuEl = null;
     }
   }
 
@@ -1731,6 +1838,8 @@ export class Diagram {
       this.clearSelection();
     }
     if (this.selectedParts.has(part.key)) return true;
+    // Respect maxSelectionCount
+    if (this.selectedParts.size >= this._maxSelectionCount) return false;
     this.fireDiagramEvent('ChangingSelection', part);
     this.selectedParts.add(part.key);
     part.isSelected = true;
@@ -1759,6 +1868,7 @@ export class Diagram {
   collapseGroup(group: Group): void {
     group.collapse();
     this.fireDiagramEvent('SubGraphCollapsed', group);
+    this.applyDiagramLayout();
     this.invalidate();
   }
 
@@ -1766,6 +1876,7 @@ export class Diagram {
   expandGroup(group: Group): void {
     group.expand();
     this.fireDiagramEvent('SubGraphExpanded', group);
+    this.applyDiagramLayout();
     this.invalidate();
   }
 
@@ -1790,6 +1901,12 @@ export class Diagram {
     this.modelChangeListener = (event: ChangedEvent) => this.handleModelChange(event);
     this._model.addChangedListener(this.modelChangeListener);
     this.syncPartsFromModel();
+    // GoJS-compatible: run the diagram layout after the model is set
+    if (this._layout) {
+      this.applyDiagramLayout();
+      this.fireDiagramEvent('InitialLayoutCompleted');
+      this.fireDiagramEvent('LayoutCompleted');
+    }
     this.invalidate();
   }
 
@@ -2298,9 +2415,9 @@ export class Diagram {
     return this.makeImage(options).toDataURL('image/png');
   }
 
-  /** GoJS-compatible: Render the diagram as an SVG string. */
-  makeSvg(): string {
-    return exportToSVG(this);
+  /** GoJS-compatible: Render the diagram as an SVGElement. */
+  makeSvg(): SVGElement {
+    return makeSvgElement(this);
   }
 
   /** GoJS-compatible: The current zoom factor (alias for scale). */

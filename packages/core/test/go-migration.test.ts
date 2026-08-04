@@ -820,7 +820,8 @@ describe('GoJS Getting Started tutorial migration', () => {
     myDiagram.model = model;
 
     const svg = myDiagram.makeSvg();
-    expect(typeof svg).toBe('string');
+    expect(svg).toBeInstanceOf(SVGElement);
+    expect(svg.nodeName).toBe('svg');
 
     const canvas = myDiagram.makeImage();
     expect(canvas).toBeInstanceOf(HTMLCanvasElement);
@@ -972,6 +973,65 @@ describe('GoJS Getting Started tutorial migration', () => {
     // Two new nodes plus one new link (endpoints remapped)
     expect(model.getNodeCount()).toBe(countBefore + 2);
     expect(model.getLinkCount()).toBe(linksBefore + 1);
+  });
+
+  it('supports part.contextMenu and part.toolTip templates', () => {
+    const myDiagram = createDiagram();
+    const $ = go.GraphObject.make;
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    myDiagram.model = model;
+
+    const node = myDiagram.findNodeForKey(1) as import('../src/parts/Node.ts').Node;
+    node.contextMenu = $(go.Panel, 'Auto', $(go.TextBlock, 'Menu'));
+    node.toolTip = $(go.Panel, 'Auto', $(go.TextBlock, 'Tip'));
+
+    expect(node.contextMenu).not.toBeNull();
+    expect(node.toolTip).not.toBeNull();
+    expect(node.toolTip?.elementCount).toBe(1);
+  });
+
+  it('supports allowGroup/allowResize/allowRotate/maxSelectionCount and auto-layout', () => {
+    const myDiagram = createDiagram();
+    expect(myDiagram.allowGroup).toBe(true);
+    expect(myDiagram.allowResize).toBe(true);
+    expect(myDiagram.allowRotate).toBe(true);
+    myDiagram.allowGroup = false;
+    expect(myDiagram.allowGroup).toBe(false);
+    myDiagram.allowResize = false;
+    myDiagram.allowRotate = false;
+    expect(myDiagram.allowResize).toBe(false);
+    expect(myDiagram.allowRotate).toBe(false);
+
+    // maxSelectionCount
+    myDiagram.maxSelectionCount = 1;
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+    });
+    myDiagram.model = model;
+    myDiagram.select(myDiagram.findNodeForKey(1) as never);
+    expect(myDiagram.select(myDiagram.findNodeForKey(2) as never, true)).toBe(false);
+    expect(myDiagram.getSelectedParts().length).toBe(1);
+
+    // Auto-layout on model set
+    const d2 = createDiagram();
+    const fired: string[] = [];
+    d2.addDiagramListener('LayoutCompleted', () => fired.push('LayoutCompleted'));
+    d2.addDiagramListener('InitialLayoutCompleted', () => fired.push('InitialLayoutCompleted'));
+    d2.layout = new go.GridLayout({ spacing: 20 });
+    const m2 = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 0, y: 0, width: 100, height: 50 },
+      ],
+    });
+    d2.model = m2;
+    expect(fired).toContain('LayoutCompleted');
+    expect(fired).toContain('InitialLayoutCompleted');
   });
 
   it('enforces isReadOnly/allowMove in interaction tools', () => {

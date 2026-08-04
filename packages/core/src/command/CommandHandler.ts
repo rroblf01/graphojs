@@ -576,6 +576,7 @@ export class CommandHandler {
   /** GoJS-compatible: Group the selected nodes into a new Group part. */
   groupSelection(): boolean {
     if (!this.canModify()) return false;
+    if ((this.diagram as unknown as { allowGroup?: boolean }).allowGroup === false) return false;
     const nodes = this.diagram.getSelectedParts().filter((p): p is Node => p instanceof Node);
     if (nodes.length === 0) return false;
 

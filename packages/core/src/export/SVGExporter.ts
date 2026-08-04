@@ -251,3 +251,10 @@ export function createSVGExporter(options?: { indent?: string; padding?: number 
 export function exportToSVG(diagram: Diagram): string {
   return new SVGExporter().export(diagram);
 }
+
+/** GoJS-compatible: Export a diagram as an SVGElement. */
+export function makeSvgElement(diagram: Diagram): SVGElement {
+  const svgString = exportToSVG(diagram);
+  const doc = new DOMParser().parseFromString(svgString, 'image/svg+xml');
+  return doc.documentElement as unknown as SVGElement;
+}

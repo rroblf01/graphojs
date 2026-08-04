@@ -9,7 +9,14 @@ import { Shape } from './Shape.ts';
 /**
  * Panel layout types (mirrors GoJS panel types).
  */
-export type PanelType = 'Auto' | 'Table' | 'Spot' | 'Vertical' | 'Horizontal' | 'Viewbox';
+export type PanelType =
+  | 'Auto'
+  | 'Table'
+  | 'Spot'
+  | 'Vertical'
+  | 'Horizontal'
+  | 'Viewbox'
+  | 'Position';
 
 /**
  * A Panel is a GraphObject that contains and lays out other GraphObjects.
@@ -22,6 +29,7 @@ export class Panel extends GraphObject {
   static readonly Spot = 'Spot';
   static readonly Table = 'Table';
   static readonly Viewbox = 'Viewbox';
+  static readonly Position = 'Position';
 
   private _type: PanelType;
   private _elements: GraphObject[] = [];
@@ -272,6 +280,17 @@ export class Panel extends GraphObject {
         const s = main.measureWithMargin();
         return new SizeClass(s.width + padW, s.height + padH);
       }
+      case 'Position': {
+        let maxW = 0;
+        let maxH = 0;
+        for (const el of this._elements) {
+          const pos = (el as GraphObject & { position?: { x: number; y: number } }).position;
+          const s = el.measureWithMargin();
+          maxW = Math.max(maxW, (pos?.x ?? 0) + s.width);
+          maxH = Math.max(maxH, (pos?.y ?? 0) + s.height);
+        }
+        return new SizeClass(maxW + padW, maxH + padH);
+      }
       case 'Spot': {
         let maxW = 0;
         let maxH = 0;
@@ -396,6 +415,9 @@ export class Panel extends GraphObject {
         break;
       case 'Viewbox':
         this.layoutViewbox(ctx, contentX, contentY, contentW, contentH);
+        break;
+      case 'Position':
+        this.layoutPosition(ctx, contentX, contentY, contentW, contentH);
         break;
       case 'Table':
         this.layoutTable(ctx, contentX, contentY, contentW, contentH);
@@ -524,6 +546,26 @@ export class Panel extends GraphObject {
     main.setPosition(x, y);
     main.setActualSize(width, height);
     main.draw(ctx, x, y, width, height);
+  }
+
+  private layoutPosition(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    for (const el of this._elements) {
+      const pos = (el as GraphObject & { position?: { x: number; y: number } }).position;
+      const s = el.measureWithMargin();
+      const elX = x + (pos?.x ?? 0);
+      const elY = y + (pos?.y ?? 0);
+      const elW = Math.min(s.width, width);
+      const elH = Math.min(s.height, height);
+      el.setPosition(elX, elY);
+      el.setActualSize(elW, elH);
+      el.draw(ctx, elX, elY, elW, elH);
+    }
   }
 
   private layoutTable(

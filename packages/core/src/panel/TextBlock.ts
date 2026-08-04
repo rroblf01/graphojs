@@ -12,6 +12,8 @@ export class TextBlock extends GraphObject {
   private _textAlign: 'left' | 'center' | 'right' = 'center';
   private _multiline = true;
   private _editable = false;
+  private _wrap: 'Wrap' | 'None' | 'Ellipsis' = 'Wrap';
+  private _isMultiline = true;
 
   constructor(text?: string) {
     super();
@@ -50,6 +52,24 @@ export class TextBlock extends GraphObject {
 
   set editable(value: boolean) {
     this._editable = value;
+  }
+
+  /** GoJS-compatible: Whether the text can wrap to multiple lines. */
+  get isMultiline(): boolean {
+    return this._isMultiline;
+  }
+
+  set isMultiline(value: boolean) {
+    this._isMultiline = value;
+  }
+
+  /** GoJS-compatible: The wrapping mode. */
+  get wrap(): 'Wrap' | 'None' | 'Ellipsis' {
+    return this._wrap;
+  }
+
+  set wrap(value: 'Wrap' | 'None' | 'Ellipsis') {
+    this._wrap = value;
   }
 
   get font(): string {
@@ -103,6 +123,8 @@ export class TextBlock extends GraphObject {
     cloned._textAlign = this._textAlign;
     cloned._multiline = this._multiline;
     cloned._editable = this._editable;
+    cloned._isMultiline = this._isMultiline;
+    cloned._wrap = this._wrap;
     return cloned;
   }
 

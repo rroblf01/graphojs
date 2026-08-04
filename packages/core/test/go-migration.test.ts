@@ -638,4 +638,42 @@ describe('GoJS Getting Started tutorial migration', () => {
     myDiagram.select(myDiagram.getPart(1) as never);
     expect(subject).not.toBeNull();
   });
+
+  it('supports Position panel type, TextBlock wrap, Link short lengths, dragAlpha', () => {
+    // Position panel via GraphObject.make
+    const $ = go.GraphObject.make;
+    const positionPanel = $(go.Panel, 'Position', $(go.Shape, 'Rectangle'));
+    expect(positionPanel.type).toBe('Position');
+
+    // TextBlock wrap/isMultiline
+    const tb = new go.TextBlock('Hello');
+    tb.wrap = 'Ellipsis';
+    tb.isMultiline = false;
+    expect(tb.wrap).toBe('Ellipsis');
+    expect(tb.isMultiline).toBe(false);
+
+    // Link short lengths
+    const link = new go.Link(1, 1, 2);
+    link.fromShortLength = 15;
+    link.toShortLength = 25;
+    expect(link.fromShortLength).toBe(15);
+    expect(link.toShortLength).toBe(25);
+
+    // Part dragAlpha / isInDocumentBounds
+    const node = new go.Node(5);
+    node.dragAlpha = 0.5;
+    expect(node.dragAlpha).toBe(0.5);
+    expect(node.isInDocumentBounds).toBe(true);
+  });
+
+  it('exposes allowTextEdit/allowLink/allowRelink flags', () => {
+    const myDiagram = createDiagram();
+    expect(myDiagram.allowTextEdit).toBe(true);
+    myDiagram.allowTextEdit = false;
+    expect(myDiagram.allowTextEdit).toBe(false);
+    myDiagram.allowLink = false;
+    myDiagram.allowRelink = false;
+    expect(myDiagram.allowLink).toBe(false);
+    expect(myDiagram.allowRelink).toBe(false);
+  });
 });

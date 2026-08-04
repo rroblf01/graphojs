@@ -46,6 +46,8 @@ export class Link extends Part {
   private _curviness = 0;
   private _isTreeLink = false;
   private _treeLinkRoute: 'orthogonal' | 'straight' | 'angled' = 'orthogonal';
+  private _fromShortLength = 0;
+  private _toShortLength = 0;
   private _avoidObstacles = false;
   private _jumpOver = false;
 
@@ -276,6 +278,24 @@ export class Link extends Part {
 
   set treeLinkRoute(value: 'orthogonal' | 'straight' | 'angled') {
     this._treeLinkRoute = value;
+  }
+
+  /** GoJS-compatible: The distance from the from-end to the first point. */
+  get fromShortLength(): number {
+    return this._fromShortLength;
+  }
+
+  set fromShortLength(value: number) {
+    this._fromShortLength = value;
+  }
+
+  /** GoJS-compatible: The distance from the to-end to the last point. */
+  get toShortLength(): number {
+    return this._toShortLength;
+  }
+
+  set toShortLength(value: number) {
+    this._toShortLength = value;
   }
 
   /** Whether this link should route around obstacles (nodes). */

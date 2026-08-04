@@ -151,6 +151,9 @@ export class Diagram {
   private _scrollMode: 'document' | 'infinite' = 'document';
   private _initialContentAlignment: Spot | null = null;
   private _initialContentAlignmentOffset: { x: number; y: number } | null = null;
+  private _allowTextEdit = true;
+  private _allowLink = true;
+  private _allowRelink = true;
   private backBuffer: HTMLCanvasElement | null = null;
   private backBufferEnabled = false;
   private hitIndex: QuadTree<Part> | null = null;
@@ -635,6 +638,33 @@ export class Diagram {
 
   set initialContentAlignmentOffset(value: { x: number; y: number } | null) {
     this._initialContentAlignmentOffset = value;
+  }
+
+  /** GoJS-compatible: Whether in-place text editing is allowed. */
+  get allowTextEdit(): boolean {
+    return this._allowTextEdit;
+  }
+
+  set allowTextEdit(value: boolean) {
+    this._allowTextEdit = value;
+  }
+
+  /** GoJS-compatible: Whether new links can be drawn. */
+  get allowLink(): boolean {
+    return this._allowLink;
+  }
+
+  set allowLink(value: boolean) {
+    this._allowLink = value;
+  }
+
+  /** GoJS-compatible: Whether existing links can be reconnected. */
+  get allowRelink(): boolean {
+    return this._allowRelink;
+  }
+
+  set allowRelink(value: boolean) {
+    this._allowRelink = value;
   }
 
   /** Handle a contextmenu (right-click) event. */

@@ -35,6 +35,8 @@ export abstract class Part {
   protected _panel: Panel | null = null;
   private _locationSpot: { x: number; y: number } = { x: 0.5, y: 0.5 };
   private _data: NodeData | null = null;
+  private _dragAlpha = 1;
+  private _isInDocumentBounds = true;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -164,6 +166,24 @@ export abstract class Part {
 
   set data(value: NodeData | null) {
     this._data = value;
+  }
+
+  /** GoJS-compatible: The opacity used when this part is being dragged. */
+  get dragAlpha(): number {
+    return this._dragAlpha;
+  }
+
+  set dragAlpha(value: number) {
+    this._dragAlpha = Math.max(0, Math.min(1, value));
+  }
+
+  /** GoJS-compatible: Whether this part is within the document bounds. */
+  get isInDocumentBounds(): boolean {
+    return this._isInDocumentBounds;
+  }
+
+  set isInDocumentBounds(value: boolean) {
+    this._isInDocumentBounds = value;
   }
 
   /** GoJS-compatible: The name of the layer this part belongs to. */

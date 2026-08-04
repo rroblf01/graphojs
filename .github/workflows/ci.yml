@@ -16,7 +16,7 @@ jobs:
           version: 11.18.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 24.19.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
@@ -31,7 +31,7 @@ jobs:
           version: 11.18.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 24.19.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
@@ -45,7 +45,7 @@ jobs:
           version: 11.18.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 24.19.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
@@ -59,7 +59,7 @@ jobs:
           version: 11.18.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 24.19.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
@@ -73,7 +73,7 @@ jobs:
           version: 11.18.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 24.19.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium

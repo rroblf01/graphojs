@@ -1537,6 +1537,62 @@ export class Diagram {
     this.invalidate();
   }
 
+  /** Scroll the viewport to show a specific part. */
+  scrollToPart(part: Part, _padding = 50): void {
+    const rect = this.canvas.getBoundingClientRect();
+    const partBounds = part.bounds;
+
+    // Calculate the center of the part in diagram coordinates
+    const partCenterX = partBounds.x + partBounds.width / 2;
+    const partCenterY = partBounds.y + partBounds.height / 2;
+
+    // Calculate the viewport center in diagram coordinates
+    const viewportCenterX = this.offsetX + rect.width / (2 * this.scale);
+    const viewportCenterY = this.offsetY + rect.height / (2 * this.scale);
+
+    // Calculate the offset needed to center the part
+    const dx = partCenterX - viewportCenterX;
+    const dy = partCenterY - viewportCenterY;
+
+    // Apply the offset
+    this.offsetX += dx;
+    this.offsetY += dy;
+
+    this.invalidate();
+  }
+
+  /** Get the bounds of all content in the diagram. */
+  getContentBounds(): RectClass {
+    if (this.nodes.size === 0) {
+      return new RectClass(0, 0, 0, 0);
+    }
+
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
+    for (const [, node] of this.nodes) {
+      minX = Math.min(minX, node.bounds.x);
+      minY = Math.min(minY, node.bounds.y);
+      maxX = Math.max(maxX, node.bounds.right);
+      maxY = Math.max(maxY, node.bounds.bottom);
+    }
+
+    return new RectClass(minX, minY, maxX - minX, maxY - minY);
+  }
+
+  /** Get the current viewport bounds in diagram coordinates. */
+  getViewportBounds(): RectClass {
+    const rect = this.canvas.getBoundingClientRect();
+    return new RectClass(
+      this.offsetX,
+      this.offsetY,
+      rect.width / this.scale,
+      rect.height / this.scale,
+    );
+  }
+
   /** Destroy the diagram and clean up resources. */
   destroy(): void {
     if (this._isDestroyed) return;

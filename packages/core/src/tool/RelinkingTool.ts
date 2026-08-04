@@ -1,20 +1,19 @@
 import { Node } from '../parts/Node.ts';
 import { Link } from '../parts/Link.ts';
 import { SetLinkPropertyCommand } from '../undo/commands.ts';
-import { Tool } from './Tool.ts';
+import { LinkingBaseTool } from './LinkingBaseTool.ts';
 
 /**
  * Tool for reconnecting existing links by dragging their endpoints.
  * Drag near the source or target end of a link to move it to a new node.
  */
-export class RelinkingTool extends Tool {
-  private _isRelinking = false;
+export class RelinkingTool extends LinkingBaseTool {
   private _link: Link | null = null;
   private _end: 'from' | 'to' = 'to';
 
   /** Whether a relinking drag is in progress. */
   get isRelinking(): boolean {
-    return this._isRelinking;
+    return this.isDragging;
   }
 
   /** The link being relinked. */
@@ -40,13 +39,13 @@ export class RelinkingTool extends Tool {
 
       this._link = part;
       this._end = distFrom <= distTo ? 'from' : 'to';
-      this._isRelinking = true;
+      this._isDragging = true;
       this.showTempLink(part.fromPort, part.toPort);
     }
   }
 
   override doMouseMove(e: MouseEvent): void {
-    if (!this._isRelinking || !this._link) return;
+    if (!this.isDragging || !this._link) return;
 
     const point = this.getDiagramPoint(e);
     const from = this._end === 'from' ? point : this._link.fromPort;
@@ -55,9 +54,9 @@ export class RelinkingTool extends Tool {
   }
 
   override doMouseUp(e: MouseEvent): void {
-    if (!this._isRelinking || !this._link) return;
+    if (!this.isDragging || !this._link) return;
 
-    this._isRelinking = false;
+    this._isDragging = false;
     const diagram = this.diagram;
     const link = this._link;
 
@@ -98,13 +97,5 @@ export class RelinkingTool extends Tool {
       .getUndoManager()
       .execute(new SetLinkPropertyCommand(model, linkKey, propertyName, newValue));
     return true;
-  }
-
-  private showTempLink(from: { x: number; y: number }, to: { x: number; y: number }): void {
-    this.diagram?.showTempLink(from, to);
-  }
-
-  private hideTempLink(): void {
-    this.diagram?.hideTempLink();
   }
 }

@@ -1,41 +1,25 @@
 import { Node } from '../parts/Node.ts';
 import type { LinkData } from '../model/Model.ts';
 import { AddLinkCommand } from '../undo/commands.ts';
-import { Tool } from './Tool.ts';
+import { LinkingBaseTool } from './LinkingBaseTool.ts';
 
 /**
  * Tool for creating links by dragging from a node to another node.
  */
-export class LinkingTool extends Tool {
-  private _isLinking = false;
-  private _sourceNode: Node | null = null;
-  private _sourcePoint = { x: 0, y: 0 };
-  private _sourcePortName: string | undefined = undefined;
-  private _targetNode: Node | null = null;
-  private _preventCycles = false;
-
+export class LinkingTool extends LinkingBaseTool {
   /** Whether a linking drag is in progress. */
   get isLinking(): boolean {
-    return this._isLinking;
+    return this.isDragging;
   }
 
   /** The source node of the link being created. */
-  get sourceNode(): Node | null {
-    return this._sourceNode;
+  override get sourceNode(): Node | null {
+    return super.sourceNode;
   }
 
   /** The current target node under the cursor, or null. */
-  get targetNode(): Node | null {
-    return this._targetNode;
-  }
-
-  /** Whether cycle creation is prevented (a node cannot link to its descendant). */
-  get preventCycles(): boolean {
-    return this._preventCycles;
-  }
-
-  set preventCycles(value: boolean) {
-    this._preventCycles = value;
+  override get targetNode(): Node | null {
+    return super.targetNode;
   }
 
   override doMouseDown(e: MouseEvent): void {
@@ -46,16 +30,16 @@ export class LinkingTool extends Tool {
 
     // Only start linking from a node
     if (part instanceof Node) {
-      this._isLinking = true;
+      this._isDragging = true;
       this._sourceNode = part;
-      this._sourcePoint = part.getConnectionPoint(point, this.getNearestPortName(part, point));
+      this._sourcePoint = this.getConnectionPoint(part, point);
       this._sourcePortName = this.getNearestPortName(part, point);
       this.showTempLink(this._sourcePoint, point);
     }
   }
 
   override doMouseMove(e: MouseEvent): void {
-    if (!this._isLinking) return;
+    if (!this.isDragging) return;
 
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);
@@ -63,21 +47,20 @@ export class LinkingTool extends Tool {
     // Update target node if over a different node
     if (part instanceof Node && part !== this._sourceNode) {
       this._targetNode = part;
-      const targetPoint = part.getConnectionPoint(
-        this._sourcePoint,
-        this.getNearestPortName(part, point),
-      );
+      const targetPoint = this.getConnectionPoint(part, this._sourcePoint);
+      this._isValidLink = this.validateLink(this._sourceNode!, part, this.diagram!.getModel());
       this.showTempLink(this._sourcePoint, targetPoint);
     } else {
       this._targetNode = null;
+      this._isValidLink = false;
       this.showTempLink(this._sourcePoint, point);
     }
   }
 
   override doMouseUp(_e: MouseEvent): void {
-    if (!this._isLinking) return;
+    if (!this.isDragging) return;
 
-    this._isLinking = false;
+    this._isDragging = false;
     const diagram = this.diagram;
     const source = this._sourceNode;
     const target = this._targetNode;
@@ -98,15 +81,7 @@ export class LinkingTool extends Tool {
     if (!diagram) return false;
 
     const model = diagram.getModel();
-    if (!model.containsNode(source.key) || !model.containsNode(target.key)) return false;
-
-    // Don't create duplicate links if not allowed
-    if (!model.allowsDuplicateLinks && model.containsLink(source.key, target.key)) {
-      return false;
-    }
-
-    // Prevent cycles: target must not be reachable from source
-    if (this._preventCycles && this.wouldCreateCycle(source.key, target.key, model)) {
+    if (!this.validateLink(source, target, model)) {
       return false;
     }
 
@@ -125,62 +100,5 @@ export class LinkingTool extends Tool {
     } catch {
       return false;
     }
-  }
-
-  /**
-   * Check whether adding a link from `from` to `to` would create a cycle
-   * (i.e. `to` is reachable from `from` via existing links).
-   */
-  private wouldCreateCycle(
-    from: Node['key'],
-    to: Node['key'],
-    model: { getLinksFrom: (key: Node['key']) => ReadonlyArray<{ to: Node['key'] }> },
-  ): boolean {
-    const visited = new Set<Node['key']>();
-    const stack: Node['key'][] = [to];
-
-    while (stack.length > 0) {
-      const current = stack.pop();
-      if (current === undefined) continue;
-      if (current === from) return true;
-      if (visited.has(current)) continue;
-      visited.add(current);
-
-      for (const link of model.getLinksFrom(current)) {
-        stack.push(link.to);
-      }
-    }
-    return false;
-  }
-
-  private getNearestPortName(node: Node, point: { x: number; y: number }): string | undefined {
-    if (node.portCount === 0) return undefined;
-
-    let nearest: string | undefined;
-    let nearestDist = Infinity;
-
-    for (const port of node.ports) {
-      if (!port.visible) continue;
-      const p = port.computePoint(
-        node.bounds.x,
-        node.bounds.y,
-        node.bounds.width,
-        node.bounds.height,
-      );
-      const dist = Math.hypot(p.x - point.x, p.y - point.y);
-      if (dist < nearestDist) {
-        nearestDist = dist;
-        nearest = port.name;
-      }
-    }
-    return nearest;
-  }
-
-  private showTempLink(from: { x: number; y: number }, to: { x: number; y: number }): void {
-    this.diagram?.showTempLink(from, to);
-  }
-
-  private hideTempLink(): void {
-    this.diagram?.hideTempLink();
   }
 }

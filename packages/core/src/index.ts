@@ -91,6 +91,7 @@ export { DragSelectingTool } from './tool/DragSelectingTool.ts';
 export { PanningTool } from './tool/PanningTool.ts';
 export { ZoomingTool } from './tool/ZoomingTool.ts';
 export { TextEditingTool } from './tool/TextEditingTool.ts';
+export { LinkingBaseTool } from './tool/LinkingBaseTool.ts';
 export { LinkingTool } from './tool/LinkingTool.ts';
 export { RelinkingTool } from './tool/RelinkingTool.ts';
 export { ResizingTool } from './tool/ResizingTool.ts';

@@ -402,4 +402,56 @@ describe('GoJS Getting Started tutorial migration', () => {
     expect(label.text).toBe('Alpha');
     expect(myDiagram.findLinkForKey(model.getLinkKey(model.linkDataArray[0]!)!)).not.toBeNull();
   });
+
+  it('exposes layers, layout, background, div and isModified', () => {
+    const myDiagram = createDiagram();
+    expect(myDiagram.layers.length).toBeGreaterThan(0);
+    expect(myDiagram.div).toBeInstanceOf(HTMLDivElement);
+    expect(myDiagram.background).toBe('#ffffff');
+    myDiagram.background = '#000000';
+    expect(myDiagram.background).toBe('#000000');
+    expect(myDiagram.isModified).toBe(false);
+    expect(myDiagram.layout).toBeNull();
+  });
+
+  it('marks isModified after model changes', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel();
+    model.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
+    myDiagram.model = model;
+    expect(myDiagram.isModified).toBe(false);
+
+    model.setDataProperty(model.nodeDataArray[0]!, 'x', 10);
+    expect(myDiagram.isModified).toBe(true);
+  });
+
+  it('supports addModelChangedListener', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel();
+    model.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
+    myDiagram.model = model;
+
+    let events = 0;
+    const listener = () => events++;
+    myDiagram.addModelChangedListener(listener);
+    model.setDataProperty(model.nodeDataArray[0]!, 'x', 5);
+    myDiagram.removeModelChangedListener(listener);
+    model.setDataProperty(model.nodeDataArray[0]!, 'x', 6);
+    expect(events).toBe(1);
+  });
+
+  it('applies a diagram layout when assigned', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 0, y: 0, width: 100, height: 50 },
+        { key: 3, x: 0, y: 0, width: 100, height: 50 },
+      ],
+    });
+    myDiagram.model = model;
+
+    myDiagram.layout = new go.GridLayout({ spacing: 20 });
+    expect(myDiagram.layout).not.toBeNull();
+  });
 });

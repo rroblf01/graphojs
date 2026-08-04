@@ -4,6 +4,7 @@ import type { ChangedEvent, NodeData, LinkData } from '../model/Model.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { GraphLinksModel } from '../model/GraphLinksModel.ts';
 import { type Layer, createDefaultLayers, LayerNames } from '../layer/Layer.ts';
+import type { Layout } from '../layout/Layout.ts';
 import { Group } from '../parts/Group.ts';
 import { Link, type ArrowheadStyle } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
@@ -61,6 +62,14 @@ export interface DiagramOptions {
  * A diagram that renders nodes and links on a canvas.
  */
 export class Diagram {
+  // GoJS-compatible alignment constants
+  static readonly AlignNone = 'None';
+  static readonly AlignSpot = 'Spot';
+  static readonly AlignMin = 'Min';
+  static readonly AlignMax = 'Max';
+  static readonly AlignScale = 'Scale';
+  static readonly AlignFill = 'Fill';
+
   private container: HTMLDivElement;
   private canvas: HTMLCanvasElement;
   private renderer: Renderer;
@@ -86,7 +95,7 @@ export class Diagram {
   private selectedParts: Set<NodeKey> = new Set();
   private _toolManager: ToolManager;
   private _undoManager: UndoManager;
-  private layers: Layer[];
+  private _layers: Layer[] = [];
   private contextMenu: ContextMenu | null = null;
   private _animationManager: AnimationManager = new AnimationManager();
   private _commandHandler: CommandHandler;
@@ -112,6 +121,7 @@ export class Diagram {
   private _allowHorizontalScroll = true;
   private _allowVerticalScroll = true;
   private _isEnabled = true;
+  private _isModified = false;
   private backBuffer: HTMLCanvasElement | null = null;
   private backBufferEnabled = false;
   private hitIndex: QuadTree<Part> | null = null;
@@ -196,7 +206,7 @@ export class Diagram {
     this._commandHandler = new CommandHandler(this);
 
     // Create layers
-    this.layers = createDefaultLayers();
+    this._layers = createDefaultLayers();
 
     // Set up event listeners
     this.setupEventListeners();
@@ -800,6 +810,7 @@ export class Diagram {
     this.invalidate();
     // Layer cache must be refreshed on model changes
     this.layerCache?.markAllDirty();
+    this._isModified = true;
     this.fireDiagramEvent('ModelChanged', null, {
       changeType: event.type,
       propertyName: event.propertyName,
@@ -1557,33 +1568,94 @@ export class Diagram {
 
   /** Get all layers. */
   getLayers(): readonly Layer[] {
-    return this.layers;
+    return this._layers;
+  }
+
+  /** GoJS-compatible: The layers in this diagram. */
+  get layers(): readonly Layer[] {
+    return this._layers;
+  }
+
+  /** GoJS-compatible: The diagram layout, applied to nodes/links when set. */
+  private _layout: Layout | null = null;
+
+  get layout(): Layout | null {
+    return this._layout;
+  }
+
+  set layout(value: Layout | null) {
+    this._layout = value;
+    this.applyDiagramLayout();
+  }
+
+  /** Apply the diagram layout to the current nodes and links. */
+  private applyDiagramLayout(): void {
+    const layout = this._layout;
+    if (!layout) return;
+    const nodes = Array.from(this.nodes.values());
+    const links = Array.from(this.links.values());
+    layout.apply(nodes, links);
+    this.invalidate();
+  }
+
+  /** GoJS-compatible: The HTML element this diagram renders into. */
+  get div(): HTMLDivElement {
+    return this.container;
+  }
+
+  /** GoJS-compatible: The background color of the diagram. */
+  get background(): string {
+    return this.backgroundColor;
+  }
+
+  set background(value: string) {
+    this.backgroundColor = value;
+    this.invalidate();
+  }
+
+  /** GoJS-compatible: Whether the diagram's model has been modified. */
+  get isModified(): boolean {
+    return this._isModified;
+  }
+
+  set isModified(value: boolean) {
+    this._isModified = value;
+  }
+
+  /** GoJS-compatible: Register a model changed listener. */
+  addModelChangedListener(listener: (event: ChangedEvent) => void): void {
+    this._model.addChangedListener(listener);
+  }
+
+  /** GoJS-compatible: Remove a model changed listener. */
+  removeModelChangedListener(listener: (event: ChangedEvent) => void): void {
+    this._model.removeChangedListener(listener);
   }
 
   /** Get a layer by name. */
   getLayer(name: string): Layer | undefined {
-    return this.layers.find((l) => l.name === name);
+    return this._layers.find((l) => l.name === name);
   }
 
   /** Add a layer. */
   addLayer(layer: Layer): void {
-    this.layers.push(layer);
-    this.layers.sort((a, b) => a.zOrder - b.zOrder);
+    this._layers.push(layer);
+    this._layers.sort((a, b) => a.zOrder - b.zOrder);
     this.invalidate();
   }
 
   /** Remove a layer by name. */
   removeLayer(name: string): boolean {
-    const index = this.layers.findIndex((l) => l.name === name);
+    const index = this._layers.findIndex((l) => l.name === name);
     if (index === -1) return false;
-    const layer = this.layers[index];
+    const layer = this._layers[index];
     if (!layer) return false;
     // Move parts to Default layer
     const defaultLayer = this.getLayer(LayerNames.Default);
     for (const part of [...layer.parts]) {
       part.layer = defaultLayer ?? null;
     }
-    this.layers.splice(index, 1);
+    this._layers.splice(index, 1);
     this.invalidate();
     return true;
   }
@@ -1829,7 +1901,7 @@ export class Diagram {
 
     // Collect all visible parts for spatial index rebuild
     const allParts: Part[] = [];
-    for (const layer of this.layers) {
+    for (const layer of this._layers) {
       if (layer.name === LayerNames.Grid) continue;
       for (const part of layer.getVisibleParts()) {
         allParts.push(part);
@@ -1852,7 +1924,7 @@ export class Diagram {
 
     // Register node bounds with renderer for link routing computation
     target.clearNodeBounds();
-    for (const layer of this.layers) {
+    for (const layer of this._layers) {
       for (const part of layer.getVisibleParts()) {
         if (part instanceof Node) {
           target.setNodeBounds(part.key, part.bounds);
@@ -1861,7 +1933,7 @@ export class Diagram {
     }
 
     // Render parts in layer order (lowest z-order first)
-    for (const layer of this.layers) {
+    for (const layer of this._layers) {
       if (layer.name === LayerNames.Grid) continue;
       if (layer.partCount === 0) continue;
 

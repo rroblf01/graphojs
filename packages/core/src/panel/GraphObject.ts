@@ -6,6 +6,7 @@ import type { Rect } from '../geometry/Rect.ts';
 import type { Binding } from '../binding/Binding.ts';
 import type { NodeData } from '../model/Model.ts';
 import { getPanelFactory } from './PanelRegistry.ts';
+import { isPartCtor } from './PartRegistry.ts';
 import { Binding as BindingClass } from '../binding/Binding.ts';
 
 /**
@@ -85,8 +86,8 @@ export abstract class GraphObject {
   static make<T extends GraphObject>(ctor: new (...args: unknown[]) => T, ...args: unknown[]): T {
     // GoJS-compatible: $(go.Node/'go.Link'/'go.Group', panelType, ...children, props)
     // builds a template Panel carrying the part properties to apply on instantiation.
-    const ctorName = ctor.name;
-    if (ctorName === 'Node' || ctorName === 'Link' || ctorName === 'Group') {
+    // Detection via an explicit registry (robust against minification).
+    if (isPartCtor(ctor)) {
       return GraphObject.makePartTemplate(args) as unknown as T;
     }
 
@@ -109,11 +110,11 @@ export abstract class GraphObject {
         }
       } else if (typeof arg === 'string') {
         // First string arg for Shape = shape type, for Panel = panel type, for TextBlock = text
-        if ('shape' in obj && obj.constructor.name === 'Shape') {
+        if ('shape' in obj) {
           (obj as { shape: unknown }).shape = arg;
-        } else if ('type' in obj && obj.constructor.name === 'Panel') {
+        } else if ('type' in obj) {
           (obj as { type: unknown }).type = arg;
-        } else if ('text' in obj && obj.constructor.name === 'TextBlock') {
+        } else if ('text' in obj) {
           (obj as { text: unknown }).text = arg;
         }
       } else if (typeof arg === 'object') {

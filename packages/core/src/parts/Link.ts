@@ -394,3 +394,6 @@ export class Link extends Part {
     return Math.hypot(px - cx, py - cy);
   }
 }
+
+import { registerPartCtor } from '../panel/PartRegistry.ts';
+registerPartCtor(Link);

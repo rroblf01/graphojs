@@ -7,6 +7,12 @@ export default defineConfig({
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     trace: 'on-first-retry',
+    baseURL: 'http://localhost:4173',
   },
-  projects: [{ name: 'chromium', use: { browserName: 'chromium' } }],
+  webServer: {
+    command: 'node e2e/server.mjs',
+    port: 4173,
+    reuseExistingServer: true,
+  },
+  projects: [{ name: 'firefox', use: { browserName: 'firefox' } }],
 });

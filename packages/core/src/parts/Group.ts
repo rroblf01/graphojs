@@ -217,3 +217,6 @@ export class Group extends Part {
     return level;
   }
 }
+
+import { registerPartCtor } from '../panel/PartRegistry.ts';
+registerPartCtor(Group);

@@ -825,12 +825,13 @@ export class Diagram {
         this.parts.delete(key);
         this.groups.delete(key);
       } else if (part instanceof Link) {
+        const linkKey = part.key;
         const linkData = this._model
           .getLinkDataArray()
-          .find((l) => this._model.getLinkKey(l) === key);
+          .find((l) => this._model.getLinkKey(l) === linkKey);
         if (!linkData) {
           this.parts.delete(key);
-          this.links.delete(key);
+          this.links.delete(linkKey);
         }
       }
     }
@@ -942,16 +943,38 @@ export class Diagram {
     }
 
     // Apply bindings to all parts
-    for (const [key, part] of this.parts) {
+    for (const [, part] of this.parts) {
       if (part.bindings.length > 0 || part.panel !== null) {
-        const nodeData = this._model.getNodeData(key);
-        if (nodeData) {
-          part.applyBindings(nodeData);
+        const data = this.getDataForPart(part);
+        if (data) {
+          part.applyBindings(data);
         }
       }
     }
 
     this.markHitIndexDirty();
+  }
+
+  /** Get the model data object for a part (node data or link data). */
+  private getDataForPart(part: Part): NodeData | LinkData | undefined {
+    if (part instanceof Link) {
+      const linkKey = part.key;
+      return this._model.getLinkDataArray().find((l) => this._model.getLinkKey(l) === linkKey);
+    }
+    return this._model.getNodeData(part.key);
+  }
+
+  /**
+   * Find a part by its model key in the parts map.
+   * Link keys live in a separate namespace (prefixed) to avoid colliding
+   * with node keys.
+   */
+  private getPartByKey(key: NodeKey): Node | Link | Group | undefined {
+    return this.parts.get(key) ?? this.parts.get(this.linkPartKey(key));
+  }
+
+  private linkPartKey(key: NodeKey): string {
+    return `l:${key}`;
   }
 
   /**
@@ -1114,7 +1137,7 @@ export class Diagram {
     const layerName = (linkData.layer as string) ?? LayerNames.Default;
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) link.layer = layer;
-    this.parts.set(linkKey as NodeKey, link);
+    this.parts.set(this.linkPartKey(linkKey as NodeKey), link);
     this.links.set(linkKey as NodeKey, link);
     this.fireDiagramEvent('PartAdded', link);
     this.markHitIndexDirty();
@@ -1257,7 +1280,7 @@ export class Diagram {
   }
 
   private removePartByKey(key: NodeKey): void {
-    const part = this.parts.get(key);
+    const part = this.getPartByKey(key);
     if (!part) return;
 
     if (part instanceof Node) {
@@ -1266,6 +1289,11 @@ export class Diagram {
       this.groups.delete(key);
     } else if (part instanceof Link) {
       this.links.delete(key);
+      this.parts.delete(this.linkPartKey(key));
+      this.selectedParts.delete(key);
+      this.fireDiagramEvent('PartRemoved', part);
+      this.markHitIndexDirty();
+      return;
     }
     this.parts.delete(key);
     this.selectedParts.delete(key);
@@ -1366,7 +1394,7 @@ export class Diagram {
 
   /** Get a part by key. */
   getPart(key: NodeKey): Node | Link | Group | undefined {
-    return this.parts.get(key);
+    return this.getPartByKey(key);
   }
 
   /** GoJS-compatible: Find a node part by its model key. */
@@ -1471,7 +1499,7 @@ export class Diagram {
   /** Clear all selections. */
   clearSelection(): void {
     for (const key of this.selectedParts) {
-      const part = this.parts.get(key);
+      const part = this.getPartByKey(key);
       if (part) part.isSelected = false;
     }
     this.selectedParts.clear();
@@ -1497,7 +1525,7 @@ export class Diagram {
   getSelectedParts(): (Node | Link | Group)[] {
     const result: (Node | Link | Group)[] = [];
     for (const key of this.selectedParts) {
-      const part = this.parts.get(key);
+      const part = this.getPartByKey(key);
       if (part instanceof Node || part instanceof Link || part instanceof Group) {
         result.push(part);
       }

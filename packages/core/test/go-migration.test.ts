@@ -371,4 +371,35 @@ describe('GoJS Getting Started tutorial migration', () => {
     expect(link.strokeWidth).toBe(3);
     expect(link.arrowhead).toBe('triangle');
   });
+
+  it('does not collide node and link keys in the parts map', () => {
+    const myDiagram = createDiagram();
+    const $ = go.GraphObject.make;
+
+    myDiagram.nodeTemplate = $(
+      go.Node,
+      'Auto',
+      $(go.Shape, 'Rectangle'),
+      $(go.TextBlock, 'Default', { name: 'label' }, new go.Binding('text', 'name')),
+    );
+
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, name: 'Alpha', x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, name: 'Beta', x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    myDiagram.model = model;
+
+    // Link key auto-generates from 1, colliding with node key 1.
+    // The node must still exist and its element binding must be applied.
+    const node1 = myDiagram.findNodeForKey(1);
+    expect(node1).not.toBeNull();
+    const label = (node1 as import('../src/parts/Node.ts').Node).findObject(
+      'label',
+    ) as import('../src/panel/TextBlock.ts').TextBlock;
+    expect(label.text).toBe('Alpha');
+    expect(myDiagram.findLinkForKey(model.getLinkKey(model.linkDataArray[0]!)!)).not.toBeNull();
+  });
 });

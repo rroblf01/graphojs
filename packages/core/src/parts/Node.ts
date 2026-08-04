@@ -258,3 +258,6 @@ function pointInRoundedRect(
   }
   return false;
 }
+
+import { registerPartCtor } from '../panel/PartRegistry.ts';
+registerPartCtor(Node);

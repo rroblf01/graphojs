@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphoJS GoJS Migration E2E</title>
+    <style>
+      #diagramDiv {
+        width: 800px;
+        height: 600px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="diagramDiv"></div>
+    <div id="result"></div>
+    <script type="module">
+      window.__go = go; import * as go from '../../packages/core/dist/go.js';
+
+      const $ = go.GraphObject.make;
+
+      const myDiagram = new go.Diagram('diagramDiv');
+
+      myDiagram.nodeTemplate = $(
+        go.Node,
+        'Auto',
+        $(go.Shape, 'RoundedRectangle', { fill: 'white', stroke: 'gray' }),
+        $(go.TextBlock, 'Default Text', { name: 'label', margin: 12 }, new go.Binding('text', 'name')),
+      );
+
+      myDiagram.linkTemplate = $(
+        go.Link,
+        { routing: go.Link.Orthogonal },
+        $(go.Shape, { strokeWidth: 3 }),
+        $(go.Shape, 'Arrow', { toArrow: 'Triangle' }),
+      );
+
+      myDiagram.model = new go.GraphLinksModel({
+        nodeDataArray: [
+          { key: 1, name: 'Alpha', x: 0, y: 0, width: 100, height: 50 },
+          { key: 2, name: 'Beta', x: 200, y: 0, width: 100, height: 50 },
+        ],
+        linkDataArray: [{ from: 1, to: 2 }],
+      });
+
+      const node = myDiagram.findNodeForKey(1);
+      const textBlock = node ? node.findObject('label') : null;
+
+      window.__diagram = myDiagram;
+
+      document.getElementById('result').textContent = JSON.stringify({
+        nodeCount: myDiagram.model.nodeDataArray.length,
+        linkCount: myDiagram.model.linkDataArray.length,
+        label: textBlock ? textBlock.text : null,
+        partData: node ? node.data.name : null,
+      });
+    </script>
+  </body>
+</html>

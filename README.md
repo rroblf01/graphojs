@@ -78,11 +78,14 @@ myDiagram.commit((d) => {
 - `new go.GraphLinksModel({ nodeDataArray, linkDataArray })`
 - `diagram.undoManager` / `commandHandler` / `toolManager` / `animationManager` accessors
 - `diagram.isReadOnly` / `isEnabled` / `allowMove` / `allowCopy` / `allowDelete` flags
+- `diagram.layers` / `layout` / `background` / `div` / `isModified`
+- `diagram.addModelChangedListener` / `removeModelChangedListener`
 - Diagram events: `SelectionChanged`, `ObjectSingleClicked`, `LinkDrawn`, `PartResized`, and more
 - Touch panning, pinch-to-zoom, arrow-key nudging
 - `Part.location` / `locationSpot` / `data`, `Link.fromNode`/`toNode`, `fromEndSegmentLength`, `reshapable`
 - `diagram.findNodeForKey` / `findLinkForKey` / `findNodeForData` / `clear` / `centerRect` / `centerPoint`
 - Link templates with `toArrow` / `fromArrow` / `strokeWidth`
+- `TextBlock.stroke` (GoJS text color) and `editable` with element-based text editing
 
 ## Tech Stack
 

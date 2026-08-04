@@ -807,7 +807,7 @@ describe('GoJS Getting Started tutorial migration', () => {
 
     // Overview.observed
     const overviewDiv = document.createElement('div');
-    const overview = new go.Overview(overviewDiv);
+    const overview = new go.Overview(overviewDiv, myDiagram);
     overview.observed = myDiagram;
     expect(overview.observed).toBe(myDiagram);
   });

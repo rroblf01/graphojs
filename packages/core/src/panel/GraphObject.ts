@@ -26,6 +26,15 @@ export abstract class GraphObject {
   private _cursor: string = '';
   private _bindings: Binding[] = [];
 
+  // GoJS-compatible event handler properties (set via property maps)
+  click?: (e: MouseEvent, obj: GraphObject) => void;
+  doubleClick?: (e: MouseEvent, obj: GraphObject) => void;
+  contextClick?: (e: MouseEvent, obj: GraphObject) => void;
+  mouseEnter?: (e: MouseEvent, obj: GraphObject, prev: GraphObject | null) => void;
+  mouseLeave?: (e: MouseEvent, obj: GraphObject, prev: GraphObject | null) => void;
+  mouseOver?: (e: MouseEvent, obj: GraphObject) => void;
+  mouseOut?: (e: MouseEvent, obj: GraphObject) => void;
+
   /** The name of this graph object, used for findObject() lookups. */
   get name(): string {
     return this._name;

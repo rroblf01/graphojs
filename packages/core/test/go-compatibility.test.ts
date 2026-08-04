@@ -512,6 +512,17 @@ describe('GoJS Compatibility', () => {
       t.strokeWidth = 2;
       expect(t.strokeWidth).toBe(2);
     });
+
+    it('should attach click/doubleClick handlers via GraphObject.make', () => {
+      const $ = GraphObject.make;
+      let clicks = 0;
+      const shape = $(Shape, 'RoundedRectangle', {
+        click: () => clicks++,
+      });
+      expect(typeof shape.click).toBe('function');
+      shape.click?.({} as MouseEvent, shape);
+      expect(clicks).toBe(1);
+    });
   });
 
   describe('Panel data panels (itemArray/itemTemplate)', () => {

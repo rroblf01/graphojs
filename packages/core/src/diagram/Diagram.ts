@@ -10,6 +10,7 @@ import { Group } from '../parts/Group.ts';
 import { Link, type ArrowheadStyle } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
 import { Shape } from '../panel/Shape.ts';
+import type { GraphObject } from '../panel/GraphObject.ts';
 import type { ContextMenu } from '../export/ContextMenu.ts';
 import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
 import type { Renderer } from '../render/Renderer.ts';
@@ -685,21 +686,35 @@ export class Diagram {
   /** Handle a contextmenu (right-click) event. */
   private handleContextMenu(e: MouseEvent): void {
     e.preventDefault();
+    // GraphObject.contextClick handler
+    const point = this.getDiagramPoint(e);
+    const part = this.findPartAt(point.x, point.y);
+    if (part) {
+      const obj = this.findHitGraphObject(part, point);
+      if (obj?.contextClick) obj.contextClick(e, obj);
+    }
     if (this.contextMenu) {
       this.contextMenu.handleContextMenu(e);
     }
   }
 
-  /** Handle a double-click event (triggers text editing). */
+  /** Handle a double-click event (triggers text editing + GraphObject.doubleClick). */
   private handleDoubleClick(e: MouseEvent): void {
     e.preventDefault();
+    const point = this.getDiagramPoint(e);
+    const part = this.findPartAt(point.x, point.y);
+
+    // GraphObject.doubleClick handler
+    if (part) {
+      const obj = this.findHitGraphObject(part, point);
+      if (obj?.doubleClick) obj.doubleClick(e, obj);
+    }
+
     const textEditing = this._toolManager.getTool('textEditing');
     if (textEditing instanceof TextEditingTool) {
       textEditing.doDoubleClick(e);
     }
     // Fire object double-click event
-    const point = this.getDiagramPoint(e);
-    const part = this.findPartAt(point.x, point.y);
     if (part) {
       this.fireDiagramEvent('ObjectDoubleClicked', part, { x: point.x, y: point.y });
     } else {
@@ -716,8 +731,20 @@ export class Diagram {
     if (!part) {
       this.fireDiagramEvent('BackgroundSingleClicked', null, { x: point.x, y: point.y });
     } else {
+      // GraphObject.click handler
+      const obj = this.findHitGraphObject(part, point);
+      if (obj?.click) obj.click(e, obj);
       this.fireDiagramEvent('ObjectSingleClicked', part, { x: point.x, y: point.y });
     }
+  }
+
+  /** Find the deepest GraphObject of a part's visual tree at a diagram point. */
+  private findHitGraphObject(part: Part, point: { x: number; y: number }): GraphObject | null {
+    const panel = part.panel;
+    if (!panel) return null;
+    const localX = point.x - part.bounds.x;
+    const localY = point.y - part.bounds.y;
+    return panel.hitTest(localX, localY);
   }
 
   /** Handle keyboard shortcuts. */

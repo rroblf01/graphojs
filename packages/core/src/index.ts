@@ -116,6 +116,7 @@ export { GridLayout } from './layout/GridLayout.ts';
 export type { GridLayoutOptions } from './layout/GridLayout.ts';
 export { SpotLayout } from './layout/SpotLayout.ts';
 export type { SpotLayoutOptions } from './layout/SpotLayout.ts';
+export { LayoutNetwork, LayoutVertex, LayoutEdge } from './layout/LayoutNetwork.ts';
 
 // Serialization
 export { Serializer } from './serialization/Serializer.ts';

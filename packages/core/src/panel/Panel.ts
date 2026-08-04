@@ -51,6 +51,9 @@ export class Panel extends GraphObject {
    */
   templateProperties: Record<string, unknown> = {};
 
+  /** The data object most recently applied to this panel (for ofObject("parent")). */
+  data: import('../model/Model.ts').NodeData | null = null;
+
   constructor(type: PanelType = 'Auto') {
     super();
     this._type = type;
@@ -178,6 +181,7 @@ export class Panel extends GraphObject {
 
   /** Add an element to this panel. */
   add(element: GraphObject): this {
+    element.parentPanel = this;
     this._elements.push(element);
     this.recountGrid();
     return this;
@@ -185,6 +189,7 @@ export class Panel extends GraphObject {
 
   /** GoJS-compatible: Insert an element at a specific index. */
   insertAt(index: number, element: GraphObject): this {
+    element.parentPanel = this;
     this._elements.splice(index, 0, element);
     this.recountGrid();
     return this;
@@ -719,6 +724,7 @@ export class Panel extends GraphObject {
 
   /** Apply bindings to this panel and recursively to all child elements. */
   override applyBindings(nodeData: import('../model/Model.ts').NodeData): number {
+    this.data = nodeData;
     let count = super.applyBindings(nodeData);
     for (const el of this._elements) {
       // Item-generated elements are bound to item data, not the panel's node data

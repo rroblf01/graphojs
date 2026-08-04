@@ -88,7 +88,7 @@ export class Binding {
    * Returns true if the property was set.
    */
   applyToTarget(target: BindingTarget, nodeData: NodeData): boolean {
-    const sourceValue = this.getSourceValue(nodeData);
+    const sourceValue = this.getSourceValue(nodeData, target);
     let targetValue = sourceValue;
 
     if (this._converter) {
@@ -128,13 +128,57 @@ export class Binding {
   /**
    * Read the source property from model data, applying the converter if present.
    * Supports dot paths (e.g. "data.name", "meta.color").
+   * Resolves the source object per ofObject(): "data" (default), "parent",
+   * or a named GraphObject in the visual tree.
    */
-  getSourceValue(nodeData: NodeData): unknown {
-    const raw = this.resolvePath(nodeData, this._sourceProperty);
+  getSourceValue(nodeData: NodeData, target?: BindingTarget): unknown {
+    const source = this.resolveSourceObject(nodeData, target);
+    const raw = this.resolvePath(source, this._sourceProperty);
     if (this._converter) {
       return this._converter(raw, nodeData);
     }
     return raw;
+  }
+
+  /**
+   * Resolve the object that provides the source property according to
+   * ofObject(). Defaults to the node data object.
+   */
+  private resolveSourceObject(nodeData: NodeData, target?: BindingTarget): unknown {
+    const name = this._sourceObjectName;
+    if (!name || name === 'data' || !target) {
+      return nodeData;
+    }
+    if (name === 'parent') {
+      // Walk up to the parent panel and use its data
+      let parent = (target as unknown as { parentPanel?: GraphObject | null }).parentPanel;
+      while (parent) {
+        const panel = parent as unknown as { data?: NodeData | null };
+        if (panel.data !== undefined && panel.data !== null) {
+          return panel.data;
+        }
+        parent = (parent as unknown as { parentPanel?: GraphObject | null }).parentPanel;
+      }
+      return nodeData;
+    }
+    // Named GraphObject in the visual tree: use its data if it's a panel
+    const root = this.findRootObject(target);
+    if (root && 'findElement' in root) {
+      const found = (root as unknown as { findElement: (n: string) => unknown }).findElement(name);
+      if (found) {
+        const panelData = (found as unknown as { data?: NodeData | null }).data;
+        if (panelData !== undefined && panelData !== null) return panelData;
+      }
+    }
+    return nodeData;
+  }
+
+  private findRootObject(target: BindingTarget): GraphObject | null {
+    let current: GraphObject | null = target as unknown as GraphObject | null;
+    while (current?.parentPanel) {
+      current = current.parentPanel;
+    }
+    return current;
   }
 
   /** Resolve a dotted path on the data object, e.g. "a.b.c". */

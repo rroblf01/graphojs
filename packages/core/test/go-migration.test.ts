@@ -832,6 +832,13 @@ describe('GoJS Getting Started tutorial migration', () => {
     expect(myDiagram.undoManager.isUndoingRedoing).toBe(false);
   });
 
+  it('supports scrollMode document and infinite', () => {
+    const myDiagram = createDiagram();
+    expect(myDiagram.scrollMode).toBe('document');
+    myDiagram.scrollMode = 'infinite';
+    expect(myDiagram.scrollMode).toBe('infinite');
+  });
+
   it('enforces isReadOnly/allowMove in interaction tools', () => {
     const myDiagram = createDiagram();
     const model = new go.GraphLinksModel({

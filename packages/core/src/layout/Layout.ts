@@ -1,5 +1,6 @@
 import type { Node } from '../parts/Node.ts';
 import type { Link } from '../parts/Link.ts';
+import { LayoutNetwork } from './LayoutNetwork.ts';
 
 /**
  * Options for layout configuration.
@@ -149,5 +150,38 @@ export abstract class Layout {
       .filter((l) => l.fromKey === nodeKey)
       .map((l) => nodeMap.get(l.toKey))
       .filter((n): n is Node => n !== undefined);
+  }
+
+  /**
+   * GoJS-compatible: The layout network for the current parts.
+   * Built lazily via makeNetwork(nodes, links).
+   */
+  protected _network: LayoutNetwork | null = null;
+
+  /** GoJS-compatible: Build a LayoutNetwork from nodes and links. */
+  protected makeNetwork(nodes: Node[], links: Link[]): LayoutNetwork {
+    this._network = LayoutNetwork.fromParts(nodes, links);
+    return this._network;
+  }
+
+  /** GoJS-compatible: The current layout network (or null). */
+  get network(): LayoutNetwork | null {
+    return this._network;
+  }
+
+  set network(value: LayoutNetwork | null) {
+    this._network = value;
+  }
+
+  /**
+   * GoJS-compatible: Commit vertex positions back to their nodes.
+   */
+  protected commitLayers(): void {
+    if (!this._network) return;
+    for (const vertex of this._network.vertices) {
+      if (vertex.node) {
+        vertex.node.bounds = vertex.bounds.clone() as never;
+      }
+    }
   }
 }

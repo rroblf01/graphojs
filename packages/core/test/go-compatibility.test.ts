@@ -13,6 +13,7 @@ import {
   Rect,
   Size,
   Margin,
+  LayoutNetwork,
 } from '../src/index.ts';
 import { Group } from '../src/parts/Group.ts';
 
@@ -407,11 +408,46 @@ describe('GoJS Compatibility', () => {
     });
   });
 
-  describe('Group extends Part', () => {
-    it('should be constructible', () => {
-      const group = new Group(1);
-      expect(group.key).toBe(1);
-      expect(group.isGroup).toBe(true);
+  describe('go.Shape.geometryString', () => {
+    it('should render an SVG path via geometryString', () => {
+      const s = new Shape('rect');
+      s.geometryString = 'M 10 10 L 90 10 L 90 90 Z';
+      expect(s.geometryString).toContain('M 10 10');
+      const clone = s.clone();
+      expect(clone.geometryString).toContain('M 10 10');
+    });
+  });
+
+  describe('LayoutNetwork', () => {
+    it('should build a network with vertices and edges', () => {
+      const n1 = Node.fromPosAndSize(1, 0, 0, 100, 50);
+      const n2 = Node.fromPosAndSize(2, 200, 0, 100, 50);
+      const n3 = Node.fromPosAndSize(3, 0, 200, 100, 50);
+      const link = new Link(100, 1, 2);
+      const link2 = new Link(101, 1, 3);
+
+      const network = LayoutNetwork.fromParts([n1, n2, n3], [link, link2]);
+      expect(network.vertices.length).toBe(3);
+      expect(network.edges.length).toBe(2);
+
+      const v1 = network.findVertex(1);
+      expect(v1).not.toBeNull();
+      expect(v1!.outDegree).toBe(2);
+      expect(v1!.isRoot).toBe(true);
+      expect(v2IsLeaf()).toBe(true);
+
+      function v2IsLeaf(): boolean {
+        const v2 = network.findVertex(2);
+        return v2 ? v2.isLeaf : false;
+      }
+    });
+
+    it('should expose the network on the Layout base', () => {
+      const layout = new go.GridLayout({ spacing: 10 });
+      const nodes = [Node.fromPosAndSize(1, 0, 0, 100, 50), Node.fromPosAndSize(2, 0, 0, 100, 50)];
+      const network = layout.makeNetwork(nodes, []);
+      expect(network.vertices.length).toBe(2);
+      expect(layout.network).toBe(network);
     });
   });
 
@@ -491,6 +527,17 @@ describe('GoJS Compatibility', () => {
       expect(b.sourceObjectName).toBe('data');
       const copy = b.copy();
       expect(copy.sourceObjectName).toBe('data');
+    });
+
+    it('should resolve ofObject("parent") to the parent panel data', () => {
+      const outer = new Panel('Vertical');
+      const tb = new TextBlock('x');
+      tb.setBinding(new Binding('text', 'parentText').ofObject('parent'));
+      outer.add(tb);
+
+      outer.applyBindings({ parentText: 'FromParent' } as never);
+
+      expect(tb.text).toBe('FromParent');
     });
 
     it('should support Part.position setter', () => {
@@ -575,6 +622,14 @@ describe('GoJS Compatibility', () => {
       expect((clone.elements[0] as TextBlock).text).toBe('A');
       // Clones should be independent instances
       expect(clone.elements[0]).not.toBe(panel.elements[0]);
+    });
+  });
+
+  describe('Group extends Part', () => {
+    it('should be constructible', () => {
+      const group = new Group(1);
+      expect(group.key).toBe(1);
+      expect(group.isGroup).toBe(true);
     });
   });
 });

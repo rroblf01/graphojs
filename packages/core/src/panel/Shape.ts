@@ -5,6 +5,7 @@ import { ShapeRenderer } from '../shapes/ShapeRenderer.ts';
 import { PathCache } from '../render/RenderCache.ts';
 import { GraphObject } from './GraphObject.ts';
 import { normalizeShapeType } from '../shapes/ShapeTypes.ts';
+import { drawGeometryString } from './GeometryString.ts';
 
 /** Shared path cache for all panel shapes (avoids recomputing complex paths). */
 const sharedPathCache = new PathCache();
@@ -102,6 +103,17 @@ export class Shape extends GraphObject {
   /** GoJS-compatible: Whether to draw this shape even if it has no figure (used as link path). */
   isPanelMain = false;
 
+  private _geometryString = '';
+
+  /** GoJS-compatible: An SVG path (geometry string) used as this shape's outline. */
+  get geometryString(): string {
+    return this._geometryString;
+  }
+
+  set geometryString(value: string) {
+    this._geometryString = value ?? '';
+  }
+
   get stroke(): string {
     return this._stroke;
   }
@@ -179,6 +191,7 @@ export class Shape extends GraphObject {
     cloned._stroke = this._stroke;
     cloned._strokeWidth = this._strokeWidth;
     cloned._cornerRadius = this._cornerRadius;
+    cloned._geometryString = this._geometryString;
     return cloned;
   }
 
@@ -200,7 +213,12 @@ export class Shape extends GraphObject {
     ctx.strokeStyle = this._stroke;
     ctx.lineWidth = this._strokeWidth;
 
-    if (this._shape === 'rect' || this._shape === 'roundedRect') {
+    if (this._geometryString) {
+      // GoJS-compatible: geometry string takes precedence over the figure
+      drawGeometryString(ctx, this._geometryString, x, y, width, height);
+      ctx.fill();
+      ctx.stroke();
+    } else if (this._shape === 'rect' || this._shape === 'roundedRect') {
       if (this._shape === 'roundedRect') {
         const r = this._cornerRadius || Math.min(width, height) * 0.1;
         ctx.beginPath();

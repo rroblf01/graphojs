@@ -2338,8 +2338,22 @@ export class Diagram {
 
   /** Set the viewport. */
   setViewport(x: number, y: number, scale?: number): void {
-    this.offsetX = x;
-    this.offsetY = y;
+    let targetX = x;
+    let targetY = y;
+
+    // In 'document' scroll mode, keep the viewport within the content bounds
+    if (this._scrollMode === 'document' && this.nodes.size > 0) {
+      const content = this.getContentBounds();
+      const rect = this.canvas.getBoundingClientRect();
+      const viewW = rect.width / this._scale;
+      const viewH = rect.height / this._scale;
+      const pad = this._padding || 200;
+      targetX = Math.min(Math.max(x, content.x - viewW - pad), content.right + pad);
+      targetY = Math.min(Math.max(y, content.y - viewH - pad), content.bottom + pad);
+    }
+
+    this.offsetX = targetX;
+    this.offsetY = targetY;
     if (scale !== undefined) {
       this._scale = Math.max(this.minScale, Math.min(this.maxScale, scale));
       // Layer cache must be re-rendered at the new scale
@@ -2350,7 +2364,7 @@ export class Diagram {
       }
     }
     this.invalidate();
-    this.fireDiagramEvent('ViewportChanged', null, { x, y, scale: this._scale });
+    this.fireDiagramEvent('ViewportChanged', null, { x: targetX, y: targetY, scale: this._scale });
   }
 
   /** Zoom to fit all content. */

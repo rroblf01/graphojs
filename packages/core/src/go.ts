@@ -74,6 +74,7 @@ export { CircularLayout } from './layout/CircularLayout.ts';
 export { LayeredDigraphLayout } from './layout/LayeredDigraphLayout.ts';
 export { GridLayout } from './layout/GridLayout.ts';
 export { SpotLayout } from './layout/SpotLayout.ts';
+export { LayoutNetwork, LayoutVertex, LayoutEdge } from './layout/LayoutNetwork.ts';
 
 // Serialization
 export { Serializer } from './serialization/Serializer.ts';

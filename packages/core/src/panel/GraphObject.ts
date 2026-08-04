@@ -35,6 +35,9 @@ export abstract class GraphObject {
   mouseOver?: (e: MouseEvent, obj: GraphObject) => void;
   mouseOut?: (e: MouseEvent, obj: GraphObject) => void;
 
+  /** The panel this object belongs to (set when added). Used for ofObject resolution. */
+  parentPanel: GraphObject | null = null;
+
   /** The name of this graph object, used for findObject() lookups. */
   get name(): string {
     return this._name;

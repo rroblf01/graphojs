@@ -5,6 +5,8 @@ import type { Binding } from '../binding/Binding.ts';
 import type { Group } from './Group.ts';
 import type { Layer } from '../layer/Layer.ts';
 import type { Adornment, AdornmentName } from './Adornment.ts';
+import { Panel } from '../panel/Panel.ts';
+import type { GraphObject } from '../panel/GraphObject.ts';
 
 /**
  * Base class for all visual parts in a diagram.
@@ -30,6 +32,7 @@ export abstract class Part {
   private _draggable = true;
   private _resizable = true;
   private _rotatable = true;
+  protected _panel: Panel | null = null;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -229,6 +232,42 @@ export abstract class Part {
 
   set rotatable(value: boolean) {
     this._rotatable = value;
+  }
+
+  /** GoJS-compatible: Get the panel used to render this part's visual tree. */
+  get panel(): Panel | null {
+    return this._panel;
+  }
+
+  /** GoJS-compatible: Set the panel used to render this part's visual tree. */
+  set panel(value: Panel | null) {
+    this._panel = value;
+  }
+
+  /** GoJS-compatible: Get the child elements in this part's visual tree. */
+  get elements(): readonly GraphObject[] {
+    return this._panel?.elements ?? [];
+  }
+
+  /** GoJS-compatible: Add a child element to this part's visual tree. */
+  addVisual(element: GraphObject): this {
+    if (!this._panel) {
+      this._panel = new Panel('Auto');
+    }
+    this._panel.add(element);
+    return this;
+  }
+
+  /** GoJS-compatible: Remove a child element from this part's visual tree. */
+  removeVisual(element: GraphObject): boolean {
+    if (!this._panel) return false;
+    return this._panel.remove(element);
+  }
+
+  /** GoJS-compatible: Find a GraphObject by name in this part's visual tree. */
+  findObject(name: string): GraphObject | null {
+    if (!this._panel) return null;
+    return this._panel.findElement(name);
   }
 
   /** Get all adornments on this part. */

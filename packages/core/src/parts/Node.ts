@@ -16,7 +16,6 @@ export class Node extends Part {
   private _labelColor = '#000000';
   private _labelFont = '12px sans-serif';
   private _cornerRadius = 0;
-  private _panel: Panel | null = null;
   private _ports: Port[] = [];
 
   /** Create a Node from position and size. */
@@ -64,16 +63,6 @@ export class Node extends Part {
     this._cornerRadius = value;
   }
 
-  /** Get the panel used to render this node, or null for flat rendering. */
-  get panel(): Panel | null {
-    return this._panel;
-  }
-
-  /** Set the panel used to render this node. */
-  set panel(value: Panel | null) {
-    this._panel = value;
-  }
-
   /** Check whether this node uses a panel for rendering. */
   get hasPanel(): boolean {
     return this._panel !== null;
@@ -83,13 +72,13 @@ export class Node extends Part {
    * GoJS-compatible: Find a GraphObject by name in this node's visual tree.
    * Searches the panel's elements recursively.
    */
-  findObject(name: string): GraphObject | null {
+  override findObject(name: string): GraphObject | null {
     if (!this._panel) return null;
     return this._panel.findElement(name);
   }
 
   /** GoJS-compatible: Get the elements in this node's visual tree. */
-  get elements(): readonly GraphObject[] {
+  override get elements(): readonly GraphObject[] {
     return this._panel?.elements ?? [];
   }
 
@@ -101,6 +90,12 @@ export class Node extends Part {
     }
     this._panel.add(element);
     return this;
+  }
+
+  /** GoJS-compatible: Remove a child element from this node's visual tree. */
+  remove(element: GraphObject): boolean {
+    if (!this._panel) return false;
+    return this._panel.remove(element);
   }
 
   /** Get all ports on this node. */

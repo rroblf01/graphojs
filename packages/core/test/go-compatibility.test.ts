@@ -5,16 +5,12 @@ import {
   Shape,
   TextBlock,
   Panel,
-  Part,
   Node,
   Link,
   Point,
   Spot,
-  GraphLinksModel,
-  Rect,
   Binding,
 } from '../src/index.ts';
-import { Group } from '../src/parts/Group.ts';
 
 describe('GoJS Compatibility', () => {
   describe('go namespace', () => {

@@ -222,4 +222,45 @@ describe('GoJS Compatibility', () => {
       expect(copy).not.toBe(b);
     });
   });
+
+  describe('GoJS Link properties', () => {
+    it('should have fromEndSegmentLength and toEndSegmentLength', () => {
+      const link = new Link(100, 1, 2);
+      expect(link.fromEndSegmentLength).toBe(10);
+      expect(link.toEndSegmentLength).toBe(10);
+      link.fromEndSegmentLength = 20;
+      link.toEndSegmentLength = 30;
+      expect(link.fromEndSegmentLength).toBe(20);
+      expect(link.toEndSegmentLength).toBe(30);
+    });
+
+    it('should have relinkableFrom and relinkableTo', () => {
+      const link = new Link(100, 1, 2);
+      expect(link.relinkableFrom).toBe(false);
+      expect(link.relinkableTo).toBe(false);
+      link.relinkableFrom = true;
+      link.relinkableTo = true;
+      expect(link.relinkableFrom).toBe(true);
+      expect(link.relinkableTo).toBe(true);
+    });
+
+    it('should have reshapable and pathPattern', () => {
+      const link = new Link(100, 1, 2);
+      expect(link.reshapable).toBe(false);
+      link.reshapable = true;
+      expect(link.reshapable).toBe(true);
+      expect(link.pathPattern).toBeNull();
+      link.pathPattern = 'dashed';
+      expect(link.pathPattern).toBe('dashed');
+    });
+  });
+
+  describe('GraphObject.cursor', () => {
+    it('should have a cursor property', () => {
+      const s = new Shape('rect');
+      expect(s.cursor).toBe('');
+      s.cursor = 'pointer';
+      expect(s.cursor).toBe('pointer');
+    });
+  });
 });

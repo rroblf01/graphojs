@@ -18,6 +18,7 @@ export abstract class GraphObject {
   private _visible = true;
   private _opacity = 1;
   private _angle = 0;
+  private _cursor: string = '';
 
   /** The name of this graph object, used for findObject() lookups. */
   get name(): string {
@@ -93,6 +94,15 @@ export abstract class GraphObject {
 
   set angle(value: number) {
     this._angle = value;
+  }
+
+  /** GoJS-compatible: The cursor displayed when hovering over this object. */
+  get cursor(): string {
+    return this._cursor;
+  }
+
+  set cursor(value: string) {
+    this._cursor = value;
   }
 
   /** The desired size. If null, natural size is used. */

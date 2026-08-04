@@ -34,6 +34,14 @@ export class Link extends Part {
   private _avoidObstacles = false;
   private _jumpOver = false;
 
+  // GoJS-compatible properties
+  private _fromEndSegmentLength = 10;
+  private _toEndSegmentLength = 10;
+  private _relinkableFrom = false;
+  private _relinkableTo = false;
+  private _reshapable = false;
+  private _pathPattern: string | null = null;
+
   constructor(key: NodeKey, fromKey: NodeKey, toKey: NodeKey) {
     super(key, Rect.zero());
     this._fromKey = fromKey;
@@ -253,6 +261,60 @@ export class Link extends Part {
 
   set jumpOver(value: boolean) {
     this._jumpOver = value;
+  }
+
+  /** GoJS-compatible: Length of the segment at the start of the link. */
+  get fromEndSegmentLength(): number {
+    return this._fromEndSegmentLength;
+  }
+
+  set fromEndSegmentLength(value: number) {
+    this._fromEndSegmentLength = value;
+  }
+
+  /** GoJS-compatible: Length of the segment at the end of the link. */
+  get toEndSegmentLength(): number {
+    return this._toEndSegmentLength;
+  }
+
+  set toEndSegmentLength(value: number) {
+    this._toEndSegmentLength = value;
+  }
+
+  /** GoJS-compatible: Whether the link can be relinked from the start end. */
+  get relinkableFrom(): boolean {
+    return this._relinkableFrom;
+  }
+
+  set relinkableFrom(value: boolean) {
+    this._relinkableFrom = value;
+  }
+
+  /** GoJS-compatible: Whether the link can be relinked to the end end. */
+  get relinkableTo(): boolean {
+    return this._relinkableTo;
+  }
+
+  set relinkableTo(value: boolean) {
+    this._relinkableTo = value;
+  }
+
+  /** GoJS-compatible: Whether the link path can be reshaped by dragging midpoints. */
+  get reshapable(): boolean {
+    return this._reshapable;
+  }
+
+  set reshapable(value: boolean) {
+    this._reshapable = value;
+  }
+
+  /** GoJS-compatible: Custom path pattern for the link stroke. */
+  get pathPattern(): string | null {
+    return this._pathPattern;
+  }
+
+  set pathPattern(value: string | null) {
+    this._pathPattern = value;
   }
 
   /** Update the bounds based on all path points. */

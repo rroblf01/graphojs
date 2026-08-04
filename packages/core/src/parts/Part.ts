@@ -142,6 +142,15 @@ export abstract class Part {
     return { x: 0.5, y: 0.5 };
   }
 
+  /** GoJS-compatible: The GraphObject that is used as the selection object (for adornment placement). */
+  get selectionObject(): GraphObject | null {
+    return null;
+  }
+
+  set selectionObject(_value: GraphObject | null) {
+    // No-op: selection object is typically the main shape
+  }
+
   /** GoJS-compatible: Reference to the model data object for this part. */
   get data(): NodeData | null {
     return null;

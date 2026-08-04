@@ -117,9 +117,7 @@ export class ToolManager {
     return this.getList(listName);
   }
 
-  private getList(
-    listName: string,
-  ): Tool[] {
+  private getList(listName: string): Tool[] {
     switch (listName) {
       case 'mouseDown':
         return this.mouseDownTools;

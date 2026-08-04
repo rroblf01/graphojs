@@ -79,20 +79,25 @@ myDiagram.commit((d) => {
 - `diagram.undoManager` / `commandHandler` / `toolManager` / `animationManager` accessors
 - `diagram.isReadOnly` / `isEnabled` / `allowMove` / `allowCopy` / `allowDelete` flags
 - `diagram.allowTextEdit` / `allowLink` / `allowRelink` / `allowZoom` / `scrollMode`
+- Diagram flags enforced in interaction tools (`isReadOnly` / `isEnabled` / `allow*`)
 - `diagram.layers` / `layout` / `background` / `div` / `isModified`
-- `diagram.scale` / `position` / `padding` / `add` / `remove` / `findPartsInRect`
+- `diagram.scale` / `zoomFactor` / `position` / `padding` / `add` / `remove` / `findPartsInRect`
+- `diagram.makeImage` / `makeImageData` / `makeSvg` / `zoomToRect` / `layoutDiagram`
 - `diagram.addModelChangedListener` / `removeModelChangedListener`
 - `diagram.findTreeRoots` / `findTreeChildren` / `findTreeParent`
 - Diagram events: `SelectionChanged`, `ObjectSingleClicked`, `LinkDrawn`, `PartResized`, and more
+- `GraphObject.click` / `doubleClick` / `contextClick` / `mouseEnter` / `mouseLeave` handlers
 - Touch panning, pinch-to-zoom, arrow-key nudging
-- `Part.location` / `locationSpot` / `data` / `dragAlpha`, `Link.fromNode`/`toNode`, `fromEndSegmentLength`, `reshapable`, `isTreeLink`
+- `Part.location` / `locationSpot` / `position` / `data` / `dragAlpha`, `Link.fromNode`/`toNode`, `fromEndSegmentLength`, `reshapable`, `isTreeLink`
 - `diagram.findNodeForKey` / `findLinkForKey` / `findNodeForData` / `clear` / `centerRect` / `centerPoint`
 - Link templates with `toArrow` / `fromArrow` / `strokeWidth`
-- `TextBlock.stroke` (GoJS text color), `editable`, `wrap`, `isMultiline` with element-based text editing
-- Panel data panels: `itemArray` / `itemTemplate`; `Position` panel type
+- `TextBlock.stroke` (GoJS text color), `editable`, `wrap`, `isMultiline`, `strokeWidth`, `fontFamily`/`fontSize`/`fontStyle`
+- Panel data panels: `itemArray` / `itemTemplate` (incl. `new go.Binding('itemArray', 'items')`); `Position` panel type
+- `Shape.figure` / `strokeCap` / `strokeJoin`
 - Undoable model transactions: direct `model.addNode`/`setDataProperty` edits within `diagram.commit` are undoable
-- `go.Palette` / `go.Overview` constructible with just a div (internal diagram auto-created)
-- `Model.mergeChanges` / `toIncrementalJson` / `applyIncrementalJson` / change log
+- `go.Palette` / `go.Overview` constructible with just a div; `overview.observed`
+- `Model.mergeChanges` / `toIncrementalJson` / `applyIncrementalJson` / change log / `toJson` / `isReadOnly`
+- `Binding.ofObject`, `UndoManager.maxHistoryLength` / `isUndoingRedoing`
 
 ## Tech Stack
 

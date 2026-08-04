@@ -36,6 +36,7 @@ function createMockDiagram(): Diagram {
     },
     getRenderer: () => ({ getCanvas: () => ({ style: {} }) }),
     invalidate: vi.fn(),
+    fireDiagramEvent: vi.fn(),
   } as unknown as Diagram;
 }
 

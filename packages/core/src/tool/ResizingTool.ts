@@ -161,10 +161,11 @@ export class ResizingTool extends Tool {
   override doMouseUp(_e: MouseEvent): void {
     if (!this._isResizing || !this._node) return;
 
-    // Persist new bounds to the model as an undoable command
+    const node = this._node;
     const diagram = this.diagram;
+
+    // Persist new bounds to the model as an undoable command
     if (diagram) {
-      const node = this._node;
       const model = diagram.getModel();
       if (model.containsNode(node.key)) {
         diagram
@@ -185,5 +186,15 @@ export class ResizingTool extends Tool {
     this._isResizing = false;
     this._node = null;
     this._handle = null;
+
+    // Fire PartResized event
+    if (diagram) {
+      diagram.fireDiagramEvent('PartResized', node, {
+        x: node.bounds.x,
+        y: node.bounds.y,
+        width: node.bounds.width,
+        height: node.bounds.height,
+      });
+    }
   }
 }

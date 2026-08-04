@@ -15,7 +15,30 @@ export type DiagramEventType =
   | 'ModelChanged'
   | 'BackgroundSingleClicked'
   | 'BackgroundDoubleClicked'
-  | 'LinkCreated';
+  | 'LinkCreated'
+  // GoJS-compatible events
+  | 'ObjectSingleClicked'
+  | 'ObjectDoubleClicked'
+  | 'ObjectContextClicked'
+  | 'BackgroundContextClicked'
+  | 'ChangingSelection'
+  | 'ChangedSelection'
+  | 'PartResized'
+  | 'PartRotated'
+  | 'TextEdited'
+  | 'LinkDrawn'
+  | 'LinkRelinked'
+  | 'SelectionMoved'
+  | 'SelectionCopied'
+  | 'SelectionDeleting'
+  | 'SelectionDeleted'
+  | 'SelectionGrouped'
+  | 'SelectionUngrouped'
+  | 'DocumentBoundsChanged'
+  | 'ClipboardChanged'
+  | 'ClipboardPasted'
+  | 'InitialLayoutCompleted'
+  | 'ExternalObjectsDropped';
 
 /**
  * Event payload for diagram events.
@@ -116,6 +139,28 @@ const ALL_EVENT_TYPES: DiagramEventType[] = [
   'BackgroundSingleClicked',
   'BackgroundDoubleClicked',
   'LinkCreated',
+  'ObjectSingleClicked',
+  'ObjectDoubleClicked',
+  'ObjectContextClicked',
+  'BackgroundContextClicked',
+  'ChangingSelection',
+  'ChangedSelection',
+  'PartResized',
+  'PartRotated',
+  'TextEdited',
+  'LinkDrawn',
+  'LinkRelinked',
+  'SelectionMoved',
+  'SelectionCopied',
+  'SelectionDeleting',
+  'SelectionDeleted',
+  'SelectionGrouped',
+  'SelectionUngrouped',
+  'DocumentBoundsChanged',
+  'ClipboardChanged',
+  'ClipboardPasted',
+  'InitialLayoutCompleted',
+  'ExternalObjectsDropped',
 ];
 
 /** Create a diagram events manager. */

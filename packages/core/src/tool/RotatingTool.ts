@@ -68,10 +68,11 @@ export class RotatingTool extends Tool {
   override doMouseUp(_e: MouseEvent): void {
     if (!this._isRotating || !this._node) return;
 
-    // Persist angle to model as an undoable command
+    const node = this._node;
     const diagram = this.diagram;
+
+    // Persist angle to model as an undoable command
     if (diagram) {
-      const node = this._node;
       const model = diagram.getModel();
       if (model.containsNode(node.key)) {
         diagram
@@ -82,6 +83,11 @@ export class RotatingTool extends Tool {
 
     this._isRotating = false;
     this._node = null;
+
+    // Fire PartRotated event
+    if (diagram) {
+      diagram.fireDiagramEvent('PartRotated', node, { angle: node.angle });
+    }
   }
 
   private angleOf(node: Node, point: { x: number; y: number }): number {

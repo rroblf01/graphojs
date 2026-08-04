@@ -429,16 +429,26 @@ export class Diagram {
     if (textEditing instanceof TextEditingTool) {
       textEditing.doDoubleClick(e);
     }
+    // Fire object double-click event
+    const point = this.getDiagramPoint(e);
+    const part = this.findPartAt(point.x, point.y);
+    if (part) {
+      this.fireDiagramEvent('ObjectDoubleClicked', part, { x: point.x, y: point.y });
+    } else {
+      this.fireDiagramEvent('BackgroundDoubleClicked', null, { x: point.x, y: point.y });
+    }
   }
 
   /** Handle a click event. */
   private handleCanvasClick(e: MouseEvent): void {
     this.toolManager.handleClick(e);
-    // Fire background click if the click was on empty space
+    // Fire background click or object click
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);
     if (!part) {
       this.fireDiagramEvent('BackgroundSingleClicked', null, { x: point.x, y: point.y });
+    } else {
+      this.fireDiagramEvent('ObjectSingleClicked', part, { x: point.x, y: point.y });
     }
   }
 

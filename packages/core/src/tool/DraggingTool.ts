@@ -89,8 +89,10 @@ export class DraggingTool extends Tool {
 
     this._isDragging = false;
 
-    // Persist positions to the model as undoable commands
     const diagram = this.diagram;
+    let movedCount = 0;
+
+    // Persist positions to the model as undoable commands
     if (diagram) {
       const model = diagram.getModel();
       const undoManager = diagram.getUndoManager();
@@ -117,12 +119,18 @@ export class DraggingTool extends Tool {
           }
         }
         undoManager.commitTransaction();
+        movedCount = moved.length;
       }
     }
 
     this.nodeOrigin.clear();
     const canvas = this.diagram?.getRenderer().getCanvas();
     if (canvas) canvas.style.cursor = 'default';
+
+    // Fire SelectionMoved event
+    if (diagram && movedCount > 0) {
+      diagram.fireDiagramEvent('SelectionMoved', null, { movedCount });
+    }
   }
 
   private getNodeByKeyStr(keyStr: string): Node | null {

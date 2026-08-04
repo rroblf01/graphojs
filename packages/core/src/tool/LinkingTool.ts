@@ -98,6 +98,16 @@ export class LinkingTool extends LinkingBaseTool {
     try {
       // Execute as an undoable command
       diagram.getUndoManager().execute(new AddLinkCommand(model, linkData));
+
+      // Fire LinkDrawn event
+      const linkKey = model.getLinkKey(linkData);
+      if (linkKey !== undefined) {
+        const link = diagram.getPart(linkKey);
+        if (link) {
+          diagram.fireDiagramEvent('LinkDrawn', link, { from: source.key, to: target.key });
+        }
+      }
+
       return true;
     } catch {
       return false;

@@ -2593,6 +2593,9 @@ export class Diagram {
         link.setPathPoints([]);
       }
     }
+    if (this.renderer instanceof Canvas2DRenderer) {
+      this.renderer.invalidateLinkPaths();
+    }
   }
 
   /** Zoom to fit all content. */

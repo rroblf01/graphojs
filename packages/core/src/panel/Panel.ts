@@ -709,6 +709,7 @@ export class Panel extends GraphObject {
     cloned._padding = this._padding;
     cloned._spacing = this._spacing;
     cloned._background = this._background;
+    cloned._gradient = this._gradient;
     cloned.templateProperties = { ...this.templateProperties };
     // Clone static elements (generated items are recreated below)
     for (const el of this._elements) {

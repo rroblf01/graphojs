@@ -249,7 +249,7 @@ export class ToolManager {
   handleMouseUp(e: MouseEvent): void {
     if (this.activeTool) {
       this.activeTool.doMouseUp(e);
-      this.activeTool.doStop();
+      // deactivateTool() calls doStop() exactly once
       this.deactivateTool();
       return;
     }

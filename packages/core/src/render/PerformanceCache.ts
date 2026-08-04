@@ -16,8 +16,10 @@ export class LinkPathCache {
     corner: number,
     fromPort: { x: number; y: number },
     toPort: { x: number; y: number },
+    avoidObstacles = false,
+    jumpOver = false,
   ): string {
-    return `${fromKey}-${toKey}-${routing}-${corner}-${fromPort.x},${fromPort.y}-${toPort.x},${toPort.y}`;
+    return `${fromKey}-${toKey}-${routing}-${corner}-${avoidObstacles}-${jumpOver}-${fromPort.x},${fromPort.y}-${toPort.x},${toPort.y}`;
   }
 
   /**
@@ -30,8 +32,19 @@ export class LinkPathCache {
     corner: number,
     fromPort: { x: number; y: number },
     toPort: { x: number; y: number },
+    avoidObstacles = false,
+    jumpOver = false,
   ): Array<{ x: number; y: number }> | null {
-    const key = LinkPathCache.getKey(fromKey, toKey, routing, corner, fromPort, toPort);
+    const key = LinkPathCache.getKey(
+      fromKey,
+      toKey,
+      routing,
+      corner,
+      fromPort,
+      toPort,
+      avoidObstacles,
+      jumpOver,
+    );
     return this.cache.get(key) ?? null;
   }
 
@@ -46,8 +59,19 @@ export class LinkPathCache {
     fromPort: { x: number; y: number },
     toPort: { x: number; y: number },
     points: Array<{ x: number; y: number }>,
+    avoidObstacles = false,
+    jumpOver = false,
   ): void {
-    const key = LinkPathCache.getKey(fromKey, toKey, routing, corner, fromPort, toPort);
+    const key = LinkPathCache.getKey(
+      fromKey,
+      toKey,
+      routing,
+      corner,
+      fromPort,
+      toPort,
+      avoidObstacles,
+      jumpOver,
+    );
     this.cache.set(key, points);
     this.version++;
   }

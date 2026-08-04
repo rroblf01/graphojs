@@ -106,13 +106,15 @@ export class RotatingTool extends Tool {
     const node = this._node;
     const diagram = this.diagram;
 
-    // Persist angle to model as an undoable command
+    // Persist angle to model as an undoable command (only if changed)
     if (diagram) {
       const model = diagram.getModel();
       if (model.containsNode(node.key)) {
-        diagram
-          .getUndoManager()
-          .execute(new SetNodePropertyCommand(model, node.key, 'angle', node.angle));
+        if (node.angle !== this._origAngle) {
+          diagram
+            .getUndoManager()
+            .execute(new SetNodePropertyCommand(model, node.key, 'angle', node.angle));
+        }
       }
     }
 

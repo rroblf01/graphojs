@@ -31,6 +31,11 @@ export class Canvas2DRenderer implements Renderer {
   private pathCache: PathCache = new PathCache();
   private textMeasureCache: TextMeasureCache = new TextMeasureCache();
   private linkPathCache: LinkPathCache = new LinkPathCache();
+
+  /** Invalidate all cached link paths (e.g. when nodes move). */
+  invalidateLinkPaths(): void {
+    this.linkPathCache.invalidate();
+  }
   private labelsVisible = true;
   private nodeBoundsMap = new Map<string | number, RectClass>();
 
@@ -329,6 +334,8 @@ export class Canvas2DRenderer implements Renderer {
         link.corner,
         link.fromPort,
         link.toPort,
+        link.avoidObstacles,
+        link.jumpOver,
       );
 
       if (cached) {
@@ -376,6 +383,8 @@ export class Canvas2DRenderer implements Renderer {
           link.fromPort,
           link.toPort,
           points,
+          link.avoidObstacles,
+          link.jumpOver,
         );
       }
       link.setPathPoints(points);

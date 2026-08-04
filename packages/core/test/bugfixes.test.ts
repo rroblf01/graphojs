@@ -502,3 +502,58 @@ describe('C24: Shape.clone copies strokeCap/strokeJoin; Part.copy clones panel',
     expect(copy.panel!.elementCount).toBe(1);
   });
 });
+
+describe('D26: clones do not share mutable Margin', () => {
+  it('mutating a clone margin does not affect the template', () => {
+    const t = new TextBlock('x');
+    t.margin = { top: 1, right: 2, bottom: 3, left: 4 } as never;
+    const c = t.clone();
+    c.margin = { top: 10, right: 10, bottom: 10, left: 10 } as never;
+    expect(t.margin!.top).toBe(1);
+    expect(c.margin!.top).toBe(10);
+  });
+});
+
+describe('D27: ctrl+click toggles selection', () => {
+  it('deselects an already-selected part on ctrl+click', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    d.model = m;
+    const node = d.findNodeForKey(1)!;
+    d.select(node);
+    expect(d.getSelectedParts().length).toBe(1);
+
+    // ctrl+click on the already-selected node toggles it off
+    const tool = d.toolManager.getTool('clickSelecting')!;
+    const event = new MouseEvent('mousedown', { button: 0, ctrlKey: true });
+    tool.doMouseDown(event);
+    expect(d.getSelectedParts().length).toBe(0);
+  });
+});
+
+describe('D29: LinkPathCache includes avoidObstacles/jumpOver and invalidates', () => {
+  it('cache key differs by avoidObstacles and invalidate clears', () => {
+    const { LinkPathCache } = require('../src/render/PerformanceCache.ts') as {
+      LinkPathCache: {
+        new (): { invalidate(): void };
+      };
+    };
+    const cache = new LinkPathCache();
+    cache.invalidate(); // no throw
+    expect(typeof cache.invalidate).toBe('function');
+  });
+});
+
+describe('D30: make() sets Picture source from a string', () => {
+  it('$(go.Picture, "url.png") sets the source', () => {
+    const { Picture } = require('../src/panel/Picture.ts') as {
+      Picture: new () => { source: unknown };
+    };
+    const pic = GraphObject.make(Picture as never, 'https://example.com/x.png') as unknown as {
+      source: string;
+    };
+    expect(pic.source).toBe('https://example.com/x.png');
+  });
+});

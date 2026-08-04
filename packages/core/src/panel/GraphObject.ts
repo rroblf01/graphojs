@@ -124,13 +124,16 @@ export abstract class GraphObject {
           (obj as { add(child: GraphObject): unknown }).add(arg);
         }
       } else if (typeof arg === 'string') {
-        // First string arg for Shape = shape type, for Panel = panel type, for TextBlock = text
+        // First string arg for Shape = shape type, for Panel = panel type,
+        // for TextBlock = text, for Picture = source
         if ('shape' in obj) {
           (obj as { shape: unknown }).shape = arg;
         } else if ('type' in obj) {
           (obj as { type: unknown }).type = arg;
         } else if ('text' in obj) {
           (obj as { text: unknown }).text = arg;
+        } else if ('source' in obj) {
+          (obj as { source: unknown }).source = arg;
         }
       } else if (typeof arg === 'object') {
         // Property map
@@ -343,7 +346,14 @@ export abstract class GraphObject {
       ? new SizeClass(source._desiredSize.width, source._desiredSize.height)
       : null;
     this._alignment = source._alignment;
-    this._margin = source._margin;
+    this._margin = source._margin
+      ? ({
+          top: source._margin.top,
+          right: source._margin.right,
+          bottom: source._margin.bottom,
+          left: source._margin.left,
+        } as Margin)
+      : null;
     this._visible = source._visible;
     this._opacity = source._opacity;
     this._angle = source._angle;

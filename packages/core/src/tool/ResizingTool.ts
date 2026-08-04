@@ -186,22 +186,22 @@ export class ResizingTool extends Tool {
     const node = this._node;
     const diagram = this.diagram;
 
-    // Persist new bounds to the model as an undoable command
+    // Persist new bounds to the model as an undoable command (only if changed)
     if (diagram) {
       const model = diagram.getModel();
       if (model.containsNode(node.key)) {
-        diagram
-          .getUndoManager()
-          .execute(
-            new ResizeNodeCommand(
-              model,
-              node.key,
-              node.bounds.x,
-              node.bounds.y,
-              node.bounds.width,
-              node.bounds.height,
-            ),
-          );
+        const start = this._startBounds;
+        const b = node.bounds;
+        const changed =
+          b.x !== start.x ||
+          b.y !== start.y ||
+          b.width !== start.width ||
+          b.height !== start.height;
+        if (changed) {
+          diagram
+            .getUndoManager()
+            .execute(new ResizeNodeCommand(model, node.key, b.x, b.y, b.width, b.height));
+        }
       }
     }
 

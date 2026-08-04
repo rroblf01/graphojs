@@ -24,6 +24,9 @@ changing only the import:
 + import * as go from 'graphojs/go';
 ```
 
+See [MIGRATION.md](./MIGRATION.md) for the complete migration guide, and
+[examples/flowchart.html](./examples/flowchart.html) for a standalone demo.
+
 The full GoJS programming model is supported:
 
 ```typescript

@@ -74,10 +74,15 @@ myDiagram.commit((d) => {
 - `go.Link.Orthogonal`, `go.Shape.RoundedRectangle`, `go.Panel.Auto` enum constants
 - `go.Point.parse`, `go.Rect.parse`, `go.Size.parse`, `go.Margin.parse`
 - `diagram.model` property assignment, `diagram.commit`, `startTransaction`/`commitTransaction`
+- `model.nodeDataArray` / `linkDataArray` assignment with auto key generation
+- `new go.GraphLinksModel({ nodeDataArray, linkDataArray })`
 - `diagram.undoManager` / `commandHandler` / `toolManager` / `animationManager` accessors
+- `diagram.isReadOnly` / `isEnabled` / `allowMove` / `allowCopy` / `allowDelete` flags
 - Diagram events: `SelectionChanged`, `ObjectSingleClicked`, `LinkDrawn`, `PartResized`, and more
 - Touch panning, pinch-to-zoom, arrow-key nudging
-- `Part.location` / `locationSpot`, `Link.fromNode`/`toNode`, `fromEndSegmentLength`, `reshapable`
+- `Part.location` / `locationSpot` / `data`, `Link.fromNode`/`toNode`, `fromEndSegmentLength`, `reshapable`
+- `diagram.findNodeForKey` / `findLinkForKey` / `findNodeForData` / `clear` / `centerRect` / `centerPoint`
+- Link templates with `toArrow` / `fromArrow` / `strokeWidth`
 
 ## Tech Stack
 

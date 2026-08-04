@@ -21,8 +21,15 @@ export class TreeModel extends Model {
     parentKeyProperty?: string;
   }) {
     super(options?.nodeKeyProperty);
-    if (options?.nodeDataArray) this._nodeDataArray = [...options.nodeDataArray];
     if (options?.parentKeyProperty) this.parentKeyProperty = options.parentKeyProperty;
+    if (options?.nodeDataArray) {
+      for (const data of options.nodeDataArray) {
+        if (data[this.nodeKeyProperty] === undefined || data[this.nodeKeyProperty] === null) {
+          data[this.nodeKeyProperty] = this.generateKey();
+        }
+        this._nodeDataArray.push(data);
+      }
+    }
   }
 
   /** Get the parent key property name. */

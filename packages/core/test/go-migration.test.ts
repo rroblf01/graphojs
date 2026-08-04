@@ -343,4 +343,32 @@ describe('GoJS Getting Started tutorial migration', () => {
     myDiagram.centerRect({ x: 0, y: 0, width: 200, height: 100 } as never);
     expect(myDiagram.getViewport()).toBeDefined();
   });
+
+  it('applies link template arrowhead and stroke width', () => {
+    const myDiagram = createDiagram();
+    const $ = go.GraphObject.make;
+
+    myDiagram.nodeTemplate = $(go.Node, 'Auto', $(go.Shape, 'Rectangle'));
+    myDiagram.linkTemplate = $(
+      go.Link,
+      { routing: go.Link.Orthogonal },
+      $(go.Shape, { strokeWidth: 3 }),
+      $(go.Shape, 'Arrow', { toArrow: 'Triangle' }),
+    );
+
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    myDiagram.model = model;
+
+    const linkKey = model.getLinkKey(model.linkDataArray[0]!);
+    const link = myDiagram.findLinkForKey(linkKey!) as import('../src/parts/Link.ts').Link;
+    expect(link).not.toBeNull();
+    expect(link.strokeWidth).toBe(3);
+    expect(link.arrowhead).toBe('triangle');
+  });
 });

@@ -23,9 +23,23 @@ export class GraphLinksModel extends Model {
     linkKeyProperty?: string;
   }) {
     super(options?.nodeKeyProperty);
-    if (options?.nodeDataArray) this._nodeDataArray = [...options.nodeDataArray];
-    if (options?.linkDataArray) this._linkDataArray = [...options.linkDataArray];
     if (options?.linkKeyProperty) this.linkKeyProperty = options.linkKeyProperty;
+    if (options?.nodeDataArray) {
+      for (const data of options.nodeDataArray) {
+        if (data[this.nodeKeyProperty] === undefined || data[this.nodeKeyProperty] === null) {
+          data[this.nodeKeyProperty] = this.generateKey();
+        }
+        this._nodeDataArray.push(data);
+      }
+    }
+    if (options?.linkDataArray) {
+      for (const data of options.linkDataArray) {
+        if (data[this.linkKeyProperty] === undefined || data[this.linkKeyProperty] === null) {
+          data[this.linkKeyProperty] = this.generateLinkKey();
+        }
+        this._linkDataArray.push(data);
+      }
+    }
   }
 
   /** Get the link key property name. */

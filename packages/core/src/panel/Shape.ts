@@ -73,6 +73,14 @@ export class Shape extends GraphObject {
     this._fill = value;
   }
 
+  /** GoJS-compatible: Arrowhead figure at the start of a link (e.g. "Triangle", "OpenTriangle"). */
+  toArrow: string = '';
+  /** GoJS-compatible: Arrowhead figure at the end of a link (e.g. "Triangle", "OpenTriangle"). */
+  fromArrow: string = '';
+
+  /** GoJS-compatible: Whether to draw this shape even if it has no figure (used as link path). */
+  isPanelMain = false;
+
   get stroke(): string {
     return this._stroke;
   }

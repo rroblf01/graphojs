@@ -5,8 +5,9 @@ import type { NodeKey } from '../model/Model.ts';
 import { GraphLinksModel } from '../model/GraphLinksModel.ts';
 import { type Layer, createDefaultLayers, LayerNames } from '../layer/Layer.ts';
 import { Group } from '../parts/Group.ts';
-import { Link } from '../parts/Link.ts';
+import { Link, type ArrowheadStyle } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
+import { Shape } from '../panel/Shape.ts';
 import type { ContextMenu } from '../export/ContextMenu.ts';
 import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
 import type { Renderer } from '../render/Renderer.ts';
@@ -1107,6 +1108,7 @@ export class Diagram {
       const cloned = template.clone();
       link.panel = cloned;
       this.applyTemplateProperties(link, cloned.templateProperties);
+      this.applyLinkTemplateAppearance(link, cloned);
     }
 
     const layerName = (linkData.layer as string) ?? LayerNames.Default;
@@ -1117,6 +1119,36 @@ export class Diagram {
     this.fireDiagramEvent('PartAdded', link);
     this.markHitIndexDirty();
     return link;
+  }
+
+  /**
+   * Extract link path appearance from a link template:
+   * the first Shape's stroke/strokeWidth become the link path style,
+   * and a Shape with toArrow/fromArrow sets the arrowhead.
+   */
+  private applyLinkTemplateAppearance(link: Link, panel: Panel): void {
+    for (const el of panel.elements) {
+      if (el instanceof Shape) {
+        if (link.strokeWidth === 2 || el.strokeWidth > 0) {
+          if (el.strokeWidth > 0) link.strokeWidth = el.strokeWidth;
+          if (el.stroke && el.stroke !== '#333333') link.stroke = el.stroke;
+        }
+        if (el.toArrow) {
+          link.arrowhead = this.mapArrowhead(el.toArrow);
+        }
+        break;
+      }
+    }
+  }
+
+  /** Map a GoJS arrowhead figure name to our ArrowheadStyle. */
+  private mapArrowhead(figure: string): ArrowheadStyle {
+    const n = figure.toLowerCase().replace(/[^a-z]/g, '');
+    if (n.includes('diamond')) return 'diamond';
+    if (n.includes('circle')) return 'circle';
+    if (n.includes('open') || n.includes('standard')) return 'openArrow';
+    if (n === 'none' || n === '') return 'none';
+    return 'triangle';
   }
 
   private updateNodeFromData(node: Node, nodeData: NodeData): void {

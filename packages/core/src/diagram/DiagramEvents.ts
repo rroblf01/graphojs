@@ -62,6 +62,10 @@ export interface DiagramEvent {
   part?: Part | null;
   /** Extra data associated with the event. */
   data?: Record<string, unknown>;
+  /** GoJS-compatible: The subject of the event (e.g. the part or changed data). */
+  subject?: unknown;
+  /** GoJS-compatible: An extra parameter value. */
+  parameter?: unknown;
 }
 
 export type DiagramEventHandler = (event: DiagramEvent) => void;
@@ -130,7 +134,7 @@ export class DiagramEvents {
     const list = this.listeners.get(type);
     if (!list || list.length === 0) return;
 
-    const event: DiagramEvent = { diagram, type, part, data };
+    const event: DiagramEvent = { diagram, type, part, data, subject: part ?? data ?? null };
     for (const handler of [...list]) {
       handler(event);
     }

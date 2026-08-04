@@ -585,4 +585,57 @@ describe('GoJS Getting Started tutorial migration', () => {
     expect(go.normalizeShapeType).toBeDefined();
     expect(go.version).toBeDefined();
   });
+
+  it('supports scale, position, padding and findPartsInRect', () => {
+    const myDiagram = createDiagram();
+    myDiagram.scale = 2;
+    expect(myDiagram.scale).toBe(2);
+
+    myDiagram.position = { x: 10, y: 20 };
+    expect(myDiagram.position).toEqual({ x: 10, y: 20 });
+
+    myDiagram.padding = 5;
+    expect(myDiagram.padding).toBe(5);
+
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 300, y: 300, width: 100, height: 50 },
+      ],
+    });
+    myDiagram.model = model;
+
+    const found = myDiagram.findPartsInRect({ x: -10, y: -10, width: 200, height: 200 });
+    expect(found.length).toBe(1);
+  });
+
+  it('supports programmatic add and remove of parts', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    myDiagram.model = model;
+
+    const node = new go.Node(2);
+    myDiagram.add(node);
+    expect(myDiagram.findNodeForKey(2)).not.toBeNull();
+
+    myDiagram.remove(node);
+    expect(myDiagram.findNodeForKey(2)).toBeNull();
+  });
+
+  it('exposes subject on diagram events', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    myDiagram.model = model;
+
+    let subject: unknown = null;
+    myDiagram.addDiagramListener('SelectionChanged', (e) => {
+      subject = e.subject;
+    });
+    myDiagram.select(myDiagram.getPart(1) as never);
+    expect(subject).not.toBeNull();
+  });
 });

@@ -104,9 +104,10 @@ export class Diagram {
   private groups: Map<NodeKey, Group> = new Map();
   private links: Map<NodeKey, Link> = new Map();
 
-  private scale = 1;
+  private _scale = 1;
   private offsetX = 0;
   private offsetY = 0;
+  private _padding = 0;
   private minScale: number;
   private maxScale: number;
   private gridSize: number;
@@ -235,7 +236,7 @@ export class Diagram {
     this._model = new GraphLinksModel();
 
     // Set initial scale
-    this.scale = resolvedOptions.initialScale ?? 1;
+    this._scale = resolvedOptions.initialScale ?? 1;
 
     // Create tool manager and register tools
     this._toolManager = new ToolManager(this);
@@ -718,7 +719,7 @@ export class Diagram {
       e.preventDefault();
       const dx = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0;
       const dy = e.key === 'ArrowUp' ? -1 : e.key === 'ArrowDown' ? 1 : 0;
-      this._commandHandler.nudgeSelection(dx, dy, this.scale);
+      this._commandHandler.nudgeSelection(dx, dy, this._scale);
     }
   }
 
@@ -732,7 +733,7 @@ export class Diagram {
       this.touchState = {
         active: true,
         startDistance: 0,
-        startScale: this.scale,
+        startScale: this._scale,
         startTouchX: t.clientX,
         startTouchY: t.clientY,
         lastTouchX: t.clientX,
@@ -749,7 +750,7 @@ export class Diagram {
       this.touchState = {
         active: true,
         startDistance: dist,
-        startScale: this.scale,
+        startScale: this._scale,
         startTouchX: midX,
         startTouchY: midY,
         lastTouchX: midX,
@@ -772,8 +773,8 @@ export class Diagram {
       const dx = t.clientX - this.touchState.startTouchX;
       const dy = t.clientY - this.touchState.startTouchY;
       this.setViewport(
-        this.touchState.startOffsetX - dx / this.scale,
-        this.touchState.startOffsetY - dy / this.scale,
+        this.touchState.startOffsetX - dx / this._scale,
+        this.touchState.startOffsetY - dy / this._scale,
       );
     } else if (touches.length === 2 && this.touchState.startDistance > 0) {
       // Two-finger pinch-zoom + pan
@@ -1572,8 +1573,8 @@ export class Diagram {
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     return {
-      x: mouseX / this.scale + this.offsetX,
-      y: mouseY / this.scale + this.offsetY,
+      x: mouseX / this._scale + this.offsetX,
+      y: mouseY / this._scale + this.offsetY,
     };
   }
 
@@ -1879,7 +1880,7 @@ export class Diagram {
   /** Check whether labels should be shown at the current zoom level. */
   private shouldShowLabels(): boolean {
     if (!this.lodEnabled) return true;
-    return this.scale >= this.lodLabelThreshold;
+    return this._scale >= this.lodLabelThreshold;
   }
 
   /** Start the render loop. */
@@ -1936,7 +1937,7 @@ export class Diagram {
   private renderTo(target: Renderer, width: number, height: number): void {
     // Set background
     target.save();
-    target.setViewport(this.offsetX, this.offsetY, this.scale);
+    target.setViewport(this.offsetX, this.offsetY, this._scale);
 
     // Apply LOD label visibility
     if (target instanceof Canvas2DRenderer) {
@@ -1947,19 +1948,19 @@ export class Diagram {
     const ctx = (target as Canvas2DRenderer).getContext();
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(
-      this.offsetX - width / this.scale,
-      this.offsetY - height / this.scale,
-      (width * 2) / this.scale,
-      (height * 2) / this.scale,
+      this.offsetX - width / this._scale,
+      this.offsetY - height / this._scale,
+      (width * 2) / this._scale,
+      (height * 2) / this._scale,
     );
 
     // Render grid
     if (this.showGrid) {
       const viewport: Rect = new RectClass(
-        this.offsetX - width / this.scale,
-        this.offsetY - height / this.scale,
-        (width * 2) / this.scale,
-        (height * 2) / this.scale,
+        this.offsetX - width / this._scale,
+        this.offsetY - height / this._scale,
+        (width * 2) / this._scale,
+        (height * 2) / this._scale,
       );
       target.renderGrid(viewport, this.gridSize);
     }
@@ -1988,8 +1989,8 @@ export class Diagram {
     const viewportRect = VirtualizationManager.createViewport(
       this.offsetX,
       this.offsetY,
-      width / this.scale,
-      height / this.scale,
+      width / this._scale,
+      height / this._scale,
       100,
     );
     const visibleParts = new Set(this.virtualization.cull(viewportRect, allParts));
@@ -2130,10 +2131,85 @@ export class Diagram {
     return {
       x: this.offsetX,
       y: this.offsetY,
-      width: rect.width / this.scale,
-      height: rect.height / this.scale,
-      scale: this.scale,
+      width: rect.width / this._scale,
+      height: rect.height / this._scale,
+      scale: this._scale,
     };
+  }
+
+  /** GoJS-compatible: The current zoom scale. */
+  get scale(): number {
+    return this._scale;
+  }
+
+  set scale(value: number) {
+    this._scale = Math.max(this.minScale, Math.min(this.maxScale, value));
+    this.invalidate();
+    this.fireDiagramEvent('ViewportChanged', null, { scale: this._scale });
+  }
+
+  /** GoJS-compatible: The position (top-left of the viewport in diagram coordinates). */
+  get position(): { x: number; y: number } {
+    return { x: this.offsetX, y: this.offsetY };
+  }
+
+  set position(value: { x: number; y: number }) {
+    this.setViewport(value.x, value.y);
+  }
+
+  /** GoJS-compatible: The padding around the content. */
+  get padding(): number {
+    return this._padding;
+  }
+
+  set padding(value: number) {
+    this._padding = value;
+    this.invalidate();
+  }
+
+  /** GoJS-compatible: Find all parts intersecting a rectangle. */
+  findPartsInRect(
+    rect: { x: number; y: number; width: number; height: number },
+    _partialInclusion = true,
+  ): (Node | Link | Group)[] {
+    const result: (Node | Link | Group)[] = [];
+    const r = new RectClass(rect.x, rect.y, rect.width, rect.height);
+    for (const part of this.parts.values()) {
+      if (part.bounds.intersects(r)) {
+        result.push(part);
+      }
+    }
+    return result;
+  }
+
+  /** GoJS-compatible: Add a part directly to the diagram. */
+  add(part: Part): void {
+    const key = part.key;
+    if (key === undefined) return;
+    if (this.parts.has(key)) return;
+    if (part instanceof Node) {
+      this.nodes.set(key, part);
+      this.parts.set(key, part);
+    } else if (part instanceof Group) {
+      this.groups.set(key, part);
+      this.parts.set(key, part);
+    } else if (part instanceof Link) {
+      this.links.set(key, part);
+      this.parts.set(this.linkPartKey(key), part);
+    }
+    const layer =
+      this.getLayer(part.layerName ?? LayerNames.Default) ?? this.getLayer(LayerNames.Default);
+    if (layer) part.layer = layer;
+    this.markHitIndexDirty();
+    this.fireDiagramEvent('PartAdded', part);
+    this.invalidate();
+  }
+
+  /** GoJS-compatible: Remove a part directly from the diagram. */
+  remove(part: Part): void {
+    const key = part.key;
+    if (key === undefined) return;
+    this.removePartByKey(key);
   }
 
   /** Set the viewport. */
@@ -2141,16 +2217,16 @@ export class Diagram {
     this.offsetX = x;
     this.offsetY = y;
     if (scale !== undefined) {
-      this.scale = Math.max(this.minScale, Math.min(this.maxScale, scale));
+      this._scale = Math.max(this.minScale, Math.min(this.maxScale, scale));
       // Layer cache must be re-rendered at the new scale
-      this.layerCache?.setScale(this.scale * (globalThis.devicePixelRatio || 1));
+      this.layerCache?.setScale(this._scale * (globalThis.devicePixelRatio || 1));
       // Update LOD label visibility immediately
       if (this.renderer instanceof Canvas2DRenderer) {
         this.renderer.setLabelsVisible(this.shouldShowLabels());
       }
     }
     this.invalidate();
-    this.fireDiagramEvent('ViewportChanged', null, { x, y, scale: this.scale });
+    this.fireDiagramEvent('ViewportChanged', null, { x, y, scale: this._scale });
   }
 
   /** Zoom to fit all content. */
@@ -2175,10 +2251,10 @@ export class Diagram {
 
     const scaleX = rect.width / contentWidth;
     const scaleY = rect.height / contentHeight;
-    this.scale = Math.max(this.minScale, Math.min(this.maxScale, Math.min(scaleX, scaleY)));
+    this._scale = Math.max(this.minScale, Math.min(this.maxScale, Math.min(scaleX, scaleY)));
 
-    this.offsetX = minX - padding + (rect.width / this.scale - contentWidth) / 2;
-    this.offsetY = minY - padding + (rect.height / this.scale - contentHeight) / 2;
+    this.offsetX = minX - padding + (rect.width / this._scale - contentWidth) / 2;
+    this.offsetY = minY - padding + (rect.height / this._scale - contentHeight) / 2;
 
     this.invalidate();
   }
@@ -2193,8 +2269,8 @@ export class Diagram {
     const partCenterY = partBounds.y + partBounds.height / 2;
 
     // Calculate the viewport center in diagram coordinates
-    const viewportCenterX = this.offsetX + rect.width / (2 * this.scale);
-    const viewportCenterY = this.offsetY + rect.height / (2 * this.scale);
+    const viewportCenterX = this.offsetX + rect.width / (2 * this._scale);
+    const viewportCenterY = this.offsetY + rect.height / (2 * this._scale);
 
     // Calculate the offset needed to center the part
     const dx = partCenterX - viewportCenterX;
@@ -2210,8 +2286,8 @@ export class Diagram {
   /** GoJS-compatible: Scroll the view so that a rect is visible (optionally centered). */
   scrollToRect(rect: RectClass, center = false): void {
     const canvasRect = this.canvas.getBoundingClientRect();
-    const viewW = canvasRect.width / this.scale;
-    const viewH = canvasRect.height / this.scale;
+    const viewW = canvasRect.width / this._scale;
+    const viewH = canvasRect.height / this._scale;
 
     let targetX = this.offsetX;
     let targetY = this.offsetY;
@@ -2238,8 +2314,8 @@ export class Diagram {
   /** GoJS-compatible: Scroll the view so that a point is centered. */
   centerPoint(p: { x: number; y: number }): void {
     const canvasRect = this.canvas.getBoundingClientRect();
-    const viewW = canvasRect.width / this.scale;
-    const viewH = canvasRect.height / this.scale;
+    const viewW = canvasRect.width / this._scale;
+    const viewH = canvasRect.height / this._scale;
     this.setViewport(p.x - viewW / 2, p.y - viewH / 2);
   }
 
@@ -2270,8 +2346,8 @@ export class Diagram {
     return new RectClass(
       this.offsetX,
       this.offsetY,
-      rect.width / this.scale,
-      rect.height / this.scale,
+      rect.width / this._scale,
+      rect.height / this._scale,
     );
   }
 

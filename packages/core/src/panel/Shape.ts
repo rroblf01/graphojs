@@ -192,6 +192,8 @@ export class Shape extends GraphObject {
     cloned._strokeWidth = this._strokeWidth;
     cloned._cornerRadius = this._cornerRadius;
     cloned._geometryString = this._geometryString;
+    cloned.toArrow = this.toArrow;
+    cloned.fromArrow = this.fromArrow;
     return cloned;
   }
 

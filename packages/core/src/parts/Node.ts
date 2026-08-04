@@ -1,8 +1,9 @@
 import { Rect } from '../geometry/Rect.ts';
+import { Spot } from '../geometry/Spot.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { Part } from './Part.ts';
 import { Panel } from '../panel/Panel.ts';
-import type { Port } from './Port.ts';
+import { Port } from './Port.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
 
 export type NodeShape = 'rect' | 'ellipse' | 'roundedRect';
@@ -130,6 +131,31 @@ export class Node extends Part {
   /** Find a port by name. */
   findPort(name: string): Port | undefined {
     return this._ports.find((p) => p.name === name);
+  }
+
+  /**
+   * GoJS-compatible: Collect ports declared declaratively in the visual tree
+   * (GraphObjects with a non-empty `portId`), creating Port entries.
+   * Uses the object's relative position within the node bounds as the port spot.
+   */
+  collectPortsFromPanel(): void {
+    if (!this._panel) return;
+    this.clearPorts();
+    const walk = (panel: Panel): void => {
+      for (const el of panel.elements) {
+        if (el.portId) {
+          const port = new Port(el.portId);
+          // Derive a fractional spot from the element's position in the panel
+          const w = this.bounds.width || 1;
+          const h = this.bounds.height || 1;
+          const spot = new Spot(w > 0 ? el.position.x / w : 0.5, h > 0 ? el.position.y / h : 0.5);
+          port.spot = spot;
+          this._ports.push(port);
+        }
+        if (el instanceof Panel) walk(el);
+      }
+    };
+    walk(this._panel);
   }
 
   /**

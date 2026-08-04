@@ -883,6 +883,41 @@ describe('GoJS Getting Started tutorial migration', () => {
     expect(fired).toContain('SubGraphExpanded');
   });
 
+  it('supports declarative ports via portId in templates', () => {
+    const myDiagram = createDiagram();
+    const $ = go.GraphObject.make;
+
+    // GoJS pattern: $(go.Shape, "Circle", { portId: "in" })
+    myDiagram.nodeTemplate = $(
+      go.Node,
+      'Spot',
+      $(go.Shape, 'Rectangle'),
+      $(go.Shape, 'Circle', { portId: 'in', width: 12, height: 12 }),
+      $(go.Shape, 'Circle', { portId: 'out', width: 12, height: 12 }),
+    );
+
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, fromPort: 'out', to: 2, toPort: 'in' }],
+    });
+    myDiagram.model = model;
+
+    const node1 = myDiagram.findNodeForKey(1) as import('../src/parts/Node.ts').Node;
+    expect(node1.findPort('out')).toBeDefined();
+    const node2 = myDiagram.findNodeForKey(2) as import('../src/parts/Node.ts').Node;
+    expect(node2.findPort('in')).toBeDefined();
+
+    // The link should resolve the declared ports
+    const linkKey = model.getLinkKey(model.linkDataArray[0]!);
+    const link = myDiagram.findLinkForKey(linkKey!) as import('../src/parts/Link.ts').Link;
+    expect(link).not.toBeNull();
+    expect(link.fromPortName).toBe('out');
+    expect(link.toPortName).toBe('in');
+  });
+
   it('enforces isReadOnly/allowMove in interaction tools', () => {
     const myDiagram = createDiagram();
     const model = new go.GraphLinksModel({

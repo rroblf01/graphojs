@@ -1277,6 +1277,8 @@ export class Diagram {
       node.panel = cloned;
       // Apply template properties to the part
       this.applyTemplateProperties(node, cloned.templateProperties);
+      // Collect declarative ports (GraphObjects with portId)
+      node.collectPortsFromPanel();
     }
 
     const layerName = (nodeData.layer as string) ?? LayerNames.Default;

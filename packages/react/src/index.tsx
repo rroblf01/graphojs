@@ -43,6 +43,7 @@ export const Diagram: React.FC<DiagramProps> = ({
   const diagramRef = useRef<GoDiagram | null>(null);
 
   // Create / destroy the diagram
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -54,7 +55,6 @@ export const Diagram: React.FC<DiagramProps> = ({
       diagram.destroy();
       diagramRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sync props
@@ -95,6 +95,7 @@ export const Palette: React.FC<PaletteProps> = ({ templates = [], className, sty
   const containerRef = useRef<HTMLDivElement>(null);
   const paletteRef = useRef<GoPalette | null>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -104,14 +105,20 @@ export const Palette: React.FC<PaletteProps> = ({ templates = [], className, sty
       paletteRef.current = null;
       container.innerHTML = '';
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect
   }, []);
 
   useEffect(() => {
     paletteRef.current?.setTemplates(templates);
   }, [templates]);
 
-  return <div ref={containerRef} className={className} style={{ width: '100%', height: '100%', ...style }} />;
+  return (
+    <div
+      ref={containerRef}
+      className={className}
+      style={{ width: '100%', height: '100%', ...style }}
+    />
+  );
 };
 
 export interface OverviewProps {
@@ -126,6 +133,7 @@ export const Overview: React.FC<OverviewProps> = ({ observed, className, style }
   const containerRef = useRef<HTMLDivElement>(null);
   const overviewRef = useRef<GoOverview | null>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -135,14 +143,20 @@ export const Overview: React.FC<OverviewProps> = ({ observed, className, style }
       overviewRef.current = null;
       container.innerHTML = '';
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect
   }, []);
 
   useEffect(() => {
     if (overviewRef.current) overviewRef.current.observed = observed;
   }, [observed]);
 
-  return <div ref={containerRef} className={className} style={{ width: '100%', height: '100%', ...style }} />;
+  return (
+    <div
+      ref={containerRef}
+      className={className}
+      style={{ width: '100%', height: '100%', ...style }}
+    />
+  );
 };
 
 export const version: string = '0.1.0';

@@ -38,6 +38,9 @@ export abstract class GraphObject {
   /** The panel this object belongs to (set when added). Used for ofObject resolution. */
   parentPanel: GraphObject | null = null;
 
+  /** GoJS-compatible: If non-empty, this object acts as a port on its part. */
+  portId: string = '';
+
   /** The name of this graph object, used for findObject() lookups. */
   get name(): string {
     return this._name;
@@ -346,6 +349,15 @@ export abstract class GraphObject {
     this._angle = source._angle;
     this._cursor = source._cursor;
     this._bindings = source._bindings.map((b) => b.copy());
+    this.portId = source.portId;
+    // Copy GoJS event handlers (set via property maps)
+    this.click = source.click;
+    this.doubleClick = source.doubleClick;
+    this.contextClick = source.contextClick;
+    this.mouseEnter = source.mouseEnter;
+    this.mouseLeave = source.mouseLeave;
+    this.mouseOver = source.mouseOver;
+    this.mouseOut = source.mouseOut;
   }
 
   /**

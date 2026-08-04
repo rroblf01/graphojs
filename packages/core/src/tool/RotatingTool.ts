@@ -9,6 +9,7 @@ export class RotatingTool extends Tool {
   private _isRotating = false;
   private _node: Node | null = null;
   private _startAngle = 0;
+  private _origAngle = 0;
 
   /** Whether a rotation drag is in progress. */
   get isRotating(): boolean {
@@ -39,6 +40,18 @@ export class RotatingTool extends Tool {
     return Math.abs(point.x - handle.x) <= threshold && Math.abs(point.y - handle.y) <= threshold;
   }
 
+  /** Find a selected node whose rotation handle is under the point (handle is outside bounds). */
+  private findNodeOnRotationHandle(point: { x: number; y: number }): Node | null {
+    const diagram = this.diagram;
+    if (!diagram) return null;
+    for (const node of diagram.getSelectedParts()) {
+      if (node instanceof Node && this.isOnRotationHandle(node, point)) {
+        return node;
+      }
+    }
+    return null;
+  }
+
   /** GoJS-compatible: start rotating when pressing on the rotation handle of a selected node. */
   override canStart(_toolName: string, e: MouseEvent): boolean {
     if (e.button !== 0) return false;
@@ -49,9 +62,7 @@ export class RotatingTool extends Tool {
         this.diagram.allowRotate === false)
     )
       return false;
-    const point = this.getDiagramPoint(e);
-    const part = this.findPartAt(point.x, point.y);
-    return part instanceof Node && part.isSelected && this.isOnRotationHandle(part, point);
+    return this.findNodeOnRotationHandle(this.getDiagramPoint(e)) !== null;
   }
 
   override doMouseDown(e: MouseEvent): void {
@@ -65,12 +76,13 @@ export class RotatingTool extends Tool {
       return;
 
     const point = this.getDiagramPoint(e);
-    const part = this.findPartAt(point.x, point.y);
+    const part = this.findNodeOnRotationHandle(point);
 
-    if (part instanceof Node && part.isSelected && this.isOnRotationHandle(part, point)) {
+    if (part) {
       this._isRotating = true;
       this._node = part;
       this._startAngle = this.angleOf(part, point);
+      this._origAngle = part.angle;
     }
   }
 
@@ -81,7 +93,8 @@ export class RotatingTool extends Tool {
     const currentAngle = this.angleOf(this._node, point);
     const delta = currentAngle - this._startAngle;
 
-    this._node.angle = (this._node.angle + delta) % 360;
+    // Set absolute angle from the original, not accumulate deltas
+    this._node.angle = (this._origAngle + delta) % 360;
     if (this._node.angle < 0) this._node.angle += 360;
 
     this.diagram?.invalidate();

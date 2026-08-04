@@ -109,6 +109,22 @@ export class Node extends Part {
     return this._ports.length;
   }
 
+  /** Whether a diagram point is near any of this node's ports (within a threshold). */
+  isPointOnPort(point: { x: number; y: number }, threshold = 10): boolean {
+    for (const port of this._ports) {
+      const p = port.computePoint(
+        this.bounds.x,
+        this.bounds.y,
+        this.bounds.width,
+        this.bounds.height,
+      );
+      if (Math.abs(point.x - p.x) <= threshold && Math.abs(point.y - p.y) <= threshold) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /** Add a port to this node. */
   addPort(port: Port): this {
     this._ports.push(port);

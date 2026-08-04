@@ -22,7 +22,7 @@ export class LinkingTool extends LinkingBaseTool {
     return super.targetNode;
   }
 
-  /** GoJS-compatible: start drawing a link when pressing on a port of a linkable node. */
+  /** GoJS-compatible: start drawing a link when pressing on an actual port. */
   override canStart(_toolName: string, e: MouseEvent): boolean {
     if (e.button !== 0) return false;
     if (
@@ -34,8 +34,8 @@ export class LinkingTool extends LinkingBaseTool {
       return false;
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);
-    // Only start linking from nodes that expose ports
-    return part instanceof Node && (part as Node).portCount > 0;
+    // Only start linking when the point is near a real port, not the whole node body
+    return part instanceof Node && (part as Node).isPointOnPort(point, 12);
   }
 
   override doMouseDown(e: MouseEvent): void {

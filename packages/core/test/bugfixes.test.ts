@@ -21,13 +21,40 @@ import {
 
 function mockContext() {
   return {
-    save: vi.fn(), restore: vi.fn(), scale: vi.fn(), translate: vi.fn(), setTransform: vi.fn(),
-    clearRect: vi.fn(), fillRect: vi.fn(), strokeRect: vi.fn(), beginPath: vi.fn(), moveTo: vi.fn(),
-    lineTo: vi.fn(), stroke: vi.fn(), fill: vi.fn(), ellipse: vi.fn(), arc: vi.fn(), arcTo: vi.fn(),
-    quadraticCurveTo: vi.fn(), bezierCurveTo: vi.fn(), closePath: vi.fn(), roundRect: vi.fn(),
-    fillText: vi.fn(), setLineDash: vi.fn(), drawImage: vi.fn(), clip: vi.fn(),
-    fillStyle: '', strokeStyle: '', lineWidth: 1, globalAlpha: 1, font: '', textBaseline: '', textAlign: '',
-    lineJoin: '', lineCap: '', createLinearGradient: vi.fn(() => ({ addColorStop: vi.fn() })),
+    save: vi.fn(),
+    restore: vi.fn(),
+    scale: vi.fn(),
+    translate: vi.fn(),
+    setTransform: vi.fn(),
+    clearRect: vi.fn(),
+    fillRect: vi.fn(),
+    strokeRect: vi.fn(),
+    beginPath: vi.fn(),
+    moveTo: vi.fn(),
+    lineTo: vi.fn(),
+    stroke: vi.fn(),
+    fill: vi.fn(),
+    ellipse: vi.fn(),
+    arc: vi.fn(),
+    arcTo: vi.fn(),
+    quadraticCurveTo: vi.fn(),
+    bezierCurveTo: vi.fn(),
+    closePath: vi.fn(),
+    roundRect: vi.fn(),
+    fillText: vi.fn(),
+    setLineDash: vi.fn(),
+    drawImage: vi.fn(),
+    clip: vi.fn(),
+    fillStyle: '',
+    strokeStyle: '',
+    lineWidth: 1,
+    globalAlpha: 1,
+    font: '',
+    textBaseline: '',
+    textAlign: '',
+    lineJoin: '',
+    lineCap: '',
+    createLinearGradient: vi.fn(() => ({ addColorStop: vi.fn() })),
   } as unknown as CanvasRenderingContext2D;
 }
 
@@ -40,11 +67,28 @@ function createDiagram(): Diagram {
 }
 
 beforeAll(() => {
-  HTMLCanvasElement.prototype.getContext = vi.fn(() => mockContext()) as unknown as typeof HTMLCanvasElement.prototype.getContext;
-  HTMLCanvasElement.prototype.getBoundingClientRect = vi.fn(() => ({ x: 0, y: 0, width: 800, height: 600, top: 0, left: 0, right: 800, bottom: 600 })) as unknown as typeof HTMLCanvasElement.prototype.getBoundingClientRect;
-  globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => setTimeout(() => cb(performance.now()), 16)) as unknown as typeof requestAnimationFrame;
-  globalThis.cancelAnimationFrame = ((id: number) => clearTimeout(id)) as unknown as typeof cancelAnimationFrame;
-  globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} } as unknown as typeof ResizeObserver;
+  HTMLCanvasElement.prototype.getContext = vi.fn(() =>
+    mockContext(),
+  ) as unknown as typeof HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getBoundingClientRect = vi.fn(() => ({
+    x: 0,
+    y: 0,
+    width: 800,
+    height: 600,
+    top: 0,
+    left: 0,
+    right: 800,
+    bottom: 600,
+  })) as unknown as typeof HTMLCanvasElement.prototype.getBoundingClientRect;
+  globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) =>
+    setTimeout(() => cb(performance.now()), 16)) as unknown as typeof requestAnimationFrame;
+  globalThis.cancelAnimationFrame = ((id: number) =>
+    clearTimeout(id)) as unknown as typeof cancelAnimationFrame;
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
 });
 
 afterAll(() => {
@@ -235,5 +279,73 @@ describe('A4: link key uniqueness', () => {
     });
     const k = m.addLink({ from: 2, to: 1 });
     expect(k).not.toBe(1); // must not collide with existing key 1
+  });
+});
+
+describe('B9: incremental sync applies element bindings', () => {
+  it('refreshes a bound TextBlock label on data edit', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(Shape, 'Rectangle'),
+      $(TextBlock, 'label', { name: 'label' }, new Binding('text', 'name')),
+    );
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, name: 'Alpha', x: 0, y: 0, width: 100, height: 50 }],
+    });
+    d.model = m;
+
+    const node = d.findNodeForKey(1) as Node;
+    const label = node.findObject('label') as TextBlock;
+    expect(label.text).toBe('Alpha');
+
+    // Edit the data via an incremental property change
+    m.setDataProperty(m.getNodeDataArray()[0]!, 'name', 'Beta');
+    expect(label.text).toBe('Beta'); // element binding re-applied
+  });
+});
+
+describe('B11: nodeDataArray reassignment does not over-emit', () => {
+  it('undo of a reassignment does not empty the model', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+    });
+    d.model = m;
+
+    d.commit(() => {
+      m.nodeDataArray = m.nodeDataArray as never; // same reference
+    }, 'reassign');
+    expect(m.getNodeCount()).toBe(2);
+
+    d.undo();
+    // Should NOT remove everything — only the (empty) diff is reversed
+    expect(m.getNodeCount()).toBe(2);
+  });
+});
+
+describe('B12: nested transactions keep outer events', () => {
+  it('undo of an outer transaction reverses the outer node', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel();
+    d.model = m;
+
+    d.startTransaction('outer');
+    m.addNode({ key: 1, x: 0, y: 0, width: 100, height: 50 });
+
+    d.startTransaction('inner');
+    m.addNode({ key: 2, x: 200, y: 0, width: 100, height: 50 });
+    d.commitTransaction('inner');
+
+    d.commitTransaction('outer');
+    expect(m.getNodeCount()).toBe(2);
+
+    d.undo(); // outer undo should remove BOTH nodes
+    expect(m.getNodeCount()).toBe(0);
   });
 });

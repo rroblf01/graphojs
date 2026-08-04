@@ -54,9 +54,7 @@ export class ModelTransactionCommand implements Command {
         const linkModel = this.model as unknown as LinkOps;
         if (event.link && 'addLink' in linkModel) {
           const key = linkModel.getLinkKey(event.link);
-          const exists = linkModel
-            .getLinkDataArray()
-            .some((l) => linkModel.getLinkKey(l) === key);
+          const exists = linkModel.getLinkDataArray().some((l) => linkModel.getLinkKey(l) === key);
           if (!exists) linkModel.addLink({ ...event.link });
         }
         break;
@@ -110,9 +108,7 @@ export class ModelTransactionCommand implements Command {
         const linkModel = this.model as unknown as LinkOps;
         if (event.link && 'addLink' in linkModel) {
           const key = linkModel.getLinkKey(event.link);
-          const exists = linkModel
-            .getLinkDataArray()
-            .some((l) => linkModel.getLinkKey(l) === key);
+          const exists = linkModel.getLinkDataArray().some((l) => linkModel.getLinkKey(l) === key);
           if (!exists) linkModel.addLink({ ...event.link });
         }
         break;

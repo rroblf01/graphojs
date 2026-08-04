@@ -155,7 +155,10 @@ export class GraphLinksModel extends Model {
         data[this.linkKeyProperty] = this.generateLinkKey();
       }
       this._linkDataArray.push(data);
-      this.emit({ type: 'link Added', model: this, link: data });
+      const key = data[this.linkKeyProperty] as NodeKey;
+      if (key !== undefined && !oldKeys.has(key)) {
+        this.emit({ type: 'link Added', model: this, link: data });
+      }
     }
   }
 

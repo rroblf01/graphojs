@@ -124,7 +124,12 @@ export abstract class Model {
         data[this.nodeKeyProperty] = this.generateKey();
       }
       this._nodeDataArray.push(data);
-      this.emit({ type: 'node Added', model: this, node: data });
+      // Only emit 'node Added' for genuinely new keys, so undo of a full
+      // array reassignment does not remove nodes that existed before
+      const key = data[this.nodeKeyProperty] as NodeKey;
+      if (key !== undefined && !oldKeys.has(key)) {
+        this.emit({ type: 'node Added', model: this, node: data });
+      }
     }
   }
 

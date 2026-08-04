@@ -231,14 +231,16 @@ export class ToolManager {
       return;
     }
 
-    // Try to find a tool that can handle this event
-    const tool = this.findToolForEvent(this.mouseMoveTools, e);
-    if (tool) {
-      const name = this.findToolName(tool);
-      if (name) {
-        this.activateTool(name);
-        tool.doStart(e);
-        tool.doMouseMove(e);
+    // Only pick up a tool on mousemove while a button is held (drag), never on hover
+    if (e.buttons > 0) {
+      const tool = this.findToolForEvent(this.mouseMoveTools, e);
+      if (tool) {
+        const name = this.findToolName(tool);
+        if (name) {
+          this.activateTool(name);
+          tool.doStart(e);
+          tool.doMouseMove(e);
+        }
       }
     }
   }

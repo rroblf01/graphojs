@@ -165,6 +165,7 @@ export class Diagram {
   private _maxSelectionCount = Infinity;
   private _transactionEvents: ChangedEvent[] | null = null;
   private _transactionName = '';
+  private _transactionStack: Array<{ events: ChangedEvent[]; name: string }> = [];
   private _contextMenuEl: HTMLElement | null = null;
   private backBuffer: HTMLCanvasElement | null = null;
   private backBufferEnabled = false;
@@ -298,8 +299,8 @@ export class Diagram {
       'linking',
       'dragging',
       'panning',
-      'clickSelecting',
       'dragSelecting',
+      'clickSelecting',
     ]) {
       const tool = tm.getTool(name);
       if (tool) tm.addToolToList('mouseDown', tool);
@@ -542,22 +543,22 @@ export class Diagram {
 
   /** GoJS-compatible: Begin a transaction. Commands are grouped into one undo unit. */
   startTransaction(name = 'Transaction'): boolean {
-    this._transactionEvents = [];
-    this._transactionName = name;
+    // Push a new event buffer so nested transactions keep the outer events
+    this._transactionStack.push({ events: [], name });
     this._undoManager.beginTransaction(name);
     return true;
   }
 
   /** GoJS-compatible: Commit the current transaction. */
   commitTransaction(name = ''): boolean {
-    const events = this._transactionEvents;
-    this._transactionEvents = [];
+    const frame = this._transactionStack.pop();
+    if (!frame) return false;
 
     // If model changes were made without explicit commands, wrap them in an
     // undoable ModelTransactionCommand so undo/redo works (GoJS behavior).
-    if (events && events.length > 0) {
+    if (frame.events.length > 0) {
       this._undoManager.execute(
-        new ModelTransactionCommand(this._model, events, name || this._transactionName),
+        new ModelTransactionCommand(this._model, frame.events, name || frame.name),
       );
     }
     this._undoManager.commitTransaction();
@@ -1097,8 +1098,9 @@ export class Diagram {
   /** Handle model changes. */
   private handleModelChange(event: ChangedEvent): void {
     // Record model changes for undoable transactions
-    if (this._transactionEvents) {
-      this._transactionEvents.push(event);
+    const top = this._transactionStack[this._transactionStack.length - 1];
+    if (top) {
+      top.events.push(event);
     }
     // Incrementally sync only the changed part
     this.syncPartFromModelChange(event);
@@ -1518,7 +1520,7 @@ export class Diagram {
     }
 
     // Apply bindings
-    if (node.bindings.length > 0) {
+    if (node.bindings.length > 0 || node.panel !== null) {
       node.applyBindings(nodeData);
     }
     this.hitIndex?.insertWithBounds(node.bounds, node);

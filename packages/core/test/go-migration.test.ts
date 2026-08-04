@@ -458,14 +458,18 @@ describe('GoJS Getting Started tutorial migration', () => {
   it('merges changes from another model via the change log', () => {
     const source = new go.GraphLinksModel();
     source.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
-    source.setDataProperty(source.nodeDataArray[0]!, 'name', 'Alpha');
     source.clearChangedEventLog();
+    // Record a real change for key 1, then add a new node
+    source.setDataProperty(source.nodeDataArray[0]!, 'name', 'Alpha');
     source.nodeDataArray = [
       { key: 1, x: 0, y: 0, width: 100, height: 50, name: 'Alpha' },
       { key: 2, x: 200, y: 0, width: 100, height: 50, name: 'Beta' },
     ];
 
     const target = new go.GraphLinksModel();
+    // Target starts from the same baseline so mergeChanges applies a diff
+    target.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
+    target.clearChangedEventLog();
     target.mergeChanges(source);
     expect(target.getNodeData(1)?.name).toBe('Alpha');
     expect(target.getNodeData(2)?.name).toBe('Beta');

@@ -1,7 +1,12 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
-import { routeOrthogonal, routeCurved, routeStraight, computeLabelPosition } from '../../src/render/LinkRouter.ts';
+import {
+  routeOrthogonal,
+  routeCurved,
+  routeStraight,
+  computeLabelPosition,
+} from '../../src/render/LinkRouter.ts';
 
 function mockContext() {
   return {
@@ -35,8 +40,14 @@ beforeAll(() => {
     mockContext(),
   ) as unknown as typeof HTMLCanvasElement.prototype.getContext;
   HTMLCanvasElement.prototype.getBoundingClientRect = vi.fn(() => ({
-    x: 0, y: 0, width: 800, height: 600,
-    top: 0, left: 0, right: 800, bottom: 600,
+    x: 0,
+    y: 0,
+    width: 800,
+    height: 600,
+    top: 0,
+    left: 0,
+    right: 800,
+    bottom: 600,
   })) as unknown as typeof HTMLCanvasElement.prototype.getBoundingClientRect;
 
   globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) =>

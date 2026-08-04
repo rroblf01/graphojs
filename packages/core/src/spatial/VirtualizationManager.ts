@@ -66,17 +66,17 @@ export class VirtualizationManager {
 
   /**
    * Cull parts based on the current viewport.
-   * Returns the parts that are visible in the viewport.
+   * When enabled, returns only parts within the viewport.
+   * When disabled, returns all provided parts (no culling).
    */
-  cull(viewport: Rect): Part[] {
+  cull(viewport: Rect, allParts?: Part[]): Part[] {
     if (!this._isEnabled) {
       this._culledCount = 0;
-      return [];
+      return allParts ?? [];
     }
 
     const visible = this.spatialIndex.queryRegion(viewport);
-    const visibleSet = new Set(visible);
-    this._culledCount = visibleSet.size;
+    this._culledCount = visible.length;
     return visible;
   }
 

@@ -1318,21 +1318,35 @@ export class Diagram {
       target.renderGrid(viewport, this.gridSize);
     }
 
-    // Cull parts if virtualization is enabled
-    const culledParts = new Set<Part>();
-    if (this.virtualization?.isEnabled) {
-      const viewportRect = VirtualizationManager.createViewport(
-        this.offsetX,
-        this.offsetY,
-        width / this.scale,
-        height / this.scale,
-        100,
-      );
-      const visible = this.virtualization.cull(viewportRect);
-      for (const part of visible) {
-        culledParts.add(part);
+    // Auto-initialize virtualization if not already done
+    if (!this.virtualization) {
+      const world = new RectClass(-10000, -10000, 20000, 20000);
+      this.virtualization = new VirtualizationManager(world);
+      this.virtualization.isEnabled = true;
+    }
+
+    // Collect all visible parts for spatial index rebuild
+    const allParts: Part[] = [];
+    for (const layer of this.layers) {
+      if (layer.name === LayerNames.Grid) continue;
+      for (const part of layer.getVisibleParts()) {
+        allParts.push(part);
       }
     }
+
+    // Rebuild spatial index with current part positions
+    const world = new RectClass(-10000, -10000, 20000, 20000);
+    this.virtualization.rebuild(allParts, world);
+
+    // Cull parts based on viewport
+    const viewportRect = VirtualizationManager.createViewport(
+      this.offsetX,
+      this.offsetY,
+      width / this.scale,
+      height / this.scale,
+      100,
+    );
+    const visibleParts = new Set(this.virtualization.cull(viewportRect, allParts));
 
     // Register node bounds with renderer for link routing computation
     target.clearNodeBounds();
@@ -1371,23 +1385,21 @@ export class Diagram {
         }
       }
 
-      const visibleParts = layer
-        .getVisibleParts()
-        .filter((part) => culledParts.size === 0 || culledParts.has(part));
+      const layerParts = layer.getVisibleParts().filter((part) => visibleParts.has(part));
       // Render in z-order (ascending: lower zOrder first); skip sorting
       // when no explicit z-order is in use (common case, avoids O(n log n))
       let needsSort = false;
-      for (const part of visibleParts) {
+      for (const part of layerParts) {
         if (part.zOrder !== 0) {
           needsSort = true;
           break;
         }
       }
       if (needsSort) {
-        visibleParts.sort((a, b) => a.zOrder - b.zOrder);
+        layerParts.sort((a, b) => a.zOrder - b.zOrder);
       }
 
-      for (const part of visibleParts) {
+      for (const part of layerParts) {
         if (part instanceof Group) {
           target.renderGroup(part);
         } else if (part instanceof Link) {

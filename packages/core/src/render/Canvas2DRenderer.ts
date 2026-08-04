@@ -6,12 +6,7 @@ import type { Node } from '../parts/Node.ts';
 import type { Renderer } from './Renderer.ts';
 import type { Panel } from '../panel/Panel.ts';
 import { PathCache, TextMeasureCache } from './RenderCache.ts';
-import {
-  routeOrthogonal,
-  routeCurved,
-  routeStraight,
-  computeLabelPosition,
-} from './LinkRouter.ts';
+import { routeOrthogonal, routeCurved, routeStraight, computeLabelPosition } from './LinkRouter.ts';
 
 /**
  * Canvas 2D renderer for diagram parts.
@@ -356,13 +351,7 @@ export class Canvas2DRenderer implements Renderer {
         link.labelOffset,
         link.labelSide,
       );
-      this.renderLabel(
-        link.label,
-        labelPos.x,
-        labelPos.y,
-        link.labelColor,
-        link.labelFont,
-      );
+      this.renderLabel(link.label, labelPos.x, labelPos.y, link.labelColor, link.labelFont);
     }
 
     this.ctx.restore();

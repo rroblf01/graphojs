@@ -78,14 +78,21 @@ myDiagram.commit((d) => {
 - `new go.GraphLinksModel({ nodeDataArray, linkDataArray })`
 - `diagram.undoManager` / `commandHandler` / `toolManager` / `animationManager` accessors
 - `diagram.isReadOnly` / `isEnabled` / `allowMove` / `allowCopy` / `allowDelete` flags
+- `diagram.allowTextEdit` / `allowLink` / `allowRelink` / `allowZoom` / `scrollMode`
 - `diagram.layers` / `layout` / `background` / `div` / `isModified`
+- `diagram.scale` / `position` / `padding` / `add` / `remove` / `findPartsInRect`
 - `diagram.addModelChangedListener` / `removeModelChangedListener`
+- `diagram.findTreeRoots` / `findTreeChildren` / `findTreeParent`
 - Diagram events: `SelectionChanged`, `ObjectSingleClicked`, `LinkDrawn`, `PartResized`, and more
 - Touch panning, pinch-to-zoom, arrow-key nudging
-- `Part.location` / `locationSpot` / `data`, `Link.fromNode`/`toNode`, `fromEndSegmentLength`, `reshapable`
+- `Part.location` / `locationSpot` / `data` / `dragAlpha`, `Link.fromNode`/`toNode`, `fromEndSegmentLength`, `reshapable`, `isTreeLink`
 - `diagram.findNodeForKey` / `findLinkForKey` / `findNodeForData` / `clear` / `centerRect` / `centerPoint`
 - Link templates with `toArrow` / `fromArrow` / `strokeWidth`
-- `TextBlock.stroke` (GoJS text color) and `editable` with element-based text editing
+- `TextBlock.stroke` (GoJS text color), `editable`, `wrap`, `isMultiline` with element-based text editing
+- Panel data panels: `itemArray` / `itemTemplate`; `Position` panel type
+- Undoable model transactions: direct `model.addNode`/`setDataProperty` edits within `diagram.commit` are undoable
+- `go.Palette` / `go.Overview` constructible with just a div (internal diagram auto-created)
+- `Model.mergeChanges` / `toIncrementalJson` / `applyIncrementalJson` / change log
 
 ## Tech Stack
 

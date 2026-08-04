@@ -81,6 +81,10 @@ export { Serializer } from './serialization/Serializer.ts';
 // Undo
 export { UndoManager } from './undo/UndoManager.ts';
 export { Transaction, createTransaction } from './undo/Transaction.ts';
+export {
+  ModelTransactionCommand,
+  createModelTransactionCommand,
+} from './undo/ModelTransactionCommand.ts';
 
 // Command System
 export { CommandHandler, createCommandHandler } from './command/CommandHandler.ts';

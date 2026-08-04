@@ -69,7 +69,7 @@ myDiagram.commit((d) => {
 - `go.*` namespace (`import * as go from 'graphojs/go'`)
 - `go.GraphObject.make` declarative construction
 - `go.Node` / `go.Link` / `go.Group` / `go.Panel` / `go.Shape` / `go.TextBlock` templates
-- `go.Binding` at the Part and element level (with converters & TwoWay)
+- `go.Binding` at the Part and element level (with converters, TwoWay, dot-path sources)
 - `nodeTemplate` / `linkTemplate` / `groupTemplate` / `nodeTemplateMap` / `linkTemplateMap`
 - `go.Link.Orthogonal`, `go.Shape.RoundedRectangle`, `go.Panel.Auto` enum constants
 - `go.Point.parse`, `go.Rect.parse`, `go.Size.parse`, `go.Margin.parse`

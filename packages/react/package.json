@@ -33,14 +33,18 @@
     "graphojs"
   ],
   "peerDependencies": {
+    "graphojs": ">=0.1.0",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0"
   },
   "scripts": {
-    "build": "tsup && pnpm types",
-    "types": "tsc --emitDeclarationOnly --declaration --declarationDir dist",
+    "build": "tsup && tsc --emitDeclarationOnly --declaration --declarationDir dist --noEmit false",
+    "types": "tsc --emitDeclarationOnly --declaration --declarationDir dist --noEmit false",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "graphojs": "workspace:*"
   }
 }

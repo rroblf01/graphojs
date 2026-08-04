@@ -102,6 +102,22 @@ myDiagram.commit((d) => {
 - `Model.mergeChanges` / `toIncrementalJson` / `applyIncrementalJson` / change log / `toJson` / `isReadOnly`
 - `Binding.ofObject`, `UndoManager.maxHistoryLength` / `isUndoingRedoing`
 
+## Performance
+
+Minified bundle: **~59 KB gzip** (235 KB raw) — smaller than GoJS (~130 KB gzip).
+Tree-shaking works for consumers; importing just `Diagram` yields ~58 KB gzip.
+
+Benchmarks (see `packages/core/test/benchmark.test.ts`):
+
+| Operation | 2000 nodes + 2000 links |
+|---|---|
+| Model sync | ~19 ms (one-time) |
+| Render (per frame) | ~8 ms (~125 FPS budget) |
+| 500 incremental updates | ~1.3 ms |
+
+The render loop skips frames when nothing changed (`isDirty`), and rendering uses
+viewport culling, dirty-rect redraw, Path2D caching, and text-measure caching.
+
 ## Tech Stack
 
 - **TypeScript** 7.0.2

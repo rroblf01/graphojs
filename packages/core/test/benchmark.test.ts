@@ -114,4 +114,40 @@ describe('Large graph performance', () => {
     console.log(`[benchmark] 500 incremental updates in ${elapsed.toFixed(1)}ms`);
     expect(elapsed).toBeLessThan(2000);
   });
+
+  it('renders 2000 nodes + 2000 links within a frame budget', () => {
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    const model = new GraphLinksModel();
+
+    const nodes = [];
+    for (let i = 0; i < 2000; i++) {
+      nodes.push({
+        key: i,
+        x: (i % 50) * 120,
+        y: Math.floor(i / 50) * 80,
+        width: 100,
+        height: 50,
+        label: 'N' + i,
+      });
+    }
+    const links = [];
+    for (let i = 0; i < 2000; i++) {
+      const f = i % 2000;
+      const t = (i * 7 + 1) % 2000;
+      if (f !== t) links.push({ from: f, to: t });
+    }
+    model.nodeDataArray = nodes;
+    model.linkDataArray = links;
+    diagram.model = model;
+
+    const start = performance.now();
+    for (let i = 0; i < 5; i++) (diagram as unknown as { render(): void }).render();
+    const avg = (performance.now() - start) / 5;
+
+    console.log(
+      `[benchmark] avg render ${avg.toFixed(2)}ms for 2000 nodes + ${links.length} links`,
+    );
+    expect(avg).toBeLessThan(50);
+  });
 });

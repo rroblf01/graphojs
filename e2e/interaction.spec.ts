@@ -33,7 +33,9 @@ test('supports interaction: click-select, drag-move, double-click text editing',
   await page.mouse.click(box.x + 60, box.y + 30);
   await page.waitForTimeout(300);
   const selectionLog = await page.evaluate(() =>
-    (document.getElementById('log').textContent || '').split('\n').filter((l) => l.startsWith('selection:')),
+    (document.getElementById('log').textContent || '')
+      .split('\n')
+      .filter((l) => l.startsWith('selection:')),
   );
   expect(selectionLog.length).toBeGreaterThan(0);
   expect(selectionLog.at(-1)).toBe('selection:1');

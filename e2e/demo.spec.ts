@@ -3,7 +3,9 @@ import { test, expect } from '@playwright/test';
 test('demo flowchart renders without errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(`console: ${m.text()}`); });
+  page.on('console', (m) => {
+    if (m.type() === 'error') errors.push(`console: ${m.text()}`);
+  });
 
   await page.goto('/examples/flowchart.html');
   await page.waitForFunction(() => document.querySelector('canvas'), undefined, { timeout: 15000 });

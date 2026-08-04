@@ -333,6 +333,17 @@ export abstract class Model {
     return this._transactionDepth > 0;
   }
 
+  private _isReadOnly = false;
+
+  /** GoJS-compatible: Whether this model is read-only. */
+  get isReadOnly(): boolean {
+    return this._isReadOnly;
+  }
+
+  set isReadOnly(value: boolean) {
+    this._isReadOnly = value;
+  }
+
   private _isValidNode: NodeValidationCallback | null = null;
   private _isValidNodeRemoval: NodeValidationCallback | null = null;
   private _nodeKeyPropertyValidated = true;

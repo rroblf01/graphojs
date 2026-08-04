@@ -939,7 +939,7 @@ export class Diagram {
         const linkKey = part.key;
         const linkData = this._model
           .getLinkDataArray()
-          .find((l) => this._model.getLinkKey(l) === linkKey);
+          .find((l) => this.getLinkKeyOf(l) === linkKey);
         if (!linkData) {
           this.parts.delete(key);
           this.links.delete(linkKey);
@@ -984,8 +984,8 @@ export class Diagram {
     }
 
     // Add/update links
-    for (const linkData of this._model.getLinkDataArray()) {
-      const linkKey = this._model.getLinkKey(linkData);
+    for (const linkData of this.getLinksArray()) {
+      const linkKey = this.getLinkKeyOf(linkData);
       if (linkKey === undefined) continue;
 
       let link = this.links.get(linkKey);
@@ -1070,9 +1070,21 @@ export class Diagram {
   private getDataForPart(part: Part): NodeData | LinkData | undefined {
     if (part instanceof Link) {
       const linkKey = part.key;
-      return this._model.getLinkDataArray().find((l) => this._model.getLinkKey(l) === linkKey);
+      return this.getLinksArray().find((l) => this.getLinkKeyOf(l) === linkKey);
     }
     return this._model.getNodeData(part.key);
+  }
+
+  /** The link data array, or [] when the model has no links (e.g. TreeModel). */
+  private getLinksArray(): LinkData[] {
+    const m = this._model as unknown as { getLinkDataArray?: () => readonly LinkData[] };
+    return m.getLinkDataArray ? [...m.getLinkDataArray()] : [];
+  }
+
+  /** Get a link key, or undefined when the model has no links. */
+  private getLinkKeyOf(linkData: LinkData): NodeKey | undefined {
+    const m = this._model as unknown as { getLinkKey?: (l: LinkData) => NodeKey | undefined };
+    return m.getLinkKey ? m.getLinkKey(linkData) : undefined;
   }
 
   /**
@@ -1116,7 +1128,7 @@ export class Diagram {
       }
       case 'link Removed': {
         if (event.link) {
-          const key = this._model.getLinkKey(event.link);
+          const key = this.getLinkKeyOf(event.link);
           if (key !== undefined) this.removePartByKey(key);
         }
         break;
@@ -1148,7 +1160,7 @@ export class Diagram {
 
   /** Sync a single link data into its visual part (create if needed). */
   private syncLinkFromModel(linkData: LinkData): void {
-    const linkKey = this._model.getLinkKey(linkData);
+    const linkKey = this.getLinkKeyOf(linkData);
     if (linkKey === undefined) return;
 
     let link = this.links.get(linkKey);
@@ -1230,7 +1242,7 @@ export class Diagram {
   }
 
   private createLink(linkData: LinkData): Link {
-    const linkKey = this._model.getLinkKey(linkData);
+    const linkKey = this.getLinkKeyOf(linkData);
     const link = new Link(linkKey as NodeKey, linkData.from, linkData.to);
     link.data = linkData;
 
@@ -1527,7 +1539,7 @@ export class Diagram {
 
   /** GoJS-compatible: Find a link part by its model data object. */
   findLinkForData(data: LinkData): Link | null {
-    const key = this._model.getLinkKey(data);
+    const key = this.getLinkKeyOf(data);
     if (key === undefined) return null;
     return this.links.get(key) ?? null;
   }
@@ -2379,6 +2391,45 @@ export class Diagram {
       rect.width / this._scale,
       rect.height / this._scale,
     );
+  }
+
+  /** GoJS-compatible: Find all nodes that are tree roots (no parent key). */
+  findTreeRoots(): Node[] {
+    const model = this._model as unknown as { getParentKey?: (d: NodeData) => NodeKey | undefined };
+    if (!model.getParentKey) return [];
+    const roots: Node[] = [];
+    for (const [, node] of this.nodes) {
+      const data = node.data;
+      if (data && model.getParentKey(data) === undefined) {
+        roots.push(node);
+      }
+    }
+    return roots;
+  }
+
+  /** GoJS-compatible: Find the tree children of a node. */
+  findTreeChildren(node: Node): Node[] {
+    const model = this._model as unknown as { getParentKey?: (d: NodeData) => NodeKey | undefined };
+    if (!model.getParentKey) return [];
+    const children: Node[] = [];
+    for (const [, other] of this.nodes) {
+      const data = other.data;
+      if (data && model.getParentKey(data) === node.key) {
+        children.push(other);
+      }
+    }
+    return children;
+  }
+
+  /** GoJS-compatible: Find the tree parent of a node, or null. */
+  findTreeParent(node: Node): Node | null {
+    const model = this._model as unknown as { getParentKey?: (d: NodeData) => NodeKey | undefined };
+    if (!model.getParentKey) return null;
+    const data = node.data;
+    if (!data) return null;
+    const parentKey = model.getParentKey(data);
+    if (parentKey === undefined) return null;
+    return this.findNodeForKey(parentKey);
   }
 
   /** Destroy the diagram and clean up resources. */

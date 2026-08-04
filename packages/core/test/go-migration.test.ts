@@ -676,4 +676,30 @@ describe('GoJS Getting Started tutorial migration', () => {
     expect(myDiagram.allowLink).toBe(false);
     expect(myDiagram.allowRelink).toBe(false);
   });
+
+  it('supports tree traversal and model read-only', () => {
+    const myDiagram = createDiagram();
+    const model = new go.TreeModel({
+      nodeDataArray: [
+        { key: 1, name: 'Root' },
+        { key: 2, name: 'Child 1', parent: 1 },
+        { key: 3, name: 'Child 2', parent: 1 },
+      ],
+    });
+    myDiagram.model = model as unknown as go.GraphLinksModel;
+
+    const roots = myDiagram.findTreeRoots();
+    expect(roots.length).toBe(1);
+    expect(roots[0]!.key).toBe(1);
+
+    const children = myDiagram.findTreeChildren(roots[0]!);
+    expect(children.length).toBe(2);
+
+    const parent = myDiagram.findTreeParent(children[0]!);
+    expect(parent?.key).toBe(1);
+
+    expect(model.isReadOnly).toBe(false);
+    model.isReadOnly = true;
+    expect(model.isReadOnly).toBe(true);
+  });
 });

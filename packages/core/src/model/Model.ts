@@ -251,4 +251,21 @@ export abstract class Model {
       return JSON.stringify(node) === JSON.stringify(otherNode);
     });
   }
+
+  /** Create a deep copy of this model. */
+  abstract copy(): Model;
+
+  /** Set a property on any data object (node or link) with change event. */
+  setDataProperty(data: NodeData | LinkData, propertyName: string, value: unknown): void {
+    const oldValue = data[propertyName];
+    data[propertyName] = value;
+
+    this.emit({
+      type: 'property Changed',
+      model: this,
+      propertyName,
+      oldValue,
+      newValue: value,
+    });
+  }
 }

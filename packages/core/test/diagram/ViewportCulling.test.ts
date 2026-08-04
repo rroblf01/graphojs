@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
 import { VirtualizationManager } from '../../src/spatial/VirtualizationManager.ts';
 import { Rect } from '../../src/geometry/Rect.ts';
+import { Node } from '../../src/parts/Node.ts';
 
 function mockContext() {
   return {
@@ -99,10 +100,9 @@ describe('Automatic viewport culling', () => {
     const viz = new VirtualizationManager(new Rect(-1000, -1000, 2000, 2000));
     viz.isEnabled = false;
 
-    const parts = [
-      { bounds: new Rect(0, 0, 10, 10), key: 1 } as any,
-      { bounds: new Rect(5000, 5000, 10, 10), key: 2 } as any,
-    ];
+    const part1 = new Node(1, new Rect(0, 0, 10, 10));
+    const part2 = new Node(2, new Rect(5000, 5000, 10, 10));
+    const parts = [part1, part2];
 
     const viewport = new Rect(-100, -100, 200, 200);
     const result = viz.cull(viewport, parts);
@@ -113,8 +113,8 @@ describe('Automatic viewport culling', () => {
     const viz = new VirtualizationManager(new Rect(-1000, -1000, 12000, 12000));
     viz.isEnabled = true;
 
-    const part1 = { bounds: new Rect(0, 0, 10, 10), key: 1 } as any;
-    const part2 = { bounds: new Rect(5000, 5000, 10, 10), key: 2 } as any;
+    const part1 = new Node(1, new Rect(0, 0, 10, 10));
+    const part2 = new Node(2, new Rect(5000, 5000, 10, 10));
     viz.insert(part1);
     viz.insert(part2);
 
@@ -128,8 +128,8 @@ describe('Automatic viewport culling', () => {
     const viz = new VirtualizationManager(new Rect(-1000, -1000, 12000, 12000));
     viz.isEnabled = true;
 
-    const part1 = { bounds: new Rect(0, 0, 10, 10), key: 1 } as any;
-    const part2 = { bounds: new Rect(100, 100, 10, 10), key: 2 } as any;
+    const part1 = new Node(1, new Rect(0, 0, 10, 10));
+    const part2 = new Node(2, new Rect(100, 100, 10, 10));
 
     viz.insert(part1);
     expect(viz.itemCount).toBe(1);

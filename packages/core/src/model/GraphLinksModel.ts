@@ -283,4 +283,9 @@ export class GraphLinksModel extends Model {
       return JSON.stringify(link) === JSON.stringify(otherLink);
     });
   }
+
+  /** Create a deep copy of this model. */
+  override copy(): GraphLinksModel {
+    return GraphLinksModel.fromJSON(this.toJSON());
+  }
 }

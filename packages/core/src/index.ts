@@ -32,6 +32,16 @@ export { Port, Ports } from './parts/Port.ts';
 export type { PortAlignment } from './parts/Port.ts';
 export type { NodeShape } from './parts/Node.ts';
 export type { LinkRouting, ArrowheadStyle } from './parts/Link.ts';
+export {
+  Adornment,
+  AdornmentShape,
+  AdornmentManager,
+  createSelectionAdornment,
+  createRotationAdornment,
+  createTooltipAdornment,
+  createContextmenuAdornment,
+} from './parts/Adornment.ts';
+export type { AdornmentName, AdornmentType } from './parts/Adornment.ts';
 
 // Data Binding
 export { Binding, bind } from './binding/Binding.ts';
@@ -98,6 +108,10 @@ export { CircularLayout } from './layout/CircularLayout.ts';
 export type { CircularLayoutOptions } from './layout/CircularLayout.ts';
 export { LayeredDigraphLayout } from './layout/LayeredDigraphLayout.ts';
 export type { LayeredDigraphLayoutOptions } from './layout/LayeredDigraphLayout.ts';
+export { GridLayout } from './layout/GridLayout.ts';
+export type { GridLayoutOptions } from './layout/GridLayout.ts';
+export { SpotLayout } from './layout/SpotLayout.ts';
+export type { SpotLayoutOptions } from './layout/SpotLayout.ts';
 
 // Serialization
 export { Serializer } from './serialization/Serializer.ts';
@@ -154,6 +168,7 @@ export {
   createPathCache,
   createTextMeasureCache,
 } from './render/RenderCache.ts';
+export { LinkPathCache, CanvasPool, throttle, debounce } from './render/PerformanceCache.ts';
 
 // Panels
 export { GraphObject } from './panel/GraphObject.ts';

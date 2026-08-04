@@ -220,4 +220,9 @@ export class TreeModel extends Model {
     }
     return model;
   }
+
+  /** Create a deep copy of this model. */
+  override copy(): TreeModel {
+    return TreeModel.fromJSON(this.toJSON());
+  }
 }

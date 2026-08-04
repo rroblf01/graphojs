@@ -3,6 +3,7 @@ import type { NodeKey, NodeData } from '../model/Model.ts';
 import type { Binding } from '../binding/Binding.ts';
 import type { Group } from './Group.ts';
 import type { Layer } from '../layer/Layer.ts';
+import type { Adornment, AdornmentName } from './Adornment.ts';
 
 /**
  * Base class for all visual parts in a diagram.
@@ -24,6 +25,10 @@ export abstract class Part {
   private _layer: Layer | null = null;
   private _tooltip: string = '';
   private _tooltipVisible = false;
+  private _adornments: Map<AdornmentName, Adornment> = new Map();
+  private _draggable = true;
+  private _resizable = true;
+  private _rotatable = true;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -161,6 +166,59 @@ export abstract class Part {
     this._tooltipVisible = value;
   }
 
+  /** Whether this part can be dragged. */
+  get draggable(): boolean {
+    return this._draggable;
+  }
+
+  set draggable(value: boolean) {
+    this._draggable = value;
+  }
+
+  /** Whether this part can be resized. */
+  get resizable(): boolean {
+    return this._resizable;
+  }
+
+  set resizable(value: boolean) {
+    this._resizable = value;
+  }
+
+  /** Whether this part can be rotated. */
+  get rotatable(): boolean {
+    return this._rotatable;
+  }
+
+  set rotatable(value: boolean) {
+    this._rotatable = value;
+  }
+
+  /** Get all adornments on this part. */
+  get adornments(): ReadonlyMap<AdornmentName, Adornment> {
+    return this._adornments;
+  }
+
+  /** Get a specific adornment by name. */
+  findAdornment(name: AdornmentName): Adornment | undefined {
+    return this._adornments.get(name);
+  }
+
+  /** Add an adornment to this part. */
+  addAdornment(name: AdornmentName, adornment: Adornment): void {
+    adornment.adornedPart = this;
+    this._adornments.set(name, adornment);
+  }
+
+  /** Remove an adornment from this part. */
+  removeAdornment(name: AdornmentName): boolean {
+    return this._adornments.delete(name);
+  }
+
+  /** Remove all adornments from this part. */
+  clearAdornments(): void {
+    this._adornments.clear();
+  }
+
   /** Get all bindings on this part. */
   get bindings(): readonly Binding[] {
     return this._bindings;
@@ -230,5 +288,29 @@ export abstract class Part {
   /** Get the size. */
   get size(): { width: number; height: number } {
     return { width: this._bounds.width, height: this._bounds.height };
+  }
+
+  /** Create a deep copy of this part. */
+  copy(): this {
+    const cloned = Object.create(Object.getPrototypeOf(this)) as this;
+    cloned._key = this._key;
+    cloned._bounds = this._bounds.clone();
+    cloned._visible = this._visible;
+    cloned._selectable = this._selectable;
+    cloned._isSelected = this._isSelected;
+    cloned._opacity = this._opacity;
+    cloned._fill = this._fill;
+    cloned._stroke = this._stroke;
+    cloned._strokeWidth = this._strokeWidth;
+    cloned._zOrder = this._zOrder;
+    cloned._angle = this._angle;
+    cloned._tooltip = this._tooltip;
+    cloned._tooltipVisible = this._tooltipVisible;
+    cloned._draggable = this._draggable;
+    cloned._resizable = this._resizable;
+    cloned._rotatable = this._rotatable;
+    cloned._bindings = this._bindings.map((b) => b.copy());
+    cloned._adornments = new Map();
+    return cloned;
   }
 }

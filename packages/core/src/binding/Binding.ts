@@ -135,6 +135,15 @@ export class Binding {
       this._twoWay === other._twoWay
     );
   }
+
+  /** Create a deep copy of this binding. */
+  copy(): Binding {
+    const cloned = new Binding(this._targetProperty, this._sourceProperty);
+    cloned._twoWay = this._twoWay;
+    cloned._converter = this._converter;
+    cloned._backConverter = this._backConverter;
+    return cloned;
+  }
 }
 
 /**

@@ -6,6 +6,7 @@ import type { Node } from '../parts/Node.ts';
 import type { Renderer } from './Renderer.ts';
 import type { Panel } from '../panel/Panel.ts';
 import { PathCache, TextMeasureCache } from './RenderCache.ts';
+import { LinkPathCache } from './PerformanceCache.ts';
 import { routeOrthogonal, routeCurved, routeStraight, computeLabelPosition } from './LinkRouter.ts';
 
 /**
@@ -22,6 +23,7 @@ export class Canvas2DRenderer implements Renderer {
   private useDirtyRects = false;
   private pathCache: PathCache = new PathCache();
   private textMeasureCache: TextMeasureCache = new TextMeasureCache();
+  private linkPathCache: LinkPathCache = new LinkPathCache();
   private labelsVisible = true;
   private nodeBoundsMap = new Map<string | number, RectClass>();
 
@@ -307,22 +309,47 @@ export class Canvas2DRenderer implements Renderer {
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
 
-    // Compute path points based on routing style
+    // Check cache first
     let points = link.pathPoints;
     if (points.length === 0) {
-      // Auto-compute routing from port positions and node bounds
-      const fromNode = this.getNodeBounds(link.fromKey);
-      const toNode = this.getNodeBounds(link.toKey);
+      // Try cache
+      const cached = this.linkPathCache.get(
+        link.fromKey,
+        link.toKey,
+        link.routing,
+        link.corner,
+        link.fromPort,
+        link.toPort,
+      );
 
-      switch (link.routing) {
-        case 'orthogonal':
-          points = routeOrthogonal(link.fromPort, link.toPort, fromNode, toNode, link.corner);
-          break;
-        case 'curved':
-          points = routeCurved(link.fromPort, link.toPort, fromNode, toNode);
-          break;
-        default:
-          points = routeStraight(link.fromPort, link.toPort);
+      if (cached) {
+        points = cached;
+      } else {
+        // Compute routing from port positions and node bounds
+        const fromNode = this.getNodeBounds(link.fromKey);
+        const toNode = this.getNodeBounds(link.toKey);
+
+        switch (link.routing) {
+          case 'orthogonal':
+            points = routeOrthogonal(link.fromPort, link.toPort, fromNode, toNode, link.corner);
+            break;
+          case 'curved':
+            points = routeCurved(link.fromPort, link.toPort, fromNode, toNode);
+            break;
+          default:
+            points = routeStraight(link.fromPort, link.toPort);
+        }
+
+        // Cache the computed path
+        this.linkPathCache.set(
+          link.fromKey,
+          link.toKey,
+          link.routing,
+          link.corner,
+          link.fromPort,
+          link.toPort,
+          points,
+        );
       }
       link.setPathPoints(points);
     }

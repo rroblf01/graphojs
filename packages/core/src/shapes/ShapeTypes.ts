@@ -45,7 +45,28 @@ export type ShapeType =
   | 'kite'
   | 'club'
   | 'spade'
-  | 'piePiece';
+  | 'piePiece'
+  | 'file'
+  | 'folder'
+  | 'terminator'
+  | 'planner'
+  | 'internalStorage'
+  | 'externalStorage'
+  | 'sequentialAccessStorage'
+  | 'directAccessStorage'
+  | 'collate'
+  | 'manualInput'
+  | 'preparation'
+  | 'loopLimit'
+  | 'database'
+  | 'subroutine'
+  | 'sort'
+  | 'doubleChevron'
+  | 'halfCircle'
+  | 'rightTriangle'
+  | 'plus2'
+  | 'rect2'
+  | 'tabbedRectangle';
 
 /**
  * Shape definition with drawing instructions.
@@ -414,6 +435,174 @@ export const SHAPES: Record<ShapeType, ShapeDefinition> = {
     resizable: true,
     hasPorts: true,
   },
+  file: {
+    type: 'file',
+    name: 'File',
+    defaultWidth: 80,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  folder: {
+    type: 'folder',
+    name: 'Folder',
+    defaultWidth: 120,
+    defaultHeight: 80,
+    resizable: true,
+    hasPorts: true,
+  },
+  terminator: {
+    type: 'terminator',
+    name: 'Terminator',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  planner: {
+    type: 'planner',
+    name: 'Planner',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  internalStorage: {
+    type: 'internalStorage',
+    name: 'Internal Storage',
+    defaultWidth: 60,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  externalStorage: {
+    type: 'externalStorage',
+    name: 'External Storage',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  sequentialAccessStorage: {
+    type: 'sequentialAccessStorage',
+    name: 'Sequential Access Storage',
+    defaultWidth: 60,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  directAccessStorage: {
+    type: 'directAccessStorage',
+    name: 'Direct Access Storage',
+    defaultWidth: 60,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  collate: {
+    type: 'collate',
+    name: 'Collate',
+    defaultWidth: 120,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  manualInput: {
+    type: 'manualInput',
+    name: 'Manual Input',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  preparation: {
+    type: 'preparation',
+    name: 'Preparation',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  loopLimit: {
+    type: 'loopLimit',
+    name: 'Loop Limit',
+    defaultWidth: 100,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  database: {
+    type: 'database',
+    name: 'Database',
+    defaultWidth: 80,
+    defaultHeight: 80,
+    resizable: true,
+    hasPorts: true,
+  },
+  subroutine: {
+    type: 'subroutine',
+    name: 'Subroutine',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  sort: {
+    type: 'sort',
+    name: 'Sort',
+    defaultWidth: 60,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  doubleChevron: {
+    type: 'doubleChevron',
+    name: 'Double Chevron',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  halfCircle: {
+    type: 'halfCircle',
+    name: 'Half Circle',
+    defaultWidth: 120,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  rightTriangle: {
+    type: 'rightTriangle',
+    name: 'Right Triangle',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  plus2: {
+    type: 'plus2',
+    name: 'Plus 2',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  rect2: {
+    type: 'rect2',
+    name: 'Rect 2',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  tabbedRectangle: {
+    type: 'tabbedRectangle',
+    name: 'Tabbed Rectangle',
+    defaultWidth: 120,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
 };
 
 /**
@@ -535,4 +724,25 @@ const GOJS_FIGURE_ALIASES: Record<string, ShapeType> = {
   club: 'club',
   spade: 'spade',
   piepiece: 'piePiece',
+  file: 'file',
+  folder: 'folder',
+  terminator: 'terminator',
+  planner: 'planner',
+  internalstorage: 'internalStorage',
+  externalstorage: 'externalStorage',
+  sequentialaccessstorage: 'sequentialAccessStorage',
+  directaccessstorage: 'directAccessStorage',
+  collate: 'collate',
+  manualinput: 'manualInput',
+  preparation: 'preparation',
+  looplimit: 'loopLimit',
+  database: 'database',
+  subroutine: 'subroutine',
+  sort: 'sort',
+  doublechevron: 'doubleChevron',
+  halfcircle: 'halfCircle',
+  righttriangle: 'rightTriangle',
+  plus2: 'plus2',
+  rect2: 'rect2',
+  tabbedrectangle: 'tabbedRectangle',
 };

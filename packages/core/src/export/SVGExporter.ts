@@ -3,6 +3,9 @@ import { Group } from '../parts/Group.ts';
 import { Link } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
 import { LayerNames } from '../layer/Layer.ts';
+import { Panel } from '../panel/Panel.ts';
+import { Shape } from '../panel/Shape.ts';
+import { TextBlock } from '../panel/TextBlock.ts';
 
 /**
  * SVG exporter for diagrams.
@@ -128,6 +131,13 @@ export class SVGExporter {
   }
 
   private exportNode(node: Node): string {
+    // Render the node's visual tree (template) when it has a panel
+    if (node.panel) {
+      const panelSvg = this.renderPanelToSvg(node.panel, node.bounds.x, node.bounds.y);
+      const grouped = [`${this.indent}<g>`, ...panelSvg, `${this.indent}</g>`];
+      return grouped.join('\n');
+    }
+
     const { x, y, width, height } = node.bounds;
     const fill = node.fill;
     const stroke = node.stroke;
@@ -181,6 +191,55 @@ export class SVGExporter {
       element += `\n${this.indent}<text ${labelAttrs.join(' ')}>${this.escapeXml(node.label)}</text>`;
     }
 
+    return element;
+  }
+
+  /** Render a node's visual tree (template) as SVG when it has a panel. */
+  private renderPanelToSvg(panel: Panel, x: number, y: number): string[] {
+    const out: string[] = [];
+    for (const el of panel.elements) {
+      const ex = x + el.position.x;
+      const ey = y + el.position.y;
+      const ew = el.actualSize.width || el.width || 1;
+      const eh = el.actualSize.height || el.height || 1;
+
+      if (el instanceof Shape) {
+        out.push(this.exportPanelShape(el, ex, ey, ew, eh));
+      } else if (el instanceof TextBlock) {
+        out.push(
+          `${this.indent}<text x="${ex + ew / 2}" y="${ey + eh / 2}" text-anchor="middle" dominant-baseline="central" fill="${el.color}" font="${el.font}">${this.escapeXml(el.text)}</text>`,
+        );
+      } else if (el instanceof Panel) {
+        out.push(...this.renderPanelToSvg(el, ex, ey));
+      }
+    }
+    return out;
+  }
+
+  private exportPanelShape(
+    shape: Shape,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): string {
+    const fill = shape.fill;
+    const stroke = shape.stroke;
+    const strokeWidth = shape.strokeWidth;
+    let element: string;
+    switch (shape.shape) {
+      case 'ellipse':
+      case 'circle':
+        element = `${this.indent}<ellipse cx="${x + width / 2}" cy="${y + height / 2}" rx="${width / 2}" ry="${height / 2}"`;
+        break;
+      case 'roundedRect':
+        element = `${this.indent}<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="${shape.cornerRadius || Math.min(width, height) * 0.1}"`;
+        break;
+      default:
+        element = `${this.indent}<rect x="${x}" y="${y}" width="${width}" height="${height}"`;
+        break;
+    }
+    element += ` fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" />`;
     return element;
   }
 

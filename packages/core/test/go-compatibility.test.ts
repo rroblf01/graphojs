@@ -118,19 +118,31 @@ describe('GoJS Compatibility', () => {
   });
 
   describe('Part.location', () => {
-    it('should return a Point', () => {
+    it('should return a Point at the locationSpot (center by default)', () => {
       const node = Node.fromPosAndSize(1, 10, 20, 100, 50);
       const loc = node.location;
       expect(loc).toBeInstanceOf(Point);
-      expect(loc.x).toBe(10);
-      expect(loc.y).toBe(20);
+      // Default locationSpot (0.5, 0.5) means location is the center
+      expect(loc.x).toBe(60);
+      expect(loc.y).toBe(45);
     });
 
-    it('should set location from Point', () => {
+    it('should set location from Point using locationSpot', () => {
       const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
       node.location = new Point(50, 60);
-      expect(node.bounds.x).toBe(50);
-      expect(node.bounds.y).toBe(60);
+      // Center lands at (50,60): bounds.x = 50 - 50 = 0, bounds.y = 60 - 25 = 35
+      expect(node.bounds.x).toBe(0);
+      expect(node.bounds.y).toBe(35);
+      expect(node.location.x).toBe(50);
+      expect(node.location.y).toBe(60);
+    });
+
+    it('should honor a custom locationSpot', () => {
+      const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
+      node.locationSpot = { x: 0, y: 0 }; // top-left
+      node.location = new Point(10, 20);
+      expect(node.bounds.x).toBe(10);
+      expect(node.bounds.y).toBe(20);
     });
   });
 

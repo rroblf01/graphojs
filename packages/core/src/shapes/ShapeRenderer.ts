@@ -150,7 +150,213 @@ export class ShapeRenderer {
       case 'piePiece':
         this.renderPiePiece(x, y, width, height);
         break;
+      case 'file':
+        this.renderFile(x, y, width, height);
+        break;
+      case 'folder':
+        this.renderFolder(x, y, width, height);
+        break;
+      case 'terminator':
+        this.renderRoundedRect(x, y, width, height, Math.min(width, height) * 0.5);
+        break;
+      case 'planner':
+        this.renderPlanner(x, y, width, height);
+        break;
+      case 'internalStorage':
+        this.renderInternalStorage(x, y, width, height);
+        break;
+      case 'externalStorage':
+        this.renderExternalStorage(x, y, width, height);
+        break;
+      case 'sequentialAccessStorage':
+        this.renderSequentialAccess(x, y, width, height);
+        break;
+      case 'directAccessStorage':
+        this.renderDirectAccess(x, y, width, height);
+        break;
+      case 'collate':
+        this.renderCollate(x, y, width, height);
+        break;
+      case 'manualInput':
+        this.renderManualInput(x, y, width, height);
+        break;
+      case 'preparation':
+        this.renderPreparation(x, y, width, height);
+        break;
+      case 'loopLimit':
+        this.renderLoopLimit(x, y, width, height);
+        break;
+      case 'database':
+        this.renderDatabase(x, y, width, height);
+        break;
+      case 'subroutine':
+        this.renderRoundedRect(x, y, width, height, 8);
+        break;
+      case 'sort':
+        this.renderSort(x, y, width, height);
+        break;
+      case 'doubleChevron':
+        this.renderDoubleChevron(x, y, width, height);
+        break;
+      case 'halfCircle':
+        this.renderHalfCircle(x, y, width, height);
+        break;
+      case 'rightTriangle':
+        this.renderRightTriangle(x, y, width, height);
+        break;
+      case 'plus2':
+        this.renderPlus(x, y, width, height);
+        break;
+      case 'rect2':
+        this.ctx.rect(x, y, width, height);
+        break;
+      case 'tabbedRectangle':
+        this.renderTabbedRectangle(x, y, width, height);
+        break;
     }
+  }
+
+  private renderFile(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + width * 0.8, y);
+    this.ctx.lineTo(x + width, y + height * 0.3);
+    this.ctx.lineTo(x + width, y + height);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderFolder(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + width * 0.3, y);
+    this.ctx.lineTo(x + width * 0.4, y + height * 0.2);
+    this.ctx.lineTo(x + width, y + height * 0.2);
+    this.ctx.lineTo(x + width, y + height);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderPlanner(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y + height * 0.25);
+    this.ctx.lineTo(x + width * 0.25, y);
+    this.ctx.lineTo(x + width * 0.75, y);
+    this.ctx.lineTo(x + width, y + height * 0.25);
+    this.ctx.lineTo(x + width, y + height);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderInternalStorage(x: number, y: number, width: number, height: number): void {
+    this.ctx.rect(x, y, width, height);
+    this.ctx.moveTo(x + width * 0.5, y);
+    this.ctx.lineTo(x + width * 0.5, y + height);
+  }
+
+  private renderExternalStorage(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x + width * 0.25, y);
+    this.ctx.lineTo(x + width, y);
+    this.ctx.lineTo(x + width, y + height);
+    this.ctx.lineTo(x + width * 0.25, y + height);
+    this.ctx.quadraticCurveTo(x, y + height * 0.5, x + width * 0.25, y);
+    this.ctx.closePath();
+  }
+
+  private renderSequentialAccess(x: number, y: number, width: number, height: number): void {
+    this.ctx.rect(x, y, width, height);
+    this.ctx.moveTo(x + width * 0.5, y);
+    this.ctx.lineTo(x + width * 0.5, y + height);
+  }
+
+  private renderDirectAccess(x: number, y: number, width: number, height: number): void {
+    this.ctx.rect(x, y, width, height);
+    this.ctx.moveTo(x + width * 0.25, y);
+    this.ctx.lineTo(x + width * 0.25, y + height);
+    this.ctx.moveTo(x + width * 0.75, y);
+    this.ctx.lineTo(x + width * 0.75, y + height);
+  }
+
+  private renderCollate(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x + width * 0.5, y);
+    this.ctx.lineTo(x + width, y + height * 0.5);
+    this.ctx.lineTo(x + width * 0.5, y + height);
+    this.ctx.lineTo(x, y + height * 0.5);
+    this.ctx.closePath();
+  }
+
+  private renderManualInput(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + width, y);
+    this.ctx.lineTo(x + width * 0.7, y + height);
+    this.ctx.lineTo(x + width * 0.3, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderPreparation(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y + height * 0.5);
+    this.ctx.lineTo(x + width * 0.5, y);
+    this.ctx.lineTo(x + width, y + height * 0.5);
+    this.ctx.lineTo(x + width * 0.5, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderLoopLimit(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + width * 0.3, y);
+    this.ctx.lineTo(x + width, y + height * 0.5);
+    this.ctx.lineTo(x + width * 0.3, y + height);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.quadraticCurveTo(x + width * 0.2, y + height * 0.5, x, y);
+    this.ctx.closePath();
+  }
+
+  private renderDatabase(x: number, y: number, width: number, height: number): void {
+    const rx = width / 2;
+    this.ctx.ellipse(x + width / 2, y + height * 0.2, rx, height * 0.15, 0, 0, 2 * Math.PI);
+    this.ctx.moveTo(x, y + height * 0.2);
+    this.ctx.lineTo(x, y + height * 0.8);
+    this.ctx.ellipse(x + width / 2, y + height * 0.8, rx, height * 0.15, 0, Math.PI, 0, true);
+    this.ctx.moveTo(x + width, y + height * 0.2);
+    this.ctx.lineTo(x + width, y + height * 0.8);
+  }
+
+  private renderSort(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x + width * 0.5, y);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.lineTo(x + width, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderDoubleChevron(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + width * 0.4, y + height * 0.5);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.moveTo(x + width * 0.4, y);
+    this.ctx.lineTo(x + width, y + height * 0.5);
+    this.ctx.lineTo(x + width * 0.4, y + height);
+  }
+
+  private renderHalfCircle(x: number, y: number, width: number, height: number): void {
+    this.ctx.arc(
+      x + width / 2,
+      y + height / 2,
+      Math.min(width, height) / 2,
+      Math.PI / 2,
+      (3 * Math.PI) / 2,
+    );
+  }
+
+  private renderRightTriangle(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + width, y + height);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderTabbedRectangle(x: number, y: number, width: number, height: number): void {
+    this.ctx.rect(x, y + height * 0.2, width, height * 0.8);
+    this.ctx.moveTo(x, y + height * 0.2);
+    this.ctx.lineTo(x, y);
+    this.ctx.lineTo(x + width * 0.3, y);
+    this.ctx.lineTo(x + width * 0.35, y + height * 0.2);
   }
 
   private renderX(x: number, y: number, width: number, height: number): void {

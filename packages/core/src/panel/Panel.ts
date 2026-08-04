@@ -40,6 +40,11 @@ export class Panel extends GraphObject {
   private _columnCount = 0;
   private _gradient: CanvasGradient | null = null;
 
+  /** GoJS-compatible: Explicit row heights for Table panels (in the panel's coordinate space). */
+  rowDefinitions: Array<{ height?: number; separatorStrokeWidth?: number }> = [];
+  /** GoJS-compatible: Explicit column widths for Table panels. */
+  columnDefinitions: Array<{ width?: number; separatorStrokeWidth?: number }> = [];
+
   // GoJS-compatible data panels
   private _itemArray: unknown[] = [];
   private _itemTemplate: GraphObject | null = null;
@@ -354,10 +359,15 @@ export class Panel extends GraphObject {
       const row = data.row ?? 0;
       const col = data.column ?? 0;
       const s = el.measureWithMargin();
-      if (col >= 0 && col < colWidths.length)
-        colWidths[col] = Math.max(colWidths[col] ?? 0, s.width);
-      if (row >= 0 && row < rowHeights.length)
-        rowHeights[row] = Math.max(rowHeights[row] ?? 0, s.height);
+      // Honor explicit columnDefinitions/rowDefinitions widths/heights
+      if (col >= 0 && col < colWidths.length) {
+        const def = this.columnDefinitions[col];
+        colWidths[col] = Math.max(colWidths[col] ?? 0, def?.width ?? 0, s.width);
+      }
+      if (row >= 0 && row < rowHeights.length) {
+        const def = this.rowDefinitions[row];
+        rowHeights[row] = Math.max(rowHeights[row] ?? 0, def?.height ?? 0, s.height);
+      }
     }
 
     const totalW = colWidths.reduce((a, b) => a + (b ?? 0), 0);
@@ -590,10 +600,12 @@ export class Panel extends GraphObject {
       const col = data.column ?? 0;
       const s = el.measureWithMargin();
       if (col >= 0 && col < colWidths.length) {
-        colWidths[col] = Math.max(colWidths[col] ?? 0, s.width);
+        const def = this.columnDefinitions[col];
+        colWidths[col] = Math.max(colWidths[col] ?? 0, def?.width ?? 0, s.width);
       }
       if (row >= 0 && row < rowHeights.length) {
-        rowHeights[row] = Math.max(rowHeights[row] ?? 0, s.height);
+        const def = this.rowDefinitions[row];
+        rowHeights[row] = Math.max(rowHeights[row] ?? 0, def?.height ?? 0, s.height);
       }
     }
 

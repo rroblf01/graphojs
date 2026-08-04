@@ -58,6 +58,16 @@ export class Shape extends GraphObject {
   static readonly Club = 'club';
   static readonly Spade = 'spade';
   static readonly PiePiece = 'piePiece';
+  static readonly File = 'file';
+  static readonly Folder = 'folder';
+  static readonly Terminator = 'terminator';
+  static readonly Planner = 'planner';
+  static readonly Database = 'database';
+  static readonly Subroutine = 'subroutine';
+  static readonly DoubleChevron = 'doubleChevron';
+  static readonly HalfCircle = 'halfCircle';
+  static readonly RightTriangle = 'rightTriangle';
+  static readonly TabbedRectangle = 'tabbedRectangle';
 
   private _shape: ShapeType = 'rect';
   private _fill = '#cccccc';

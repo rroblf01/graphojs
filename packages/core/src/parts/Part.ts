@@ -37,6 +37,7 @@ export abstract class Part {
   protected _panel: Panel | null = null;
   private _locationSpot: { x: number; y: number } = { x: 0.5, y: 0.5 };
   private _data: NodeData | null = null;
+  private _category = '';
   private _dragAlpha = 1;
   private _isInDocumentBounds = true;
 
@@ -130,16 +131,25 @@ export abstract class Part {
     this._angle = value;
   }
 
-  /** GoJS-compatible: The location (position) of this part. */
+  /**
+   * GoJS-compatible: The location point of this part — the point within the
+   * bounds at `locationSpot`. With the default locationSpot (0.5, 0.5) this
+   * is the center; changing locationSpot moves the part so the spot stays put.
+   */
   get location(): Point {
-    return new Point(this._bounds.x, this._bounds.y);
+    const spot = this._locationSpot;
+    return new Point(
+      this._bounds.x + this._bounds.width * spot.x,
+      this._bounds.y + this._bounds.height * spot.y,
+    );
   }
 
   set location(value: Point) {
+    const spot = this._locationSpot;
     this._bounds = {
       ...this._bounds,
-      x: value.x,
-      y: value.y,
+      x: value.x - this._bounds.width * spot.x,
+      y: value.y - this._bounds.height * spot.y,
     } as Rect;
   }
 
@@ -168,6 +178,15 @@ export abstract class Part {
 
   set data(value: NodeData | null) {
     this._data = value;
+  }
+
+  /** GoJS-compatible: The category of this part (used to select a template). */
+  get category(): string {
+    return this._category;
+  }
+
+  set category(value: string) {
+    this._category = value;
   }
 
   /** GoJS-compatible: The opacity used when this part is being dragged. */

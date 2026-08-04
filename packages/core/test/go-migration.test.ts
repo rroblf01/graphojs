@@ -218,4 +218,79 @@ describe('GoJS Getting Started tutorial migration', () => {
     expect(m.bottom).toBe(5);
     expect(m.left).toBe(5);
   });
+
+  it('constructs a GraphLinksModel with options (GoJS pattern)', () => {
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, name: 'A', x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, name: 'B', x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    expect(model.nodeDataArray.length).toBe(2);
+    expect(model.linkDataArray.length).toBe(1);
+  });
+
+  it('supports diagram read-only and interaction flags', () => {
+    const myDiagram = createDiagram();
+    myDiagram.isReadOnly = true;
+    expect(myDiagram.isReadOnly).toBe(true);
+    myDiagram.allowMove = false;
+    expect(myDiagram.allowMove).toBe(false);
+    myDiagram.allowCopy = false;
+    expect(myDiagram.allowCopy).toBe(false);
+    myDiagram.isEnabled = false;
+    expect(myDiagram.isEnabled).toBe(false);
+    // Restore for cleanup
+    myDiagram.isEnabled = true;
+    myDiagram.isReadOnly = false;
+  });
+
+  it('enforces read-only in the command handler', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel();
+    model.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
+    myDiagram.model = model;
+    myDiagram.select(myDiagram.getPart(1) as never);
+
+    myDiagram.isReadOnly = true;
+    expect(myDiagram.commandHandler.deleteSelection()).toBe(false);
+
+    myDiagram.isReadOnly = false;
+    expect(myDiagram.commandHandler.deleteSelection()).toBe(true);
+  });
+
+  it('buffers model changed events within transactions', () => {
+    const model = new go.GraphLinksModel();
+    let eventCount = 0;
+    model.addChangedListener(() => eventCount++);
+
+    model.startTransaction('batch');
+    model.addNode({ key: 1, x: 0, y: 0, width: 100, height: 50 });
+    model.addNode({ key: 2, x: 200, y: 0, width: 100, height: 50 });
+    // Events buffered
+    expect(eventCount).toBe(0);
+    model.commitTransaction('batch');
+    expect(eventCount).toBe(2);
+  });
+
+  it('exposes part.data with model data reference', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel();
+    const data = { key: 1, name: 'Alpha', x: 0, y: 0, width: 100, height: 50 };
+    model.nodeDataArray = [data];
+    myDiagram.model = model;
+
+    const node = myDiagram.getPart(1) as import('../src/parts/Node.ts').Node;
+    expect(node.data).toBe(data);
+  });
+
+  it('constructs a Diagram from a div id string', () => {
+    const div = document.createElement('div');
+    div.id = 'my-diagram-div';
+    document.body.appendChild(div);
+    const d = new go.Diagram('my-diagram-div');
+    diagrams.push(d);
+    expect(d).toBeInstanceOf(go.Diagram);
+  });
 });

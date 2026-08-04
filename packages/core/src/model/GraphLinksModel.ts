@@ -15,6 +15,19 @@ export class GraphLinksModel extends Model {
   private linkKeyProperty = 'key';
   private linkKeyCounter = 1;
 
+  /** GoJS-compatible: options object. */
+  constructor(options?: {
+    nodeDataArray?: NodeData[];
+    linkDataArray?: LinkData[];
+    nodeKeyProperty?: string;
+    linkKeyProperty?: string;
+  }) {
+    super(options?.nodeKeyProperty);
+    if (options?.nodeDataArray) this.nodeDataArray = [...options.nodeDataArray];
+    if (options?.linkDataArray) this.linkDataArray = [...options.linkDataArray];
+    if (options?.linkKeyProperty) this.linkKeyProperty = options.linkKeyProperty;
+  }
+
   /** Get the link key property name. */
   getLinkKeyProperty(): string {
     return this.linkKeyProperty;

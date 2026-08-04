@@ -40,8 +40,16 @@ export class CommandHandler {
     return this.clipboard.length > 0;
   }
 
+  /** Whether mutating commands are allowed (diagram enabled and not read-only). */
+  private canModify(): boolean {
+    const enabled = (this.diagram as unknown as { isEnabled?: boolean }).isEnabled !== false;
+    const readOnly = (this.diagram as unknown as { isReadOnly?: boolean }).isReadOnly === true;
+    return enabled && !readOnly;
+  }
+
   /** Delete the currently selected parts (undoable). */
   deleteSelection(): boolean {
+    if (!this.canModify()) return false;
     const selected = this.diagram.getSelectedParts();
     if (selected.length === 0) return false;
 
@@ -134,12 +142,14 @@ export class CommandHandler {
 
   /** Cut the selected parts (copy + delete). */
   cutSelection(): boolean {
+    if (!this.canModify()) return false;
     if (!this.copySelection()) return false;
     return this.deleteSelectionNoUndo();
   }
 
   /** Paste the clipboard into the diagram (undoable). */
   pasteClipboard(offset = 20): boolean {
+    if (!this.canModify()) return false;
     if (this.clipboard.length === 0) return false;
 
     const model = this.diagram.getModel();
@@ -223,6 +233,7 @@ export class CommandHandler {
 
   /** GoJS-compatible: Nudge the selected parts by the given deltas (arrow keys). */
   nudgeSelection(dx: number, dy: number, scale = 1): boolean {
+    if (!this.canModify()) return false;
     const nodes = this.getSelectedNodes();
     if (nodes.length === 0) return false;
 
@@ -247,6 +258,7 @@ export class CommandHandler {
 
   /** Align selected nodes (needs at least 2). Returns true if aligned. */
   align(alignment: Alignment): boolean {
+    if (!this.canModify()) return false;
     const nodes = this.getSelectedNodes();
     if (nodes.length < 2) return false;
 
@@ -323,6 +335,7 @@ export class CommandHandler {
 
   /** Distribute selected nodes evenly along the horizontal axis. Returns true if done. */
   distributeHorizontally(): boolean {
+    if (!this.canModify()) return false;
     const nodes = this.getSelectedNodes();
     if (nodes.length < 3) return false;
 
@@ -355,6 +368,7 @@ export class CommandHandler {
 
   /** Distribute selected nodes evenly along the vertical axis. Returns true if done. */
   distributeVertically(): boolean {
+    if (!this.canModify()) return false;
     const nodes = this.getSelectedNodes();
     if (nodes.length < 3) return false;
 
@@ -387,6 +401,7 @@ export class CommandHandler {
 
   /** Bring the selected parts to the front (highest z-order in their layer). */
   bringToFront(): boolean {
+    if (!this.canModify()) return false;
     const selected = this.diagram.getSelectedParts();
     if (selected.length === 0) return false;
 
@@ -417,6 +432,7 @@ export class CommandHandler {
 
   /** Send the selected parts to the back (lowest z-order in their layer). */
   sendToBack(): boolean {
+    if (!this.canModify()) return false;
     const selected = this.diagram.getSelectedParts();
     if (selected.length === 0) return false;
 
@@ -455,6 +471,7 @@ export class CommandHandler {
   }
 
   private changeZOrder(delta: number): boolean {
+    if (!this.canModify()) return false;
     const selected = this.diagram.getSelectedParts();
     if (selected.length === 0) return false;
 

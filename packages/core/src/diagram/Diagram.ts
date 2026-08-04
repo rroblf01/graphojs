@@ -100,6 +100,17 @@ export class Diagram {
   private layerCache: LayerCache | null = null;
   private layerCacheEnabled = false;
   private tooltipManager: TooltipManager | null = null;
+
+  // GoJS-compatible interaction flags
+  private _isReadOnly = false;
+  private _allowMove = true;
+  private _allowCopy = true;
+  private _allowDelete = true;
+  private _allowDrop = true;
+  private _allowZoom = true;
+  private _allowHorizontalScroll = true;
+  private _allowVerticalScroll = true;
+  private _isEnabled = true;
   private backBuffer: HTMLCanvasElement | null = null;
   private backBufferEnabled = false;
   private hitIndex: QuadTree<Part> | null = null;
@@ -131,16 +142,23 @@ export class Diagram {
   private _nodeTemplateMap: Map<string, Panel> = new Map();
   private _linkTemplateMap: Map<string, Panel> = new Map();
 
-  constructor(options: DiagramOptions | HTMLDivElement) {
-    // GoJS-compatible: accept an element directly (duck-typed for robustness)
-    const isElement =
+  constructor(options: DiagramOptions | HTMLDivElement | string) {
+    // GoJS-compatible: accept an element, a string div id, or an options object
+    let resolvedOptions: DiagramOptions;
+    if (typeof options === 'string') {
+      const el = document.getElementById(options);
+      if (!el) throw new Error(`No element found with id "${options}"`);
+      resolvedOptions = { div: el as HTMLDivElement };
+    } else if (
       typeof options === 'object' &&
       options !== null &&
       'appendChild' in (options as object) &&
-      !('div' in (options as object));
-    const resolvedOptions: DiagramOptions = isElement
-      ? ({ div: options as HTMLDivElement } as DiagramOptions)
-      : (options as DiagramOptions);
+      !('div' in (options as object))
+    ) {
+      resolvedOptions = { div: options as HTMLDivElement };
+    } else {
+      resolvedOptions = options as DiagramOptions;
+    }
 
     this.container = resolvedOptions.div;
     this.minScale = resolvedOptions.minScale ?? 0.1;
@@ -455,6 +473,87 @@ export class Diagram {
   /** Get the current context menu. */
   getContextMenu(): ContextMenu | null {
     return this.contextMenu;
+  }
+
+  /** GoJS-compatible: Whether the diagram is read-only. */
+  get isReadOnly(): boolean {
+    return this._isReadOnly;
+  }
+
+  set isReadOnly(value: boolean) {
+    this._isReadOnly = value;
+  }
+
+  /** GoJS-compatible: Whether parts can be moved. */
+  get allowMove(): boolean {
+    return this._allowMove;
+  }
+
+  set allowMove(value: boolean) {
+    this._allowMove = value;
+  }
+
+  /** GoJS-compatible: Whether parts can be copied. */
+  get allowCopy(): boolean {
+    return this._allowCopy;
+  }
+
+  set allowCopy(value: boolean) {
+    this._allowCopy = value;
+  }
+
+  /** GoJS-compatible: Whether parts can be deleted. */
+  get allowDelete(): boolean {
+    return this._allowDelete;
+  }
+
+  set allowDelete(value: boolean) {
+    this._allowDelete = value;
+  }
+
+  /** GoJS-compatible: Whether parts can be dropped onto the diagram. */
+  get allowDrop(): boolean {
+    return this._allowDrop;
+  }
+
+  set allowDrop(value: boolean) {
+    this._allowDrop = value;
+  }
+
+  /** GoJS-compatible: Whether zooming is allowed. */
+  get allowZoom(): boolean {
+    return this._allowZoom;
+  }
+
+  set allowZoom(value: boolean) {
+    this._allowZoom = value;
+  }
+
+  /** GoJS-compatible: Whether horizontal scrolling is allowed. */
+  get allowHorizontalScroll(): boolean {
+    return this._allowHorizontalScroll;
+  }
+
+  set allowHorizontalScroll(value: boolean) {
+    this._allowHorizontalScroll = value;
+  }
+
+  /** GoJS-compatible: Whether vertical scrolling is allowed. */
+  get allowVerticalScroll(): boolean {
+    return this._allowVerticalScroll;
+  }
+
+  set allowVerticalScroll(value: boolean) {
+    this._allowVerticalScroll = value;
+  }
+
+  /** GoJS-compatible: Whether the diagram is enabled (interactive). */
+  get isEnabled(): boolean {
+    return this._isEnabled;
+  }
+
+  set isEnabled(value: boolean) {
+    this._isEnabled = value;
   }
 
   /** Handle a contextmenu (right-click) event. */
@@ -930,6 +1029,7 @@ export class Diagram {
     const width = (nodeData.width as number) ?? 100;
     const height = (nodeData.height as number) ?? 50;
     const node = Node.fromPosAndSize(key, x, y, width, height);
+    node.data = nodeData;
 
     // Apply GoJS-compatible template if set
     const category = nodeData.category as string | undefined;
@@ -971,6 +1071,7 @@ export class Diagram {
     const width = (nodeData.width as number) ?? 100;
     const height = (nodeData.height as number) ?? 50;
     const group = new Group(key, new RectClass(x, y, width, height));
+    group.data = nodeData;
 
     // Apply GoJS-compatible group template if set
     const category = nodeData.category as string | undefined;
@@ -995,6 +1096,7 @@ export class Diagram {
   private createLink(linkData: LinkData): Link {
     const linkKey = this._model.getLinkKey(linkData);
     const link = new Link(linkKey as NodeKey, linkData.from, linkData.to);
+    link.data = linkData;
 
     // Apply GoJS-compatible link template if set
     const category = linkData.category as string | undefined;

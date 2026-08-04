@@ -51,6 +51,10 @@ export abstract class Model {
   protected listeners: ChangedEventHandler[] = [];
   private nextKey: number = 1;
 
+  constructor(nodeKeyProperty?: string) {
+    if (nodeKeyProperty) this.nodeKeyProperty = nodeKeyProperty;
+  }
+
   /** Get the node key property name. */
   getNodeKeyProperty(): string {
     return this.nodeKeyProperty;
@@ -177,11 +181,58 @@ export abstract class Model {
     if (index !== -1) this.listeners.splice(index, 1);
   }
 
-  /** Emit a changed event. */
+  /** Emit a changed event. Buffers while a transaction is in progress. */
   protected emit(event: ChangedEvent): void {
+    if (this._transactionDepth > 0) {
+      this._pendingEvents.push(event);
+      return;
+    }
+    this.flushEvent(event);
+  }
+
+  private flushEvent(event: ChangedEvent): void {
     for (const listener of this.listeners) {
       listener(event);
     }
+  }
+
+  // Transaction support (GoJS-compatible)
+  private _transactionDepth = 0;
+  private _pendingEvents: ChangedEvent[] = [];
+
+  /** GoJS-compatible: Begin a transaction; changed events are buffered until commit. */
+  startTransaction(_name = ''): boolean {
+    this._transactionDepth++;
+    return true;
+  }
+
+  /** GoJS-compatible: Commit the current transaction, flushing buffered events. */
+  commitTransaction(_name = ''): boolean {
+    if (this._transactionDepth <= 0) return false;
+    this._transactionDepth--;
+    if (this._transactionDepth === 0 && this._pendingEvents.length > 0) {
+      const pending = this._pendingEvents;
+      this._pendingEvents = [];
+      for (const event of pending) {
+        this.flushEvent(event);
+      }
+    }
+    return true;
+  }
+
+  /** GoJS-compatible: Roll back the current transaction, discarding buffered events. */
+  rollbackTransaction(): boolean {
+    if (this._transactionDepth <= 0) return false;
+    this._transactionDepth--;
+    if (this._transactionDepth === 0) {
+      this._pendingEvents = [];
+    }
+    return true;
+  }
+
+  /** GoJS-compatible: Whether a transaction is currently in progress. */
+  isTransactionInProgress(): boolean {
+    return this._transactionDepth > 0;
   }
 
   private _isValidNode: NodeValidationCallback | null = null;

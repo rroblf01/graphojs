@@ -33,6 +33,8 @@ export abstract class Part {
   private _resizable = true;
   private _rotatable = true;
   protected _panel: Panel | null = null;
+  private _locationSpot: { x: number; y: number } = { x: 0.5, y: 0.5 };
+  private _data: NodeData | null = null;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -139,7 +141,11 @@ export abstract class Part {
 
   /** GoJS-compatible: The spot in the part that corresponds to the location point. */
   get locationSpot(): { x: number; y: number } {
-    return { x: 0.5, y: 0.5 };
+    return this._locationSpot;
+  }
+
+  set locationSpot(value: { x: number; y: number }) {
+    this._locationSpot = value;
   }
 
   /** GoJS-compatible: The GraphObject that is used as the selection object (for adornment placement). */
@@ -153,11 +159,11 @@ export abstract class Part {
 
   /** GoJS-compatible: Reference to the model data object for this part. */
   get data(): NodeData | null {
-    return null;
+    return this._data;
   }
 
-  set data(_value: NodeData | null) {
-    // No-op: data is managed by the model
+  set data(value: NodeData | null) {
+    this._data = value;
   }
 
   /** GoJS-compatible: The name of the layer this part belongs to. */

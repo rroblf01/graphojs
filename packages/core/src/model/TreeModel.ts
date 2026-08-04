@@ -14,6 +14,17 @@ export class TreeModel extends Model {
   private parentKeyProperty = 'parent';
   private nextNodeKey = 1;
 
+  /** GoJS-compatible: options object. */
+  constructor(options?: {
+    nodeDataArray?: NodeData[];
+    nodeKeyProperty?: string;
+    parentKeyProperty?: string;
+  }) {
+    super(options?.nodeKeyProperty);
+    if (options?.nodeDataArray) this.nodeDataArray = [...options.nodeDataArray];
+    if (options?.parentKeyProperty) this.parentKeyProperty = options.parentKeyProperty;
+  }
+
   /** Get the parent key property name. */
   getParentKeyProperty(): string {
     return this.parentKeyProperty;

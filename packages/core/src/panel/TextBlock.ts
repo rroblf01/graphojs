@@ -80,6 +80,37 @@ export class TextBlock extends GraphObject {
     this._font = value;
   }
 
+  /** GoJS-compatible: The font family (e.g. "sans-serif"). */
+  get fontFamily(): string {
+    const m = /\s([\w-]+)$/.exec(this._font);
+    return m ? m[1]! : 'sans-serif';
+  }
+
+  set fontFamily(value: string) {
+    this._font = `${this.fontStyle} ${this.fontSize}px ${value}`;
+  }
+
+  /** GoJS-compatible: The font size in points (px). */
+  get fontSize(): number {
+    const m = /(\d+(?:\.\d+)?)px/.exec(this._font);
+    return m ? Number(m[1]) : 12;
+  }
+
+  set fontSize(value: number) {
+    this._font = `${this.fontStyle} ${value}px ${this.fontFamily}`;
+  }
+
+  /** GoJS-compatible: The font style (e.g. "bold", "italic"). */
+  get fontStyle(): string {
+    const m = /^(bold|italic|bold italic|italic bold)\s/.exec(this._font);
+    return m ? m[1]! : '';
+  }
+
+  set fontStyle(value: string) {
+    const style = value ? `${value} ` : '';
+    this._font = `${style}${this.fontSize}px ${this.fontFamily}`;
+  }
+
   get textAlign(): 'left' | 'center' | 'right' {
     return this._textAlign;
   }

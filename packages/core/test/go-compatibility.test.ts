@@ -463,6 +463,26 @@ describe('GoJS Compatibility', () => {
       const clone = t.clone();
       expect(clone.editable).toBe(true);
     });
+
+    it('should support fontFamily/fontSize/fontStyle', () => {
+      const t = new TextBlock('Hello');
+      t.fontFamily = 'monospace';
+      expect(t.font).toContain('monospace');
+      t.fontSize = 20;
+      expect(t.font).toContain('20px');
+      t.fontStyle = 'bold';
+      expect(t.font).toContain('bold');
+      expect(t.fontSize).toBe(20);
+    });
+  });
+
+  describe('Shape.figure alias', () => {
+    it('should expose figure as an alias for shape', () => {
+      const s = new Shape('rect');
+      s.figure = 'RoundedRectangle';
+      expect(s.shape).toBe('roundedRect');
+      expect(s.figure).toBe('roundedRect');
+    });
   });
 
   describe('Panel data panels (itemArray/itemTemplate)', () => {

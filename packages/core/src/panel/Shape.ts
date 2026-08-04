@@ -77,6 +77,15 @@ export class Shape extends GraphObject {
     this._shape = normalizeShapeType(value);
   }
 
+  /** GoJS-compatible: Alias for `shape` (GoJS uses `figure`). */
+  get figure(): ShapeType {
+    return this._shape;
+  }
+
+  set figure(value: string) {
+    this._shape = normalizeShapeType(value);
+  }
+
   get fill(): string {
     return this._fill;
   }

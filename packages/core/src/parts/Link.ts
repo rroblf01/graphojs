@@ -46,8 +46,26 @@ export class Link extends Part {
     return this._fromKey;
   }
 
+  /** GoJS-compatible alias for fromKey. */
+  get fromNode(): NodeKey {
+    return this._fromKey;
+  }
+
+  set fromNode(value: NodeKey) {
+    this._fromKey = value;
+  }
+
   get toKey(): NodeKey {
     return this._toKey;
+  }
+
+  /** GoJS-compatible alias for toKey. */
+  get toNode(): NodeKey {
+    return this._toKey;
+  }
+
+  set toNode(value: NodeKey) {
+    this._toKey = value;
   }
 
   get routing(): LinkRouting {

@@ -91,8 +91,7 @@ describe('Obstacle Avoidance Routing', () => {
       const obs = obstacles[0];
       if (!obs) continue;
       const intersects =
-        a.x >= obs.x && a.x <= obs.x + obs.width &&
-        a.y >= obs.y && a.y <= obs.y + obs.height;
+        a.x >= obs.x && a.x <= obs.x + obs.width && a.y >= obs.y && a.y <= obs.y + obs.height;
       expect(intersects).toBe(false);
     }
   });

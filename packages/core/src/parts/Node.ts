@@ -1,8 +1,9 @@
 import { Rect } from '../geometry/Rect.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { Part } from './Part.ts';
-import type { Panel } from '../panel/Panel.ts';
+import { Panel } from '../panel/Panel.ts';
 import type { Port } from './Port.ts';
+import type { GraphObject } from '../panel/GraphObject.ts';
 
 export type NodeShape = 'rect' | 'ellipse' | 'roundedRect';
 
@@ -76,6 +77,30 @@ export class Node extends Part {
   /** Check whether this node uses a panel for rendering. */
   get hasPanel(): boolean {
     return this._panel !== null;
+  }
+
+  /**
+   * GoJS-compatible: Find a GraphObject by name in this node's visual tree.
+   * Searches the panel's elements recursively.
+   */
+  findObject(name: string): GraphObject | null {
+    if (!this._panel) return null;
+    return this._panel.findElement(name);
+  }
+
+  /** GoJS-compatible: Get the elements in this node's visual tree. */
+  get elements(): readonly GraphObject[] {
+    return this._panel?.elements ?? [];
+  }
+
+  /** GoJS-compatible: Add a child element to this node's visual tree. */
+  add(element: GraphObject): this {
+    // Lazy-create panel if needed
+    if (!this._panel) {
+      this._panel = new Panel('Auto');
+    }
+    this._panel.add(element);
+    return this;
   }
 
   /** Get all ports on this node. */

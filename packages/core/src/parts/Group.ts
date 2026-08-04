@@ -1,4 +1,5 @@
 import { Rect } from '../geometry/Rect.ts';
+import { Point } from '../geometry/Point.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { Part } from './Part.ts';
 import type { Node } from './Node.ts';
@@ -89,13 +90,13 @@ export class Group extends Part {
   }
 
   /** Get the location of the group. */
-  get location(): { x: number; y: number } {
-    return this._location;
+  override get location(): Point {
+    return new Point(this._location.x, this._location.y);
   }
 
   /** Set the location of the group. */
-  set location(value: { x: number; y: number }) {
-    this._location = value;
+  override set location(value: Point) {
+    this._location = { x: value.x, y: value.y };
   }
 
   /** Add a part to this group. */

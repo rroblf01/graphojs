@@ -1,5 +1,8 @@
 export const version = '0.1.0';
 
+// GoJS-compatible namespace
+export * as go from './go.ts';
+
 // Geometry
 export { Point } from './geometry/Point.ts';
 export { Size } from './geometry/Size.ts';

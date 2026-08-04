@@ -536,6 +536,20 @@ export class Panel extends GraphObject {
     return null;
   }
 
+  /**
+   * GoJS-compatible: Find a GraphObject by name, searching this panel and nested panels.
+   */
+  findElement(name: string): GraphObject | null {
+    for (const el of this._elements) {
+      if (el.name === name) return el;
+      if (el instanceof Panel) {
+        const found = el.findElement(name);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
   /** The bounds of this panel within the parent coordinate space. */
   override getBounds(): Rect {
     return {

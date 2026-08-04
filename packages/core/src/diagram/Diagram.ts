@@ -35,6 +35,7 @@ import { printDiagram } from '../export/PrintExporter.ts';
 import { TooltipManager } from '../export/TooltipManager.ts';
 import { LayerCache } from '../render/LayerCache.ts';
 import type { Part } from '../parts/Part.ts';
+import type { Panel } from '../panel/Panel.ts';
 
 export interface DiagramOptions {
   /** The container element for the diagram. */
@@ -109,6 +110,13 @@ export class Diagram {
     [string, EventListenerOrEventListenerObject, (AddEventListenerOptions | boolean)?]
   > = [];
   private _isDestroyed = false;
+
+  // GoJS-compatible template properties
+  private _nodeTemplate: Panel | null = null;
+  private _linkTemplate: Panel | null = null;
+  private _groupTemplate: Panel | null = null;
+  private _nodeTemplateMap: Map<string, Panel> = new Map();
+  private _linkTemplateMap: Map<string, Panel> = new Map();
 
   constructor(options: DiagramOptions) {
     this.container = options.div;
@@ -194,6 +202,72 @@ export class Diagram {
   /** Get the command handler. */
   getCommandHandler(): CommandHandler {
     return this.commandHandler;
+  }
+
+  /** GoJS-compatible: Get the default node template. */
+  get nodeTemplate(): Panel | null {
+    return this._nodeTemplate;
+  }
+
+  /** GoJS-compatible: Set the default node template. */
+  set nodeTemplate(value: Panel | null) {
+    this._nodeTemplate = value;
+    this.syncPartsFromModel();
+    this.invalidate();
+  }
+
+  /** GoJS-compatible: Get the default link template. */
+  get linkTemplate(): Panel | null {
+    return this._linkTemplate;
+  }
+
+  /** GoJS-compatible: Set the default link template. */
+  set linkTemplate(value: Panel | null) {
+    this._linkTemplate = value;
+    this.syncPartsFromModel();
+    this.invalidate();
+  }
+
+  /** GoJS-compatible: Get the default group template. */
+  get groupTemplate(): Panel | null {
+    return this._groupTemplate;
+  }
+
+  /** GoJS-compatible: Set the default group template. */
+  set groupTemplate(value: Panel | null) {
+    this._groupTemplate = value;
+    this.syncPartsFromModel();
+    this.invalidate();
+  }
+
+  /** GoJS-compatible: Get the node template map. */
+  get nodeTemplateMap(): Map<string, Panel> {
+    return this._nodeTemplateMap;
+  }
+
+  /** GoJS-compatible: Get the link template map. */
+  get linkTemplateMap(): Map<string, Panel> {
+    return this._linkTemplateMap;
+  }
+
+  /** GoJS-compatible: Add a node template for a category. */
+  addNodeTemplate(category: string, template: Panel): void {
+    this._nodeTemplateMap.set(category, template);
+  }
+
+  /** GoJS-compatible: Add a link template for a category. */
+  addLinkTemplate(category: string, template: Panel): void {
+    this._linkTemplateMap.set(category, template);
+  }
+
+  /** GoJS-compatible: Remove a node template by category. */
+  removeNodeTemplate(category: string): boolean {
+    return this._nodeTemplateMap.delete(category);
+  }
+
+  /** GoJS-compatible: Remove a link template by category. */
+  removeLinkTemplate(category: string): boolean {
+    return this._linkTemplateMap.delete(category);
   }
 
   /** Add a diagram event listener. */
@@ -297,6 +371,37 @@ export class Diagram {
   /** Redo the last undone command. */
   redo(): boolean {
     return this.undoManager.redo();
+  }
+
+  /** GoJS-compatible: Begin a transaction. Commands are grouped into one undo unit. */
+  startTransaction(name = 'Transaction'): boolean {
+    this.undoManager.beginTransaction(name);
+    return true;
+  }
+
+  /** GoJS-compatible: Commit the current transaction. */
+  commitTransaction(_name = ''): boolean {
+    this.undoManager.commitTransaction();
+    return true;
+  }
+
+  /**
+   * GoJS-compatible: Execute a function within a transaction.
+   * If the function is provided, it's called and the transaction is committed.
+   * If no function is provided, begins a transaction and returns a commit function.
+   *
+   * Usage:
+   *   diagram.commit(d => {
+   *     d.model.addNode({ key: 1, name: 'A' });
+   *   }, 'add node');
+   */
+  commit(fn: (d: Diagram) => void, name = ''): void {
+    this.startTransaction(name);
+    try {
+      fn(this);
+    } finally {
+      this.commitTransaction(name);
+    }
   }
 
   /** Set a context menu for this diagram. */

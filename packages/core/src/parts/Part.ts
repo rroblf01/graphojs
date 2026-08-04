@@ -1,3 +1,4 @@
+import { Point } from '../geometry/Point.ts';
 import type { Rect } from '../geometry/Rect.ts';
 import type { NodeKey, NodeData } from '../model/Model.ts';
 import type { Binding } from '../binding/Binding.ts';
@@ -118,6 +119,43 @@ export abstract class Part {
 
   set angle(value: number) {
     this._angle = value;
+  }
+
+  /** GoJS-compatible: The location (position) of this part. */
+  get location(): Point {
+    return new Point(this._bounds.x, this._bounds.y);
+  }
+
+  set location(value: Point) {
+    this._bounds = {
+      ...this._bounds,
+      x: value.x,
+      y: value.y,
+    } as Rect;
+  }
+
+  /** GoJS-compatible: The spot in the part that corresponds to the location point. */
+  get locationSpot(): { x: number; y: number } {
+    return { x: 0.5, y: 0.5 };
+  }
+
+  /** GoJS-compatible: Reference to the model data object for this part. */
+  get data(): NodeData | null {
+    return null;
+  }
+
+  set data(_value: NodeData | null) {
+    // No-op: data is managed by the model
+  }
+
+  /** GoJS-compatible: The name of the layer this part belongs to. */
+  get layerName(): string {
+    return this._layer?.name ?? 'Default';
+  }
+
+  set layerName(_value: string) {
+    // Setting layerName would require a reference to the diagram to resolve
+    // For now this is a no-op; layer assignment should be done via diagram operations
   }
 
   /** Get the containing group, or null if top-level. */

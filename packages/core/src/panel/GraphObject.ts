@@ -9,19 +9,64 @@ import type { Rect } from '../geometry/Rect.ts';
  * GraphObjects are laid out by their containing Panel.
  */
 export abstract class GraphObject {
-  /** The desired size of this object. Undefined means "natural" size. */
+  private _name: string = '';
   private _desiredSize: Size | null = null;
-  /** The actual size computed by the panel layout. */
   private _actualSize: Size = new SizeClass(0, 0);
-  /** The position within the parent panel, set during layout. */
   private _position = { x: 0, y: 0 };
-  /** The spot within the parent panel for alignment (used by Spot panels). */
   private _alignment: Spot | null = null;
-  /** Margin around this object within its panel. */
   private _margin: Margin | null = null;
   private _visible = true;
   private _opacity = 1;
   private _angle = 0;
+
+  /** The name of this graph object, used for findObject() lookups. */
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  /**
+   * GoJS-compatible static factory method.
+   *
+   * Usage:
+   *   const $ = go.GraphObject.make;
+   *   const shape = $(go.Shape, "RoundedRectangle", { fill: "white", stroke: "gray" });
+   *   const panel = $(go.Panel, "Auto", shape, $(go.TextBlock, "Hello"));
+   */
+  static make<T extends GraphObject>(ctor: new (...args: unknown[]) => T, ...args: unknown[]): T {
+    const obj = new ctor();
+
+    for (const arg of args) {
+      if (arg === null || arg === undefined) continue;
+
+      if (arg instanceof GraphObject) {
+        // Child element: add to panel if applicable
+        if ('add' in obj && typeof (obj as Record<string, unknown>).add === 'function') {
+          (obj as { add(child: GraphObject): unknown }).add(arg);
+        }
+      } else if (typeof arg === 'string') {
+        // First string arg for Shape = shape type, for Panel = panel type, for TextBlock = text
+        if ('shape' in obj && obj.constructor.name === 'Shape') {
+          (obj as { shape: unknown }).shape = arg;
+        } else if ('type' in obj && obj.constructor.name === 'Panel') {
+          (obj as { type: unknown }).type = arg;
+        } else if ('text' in obj && obj.constructor.name === 'TextBlock') {
+          (obj as { text: unknown }).text = arg;
+        }
+      } else if (typeof arg === 'object') {
+        // Property map
+        const props = arg as Record<string, unknown>;
+        for (const [key, value] of Object.entries(props)) {
+          (obj as Record<string, unknown>)[key] = value;
+        }
+      }
+    }
+
+    return obj;
+  }
 
   /** Whether this object is visible. */
   get visible(): boolean {

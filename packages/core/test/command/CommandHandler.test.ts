@@ -35,6 +35,7 @@ function createMockDiagram(): Diagram {
         part.isSelected = false;
       }
     },
+    select: () => {},
     invalidate: () => {},
     undo: () => undoManager.undo(),
     redo: () => undoManager.redo(),

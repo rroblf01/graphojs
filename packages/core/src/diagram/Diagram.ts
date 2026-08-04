@@ -1796,12 +1796,12 @@ export class Diagram {
   selectPartsInRect(rect: { x: number; y: number; width: number; height: number }): void {
     for (const [, node] of this.nodes) {
       if (node.bounds.intersects(rect as unknown as RectClass)) {
-        node.isSelected = true;
+        this.select(node, true);
       }
     }
     for (const [, link] of this.links) {
       if (link.bounds.intersects(rect as unknown as RectClass)) {
-        link.isSelected = true;
+        this.select(link, true);
       }
     }
     this.invalidate();

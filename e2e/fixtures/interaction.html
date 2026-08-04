@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GraphoJS Interaction E2E</title>
+    <style>
+      #diagramDiv { width: 800px; height: 600px; border: 1px solid #ccc; }
+      #log { font-family: monospace; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div id="diagramDiv"></div>
+    <div id="log"></div>
+    <script type="module">
+      window.__go = go;
+      import * as go from '../../packages/core/dist/go.js';
+
+      const $ = go.GraphObject.make;
+      const myDiagram = new go.Diagram('diagramDiv');
+
+      myDiagram.nodeTemplate = $(
+        go.Node,
+        'Auto',
+        $(go.Shape, 'RoundedRectangle', { fill: 'white', stroke: 'gray' }),
+        $(go.TextBlock, 'label', { margin: 8, editable: true }, new go.Binding('text', 'name')),
+      );
+
+      myDiagram.model = new go.GraphLinksModel({
+        nodeDataArray: [
+          { key: 1, name: 'Alpha', x: 0, y: 0, width: 120, height: 60 },
+          { key: 2, name: 'Beta', x: 250, y: 0, width: 120, height: 60 },
+        ],
+        linkDataArray: [{ from: 1, to: 2 }],
+      });
+
+      const logEl = document.getElementById('log');
+      const log = (msg) => {
+        logEl.textContent += msg + '\n';
+      };
+
+      myDiagram.addDiagramListener('SelectionChanged', (e) => {
+        const n = myDiagram.getSelectedParts().length;
+        log('selection:' + n);
+      });
+      myDiagram.addDiagramListener('PartMoved', () => log('partMoved'));
+
+      window.__diagram = myDiagram;
+      window.__log = log;
+    </script>
+  </body>
+</html>

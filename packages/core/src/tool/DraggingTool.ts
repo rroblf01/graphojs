@@ -57,8 +57,7 @@ export class DraggingTool extends Tool {
       const selectedNodes = diagram.getSelectedParts().filter((p): p is Node => p instanceof Node);
       if (selectedNodes.length === 0 || !selectedNodes.includes(part)) {
         // If clicked node is not selected, select only it
-        diagram.clearSelection();
-        part.isSelected = true;
+        diagram.select(part);
         this.nodeOrigin.set(String(part.key), { x: part.bounds.x, y: part.bounds.y });
       } else {
         // Store positions of all selected nodes

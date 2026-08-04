@@ -24,8 +24,7 @@ export class ClickSelectingTool extends Tool {
     // Find and select the part under the cursor
     const part = this.findPartAt(point.x, point.y);
     if (part) {
-      part.isSelected = true;
-      diagram.invalidate();
+      diagram.select(part, e.ctrlKey || e.metaKey);
     }
   }
 }

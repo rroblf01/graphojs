@@ -51,4 +51,10 @@ export interface Renderer {
 
   /** Get the underlying canvas element. */
   getCanvas(): HTMLCanvasElement;
+
+  /** Register a node's bounds for link routing computation. */
+  setNodeBounds(key: string | number, bounds: Rect): void;
+
+  /** Clear all registered node bounds. */
+  clearNodeBounds(): void;
 }

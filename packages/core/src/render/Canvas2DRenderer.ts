@@ -6,6 +6,12 @@ import type { Node } from '../parts/Node.ts';
 import type { Renderer } from './Renderer.ts';
 import type { Panel } from '../panel/Panel.ts';
 import { PathCache, TextMeasureCache } from './RenderCache.ts';
+import {
+  routeOrthogonal,
+  routeCurved,
+  routeStraight,
+  computeLabelPosition,
+} from './LinkRouter.ts';
 
 /**
  * Canvas 2D renderer for diagram parts.
@@ -22,6 +28,7 @@ export class Canvas2DRenderer implements Renderer {
   private pathCache: PathCache = new PathCache();
   private textMeasureCache: TextMeasureCache = new TextMeasureCache();
   private labelsVisible = true;
+  private nodeBoundsMap = new Map<string | number, RectClass>();
 
   /** Set whether node labels should be rendered (used for LOD). */
   setLabelsVisible(value: boolean): void {
@@ -31,6 +38,21 @@ export class Canvas2DRenderer implements Renderer {
   /** Check whether labels are currently visible. */
   getLabelsVisible(): boolean {
     return this.labelsVisible;
+  }
+
+  /** Register a node's bounds for link routing computation. */
+  setNodeBounds(key: string | number, bounds: RectClass): void {
+    this.nodeBoundsMap.set(key, bounds);
+  }
+
+  /** Clear all registered node bounds. */
+  clearNodeBounds(): void {
+    this.nodeBoundsMap.clear();
+  }
+
+  /** Get node bounds for link routing, falling back to a default rect. */
+  private getNodeBounds(key: string | number): RectClass {
+    return this.nodeBoundsMap.get(key) ?? new RectClass(0, 0, 0, 0);
   }
 
   constructor(canvas: HTMLCanvasElement) {
@@ -290,7 +312,25 @@ export class Canvas2DRenderer implements Renderer {
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
 
-    const points = link.pathPoints.length > 0 ? link.pathPoints : [link.fromPort, link.toPort];
+    // Compute path points based on routing style
+    let points = link.pathPoints;
+    if (points.length === 0) {
+      // Auto-compute routing from port positions and node bounds
+      const fromNode = this.getNodeBounds(link.fromKey);
+      const toNode = this.getNodeBounds(link.toKey);
+
+      switch (link.routing) {
+        case 'orthogonal':
+          points = routeOrthogonal(link.fromPort, link.toPort, fromNode, toNode, link.corner);
+          break;
+        case 'curved':
+          points = routeCurved(link.fromPort, link.toPort, fromNode, toNode);
+          break;
+        default:
+          points = routeStraight(link.fromPort, link.toPort);
+      }
+      link.setPathPoints(points);
+    }
 
     this.strokePath(points);
 
@@ -308,10 +348,21 @@ export class Canvas2DRenderer implements Renderer {
       this.ctx.setLineDash([]);
     }
 
-    // Link label
+    // Link label with positioning
     if (link.label) {
-      const mid = this.midPoint(points);
-      this.renderLabel(link.label, mid.x, mid.y, link.labelColor, link.labelFont);
+      const labelPos = computeLabelPosition(
+        points,
+        link.labelSegmentIndex,
+        link.labelOffset,
+        link.labelSide,
+      );
+      this.renderLabel(
+        link.label,
+        labelPos.x,
+        labelPos.y,
+        link.labelColor,
+        link.labelFont,
+      );
     }
 
     this.ctx.restore();
@@ -376,40 +427,6 @@ export class Canvas2DRenderer implements Renderer {
     }
 
     this.ctx.restore();
-  }
-
-  private midPoint(points: Array<{ x: number; y: number }>): { x: number; y: number } {
-    if (points.length === 0) return { x: 0, y: 0 };
-    if (points.length === 1) {
-      const p = points[0];
-      return p ? { x: p.x, y: p.y } : { x: 0, y: 0 };
-    }
-
-    // Find total path length
-    let total = 0;
-    for (let i = 0; i < points.length - 1; i++) {
-      const a = points[i];
-      const b = points[i + 1];
-      if (!a || !b) continue;
-      total += Math.hypot(b.x - a.x, b.y - a.y);
-    }
-
-    // Walk to the midpoint
-    let half = total / 2;
-    for (let i = 0; i < points.length - 1; i++) {
-      const a = points[i];
-      const b = points[i + 1];
-      if (!a || !b) continue;
-      const segLen = Math.hypot(b.x - a.x, b.y - a.y);
-      if (half <= segLen) {
-        const t = half / segLen;
-        return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
-      }
-      half -= segLen;
-    }
-
-    const last = points[points.length - 1];
-    return last ? { x: last.x, y: last.y } : { x: 0, y: 0 };
   }
 
   private strokePath(points: Array<{ x: number; y: number }>): void {

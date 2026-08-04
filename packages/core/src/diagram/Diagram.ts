@@ -1334,6 +1334,16 @@ export class Diagram {
       }
     }
 
+    // Register node bounds with renderer for link routing computation
+    target.clearNodeBounds();
+    for (const layer of this.layers) {
+      for (const part of layer.getVisibleParts()) {
+        if (part instanceof Node) {
+          target.setNodeBounds(part.key, part.bounds);
+        }
+      }
+    }
+
     // Render parts in layer order (lowest z-order first)
     for (const layer of this.layers) {
       if (layer.name === LayerNames.Grid) continue;

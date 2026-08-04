@@ -26,6 +26,10 @@ export class Link extends Part {
   private _labelColor = '#333333';
   private _labelFont = '11px sans-serif';
   private _corner = 0;
+  private _labelOffset = 7;
+  private _labelSegmentIndex = -1;
+  private _labelSide: 'top' | 'bottom' | 'left' | 'right' | 'auto' = 'auto';
+  private _labelAlignment: 'start' | 'middle' | 'end' = 'middle';
 
   constructor(key: NodeKey, fromKey: NodeKey, toKey: NodeKey) {
     super(key, Rect.zero());
@@ -165,6 +169,42 @@ export class Link extends Part {
 
   set corner(value: number) {
     this._corner = value;
+  }
+
+  /** The perpendicular offset of the link label from the path. */
+  get labelOffset(): number {
+    return this._labelOffset;
+  }
+
+  set labelOffset(value: number) {
+    this._labelOffset = value;
+  }
+
+  /** The segment index to place the label on (-1 = middle segment). */
+  get labelSegmentIndex(): number {
+    return this._labelSegmentIndex;
+  }
+
+  set labelSegmentIndex(value: number) {
+    this._labelSegmentIndex = value;
+  }
+
+  /** Which side of the link to place the label on. */
+  get labelSide(): 'top' | 'bottom' | 'left' | 'right' | 'auto' {
+    return this._labelSide;
+  }
+
+  set labelSide(value: 'top' | 'bottom' | 'left' | 'right' | 'auto') {
+    this._labelSide = value;
+  }
+
+  /** Horizontal alignment of the label along its segment. */
+  get labelAlignment(): 'start' | 'middle' | 'end' {
+    return this._labelAlignment;
+  }
+
+  set labelAlignment(value: 'start' | 'middle' | 'end') {
+    this._labelAlignment = value;
   }
 
   /** Update the bounds based on all path points. */

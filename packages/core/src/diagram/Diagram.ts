@@ -111,6 +111,19 @@ export class Diagram {
   > = [];
   private _isDestroyed = false;
 
+  // Touch support state
+  private touchState: {
+    active: boolean;
+    startDistance: number;
+    startScale: number;
+    startTouchX: number;
+    startTouchY: number;
+    lastTouchX: number;
+    lastTouchY: number;
+    startOffsetX: number;
+    startOffsetY: number;
+  } | null = null;
+
   // GoJS-compatible template properties
   private _nodeTemplate: Panel | null = null;
   private _linkTemplate: Panel | null = null;
@@ -487,6 +500,99 @@ export class Diagram {
     } else if (e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
       this.commandHandler.deleteSelection();
+    } else if (
+      e.key === 'ArrowUp' ||
+      e.key === 'ArrowDown' ||
+      e.key === 'ArrowLeft' ||
+      e.key === 'ArrowRight'
+    ) {
+      e.preventDefault();
+      const dx = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0;
+      const dy = e.key === 'ArrowUp' ? -1 : e.key === 'ArrowDown' ? 1 : 0;
+      this.commandHandler.nudgeSelection(dx, dy, this.scale);
+    }
+  }
+
+  /** Handle touch start (supports single-finger pan and two-finger pinch-zoom). */
+  private handleTouchStart(e: TouchEvent): void {
+    e.preventDefault();
+    const touches = e.touches;
+
+    if (touches.length === 1) {
+      const t = touches[0]!;
+      this.touchState = {
+        active: true,
+        startDistance: 0,
+        startScale: this.scale,
+        startTouchX: t.clientX,
+        startTouchY: t.clientY,
+        lastTouchX: t.clientX,
+        lastTouchY: t.clientY,
+        startOffsetX: this.offsetX,
+        startOffsetY: this.offsetY,
+      };
+    } else if (touches.length === 2) {
+      const t0 = touches[0]!;
+      const t1 = touches[1]!;
+      const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+      const midX = (t0.clientX + t1.clientX) / 2;
+      const midY = (t0.clientY + t1.clientY) / 2;
+      this.touchState = {
+        active: true,
+        startDistance: dist,
+        startScale: this.scale,
+        startTouchX: midX,
+        startTouchY: midY,
+        lastTouchX: midX,
+        lastTouchY: midY,
+        startOffsetX: this.offsetX,
+        startOffsetY: this.offsetY,
+      };
+    }
+  }
+
+  /** Handle touch move (pan or pinch-zoom). */
+  private handleTouchMove(e: TouchEvent): void {
+    e.preventDefault();
+    const touches = e.touches;
+    if (!this.touchState) return;
+
+    if (touches.length === 1) {
+      // Single-finger pan
+      const t = touches[0]!;
+      const dx = t.clientX - this.touchState.startTouchX;
+      const dy = t.clientY - this.touchState.startTouchY;
+      this.setViewport(
+        this.touchState.startOffsetX - dx / this.scale,
+        this.touchState.startOffsetY - dy / this.scale,
+      );
+    } else if (touches.length === 2 && this.touchState.startDistance > 0) {
+      // Two-finger pinch-zoom + pan
+      const t0 = touches[0]!;
+      const t1 = touches[1]!;
+      const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+      const ratio = dist / this.touchState.startDistance;
+      const newScale = Math.max(
+        this.minScale,
+        Math.min(this.maxScale, this.touchState.startScale * ratio),
+      );
+      const midX = (t0.clientX + t1.clientX) / 2;
+      const midY = (t0.clientY + t1.clientY) / 2;
+      const dx = midX - this.touchState.startTouchX;
+      const dy = midY - this.touchState.startTouchY;
+      this.setViewport(
+        this.touchState.startOffsetX - dx / newScale,
+        this.touchState.startOffsetY - dy / newScale,
+        newScale,
+      );
+    }
+  }
+
+  /** Handle touch end. */
+  private handleTouchEnd(e: TouchEvent): void {
+    e.preventDefault();
+    if (e.touches.length === 0) {
+      this.touchState = null;
     }
   }
 
@@ -508,6 +614,20 @@ export class Diagram {
     this.addCanvasListener('click', (e) => this.handleCanvasClick(e as MouseEvent));
     this.addCanvasListener('dblclick', (e) => this.handleDoubleClick(e as MouseEvent));
     this.addCanvasListener('contextmenu', (e) => this.handleContextMenu(e as MouseEvent));
+
+    // Touch support
+    this.addCanvasListener('touchstart', (e) => this.handleTouchStart(e as TouchEvent), {
+      passive: false,
+    });
+    this.addCanvasListener('touchmove', (e) => this.handleTouchMove(e as TouchEvent), {
+      passive: false,
+    });
+    this.addCanvasListener('touchend', (e) => this.handleTouchEnd(e as TouchEvent), {
+      passive: false,
+    });
+    this.addCanvasListener('touchcancel', (e) => this.handleTouchEnd(e as TouchEvent), {
+      passive: false,
+    });
 
     // Keyboard shortcuts
     this.keyDownListener = (e: KeyboardEvent) => this.handleKeyDown(e);
@@ -1142,6 +1262,20 @@ export class Diagram {
     this.selectedParts.clear();
     this.invalidate();
     this.fireDiagramEvent('SelectionChanged', null);
+  }
+
+  /** GoJS-compatible: Select a part, adding it to the current selection. */
+  select(part: Part | null, addToSelection = false): boolean {
+    if (!part) return false;
+    if (!addToSelection) {
+      this.clearSelection();
+    }
+    if (this.selectedParts.has(part.key)) return true;
+    this.selectedParts.add(part.key);
+    part.isSelected = true;
+    this.invalidate();
+    this.fireDiagramEvent('SelectionChanged', part);
+    return true;
   }
 
   /** Get selected parts. */

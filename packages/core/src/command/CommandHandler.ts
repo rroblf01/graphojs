@@ -8,6 +8,7 @@ import {
   AddNodeCommand,
   SetNodePropertyCommand,
   SetZOrderCommand,
+  MoveNodeCommand,
 } from '../undo/commands.ts';
 
 export type Alignment = 'left' | 'right' | 'top' | 'bottom' | 'centerH' | 'centerV';
@@ -218,6 +219,30 @@ export class CommandHandler {
   /** Set a node's position preserving its size. */
   private setNodePos(node: Node, x: number, y: number): void {
     node.bounds = new Rect(x, y, node.bounds.width, node.bounds.height);
+  }
+
+  /** GoJS-compatible: Nudge the selected parts by the given deltas (arrow keys). */
+  nudgeSelection(dx: number, dy: number, scale = 1): boolean {
+    const nodes = this.getSelectedNodes();
+    if (nodes.length === 0) return false;
+
+    const model = this.diagram.getModel();
+    const undoManager = this.diagram.getUndoManager();
+    const step = Math.round(1 / scale);
+
+    undoManager.beginTransaction('nudge');
+    try {
+      for (const node of nodes) {
+        const nx = Math.round(node.bounds.x + dx * step);
+        const ny = Math.round(node.bounds.y + dy * step);
+        undoManager.execute(new MoveNodeCommand(model, node.key, nx, ny));
+      }
+    } finally {
+      undoManager.commitTransaction();
+    }
+
+    this.diagram.invalidate();
+    return true;
   }
 
   /** Align selected nodes (needs at least 2). Returns true if aligned. */

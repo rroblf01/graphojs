@@ -1,5 +1,6 @@
 import { Node } from '../parts/Node.ts';
 import { MoveNodeCommand } from '../undo/commands.ts';
+import type { NodeKey } from '../model/Model.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -7,7 +8,7 @@ import { Tool } from './Tool.ts';
  */
 export class DraggingTool extends Tool {
   private dragOrigin = { x: 0, y: 0 };
-  private nodeOrigin = new Map<string, { x: number; y: number }>();
+  private nodeOrigin = new Map<NodeKey, { x: number; y: number }>();
   private _isDragging = false;
 
   get isDragging(): boolean {
@@ -58,11 +59,11 @@ export class DraggingTool extends Tool {
       if (selectedNodes.length === 0 || !selectedNodes.includes(part)) {
         // If clicked node is not selected, select only it
         diagram.select(part);
-        this.nodeOrigin.set(String(part.key), { x: part.bounds.x, y: part.bounds.y });
+        this.nodeOrigin.set(part.key, { x: part.bounds.x, y: part.bounds.y });
       } else {
         // Store positions of all selected nodes
         for (const node of selectedNodes) {
-          this.nodeOrigin.set(String(node.key), { x: node.bounds.x, y: node.bounds.y });
+          this.nodeOrigin.set(node.key, { x: node.bounds.x, y: node.bounds.y });
         }
       }
 
@@ -83,8 +84,8 @@ export class DraggingTool extends Tool {
     if (!diagram) return;
 
     // Move all dragged nodes visually
-    for (const [keyStr, origin] of this.nodeOrigin) {
-      const node = this.getNodeByKeyStr(keyStr);
+    for (const [key, origin] of this.nodeOrigin) {
+      const node = this.getNodeByKey(key);
       if (node) {
         let newX = origin.x + dx;
         let newY = origin.y + dy;
@@ -102,6 +103,11 @@ export class DraggingTool extends Tool {
       }
     }
 
+    // Recompute connected link paths so links follow nodes while dragging
+    for (const [key] of this.nodeOrigin) {
+      diagram.invalidateLinksForNode(key);
+    }
+
     diagram.invalidate();
   }
 
@@ -117,25 +123,24 @@ export class DraggingTool extends Tool {
     if (diagram) {
       const model = diagram.getModel();
       const undoManager = diagram.getUndoManager();
-      const moved: Array<{ keyStr: string; origin: { x: number; y: number } }> = [];
+      const moved: Array<{ key: NodeKey; origin: { x: number; y: number } }> = [];
 
-      for (const [keyStr, origin] of this.nodeOrigin) {
-        const node = this.getNodeByKeyStr(keyStr);
+      for (const [key, origin] of this.nodeOrigin) {
+        const node = this.getNodeByKey(key);
         if (node) {
           const dx = node.bounds.x - origin.x;
           const dy = node.bounds.y - origin.y;
           if (dx !== 0 || dy !== 0) {
-            moved.push({ keyStr, origin });
+            moved.push({ key, origin });
           }
         }
       }
 
       if (moved.length > 0) {
         undoManager.beginTransaction('Drag nodes');
-        for (const { keyStr } of moved) {
-          const node = this.getNodeByKeyStr(keyStr);
+        for (const { key } of moved) {
+          const node = this.getNodeByKey(key);
           if (node) {
-            const key = Number(keyStr) || keyStr;
             undoManager.execute(new MoveNodeCommand(model, key, node.bounds.x, node.bounds.y));
           }
         }
@@ -154,11 +159,10 @@ export class DraggingTool extends Tool {
     }
   }
 
-  private getNodeByKeyStr(keyStr: string): Node | null {
+  private getNodeByKey(key: NodeKey): Node | null {
     const diagram = this.diagram;
     if (!diagram) return null;
-    const key = Number(keyStr) || keyStr;
-    const part = diagram.getPart(key);
-    return part instanceof Node ? part : null;
+    const part = diagram.findNodeForKey(key);
+    return part;
   }
 }

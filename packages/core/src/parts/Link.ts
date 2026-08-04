@@ -370,6 +370,39 @@ export class Link extends Part {
     this._pathPattern = value;
   }
 
+  /** Deep copy of this link, including endpoint keys and path state. */
+  override copy(): this {
+    const cloned = super.copy();
+    cloned._fromKey = this._fromKey;
+    cloned._toKey = this._toKey;
+    cloned._routing = this._routing;
+    cloned._fromPort = { ...this._fromPort };
+    cloned._toPort = { ...this._toPort };
+    cloned._fromPortName = this._fromPortName;
+    cloned._toPortName = this._toPortName;
+    cloned._fromSpot = this._fromSpot;
+    cloned._toSpot = this._toSpot;
+    cloned._pathPoints = this._pathPoints.map((p) => ({ ...p }));
+    cloned._arrowhead = this._arrowhead;
+    cloned._arrowheadSize = this._arrowheadSize;
+    cloned._label = this._label;
+    cloned._labelColor = this._labelColor;
+    cloned._labelFont = this._labelFont;
+    cloned._corner = this._corner;
+    cloned._fromEndSegmentLength = this._fromEndSegmentLength;
+    cloned._toEndSegmentLength = this._toEndSegmentLength;
+    cloned._relinkableFrom = this._relinkableFrom;
+    cloned._relinkableTo = this._relinkableTo;
+    cloned._reshapable = this._reshapable;
+    cloned._pathPattern = this._pathPattern;
+    cloned._curviness = this._curviness;
+    cloned._avoidObstacles = this._avoidObstacles;
+    cloned._jumpOver = this._jumpOver;
+    cloned._isTreeLink = this._isTreeLink;
+    cloned._treeLinkRoute = this._treeLinkRoute;
+    return cloned;
+  }
+
   /** Update the bounds based on all path points. */
   updateBounds(): void {
     let minX = Infinity;

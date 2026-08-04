@@ -181,6 +181,8 @@ export class Canvas2DRenderer implements Renderer {
       panel.setPosition(0, 0);
       panel.setActualSize(width, height);
       panel.draw(this.ctx, x, y, width, height);
+      // After layout, refresh declarative port positions
+      node.updatePortSpots();
     } else {
       // Fill
       this.ctx.fillStyle = node.fill;

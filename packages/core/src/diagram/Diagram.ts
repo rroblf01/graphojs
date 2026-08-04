@@ -1536,6 +1536,9 @@ export class Diagram {
 
   private updateLinkFromData(link: Link, linkData: LinkData): void {
     this.hitIndex?.remove(link);
+    // Keep fromKey/toKey in sync with the model (fixes stale endpoints after relink)
+    if (linkData.from !== link.fromKey) link.fromNode = linkData.from;
+    if (linkData.to !== link.toKey) link.toNode = linkData.to;
     const routing = linkData.routing;
     if (routing === 'orthogonal' || routing === 'curved') {
       link.routing = routing;
@@ -1907,6 +1910,13 @@ export class Diagram {
     if (this.modelChangeListener) {
       this._model.removeChangedListener(this.modelChangeListener);
     }
+    // Clear stale parts and history when switching to a different model
+    this.parts.clear();
+    this.nodes.clear();
+    this.links.clear();
+    this.groups.clear();
+    this.selectedParts.clear();
+    this._undoManager.clear();
     this._model = model;
     this.modelChangeListener = (event: ChangedEvent) => this.handleModelChange(event);
     this._model.addChangedListener(this.modelChangeListener);
@@ -2573,6 +2583,18 @@ export class Diagram {
     this.fireDiagramEvent('ScrollChanged', null, { x: targetX, y: targetY });
   }
 
+  /**
+   * Clear the cached path of links connected to a node so the renderer
+   * recomputes them (keeps links following nodes during drags).
+   */
+  invalidateLinksForNode(nodeKey: NodeKey): void {
+    for (const [, link] of this.links) {
+      if (link.fromKey === nodeKey || link.toKey === nodeKey) {
+        link.setPathPoints([]);
+      }
+    }
+  }
+
   /** Zoom to fit all content. */
   zoomToFit(padding = 50): void {
     if (this.nodes.size === 0) return;
@@ -2788,6 +2810,17 @@ export class Diagram {
 
     // Clear undo history
     this._undoManager.clear();
+
+    // Destroy tooltip manager (removes any tooltip element/timeouts)
+    this.tooltipManager?.destroy();
+    this.tooltipManager = null;
+
+    // Remove any floating part context menu
+    this.hideContextMenu();
+
+    // Remove any active text-editing input overlay
+    const editingInput = document.querySelector('input.graphojs-text-editing');
+    editingInput?.remove();
 
     // Clear parts and caches
     this.parts.clear();

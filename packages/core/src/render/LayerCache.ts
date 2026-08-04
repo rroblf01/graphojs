@@ -184,9 +184,29 @@ export class LayerCache {
     ctx.strokeStyle = link.stroke;
     ctx.lineWidth = link.strokeWidth;
     ctx.beginPath();
-    ctx.moveTo(link.fromPort.x, link.fromPort.y);
-    ctx.lineTo(link.toPort.x, link.toPort.y);
+    const points = link.pathPoints.length > 0 ? link.pathPoints : [link.fromPort, link.toPort];
+    const first = points[0];
+    if (!first) return;
+    ctx.moveTo(first.x, first.y);
+    for (let i = 1; i < points.length; i++) {
+      const p = points[i];
+      if (!p) continue;
+      ctx.lineTo(p.x, p.y);
+    }
     ctx.stroke();
+    // Render the link panel (label/template) at the midpoint
+    if (link.panel && points.length > 0) {
+      const mid = points[Math.floor(points.length / 2)];
+      if (mid) {
+        const panel = link.panel;
+        const natural = panel.measure();
+        const w = Math.max(1, natural.width || 40);
+        const h = Math.max(1, natural.height || 20);
+        panel.setPosition(mid.x - w / 2, mid.y - h / 2);
+        panel.setActualSize(w, h);
+        panel.draw(ctx, mid.x - w / 2, mid.y - h / 2, w, h);
+      }
+    }
   }
 
   private renderGroup(ctx: CanvasRenderingContext2D, group: Group): void {

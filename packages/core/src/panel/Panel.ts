@@ -97,6 +97,7 @@ export class Panel extends GraphObject {
 
     for (const item of this._itemArray) {
       const el = template.clone();
+      el.parentPanel = this;
       // Apply bindings using the item as the data source
       if (typeof item === 'object' && item !== null) {
         el.applyBindings(item as import('../model/Model.ts').NodeData);
@@ -723,6 +724,7 @@ export class Panel extends GraphObject {
       cloned._generatedItems = [];
       for (const item of cloned._itemArray) {
         const el = cloned._itemTemplate.clone();
+        el.parentPanel = cloned;
         if (typeof item === 'object' && item !== null) {
           el.applyBindings(item as import('../model/Model.ts').NodeData);
         }

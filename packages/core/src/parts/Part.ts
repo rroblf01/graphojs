@@ -480,6 +480,14 @@ export abstract class Part {
     cloned._rotatable = this._rotatable;
     cloned._bindings = this._bindings.map((b) => b.copy());
     cloned._adornments = new Map();
+    cloned._locationSpot = { ...this._locationSpot };
+    cloned._category = this._category;
+    cloned._dragAlpha = this._dragAlpha;
+    cloned._isInDocumentBounds = this._isInDocumentBounds;
+    // Deep-copy the visual tree
+    cloned._panel = this._panel ? (this._panel.clone() as Panel) : null;
+    // Copy the data reference (shared model object)
+    cloned._data = this._data;
     return cloned;
   }
 }

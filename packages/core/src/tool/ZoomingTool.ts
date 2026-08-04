@@ -14,10 +14,11 @@ export class ZoomingTool extends Tool {
   }
 
   override doMouseWheel(e: WheelEvent): void {
-    e.preventDefault();
-
     const diagram = this.diagram;
     if (!diagram) return;
+    // GoJS-compatible: respect allowZoom
+    if (diagram.allowZoom === false) return;
+    e.preventDefault();
 
     const canvas = diagram.getRenderer().getCanvas();
     const rect = canvas.getBoundingClientRect();

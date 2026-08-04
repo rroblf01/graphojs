@@ -29,6 +29,8 @@ function createMockDiagram(): Diagram {
     getDiagramPoint: () => ({ x: 0, y: 0 }),
     getPart: (key: string | number) =>
       nodes.find((n) => n.key === key) ?? links.find((l) => l.key === key),
+    findNodeForKey: (key: string | number) => nodes.find((n) => n.key === key) ?? null,
+    invalidateLinksForNode: () => {},
     findPartAt: () => nodes.find((n) => n.isSelected) ?? node1,
     getSelectedParts: () => nodes.filter((n) => n.isSelected),
     clearSelection: () => {

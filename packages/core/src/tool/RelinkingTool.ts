@@ -9,7 +9,7 @@ import { LinkingBaseTool } from './LinkingBaseTool.ts';
  */
 export class RelinkingTool extends LinkingBaseTool {
   private _link: Link | null = null;
-  private _end: 'from' | 'to' = 'to';
+  private _end: 'from' | 'to' | null = null;
 
   /** Whether a relinking drag is in progress. */
   get isRelinking(): boolean {
@@ -22,7 +22,7 @@ export class RelinkingTool extends LinkingBaseTool {
   }
 
   /** Which end of the link is being dragged. */
-  get end(): 'from' | 'to' {
+  get end(): 'from' | 'to' | null {
     return this._end;
   }
 
@@ -38,7 +38,15 @@ export class RelinkingTool extends LinkingBaseTool {
       return false;
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);
-    return part instanceof Link && (part as Link).relinkableFrom;
+    if (!(part instanceof Link)) return false;
+    const link = part as Link;
+    // Only start near an endpoint, and only if that end is relinkable
+    const distFrom = Math.hypot(link.fromPort.x - point.x, link.fromPort.y - point.y);
+    const distTo = Math.hypot(link.toPort.x - point.x, link.toPort.y - point.y);
+    const threshold = 12;
+    if (distFrom <= threshold && link.relinkableFrom) return true;
+    if (distTo <= threshold && link.relinkableTo) return true;
+    return false;
   }
 
   override doMouseDown(e: MouseEvent): void {
@@ -56,12 +64,15 @@ export class RelinkingTool extends LinkingBaseTool {
     const part = this.findPartAt(point.x, point.y);
 
     if (part instanceof Link) {
-      // Determine which end is closer
+      // Determine which end is closer AND relinkable
       const distFrom = Math.hypot(part.fromPort.x - point.x, part.fromPort.y - point.y);
       const distTo = Math.hypot(part.toPort.x - point.x, part.toPort.y - point.y);
+      const fromOk = distFrom <= distTo && part.relinkableFrom;
+      const toOk = distTo <= distFrom && part.relinkableTo;
 
       this._link = part;
-      this._end = distFrom <= distTo ? 'from' : 'to';
+      this._end = fromOk ? 'from' : toOk ? 'to' : null;
+      if (this._end === null) return;
       this._isDragging = true;
       this.showTempLink(part.fromPort, part.toPort);
     }
@@ -103,14 +114,14 @@ export class RelinkingTool extends LinkingBaseTool {
     const model = diagram.getModel();
     if (!model.containsNode(newEnd.key)) return false;
 
-    const linkData = model
-      .getLinkDataArray()
-      .find((l) => l.from === link.fromKey && l.to === link.toKey);
+    // Find the link by its unique key (not from/to, which is ambiguous with duplicates)
+    const linkData = model.getLinkData(link.key);
     if (!linkData) return false;
 
     const linkKey = model.getLinkKey(linkData);
     if (linkKey === undefined) return false;
 
+    if (this._end === null) return false;
     const propertyName = this._end === 'from' ? 'from' : 'to';
     const newValue = newEnd.key;
     if (linkData[propertyName] === newValue) return false;

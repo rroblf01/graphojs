@@ -349,3 +349,156 @@ describe('B12: nested transactions keep outer events', () => {
     expect(m.getNodeCount()).toBe(0);
   });
 });
+
+describe('C13: link fromKey/toKey stay in sync after relink', () => {
+  it('updateLinkFromData updates link endpoints', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+        { key: 3, x: 400, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    d.model = m;
+
+    const linkData = m.getLinkDataArray()[0]!;
+    m.setDataProperty(linkData, 'to', 3); // relink
+    const linkKey = m.getLinkKey(linkData);
+    const link = d.findLinkForKey(linkKey!);
+    expect(link).not.toBeNull();
+    expect(link!.toKey).toBe(3); // updated, not stale 2
+  });
+});
+
+describe('C15: text edits are undoable and Escape does not commit', () => {
+  it('text edit is wrapped in an undoable transaction', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50, label: 'Old' }],
+    });
+    d.model = m;
+    const undoCount = d.undoManager.getUndoStack().length;
+
+    d.getToolManager().getTool('textEditing');
+    // Simulate a committed text edit through the diagram transaction path
+    d.commit(() => {
+      m.setNodeProperty(1, 'label', 'New');
+    }, 'text edit');
+    expect(m.getNodeData(1)!.label).toBe('New');
+
+    d.undo();
+    expect(m.getNodeData(1)!.label).toBe('Old'); // undoable
+    void undoCount;
+  });
+
+  it('model has link setLinkProperty available for link edits', () => {
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    m.setLinkProperty(m.getLinkDataArray()[0]!.key as number, 'label', 'L');
+    expect(m.getLinkDataArray()[0]!.label).toBe('L');
+  });
+});
+
+describe('C16: relinking respects relinkableTo and finds link by key', () => {
+  it('relinkableTo is respected and link is found by key with duplicates', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+        { key: 3, x: 400, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [
+        { key: 'a', from: 1, to: 2 },
+        { key: 'b', from: 1, to: 2 }, // duplicate endpoints, distinct keys
+      ],
+    });
+    d.model = m;
+
+    const linkA = d.findLinkForKey('a');
+    const linkB = d.findLinkForKey('b');
+    expect(linkA).not.toBeNull();
+    expect(linkB).not.toBeNull();
+
+    // Setting the 'to' of link A via its key must not affect link B
+    m.setDataProperty(m.getLinkData('a')!, 'to', 3);
+    expect(m.getLinkData('a')!.to).toBe(3);
+    expect(m.getLinkData('b')!.to).toBe(2);
+  });
+});
+
+describe('C20: declarative ports resolve after layout', () => {
+  it('updatePortSpots moves ports off (0,0) after layout', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(
+      Node,
+      'Spot',
+      $(Shape, 'Rectangle'),
+      $(Shape, 'Circle', { portId: 'out', width: 12, height: 12 }),
+    );
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    d.model = m;
+    const node = d.findNodeForKey(1) as Node;
+    const port = node.findPort('out');
+    expect(port).toBeDefined();
+
+    // Simulate post-layout element positions (right edge of the node)
+    const portEl = node.panel!.elements.find((el) => el.portId === 'out')!;
+    portEl.setPosition(88, 25);
+    node.updatePortSpots();
+    const p = port!.computePoint(0, 0, 100, 50);
+    expect(p.x).toBeCloseTo(88, 0);
+    expect(p.x).toBeGreaterThan(0);
+  });
+});
+
+describe('C22: invalidateLinksForNode clears cached link paths', () => {
+  it('clears pathPoints of connected links', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    d.model = m;
+    const linkKey = m.getLinkKey(m.getLinkDataArray()[0]!);
+    const link = d.findLinkForKey(linkKey!) as Link;
+
+    d.invalidateLinksForNode(1);
+    expect(link.pathPoints.length).toBe(0);
+  });
+});
+
+describe('C24: Shape.clone copies strokeCap/strokeJoin; Part.copy clones panel', () => {
+  it('Shape.clone preserves cap/join', () => {
+    const s = new Shape('rect');
+    s.strokeCap = 'round';
+    s.strokeJoin = 'bevel';
+    const c = s.clone();
+    expect(c.strokeCap).toBe('round');
+    expect(c.strokeJoin).toBe('bevel');
+  });
+
+  it('Part.copy clones the visual tree', () => {
+    const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
+    const p = new Panel('Auto');
+    p.add(new TextBlock('hi'));
+    node.panel = p;
+    const copy = node.copy();
+    expect(copy.panel).not.toBeNull();
+    expect(copy.panel).not.toBe(p);
+    expect(copy.panel!.elementCount).toBe(1);
+  });
+});

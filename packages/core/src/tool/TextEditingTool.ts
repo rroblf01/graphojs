@@ -77,21 +77,31 @@ export class TextEditingTool extends Tool {
 
     const diagram = this.diagram;
     const value = this.input.value;
+    const node = this.node;
+    const textBlock = this.textBlock;
 
-    if (commit && diagram) {
-      if (this.textBlock) {
-        this.commitTextBlock(diagram, this.node, this.textBlock, value);
-      } else {
-        this.commitNodeLabel(diagram, this.node, value);
-      }
-      // GoJS-compatible: fire TextEdited after a successful edit
-      diagram.fireDiagramEvent('TextEdited', this.node, { text: value });
-    }
-
+    // Prevent re-entrancy: hide/clear BEFORE committing so a synchronous blur
+    // from removing the input cannot double-commit or commit a cancelled edit.
     this.hideEditor();
     this._isEditing = false;
     this.node = null;
     this.textBlock = null;
+
+    if (commit && diagram) {
+      // Wrap the model write in a transaction so text edits are undoable
+      diagram.startTransaction('text edit');
+      try {
+        if (textBlock) {
+          this.commitTextBlock(diagram, node, textBlock, value);
+        } else {
+          this.commitNodeLabel(diagram, node, value);
+        }
+      } finally {
+        diagram.commitTransaction('text edit');
+      }
+      // GoJS-compatible: fire TextEdited after a successful edit
+      diagram.fireDiagramEvent('TextEdited', node, { text: value });
+    }
   }
 
   /** Commit an edited TextBlock back to the model when it has a source binding. */

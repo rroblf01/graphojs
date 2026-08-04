@@ -32,6 +32,9 @@ export interface ContextMenuOptions {
 export class ContextMenu {
   private element: HTMLDivElement;
   private diagram: Diagram;
+  private _onDocClick: () => void = () => {};
+  private _onDocKey: (e: KeyboardEvent) => void = () => {};
+  private _onResize: () => void = () => {};
   private options: ContextMenuOptions;
   private currentItems: ContextMenuItem[] = [];
   private currentPart: Part | null = null;
@@ -73,13 +76,14 @@ export class ContextMenu {
   /** Set up event listeners. */
   private setupEvents(): void {
     // Close on outside click
-    document.addEventListener('click', () => this.close());
-    // Close on Escape
-    document.addEventListener('keydown', (e) => {
+    this._onDocClick = () => this.close();
+    this._onDocKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') this.close();
-    });
-    // Close on window resize
-    window.addEventListener('resize', () => this.close());
+    };
+    this._onResize = () => this.close();
+    document.addEventListener('click', this._onDocClick);
+    document.addEventListener('keydown', this._onDocKey);
+    window.addEventListener('resize', this._onResize);
   }
 
   /**
@@ -212,9 +216,9 @@ export class ContextMenu {
 
   /** Destroy the context menu and clean up. */
   destroy(): void {
-    document.removeEventListener('click', this.close);
-    document.removeEventListener('keydown', this.close);
-    window.removeEventListener('resize', this.close);
+    document.removeEventListener('click', this._onDocClick);
+    document.removeEventListener('keydown', this._onDocKey);
+    window.removeEventListener('resize', this._onResize);
     this.element.remove();
   }
 }

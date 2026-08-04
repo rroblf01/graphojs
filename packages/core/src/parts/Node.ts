@@ -175,6 +175,31 @@ export class Node extends Part {
   }
 
   /**
+   * Recompute the fractional spot for each existing port from the current
+   * element positions (layout happens during draw). Called after rendering so
+   * declarative ports resolve to their real edge positions.
+   */
+  updatePortSpots(): void {
+    if (!this._panel || this._ports.length === 0) return;
+    const w = this.bounds.width || 1;
+    const h = this.bounds.height || 1;
+    const byId = new Map<string, Port>();
+    for (const port of this._ports) byId.set(port.name, port);
+    const walk = (panel: Panel): void => {
+      for (const el of panel.elements) {
+        if (el.portId) {
+          const port = byId.get(el.portId);
+          if (port) {
+            port.spot = new Spot(w > 0 ? el.position.x / w : 0.5, h > 0 ? el.position.y / h : 0.5);
+          }
+        }
+        if (el instanceof Panel) walk(el);
+      }
+    };
+    walk(this._panel);
+  }
+
+  /**
    * Compute the point of a port in diagram coordinates.
    * If no port name is given, returns the node center.
    */

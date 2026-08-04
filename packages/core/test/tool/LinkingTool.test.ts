@@ -40,6 +40,8 @@ function createMockDiagram(): Diagram {
     hideTempLink: vi.fn(),
     getTempLink: () => null,
     fireDiagramEvent: vi.fn(),
+    startTransaction: vi.fn(() => true),
+    commitTransaction: vi.fn(() => true),
   } as unknown as Diagram;
 }
 
@@ -135,16 +137,17 @@ describe('RelinkingTool', () => {
     expect(tool.isEnabled).toBe(true);
     expect(tool.isRelinking).toBe(false);
     expect(tool.link).toBeNull();
-    expect(tool.end).toBe('to');
+    expect(tool.end).toBeNull();
   });
 
-  it('should start relinking on link mousedown', () => {
+  it('should start relinking on link endpoint mousedown', () => {
     const diagram = createMockDiagram();
     const model = diagram.getModel();
     model.addLink({ key: 100, from: 1, to: 2 });
 
     // Create a Link part and register it for hit-testing
     const link = new Link(100, 1, 2);
+    link.relinkableTo = true; // allow relinking at the 'to' end
     link.fromPort = { x: 50, y: 25 };
     link.toPort = { x: 250, y: 25 };
     link.setPathPoints([
@@ -158,9 +161,9 @@ describe('RelinkingTool', () => {
       if (link.containsPoint({ x, y })) return link;
       return null;
     };
-    // Mouse over the middle of the link (point on link path)
+    // Mouse over the 'to' endpoint of the link
     const originalGetPoint = diagram.getDiagramPoint;
-    diagram.getDiagramPoint = () => ({ x: 150, y: 25 });
+    diagram.getDiagramPoint = () => ({ x: 250, y: 25 });
 
     const tool = new RelinkingTool();
     tool.diagram = diagram;
@@ -169,6 +172,7 @@ describe('RelinkingTool', () => {
 
     expect(tool.isRelinking).toBe(true);
     expect(tool.link).toBe(link);
+    expect(tool.end).toBe('to');
 
     diagram.findPartAt = originalFind;
     diagram.getDiagramPoint = originalGetPoint;
@@ -185,7 +189,7 @@ describe('RelinkingTool', () => {
 
     const node3 = diagram.getPart(3) as Node;
     // Force 'to' end
-    (tool as unknown as { _end: 'from' | 'to' })._end = 'to';
+    (tool as unknown as { _end: 'from' | 'to' | null })._end = 'to';
 
     expect(tool.reconnectLink(link, node3)).toBe(true);
     const linkData = model.getLinkData(100);
@@ -221,6 +225,8 @@ describe('LinkingTool cycle prevention', () => {
       getTempLink: () => null,
       getSelectedParts: () => [],
       fireDiagramEvent: vi.fn(),
+      startTransaction: vi.fn(() => true),
+      commitTransaction: vi.fn(() => true),
     } as unknown as Diagram;
   }
 

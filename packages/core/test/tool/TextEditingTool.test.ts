@@ -24,6 +24,8 @@ function createMockDiagram(node: Node): Diagram {
     getDiagramPoint: () => ({ x: 0, y: 0 }),
     findPartAt: () => node,
     invalidate: vi.fn(),
+    startTransaction: vi.fn(() => true),
+    commitTransaction: vi.fn(() => true),
     fireDiagramEvent: vi.fn(),
   } as unknown as Diagram;
 }

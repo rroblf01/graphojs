@@ -13,6 +13,7 @@
     <div id="log"></div>
     <script type="module">
       window.__go = go;
+
       import * as go from '../../packages/core/dist/go.js';
 
       const $ = go.GraphObject.make;
@@ -35,12 +36,12 @@
 
       const logEl = document.getElementById('log');
       const log = (msg) => {
-        logEl.textContent += msg + '\n';
+        logEl.textContent += `${msg}\n`;
       };
 
-      myDiagram.addDiagramListener('SelectionChanged', (e) => {
+      myDiagram.addDiagramListener('SelectionChanged', () => {
         const n = myDiagram.getSelectedParts().length;
-        log('selection:' + n);
+        log(`selection:${n}`);
       });
       myDiagram.addDiagramListener('PartMoved', () => log('partMoved'));
 

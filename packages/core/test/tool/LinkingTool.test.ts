@@ -36,6 +36,8 @@ function createMockDiagram(): Diagram {
     },
     getPart: (key: string | number) =>
       nodes.find((n) => n.key === key) ?? links.find((l) => l.key === key),
+    findLinkForKey: (key: string | number) =>
+      links.find((l) => l.key === key) ?? null,
     showTempLink: vi.fn(),
     hideTempLink: vi.fn(),
     getTempLink: () => null,
@@ -194,6 +196,36 @@ describe('RelinkingTool', () => {
     expect(tool.reconnectLink(link, node3)).toBe(true);
     const linkData = model.getLinkData(100);
     expect(linkData?.to).toBe(3);
+  });
+
+  it('creates a link through the full mouse gesture (down, move, up)', () => {
+    const diagram = createMockDiagram();
+    const tool = new LinkingTool();
+    tool.diagram = diagram;
+
+    // Press on node 1
+    const origPoint = diagram.getDiagramPoint;
+    diagram.getDiagramPoint = () => ({ x: 50, y: 25 });
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0 }));
+    expect(tool.isLinking).toBe(true);
+    expect(tool.sourceNode?.key).toBe(1);
+
+    // Move over node 2 (its bounds: 200..300 x, 0..50 y)
+    diagram.getDiagramPoint = () => ({ x: 250, y: 25 });
+    tool.doMouseMove(new MouseEvent('mousemove'));
+    expect(tool.targetNode?.key).toBe(2);
+
+    // Release over node 2
+    tool.doMouseUp(new MouseEvent('mouseup'));
+
+    // Link must exist in the model
+    const model = diagram.getModel();
+    expect(model.getLinkCount()).toBe(1);
+    const linkData = model.getLinkDataArray()[0];
+    expect(linkData?.from).toBe(1);
+    expect(linkData?.to).toBe(2);
+
+    diagram.getDiagramPoint = origPoint;
   });
 });
 

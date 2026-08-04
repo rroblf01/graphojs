@@ -1,19 +1,34 @@
+import type { Binding } from '../binding/Binding.ts';
+import { Binding as BindingClass } from '../binding/Binding.ts';
+import type { Margin } from '../geometry/Margin.ts';
+import type { Rect } from '../geometry/Rect.ts';
 import type { Size } from '../geometry/Size.ts';
 import { Size as SizeClass } from '../geometry/Size.ts';
-import type { Margin } from '../geometry/Margin.ts';
 import type { Spot } from '../geometry/Spot.ts';
-import type { Rect } from '../geometry/Rect.ts';
-import type { Binding } from '../binding/Binding.ts';
 import type { NodeData } from '../model/Model.ts';
+import { isDomComponent } from './ComponentRegistry.ts';
 import { getPanelFactory } from './PanelRegistry.ts';
 import { isPartCtor } from './PartRegistry.ts';
-import { Binding as BindingClass } from '../binding/Binding.ts';
 
 /**
  * Base class for all visual elements that can appear in a Panel.
  * GraphObjects are laid out by their containing Panel.
  */
 export abstract class GraphObject {
+  /** Properties that belong on the created Part, not on the template Panel. */
+  protected static readonly PART_LEVEL_PROPS = new Set([
+    'visible',
+    'opacity',
+    'location',
+    'layerName',
+    'draggable',
+    'resizable',
+    'rotatable',
+    'selectable',
+    'zOrder',
+    'angle',
+    'category',
+  ]);
   private _name: string = '';
   private _desiredSize: Size | null = null;
   private _actualSize: Size = new SizeClass(0, 0);
@@ -98,53 +113,104 @@ export abstract class GraphObject {
    *   const shape = $(go.Shape, "RoundedRectangle", { fill: "white", stroke: "gray" });
    *   const panel = $(go.Panel, "Auto", shape, $(go.TextBlock, "Hello"));
    */
-  static make<T extends GraphObject>(ctor: new (...args: unknown[]) => T, ...args: unknown[]): T {
+  static make<T>(ctor: new (...args: unknown[]) => T, ...args: unknown[]): T {
     // GoJS-compatible: $(go.Node/'go.Link'/'go.Group', panelType, ...children, props)
     // builds a template Panel carrying the part properties to apply on instantiation.
-    // Detection via an explicit registry (robust against minification).
     if (isPartCtor(ctor)) {
       return GraphObject.makePartTemplate(args) as unknown as T;
     }
 
+    // GoJS-compatible: $(go.Diagram, "divId", {props}) and
+    // $(go.Palette/Overview, div, {props}) construct with real arguments
+    if (isDomComponent(ctor)) {
+      return GraphObject.makeDomComponent(ctor, args) as unknown as T;
+    }
+
     const obj = new ctor();
+    const objAny = obj as unknown as object;
 
     for (const arg of args) {
       if (arg === null || arg === undefined) continue;
 
       if (arg instanceof BindingClass) {
         // GoJS-compatible: attach a Binding to the object
-        const setter = (obj as unknown as { setBinding?: (b: Binding) => unknown }).setBinding;
-        if (setter) setter.call(obj, arg);
+        const setter = (objAny as unknown as { setBinding?: (b: Binding) => unknown }).setBinding;
+        if (setter) setter.call(objAny, arg);
         continue;
       }
 
       if (arg instanceof GraphObject) {
         // Child element: add to panel if applicable
-        if ('add' in obj && typeof (obj as Record<string, unknown>).add === 'function') {
-          (obj as { add(child: GraphObject): unknown }).add(arg);
+        if ('add' in objAny && typeof (objAny as Record<string, unknown>).add === 'function') {
+          (objAny as { add(child: GraphObject): unknown }).add(arg);
         }
       } else if (typeof arg === 'string') {
         // First string arg for Shape = shape type, for Panel = panel type,
         // for TextBlock = text, for Picture = source
-        if ('shape' in obj) {
-          (obj as { shape: unknown }).shape = arg;
-        } else if ('type' in obj) {
-          (obj as { type: unknown }).type = arg;
-        } else if ('text' in obj) {
-          (obj as { text: unknown }).text = arg;
-        } else if ('source' in obj) {
-          (obj as { source: unknown }).source = arg;
+        if ('shape' in objAny) {
+          (objAny as { shape: unknown }).shape = arg;
+        } else if ('type' in objAny) {
+          (objAny as { type: unknown }).type = arg;
+        } else if ('text' in objAny) {
+          (objAny as { text: unknown }).text = arg;
+        } else if ('source' in objAny) {
+          (objAny as { source: unknown }).source = arg;
         }
       } else if (typeof arg === 'object') {
         // Property map
         const props = arg as Record<string, unknown>;
         for (const [key, value] of Object.entries(props)) {
-          (obj as Record<string, unknown>)[key] = value;
+          (objAny as Record<string, unknown>)[key] = value;
         }
       }
     }
 
     return obj;
+  }
+
+  /**
+   * Construct a DOM component (Diagram/Palette/Overview) with its real
+   * first argument, then apply remaining property maps (with dotted-key
+   * support such as "undoManager.isEnabled").
+   */
+  private static makeDomComponent(
+    ctor: new (...args: unknown[]) => unknown,
+    args: unknown[],
+  ): unknown {
+    const first = args[0];
+    // eslint-disable-next-line new-cap
+    const obj = first !== undefined ? new ctor(first) : new ctor();
+    for (let i = 1; i < args.length; i++) {
+      const arg = args[i];
+      if (arg && typeof arg === 'object') {
+        for (const [key, value] of Object.entries(arg as Record<string, unknown>)) {
+          GraphObject.applyPath(obj, key, value);
+        }
+      }
+    }
+    return obj;
+  }
+
+  /** Apply a (possibly dotted) property path, e.g. "undoManager.isEnabled". */
+  private static applyPath(obj: unknown, key: string, value: unknown): void {
+    if (!key.includes('.')) {
+      (obj as Record<string, unknown>)[key] = value;
+      return;
+    }
+    const segments = key.split('.');
+    let current: unknown = obj;
+    for (let i = 0; i < segments.length - 1; i++) {
+      const seg = segments[i];
+      if (seg === undefined) continue;
+      const next = (current as Record<string, unknown>)[seg];
+      current = next ?? {};
+      (obj as Record<string, unknown>)[seg] = current;
+      obj = current;
+    }
+    const lastSeg = segments[segments.length - 1];
+    if (lastSeg !== undefined) {
+      (current as Record<string, unknown>)[lastSeg] = value;
+    }
   }
 
   /**
@@ -160,8 +226,10 @@ export abstract class GraphObject {
       if (arg === null || arg === undefined) continue;
 
       if (arg instanceof BindingClass) {
-        // A Binding on the part itself (rare, but support it)
-        panel.templateProperties.__binding__ = arg;
+        // Bindings on the part itself: support multiple by collecting them
+        const existing = (panel.templateProperties.__bindings__ as Binding[] | undefined) ?? [];
+        existing.push(arg.copy());
+        panel.templateProperties.__bindings__ = existing;
         continue;
       }
 
@@ -172,7 +240,11 @@ export abstract class GraphObject {
       } else if (typeof arg === 'object') {
         const props = arg as Record<string, unknown>;
         for (const [key, value] of Object.entries(props)) {
-          if (key in panel && key !== 'templateProperties') {
+          // Part-level properties (visible, opacity, location, etc.) belong on
+          // the created Part, not on the template Panel
+          if (GraphObject.PART_LEVEL_PROPS.has(key)) {
+            panel.templateProperties[key] = value;
+          } else if (key in panel && key !== 'templateProperties') {
             (panel as unknown as Record<string, unknown>)[key] = value;
           } else {
             panel.templateProperties[key] = value;

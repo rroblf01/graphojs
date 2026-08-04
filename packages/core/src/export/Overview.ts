@@ -16,6 +16,8 @@ export class Overview {
   private width = 200;
   private height = 150;
   private isDragging = false;
+  private refreshListener: () => void = () => {};
+  private _destroyed = false;
 
   constructor(
     container: HTMLElement,
@@ -51,6 +53,7 @@ export class Overview {
     this.ctx = ctx;
 
     this.setupEvents();
+    this.attachRefresh();
     this.render();
   }
 
@@ -66,8 +69,32 @@ export class Overview {
 
   /** GoJS-compatible: Set the diagram this overview observes. */
   set observed(value: Diagram) {
+    if (this.diagram === value) return;
+    const d = this.diagram as Diagram & {
+      removeDiagramListener?: (t: string, h: () => void) => void;
+    };
+    if (typeof d.removeDiagramListener === 'function') {
+      d.removeDiagramListener('ViewportChanged', this.refreshListener);
+      d.removeDiagramListener('ModelChanged', this.refreshListener);
+    }
     this.diagram = value;
+    this.attachRefresh();
     this.render();
+  }
+
+  /** Subscribe to diagram changes so the overview auto-refreshes. */
+  private attachRefresh(): void {
+    this.refreshListener = () => {
+      if (!this._destroyed) this.render();
+    };
+    const d = this.diagram as Diagram & {
+      addDiagramListener?: (t: string, h: () => void) => void;
+    };
+    if (typeof d.addDiagramListener === 'function') {
+      d.addDiagramListener('ViewportChanged', this.refreshListener);
+      d.addDiagramListener('ModelChanged', this.refreshListener);
+      d.addDiagramListener('SelectionChanged', this.refreshListener);
+    }
   }
 
   /** Set up mouse events for panning. */
@@ -153,6 +180,27 @@ export class Overview {
     }
 
     this.ctx.restore();
+
+    // Draw the viewport box (the visible region of the observed diagram)
+    this.drawViewportBox(offsetX, offsetY, scale);
+  }
+
+  /** Draw a rectangle representing the observed diagram's viewport. */
+  private drawViewportBox(offsetX: number, offsetY: number, scale: number): void {
+    const d = this.diagram as Diagram & {
+      getContentBounds?: () => { width: number; height: number };
+    };
+    const view = this.diagram.getViewport();
+    const content = typeof d.getContentBounds === 'function' ? d.getContentBounds() : view;
+    const boundsW = Math.max(content.width, 1);
+    const boundsH = Math.max(content.height, 1);
+    const x = view.x * scale + offsetX;
+    const y = view.y * scale + offsetY;
+    const w = Math.min(view.width * scale, this.width);
+    const h = Math.min(view.height * scale, this.height);
+    this.ctx.strokeStyle = 'rgba(33,150,243,0.9)';
+    this.ctx.lineWidth = 1.5;
+    this.ctx.strokeRect(x, y, Math.min(w, boundsW * scale), Math.min(h, boundsH * scale));
   }
 
   private renderPart(part: Part): void {
@@ -192,6 +240,15 @@ export class Overview {
 
   /** Destroy the overview and clean up. */
   destroy(): void {
+    this._destroyed = true;
+    const d = this.diagram as Diagram & {
+      removeDiagramListener?: (t: string, h: () => void) => void;
+    };
+    if (typeof d.removeDiagramListener === 'function') {
+      d.removeDiagramListener('ViewportChanged', this.refreshListener);
+      d.removeDiagramListener('ModelChanged', this.refreshListener);
+      d.removeDiagramListener('SelectionChanged', this.refreshListener);
+    }
     this.canvas.remove();
   }
 }
@@ -204,3 +261,7 @@ export function createOverview(
 ): Overview {
   return new Overview(container, diagram, options);
 }
+
+import { registerDomComponent } from '../panel/ComponentRegistry.ts';
+
+registerDomComponent(Overview);

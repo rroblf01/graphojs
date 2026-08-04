@@ -1,5 +1,5 @@
-import { Node } from '../parts/Node.ts';
 import type { LinkData } from '../model/Model.ts';
+import { Node } from '../parts/Node.ts';
 import { AddLinkCommand } from '../undo/commands.ts';
 import { LinkingBaseTool } from './LinkingBaseTool.ts';
 
@@ -71,13 +71,15 @@ export class LinkingTool extends LinkingBaseTool {
     // Update target node if over a different node
     if (part instanceof Node && part !== this._sourceNode) {
       this._targetNode = part;
-      const targetPoint = this.getConnectionPoint(part, this._sourcePoint);
+      this._targetPortName = this.getNearestPortName(part, point);
+      const targetPoint = this.getConnectionPoint(part, this._sourcePoint, this._targetPortName);
       if (this._sourceNode && this.diagram) {
         this._isValidLink = this.validateLink(this._sourceNode, part, this.diagram.getModel());
       }
       this.showTempLink(this._sourcePoint, targetPoint);
     } else {
       this._targetNode = null;
+      this._targetPortName = undefined;
       this._isValidLink = false;
       this.showTempLink(this._sourcePoint, point);
     }
@@ -93,6 +95,7 @@ export class LinkingTool extends LinkingBaseTool {
 
     this._sourceNode = null;
     this._targetNode = null;
+    this._targetPortName = undefined;
     this.hideTempLink();
 
     if (!diagram || !source || !target) return;
@@ -117,6 +120,9 @@ export class LinkingTool extends LinkingBaseTool {
     };
     if (this._sourcePortName !== undefined) {
       linkData.fromPort = this._sourcePortName;
+    }
+    if (this._targetPortName !== undefined) {
+      linkData.toPort = this._targetPortName;
     }
 
     try {

@@ -1,5 +1,5 @@
-import { Model } from './Model.ts';
 import type { LinkData, LinkValidationCallback, ModelJSON, NodeData, NodeKey } from './Model.ts';
+import { Model } from './Model.ts';
 
 export interface GraphLinksModelJSON extends ModelJSON {
   linkKeyProperty: string;
@@ -142,6 +142,9 @@ export class GraphLinksModel extends Model {
 
   /** Set all link data, assigning missing keys and emitting add/remove events. */
   setLinkDataArray(value: LinkData[]): void {
+    if (this.isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     const oldKeys = new Set(this._linkDataArray.map((l) => this.getLinkKey(l)));
     const newKeys = new Set(value.map((l) => l[this.linkKeyProperty] as NodeKey));
     for (const key of oldKeys) {
@@ -186,12 +189,22 @@ export class GraphLinksModel extends Model {
 
   /** Set a property on a link. */
   setLinkProperty(key: NodeKey, propertyName: string, value: unknown): void {
+    if (this.isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     const linkData = this.getLinkData(key);
     if (!linkData) return;
 
     const oldValue = linkData[propertyName];
     linkData[propertyName] = value;
 
+    this.recordRollback(() => {
+      if (oldValue === undefined) {
+        delete linkData[propertyName];
+      } else {
+        linkData[propertyName] = oldValue;
+      }
+    });
     this.emit({
       type: 'property Changed',
       model: this,
@@ -218,6 +231,9 @@ export class GraphLinksModel extends Model {
 
   /** Add a link. */
   addLink(linkData: LinkData): NodeKey {
+    if (this.isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     if (!linkData.from || !linkData.to) {
       throw new Error('Link must have "from" and "to" properties');
     }
@@ -245,6 +261,11 @@ export class GraphLinksModel extends Model {
     }
 
     this._linkDataArray.push(linkData);
+    const linkKey = this.getLinkKey(linkData);
+    this.recordRollback(() => {
+      const idx = this._linkDataArray.findIndex((l) => this.getLinkKey(l) === linkKey);
+      if (idx !== -1) this._linkDataArray.splice(idx, 1);
+    });
     this.emit({
       type: 'link Added',
       model: this,
@@ -260,6 +281,9 @@ export class GraphLinksModel extends Model {
 
   /** Remove a link by key. */
   removeLink(key: NodeKey): boolean {
+    if (this.isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     const index = this._linkDataArray.findIndex((d) => this.getLinkKey(d) === key);
     if (index === -1) return false;
 
@@ -268,7 +292,13 @@ export class GraphLinksModel extends Model {
       throw new Error('Link removal validation failed');
     }
 
+    const removedData = removed;
     this._linkDataArray.splice(index, 1);
+    this.recordRollback(() => {
+      if (!this.getLinkData(this.getLinkKey(removedData) as NodeKey)) {
+        this._linkDataArray.push(removedData);
+      }
+    });
     this.emit({
       type: 'link Removed',
       model: this,

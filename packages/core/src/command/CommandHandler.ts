@@ -1,16 +1,16 @@
 import type { Diagram } from '../diagram/Diagram.ts';
-import type { NodeData, NodeKey } from '../model/Model.ts';
-import { Node } from '../parts/Node.ts';
-import { Group } from '../parts/Group.ts';
 import { Rect } from '../geometry/Rect.ts';
+import type { NodeData, NodeKey } from '../model/Model.ts';
+import { Group } from '../parts/Group.ts';
+import { Node } from '../parts/Node.ts';
 import {
-  RemoveNodeCommand,
-  RemoveLinkCommand,
-  AddNodeCommand,
   AddLinkCommand,
+  AddNodeCommand,
+  MoveNodeCommand,
+  RemoveLinkCommand,
+  RemoveNodeCommand,
   SetNodePropertyCommand,
   SetZOrderCommand,
-  MoveNodeCommand,
 } from '../undo/commands.ts';
 
 export type Alignment = 'left' | 'right' | 'top' | 'bottom' | 'centerH' | 'centerV';
@@ -189,7 +189,8 @@ export class CommandHandler {
     undoManager.beginTransaction('paste');
     try {
       for (let i = 0; i < this.clipboard.nodes.length; i++) {
-        const data = this.clipboard.nodes[i]!;
+        const data = this.clipboard.nodes[i];
+        if (!data) continue;
         const copy: NodeData = { ...data };
         const oldKey = this.clipboard.oldKeys[i];
         const newKey = model.generateKey();

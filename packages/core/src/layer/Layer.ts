@@ -10,6 +10,7 @@ export class Layer {
   private _parts: Part[] = [];
   private _isTemporary = false;
   private _opacity = 1;
+  private _visible = true;
 
   constructor(name: string, zOrder: number) {
     this._name = name;
@@ -49,6 +50,15 @@ export class Layer {
   /** Set the opacity. */
   set opacity(value: number) {
     this._opacity = Math.max(0, Math.min(1, value));
+  }
+
+  /** GoJS-compatible: Whether this layer is visible. */
+  get visible(): boolean {
+    return this._visible;
+  }
+
+  set visible(value: boolean) {
+    this._visible = value;
   }
 
   /** Get all parts in this layer. */

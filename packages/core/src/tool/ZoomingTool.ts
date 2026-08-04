@@ -32,9 +32,11 @@ export class ZoomingTool extends Tool {
     const diagramX = mouseX / scale + viewport.x;
     const diagramY = mouseY / scale + viewport.y;
 
-    // Apply zoom
+    // Apply zoom (use the diagram's configured min/max scale)
     const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = Math.max(this.minScale, Math.min(this.maxScale, scale * zoomFactor));
+    const minScale = diagram.minScale;
+    const maxScale = diagram.maxScale;
+    const newScale = Math.max(minScale, Math.min(maxScale, scale * zoomFactor));
 
     // Adjust offset to keep mouse position fixed
     const newX = diagramX - mouseX / newScale;

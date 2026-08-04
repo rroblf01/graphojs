@@ -1,23 +1,35 @@
+import { AnimationManager } from '../animation/AnimationManager.ts';
+import { CommandHandler } from '../command/CommandHandler.ts';
+import type { ContextMenu } from '../export/ContextMenu.ts';
+import { handleDrop } from '../export/Palette.ts';
+import { PNGExporter } from '../export/PNGExporter.ts';
+import { printDiagram } from '../export/PrintExporter.ts';
+import { makeSvgElement } from '../export/SVGExporter.ts';
+import { TooltipManager } from '../export/TooltipManager.ts';
 import type { Rect } from '../geometry/Rect.ts';
 import { Rect as RectClass } from '../geometry/Rect.ts';
-import { Spot } from '../geometry/Spot.ts';
-import type { ChangedEvent, NodeData, LinkData } from '../model/Model.ts';
-import type { NodeKey } from '../model/Model.ts';
-import { GraphLinksModel } from '../model/GraphLinksModel.ts';
-import { type Layer, createDefaultLayers, LayerNames } from '../layer/Layer.ts';
+import type { Spot } from '../geometry/Spot.ts';
+import { createDefaultLayers, type Layer, LayerNames } from '../layer/Layer.ts';
 import type { Layout } from '../layout/Layout.ts';
-import { Group } from '../parts/Group.ts';
-import { Link, type ArrowheadStyle } from '../parts/Link.ts';
-import { Node } from '../parts/Node.ts';
-import { Shape } from '../panel/Shape.ts';
+import { GraphLinksModel } from '../model/GraphLinksModel.ts';
+import type { ChangedEvent, LinkData, NodeData, NodeKey } from '../model/Model.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
-import type { ContextMenu } from '../export/ContextMenu.ts';
+import type { Panel } from '../panel/Panel.ts';
+import { Shape } from '../panel/Shape.ts';
+import { Group } from '../parts/Group.ts';
+import { type ArrowheadStyle, Link } from '../parts/Link.ts';
+import { Node } from '../parts/Node.ts';
+import type { Part } from '../parts/Part.ts';
 import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
+import { LayerCache } from '../render/LayerCache.ts';
 import type { Renderer } from '../render/Renderer.ts';
-import { Serializer, type DiagramJSON } from '../serialization/Serializer.ts';
+import { type DiagramJSON, Serializer } from '../serialization/Serializer.ts';
+import { PartPool } from '../spatial/PartPool.ts';
+import { QuadTree } from '../spatial/QuadTree.ts';
+import { VirtualizationManager } from '../spatial/VirtualizationManager.ts';
 import { ClickSelectingTool } from '../tool/ClickSelectingTool.ts';
-import { DragSelectingTool } from '../tool/DragSelectingTool.ts';
 import { DraggingTool } from '../tool/DraggingTool.ts';
+import { DragSelectingTool } from '../tool/DragSelectingTool.ts';
 import { LinkingTool } from '../tool/LinkingTool.ts';
 import { PanningTool } from '../tool/PanningTool.ts';
 import { RelinkingTool } from '../tool/RelinkingTool.ts';
@@ -26,22 +38,10 @@ import { RotatingTool } from '../tool/RotatingTool.ts';
 import { TextEditingTool } from '../tool/TextEditingTool.ts';
 import { ToolManager } from '../tool/ToolManager.ts';
 import { ZoomingTool } from '../tool/ZoomingTool.ts';
-import { UndoManager } from '../undo/UndoManager.ts';
-import { ModelTransactionCommand } from '../undo/ModelTransactionCommand.ts';
 import type { Command } from '../undo/Command.ts';
-import { AnimationManager } from '../animation/AnimationManager.ts';
-import { CommandHandler } from '../command/CommandHandler.ts';
-import { VirtualizationManager } from '../spatial/VirtualizationManager.ts';
-import { PartPool } from '../spatial/PartPool.ts';
-import { QuadTree } from '../spatial/QuadTree.ts';
-import { DiagramEvents, type DiagramEvent, type DiagramEventType } from './DiagramEvents.ts';
-import { PNGExporter } from '../export/PNGExporter.ts';
-import { makeSvgElement } from '../export/SVGExporter.ts';
-import { printDiagram } from '../export/PrintExporter.ts';
-import { TooltipManager } from '../export/TooltipManager.ts';
-import { LayerCache } from '../render/LayerCache.ts';
-import type { Part } from '../parts/Part.ts';
-import type { Panel } from '../panel/Panel.ts';
+import { ModelTransactionCommand } from '../undo/ModelTransactionCommand.ts';
+import { UndoManager } from '../undo/UndoManager.ts';
+import { type DiagramEvent, DiagramEvents, type DiagramEventType } from './DiagramEvents.ts';
 
 export interface DiagramOptions {
   /** The container element for the diagram. */
@@ -111,8 +111,8 @@ export class Diagram {
   private offsetX = 0;
   private offsetY = 0;
   private _padding = 0;
-  private minScale: number;
-  private maxScale: number;
+  private _minScale: number;
+  private _maxScale: number;
   private gridSize: number;
   private showGrid: boolean;
   private snapToGrid: boolean;
@@ -163,8 +163,6 @@ export class Diagram {
   private _allowRotate = true;
   private _allowArrange = true;
   private _maxSelectionCount = Infinity;
-  private _transactionEvents: ChangedEvent[] | null = null;
-  private _transactionName = '';
   private _transactionStack: Array<{ events: ChangedEvent[]; name: string }> = [];
   private _contextMenuEl: HTMLElement | null = null;
   private backBuffer: HTMLCanvasElement | null = null;
@@ -177,6 +175,16 @@ export class Diagram {
     [string, EventListenerOrEventListenerObject, (AddEventListenerOptions | boolean)?]
   > = [];
   private _isDestroyed = false;
+
+  /** GoJS-compatible: The minimum zoom scale. */
+  get minScale(): number {
+    return this._minScale;
+  }
+
+  /** GoJS-compatible: The maximum zoom scale. */
+  get maxScale(): number {
+    return this._maxScale;
+  }
 
   // Touch support state
   private touchState: {
@@ -217,8 +225,8 @@ export class Diagram {
     }
 
     this.container = resolvedOptions.div;
-    this.minScale = resolvedOptions.minScale ?? 0.1;
-    this.maxScale = resolvedOptions.maxScale ?? 10;
+    this._minScale = resolvedOptions.minScale ?? 0.1;
+    this._maxScale = resolvedOptions.maxScale ?? 10;
     this.gridSize = resolvedOptions.gridSize ?? 20;
     this.showGrid = resolvedOptions.showGrid ?? true;
     this.snapToGrid = resolvedOptions.snapToGrid ?? false;
@@ -1001,8 +1009,8 @@ export class Diagram {
       const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
       const ratio = dist / this.touchState.startDistance;
       const newScale = Math.max(
-        this.minScale,
-        Math.min(this.maxScale, this.touchState.startScale * ratio),
+        this._minScale,
+        Math.min(this._maxScale, this.touchState.startScale * ratio),
       );
       const midX = (t0.clientX + t1.clientX) / 2;
       const midY = (t0.clientY + t1.clientY) / 2;
@@ -1072,6 +1080,22 @@ export class Diagram {
     });
     this.resizeObserver.observe(this.container);
 
+    // Native palette drag-and-drop
+    this.addCanvasListener('dragover', (e) => {
+      e.preventDefault();
+    });
+    this.addCanvasListener('drop', (e) => {
+      if (this.allowDrop === false) return;
+      const dragEvent = e as DragEvent;
+      const templateId = dragEvent.dataTransfer?.getData('application/x-graphojs-template');
+      if (!templateId) return;
+      e.preventDefault();
+      const dropped = handleDrop(dragEvent, this);
+      if (dropped) {
+        this.fireDiagramEvent('ExternalObjectsDropped', null, { templateId });
+      }
+    });
+
     // Model change listener
     this.modelChangeListener = (event: ChangedEvent) => this.handleModelChange(event);
     this._model.addChangedListener(this.modelChangeListener);
@@ -1126,21 +1150,23 @@ export class Diagram {
   private syncPartsFromModel(): void {
     // Remove parts that no longer exist in model
     for (const [key, part] of this.parts) {
+      let shouldRemove = false;
       if (part instanceof Node && !this._model.containsNode(key)) {
-        this.parts.delete(key);
-        this.nodes.delete(key);
+        shouldRemove = true;
       } else if (part instanceof Group && !this._model.containsNode(key)) {
-        this.parts.delete(key);
-        this.groups.delete(key);
+        shouldRemove = true;
       } else if (part instanceof Link) {
         const linkKey = part.key;
         const linkData = this._model
           .getLinkDataArray()
           .find((l) => this.getLinkKeyOf(l) === linkKey);
-        if (!linkData) {
-          this.parts.delete(key);
-          this.links.delete(linkKey);
-        }
+        if (!linkData) shouldRemove = true;
+      }
+      if (shouldRemove) {
+        this.removePartByKey(
+          part.key,
+          part instanceof Link ? 'link' : part instanceof Group ? 'group' : 'node',
+        );
       }
     }
 
@@ -1403,6 +1429,12 @@ export class Diagram {
   /** Apply templateProperties (e.g. routing, corner) to a created part. */
   private applyTemplateProperties(part: Part, props: Record<string, unknown>): void {
     for (const [key, value] of Object.entries(props)) {
+      if (key === '__bindings__' && Array.isArray(value)) {
+        for (const b of value as unknown[]) {
+          (part as unknown as { addBinding: (b: unknown) => void }).addBinding(b);
+        }
+        continue;
+      }
       if (key === '__binding__') {
         (part as unknown as { addBinding: (b: unknown) => void }).addBinding(value);
         continue;
@@ -1619,6 +1651,12 @@ export class Diagram {
       part = this.getPartByKey(key);
     }
     if (!part) return;
+
+    // Detach from its layer so it is no longer rendered
+    if (part.layer) {
+      part.layer.remove(part);
+      part.layer = null;
+    }
 
     if (part instanceof Node) {
       this.nodes.delete(key);
@@ -1911,6 +1949,7 @@ export class Diagram {
       this._model.removeChangedListener(this.modelChangeListener);
     }
     // Clear stale parts and history when switching to a different model
+    for (const layer of this._layers) layer.clear();
     this.parts.clear();
     this.nodes.clear();
     this.links.clear();
@@ -2027,6 +2066,11 @@ export class Diagram {
   /** Get a layer by name. */
   getLayer(name: string): Layer | undefined {
     return this._layers.find((l) => l.name === name);
+  }
+
+  /** GoJS-compatible: Find a layer by name. */
+  findLayer(name: string): Layer | null {
+    return this._layers.find((l) => l.name === name) ?? null;
   }
 
   /** Add a layer. */
@@ -2328,6 +2372,7 @@ export class Diagram {
     for (const layer of this._layers) {
       if (layer.name === LayerNames.Grid) continue;
       if (layer.partCount === 0) continue;
+      if (layer.visible === false) continue;
 
       // Skip save/restore when the layer has full opacity (common case)
       const layerAlphaApplied = layer.opacity < 1;
@@ -2446,7 +2491,7 @@ export class Diagram {
   }
 
   set zoomFactor(value: number) {
-    this._scale = Math.max(this.minScale, Math.min(this.maxScale, value));
+    this._scale = Math.max(this._minScale, Math.min(this._maxScale, value));
     this.invalidate();
   }
 
@@ -2482,7 +2527,7 @@ export class Diagram {
   }
 
   set scale(value: number) {
-    this._scale = Math.max(this.minScale, Math.min(this.maxScale, value));
+    this._scale = Math.max(this._minScale, Math.min(this._maxScale, value));
     this.invalidate();
     this.fireDiagramEvent('ViewportChanged', null, { scale: this._scale });
   }
@@ -2521,7 +2566,7 @@ export class Diagram {
     return result;
   }
 
-  /** GoJS-compatible: Add a part directly to the diagram. */
+  /** GoJS-compatible: Add a part directly to the diagram (and its data to the model). */
   add(part: Part): void {
     const key = part.key;
     if (key === undefined) return;
@@ -2529,12 +2574,23 @@ export class Diagram {
     if (part instanceof Node) {
       this.nodes.set(key, part);
       this.parts.set(key, part);
+      // Keep the model in sync when adding a part with attached data
+      if (part.data && !this._model.containsNode(key)) {
+        this._model.addNode({ ...part.data });
+      }
     } else if (part instanceof Group) {
       this.groups.set(key, part);
       this.parts.set(key, part);
+      if (part.data && !this._model.containsNode(key)) {
+        this._model.addNode({ ...part.data });
+      }
     } else if (part instanceof Link) {
       this.links.set(key, part);
       this.parts.set(this.linkPartKey(key), part);
+      const linkData = part.data as LinkData | null;
+      if (linkData && !this.getLinkKeyOf(linkData)) {
+        this.getLinksArray();
+      }
     }
     const layer =
       this.getLayer(part.layerName ?? LayerNames.Default) ?? this.getLayer(LayerNames.Default);
@@ -2544,11 +2600,35 @@ export class Diagram {
     this.invalidate();
   }
 
+  /** GoJS-compatible: Add multiple parts at once. */
+  addParts(parts: Iterable<Part>): void {
+    for (const part of parts) this.add(part);
+  }
+
+  /** GoJS-compatible: Remove multiple parts at once. */
+  removeParts(parts: Iterable<Part>): void {
+    for (const part of parts) this.remove(part);
+  }
+
   /** GoJS-compatible: Remove a part directly from the diagram. */
   remove(part: Part): void {
     const key = part.key;
     if (key === undefined) return;
-    this.removePartByKey(key);
+    // Also remove the part's data from the model when it came from the model
+    if (part.data) {
+      if (part instanceof Link) {
+        const linkKey = this.getLinkKeyOf(part.data as LinkData);
+        if (linkKey !== undefined && this._model.getLinkData(linkKey)) {
+          this._model.removeLink(linkKey);
+        }
+      } else if (this._model.containsNode(key)) {
+        this._model.removeNode(key);
+      }
+    }
+    this.removePartByKey(
+      key,
+      part instanceof Link ? 'link' : part instanceof Group ? 'group' : 'node',
+    );
   }
 
   /** Set the viewport. */
@@ -2570,7 +2650,7 @@ export class Diagram {
     this.offsetX = targetX;
     this.offsetY = targetY;
     if (scale !== undefined) {
-      this._scale = Math.max(this.minScale, Math.min(this.maxScale, scale));
+      this._scale = Math.max(this._minScale, Math.min(this._maxScale, scale));
       // Layer cache must be re-rendered at the new scale
       this.layerCache?.setScale(this._scale * (globalThis.devicePixelRatio || 1));
       // Update LOD label visibility immediately
@@ -2620,7 +2700,7 @@ export class Diagram {
 
     const scaleX = rect.width / contentWidth;
     const scaleY = rect.height / contentHeight;
-    this._scale = Math.max(this.minScale, Math.min(this.maxScale, Math.min(scaleX, scaleY)));
+    this._scale = Math.max(this._minScale, Math.min(this._maxScale, Math.min(scaleX, scaleY)));
 
     this.offsetX = minX - padding + (rect.width / this._scale - contentWidth) / 2;
     this.offsetY = minY - padding + (rect.height / this._scale - contentHeight) / 2;
@@ -2636,7 +2716,7 @@ export class Diagram {
     const contentHeight = rect.height + padding * 2;
     const scaleX = view.width / contentWidth;
     const scaleY = view.height / contentHeight;
-    this._scale = Math.max(this.minScale, Math.min(this.maxScale, Math.min(scaleX, scaleY)));
+    this._scale = Math.max(this._minScale, Math.min(this._maxScale, Math.min(scaleX, scaleY)));
     this.offsetX = rect.x - padding + (view.width / this._scale - contentWidth) / 2;
     this.offsetY = rect.y - padding + (view.height / this._scale - contentHeight) / 2;
     this.invalidate();
@@ -2888,3 +2968,7 @@ function computeCurvedPath(
   }
   return points;
 }
+
+import { registerDomComponent } from '../panel/ComponentRegistry.ts';
+
+registerDomComponent(Diagram);

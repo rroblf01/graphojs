@@ -145,9 +145,15 @@ export function drawGeometryString(
       }
       case 'A':
       case 'a': {
+        const rx = Math.abs(a[0] ?? 0);
+        const ry = Math.abs(a[1] ?? 0);
+        const rot = ((a[2] ?? 0) * Math.PI) / 180;
+        const large = (a[3] ?? 0) !== 0;
+        const sweep = (a[4] ?? 0) !== 0;
         const nx = op === 'A' ? (a[5] ?? cx) : cx + (a[5] ?? 0);
         const ny = op === 'A' ? (a[6] ?? cy) : cy + (a[6] ?? 0);
-        record(nx, ny);
+        const samples = arcSamples(cx, cy, rx, ry, rot, large, sweep, nx, ny);
+        for (const s of samples) record(s.x, s.y);
         cx = nx;
         cy = ny;
         break;
@@ -307,15 +313,22 @@ export function drawGeometryString(
         ctx.lineTo(sx(cx), sy(cy));
         break;
       case 'A':
-        cx = a[5] ?? cx;
-        cy = a[6] ?? cy;
-        ctx.lineTo(sx(cx), sy(cy));
+      case 'a': {
+        const rx = Math.abs(a[0] ?? 0);
+        const ry = Math.abs(a[1] ?? 0);
+        const rot = ((a[2] ?? 0) * Math.PI) / 180;
+        const large = (a[3] ?? 0) !== 0;
+        const sweep = (a[4] ?? 0) !== 0;
+        const fromX = cx;
+        const fromY = cy;
+        const nx = op === 'A' ? (a[5] ?? cx) : cx + (a[5] ?? 0);
+        const ny = op === 'A' ? (a[6] ?? cy) : cy + (a[6] ?? 0);
+        const samples = arcSamples(fromX, fromY, rx, ry, rot, large, sweep, nx, ny);
+        for (const s of samples) ctx.lineTo(sx(s.x), sy(s.y));
+        cx = nx;
+        cy = ny;
         break;
-      case 'a':
-        cx += a[5] ?? 0;
-        cy += a[6] ?? 0;
-        ctx.lineTo(sx(cx), sy(cy));
-        break;
+      }
       case 'Z':
       case 'z':
         ctx.closePath();
@@ -325,4 +338,69 @@ export function drawGeometryString(
         break;
     }
   }
+}
+
+/**
+ * Approximate an SVG elliptical arc (A command) with sample points using the
+ * standard endpoint-to-center parameterization.
+ */
+function arcSamples(
+  x1: number,
+  y1: number,
+  rx: number,
+  ry: number,
+  phi: number,
+  largeArc: boolean,
+  sweep: boolean,
+  x2: number,
+  y2: number,
+): Array<{ x: number; y: number }> {
+  if (rx === 0 || ry === 0 || (x1 === x2 && y1 === y2)) {
+    return [{ x: x2, y: y2 }];
+  }
+
+  // Step 1: compute the center point
+  const cosPhi = Math.cos(phi);
+  const sinPhi = Math.sin(phi);
+  const dx = (x1 - x2) / 2;
+  const dy = (y1 - y2) / 2;
+  const x1p = cosPhi * dx + sinPhi * dy;
+  const y1p = -sinPhi * dx + cosPhi * dy;
+
+  const rxSq = rx * rx;
+  const rySq = ry * ry;
+  const x1pSq = x1p * x1p;
+  const y1pSq = y1p * y1p;
+  let radicand = (rxSq * rySq - rxSq * y1pSq - rySq * x1pSq) / (rxSq * y1pSq + rySq * x1pSq);
+  if (radicand < 0) radicand = 0;
+  const coef = (largeArc === sweep ? -1 : 1) * Math.sqrt(radicand);
+  const cxp = (coef * rx * y1p) / ry;
+  const cyp = (coef * -ry * x1p) / rx;
+
+  const cx = cosPhi * cxp - sinPhi * cyp + (x1 + x2) / 2;
+  const cy = sinPhi * cxp + cosPhi * cyp + (y1 + y2) / 2;
+
+  // Step 2: compute start and end angles
+  const v1x = (x1p - cxp) / rx;
+  const v1y = (y1p - cyp) / ry;
+  const v2x = (-x1p - cxp) / rx;
+  const v2y = (-y1p - cyp) / ry;
+  const startAngle = Math.atan2(v1y, v1x);
+  let delta = Math.atan2(v1x * v2y - v1y * v2x, v1x * v2x + v1y * v2y);
+  if (!sweep && delta > 0) delta -= 2 * Math.PI;
+  else if (sweep && delta < 0) delta += 2 * Math.PI;
+
+  // Step 3: sample points along the arc
+  const samples: Array<{ x: number; y: number }> = [];
+  const steps = Math.max(4, Math.ceil((Math.abs(delta) / (Math.PI / 2)) * 4));
+  for (let i = 1; i <= steps; i++) {
+    const t = (i / steps) * delta + startAngle;
+    const px = rx * Math.cos(t);
+    const py = ry * Math.sin(t);
+    samples.push({
+      x: cosPhi * px - sinPhi * py + cx,
+      y: sinPhi * px + cosPhi * py + cy,
+    });
+  }
+  return samples;
 }

@@ -1,5 +1,4 @@
-import type { Model } from '../model/Model.ts';
-import type { ChangedEvent, NodeKey, LinkData, NodeData } from '../model/Model.ts';
+import type { ChangedEvent, LinkData, Model, NodeData, NodeKey } from '../model/Model.ts';
 import type { Command } from './Command.ts';
 
 /**
@@ -29,7 +28,8 @@ export class ModelTransactionCommand implements Command {
   undo(): void {
     // Reverse the events in reverse order
     for (let i = this.events.length - 1; i >= 0; i--) {
-      this.reverse(this.events[i]!);
+      const event = this.events[i];
+      if (event) this.reverse(event);
     }
   }
 

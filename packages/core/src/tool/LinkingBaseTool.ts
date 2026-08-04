@@ -1,5 +1,5 @@
-import type { Node } from '../parts/Node.ts';
 import type { GraphLinksModel } from '../model/GraphLinksModel.ts';
+import type { Node } from '../parts/Node.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -11,6 +11,7 @@ export class LinkingBaseTool extends Tool {
   protected _sourceNode: Node | null = null;
   protected _sourcePoint = { x: 0, y: 0 };
   protected _sourcePortName: string | undefined = undefined;
+  protected _targetPortName: string | undefined = undefined;
   protected _targetNode: Node | null = null;
   protected _preventCycles = false;
   protected _isValidLink = true;
@@ -127,9 +128,10 @@ export class LinkingBaseTool extends Tool {
   protected getConnectionPoint(
     node: Node,
     point: { x: number; y: number },
+    portName?: string,
   ): { x: number; y: number } {
-    const portName = this.getNearestPortName(node, point);
-    return node.getConnectionPoint(point, portName);
+    const resolvedPort = portName ?? this.getNearestPortName(node, point);
+    return node.getConnectionPoint(point, resolvedPort);
   }
 
   /**

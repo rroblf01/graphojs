@@ -24,6 +24,7 @@ function createMockDiagram(node: Node): Diagram {
     findPartAt: (x: number, y: number) => (node.containsPoint({ x, y }) ? node : null),
     getPart: () => node,
     invalidate: vi.fn(),
+    fireDiagramEvent: vi.fn(),
   } as unknown as Diagram;
 }
 
@@ -198,5 +199,35 @@ describe('RotatingTool', () => {
     // -153.4 - 180 = -333.4 -> wraps to ~26.6
     expect(node.angle).toBeGreaterThan(0);
     expect(node.angle).toBeLessThan(360);
+  });
+});
+
+describe('RotatingTool persistence and undo', () => {
+  it('commits the angle to the model and is undoable', () => {
+    const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
+    const diagram = createMockDiagram(node);
+    const tool = new RotatingTool();
+    tool.diagram = diagram;
+    const model = diagram.getModel();
+
+    tool.startTransaction = vi.fn(() => true);
+    tool.commitTransaction = vi.fn(() => true);
+
+    // Simulate a full rotate gesture then release
+    (tool as unknown as { _node: Node | null })._node = node;
+    (tool as unknown as { _isRotating: boolean })._isRotating = true;
+    (tool as unknown as { _startAngle: number })._startAngle = -90;
+    node.angle = 0;
+    tool.doMouseMove(new MouseEvent('mousemove', { button: 0 }));
+    tool.doMouseUp(new MouseEvent('mouseup'));
+
+    const data = model.getNodeData(1);
+    expect(data?.angle).toBeGreaterThan(0);
+
+    // Undo must restore the original angle
+    const manager = diagram.getUndoManager();
+    expect(manager.canUndo()).toBe(true);
+    manager.undo();
+    expect(model.getNodeData(1)?.angle ?? 0).toBeCloseTo(0);
   });
 });

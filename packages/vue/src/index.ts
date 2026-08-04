@@ -1,12 +1,12 @@
-import { defineComponent, h, onMounted, onUnmounted, ref, watch } from 'vue';
 import {
   Diagram as GoDiagram,
-  Panel,
-  GraphLinksModel,
-  Palette as GoPalette,
   Overview as GoOverview,
+  Palette as GoPalette,
+  type GraphLinksModel,
+  type Panel,
   type Template,
 } from 'graphojs';
+import { defineComponent, h, onMounted, onUnmounted, ref, watch } from 'vue';
 
 /**
  * A Vue component that renders a GraphoJS/GoJS-compatible diagram.
@@ -49,7 +49,7 @@ export const Diagram = defineComponent({
     watch(
       () => props.model,
       (m) => {
-        if (m) diagram!.model = m;
+        if (m && diagram) diagram.model = m;
       },
     );
     watch(

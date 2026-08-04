@@ -1,5 +1,5 @@
 import type { GraphLinksModel } from '../model/GraphLinksModel.ts';
-import type { NodeData, LinkData } from '../model/Model.ts';
+import type { LinkData, NodeData, NodeKey } from '../model/Model.ts';
 import type { Command } from './Command.ts';
 
 /**
@@ -8,6 +8,7 @@ import type { Command } from './Command.ts';
 export class AddNodeCommand implements Command {
   private model: GraphLinksModel;
   private nodeData: NodeData;
+  private assignedKey: NodeKey | null = null;
 
   constructor(model: GraphLinksModel, nodeData: NodeData) {
     this.model = model;
@@ -15,12 +16,18 @@ export class AddNodeCommand implements Command {
   }
 
   execute(): void {
-    this.model.addNode({ ...this.nodeData });
+    const key = this.model.addNode({ ...this.nodeData });
+    // Capture the assigned key so undo can find the node even when the
+    // data had no key and the model generated one
+    this.assignedKey = key;
+    if (this.nodeData[this.model.getNodeKeyProperty()] === undefined) {
+      this.nodeData[this.model.getNodeKeyProperty()] = key;
+    }
   }
 
   undo(): void {
-    const key = this.model.getNodeKey(this.nodeData);
-    this.model.removeNode(key);
+    const key = this.assignedKey ?? this.model.getNodeKey(this.nodeData);
+    if (key !== undefined) this.model.removeNode(key);
   }
 
   describe(): string {
@@ -36,6 +43,7 @@ export class RemoveNodeCommand implements Command {
   private model: GraphLinksModel;
   private nodeKey: string | number;
   private removedNodeData: NodeData | null = null;
+  private removedLinks: LinkData[] = [];
 
   constructor(model: GraphLinksModel, nodeKey: string | number) {
     this.model = model;
@@ -44,12 +52,31 @@ export class RemoveNodeCommand implements Command {
 
   execute(): void {
     this.removedNodeData = this.model.getNodeData(this.nodeKey) ?? null;
+    // Capture connected links so undo can restore them (removeNode cascades)
+    this.removedLinks = this.model
+      .getLinkDataArray()
+      .filter((l) => l.from === this.nodeKey || l.to === this.nodeKey)
+      .map((l) => ({ ...l }));
     this.model.removeNode(this.nodeKey);
   }
 
   undo(): void {
     if (this.removedNodeData) {
-      this.model.addNode({ ...this.removedNodeData });
+      const key = this.model.addNode({ ...this.removedNodeData });
+      if (
+        key !== undefined &&
+        this.removedNodeData[this.model.getNodeKeyProperty()] === undefined
+      ) {
+        this.removedNodeData[this.model.getNodeKeyProperty()] = key;
+      }
+    }
+    // Restore cascade-removed links (endpoints reference the restored node)
+    for (const linkData of this.removedLinks) {
+      try {
+        this.model.addLink({ ...linkData });
+      } catch {
+        // Skip if endpoints are not both present (e.g. node still missing)
+      }
     }
   }
 

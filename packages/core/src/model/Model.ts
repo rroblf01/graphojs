@@ -109,6 +109,9 @@ export abstract class Model {
 
   /** Set all node data, assigning missing keys and emitting add/remove events. */
   setNodeDataArray(value: NodeData[]): void {
+    if (this._isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     // Remove nodes no longer present
     const oldKeys = new Set(this._nodeDataArray.map((d) => this.getNodeKey(d)));
     const newKeys = new Set(value.map((d) => d[this.nodeKeyProperty] as NodeKey));
@@ -150,6 +153,9 @@ export abstract class Model {
 
   /** Add a node. Returns the generated key if none provided. */
   addNode(nodeData: NodeData): NodeKey {
+    if (this._isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     if (!this.validateNode(nodeData)) {
       throw new Error('Node validation failed');
     }
@@ -164,6 +170,11 @@ export abstract class Model {
     }
 
     this._nodeDataArray.push(nodeData);
+    const nodeKey = key;
+    this.recordRollback(() => {
+      const idx = this._nodeDataArray.findIndex((d) => this.getNodeKey(d) === nodeKey);
+      if (idx !== -1) this._nodeDataArray.splice(idx, 1);
+    });
     this.emit({
       type: 'node Added',
       model: this,
@@ -174,6 +185,9 @@ export abstract class Model {
 
   /** Remove a node by key. */
   removeNode(key: NodeKey): boolean {
+    if (this._isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     const index = this._nodeDataArray.findIndex((d) => this.getNodeKey(d) === key);
     if (index === -1) return false;
 
@@ -182,7 +196,13 @@ export abstract class Model {
       throw new Error('Node removal validation failed');
     }
 
+    const removedData = removed;
     this._nodeDataArray.splice(index, 1);
+    this.recordRollback(() => {
+      if (!this.containsNode(this.getNodeKey(removedData))) {
+        this._nodeDataArray.push(removedData);
+      }
+    });
     this.emit({
       type: 'node Removed',
       model: this,
@@ -193,6 +213,9 @@ export abstract class Model {
 
   /** Set a property on a node. */
   setNodeProperty(key: NodeKey, propertyName: string, value: unknown): void {
+    if (this._isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     const nodeData = this.getNodeData(key);
     if (!nodeData) {
       throw new Error(`Node with key ${key} not found`);
@@ -201,6 +224,13 @@ export abstract class Model {
     const oldValue = nodeData[propertyName];
     nodeData[propertyName] = value;
 
+    this.recordRollback(() => {
+      if (oldValue === undefined) {
+        delete nodeData[propertyName];
+      } else {
+        nodeData[propertyName] = oldValue;
+      }
+    });
     this.emit({
       type: 'property Changed',
       model: this,
@@ -306,6 +336,7 @@ export abstract class Model {
   // Transaction support (GoJS-compatible)
   private _transactionDepth = 0;
   private _pendingEvents: ChangedEvent[] = [];
+  private _pendingRollbacks: Array<() => void> = [];
 
   /** GoJS-compatible: Begin a transaction; changed events are buffered until commit. */
   startTransaction(_name = ''): boolean {
@@ -317,9 +348,10 @@ export abstract class Model {
   commitTransaction(_name = ''): boolean {
     if (this._transactionDepth <= 0) return false;
     this._transactionDepth--;
-    if (this._transactionDepth === 0 && this._pendingEvents.length > 0) {
+    if (this._transactionDepth === 0) {
       const pending = this._pendingEvents;
       this._pendingEvents = [];
+      this._pendingRollbacks = [];
       for (const event of pending) {
         this.flushEvent(event);
       }
@@ -327,12 +359,17 @@ export abstract class Model {
     return true;
   }
 
-  /** GoJS-compatible: Roll back the current transaction, discarding buffered events. */
+  /** GoJS-compatible: Roll back the current transaction, undoing its mutations. */
   rollbackTransaction(): boolean {
     if (this._transactionDepth <= 0) return false;
     this._transactionDepth--;
     if (this._transactionDepth === 0) {
+      // Undo mutations in reverse order
+      for (let i = this._pendingRollbacks.length - 1; i >= 0; i--) {
+        this._pendingRollbacks[i]?.();
+      }
       this._pendingEvents = [];
+      this._pendingRollbacks = [];
     }
     return true;
   }
@@ -340,6 +377,13 @@ export abstract class Model {
   /** GoJS-compatible: Whether a transaction is currently in progress. */
   isTransactionInProgress(): boolean {
     return this._transactionDepth > 0;
+  }
+
+  /** Record a reverse operation so rollbackTransaction can undo a mutation. */
+  protected recordRollback(undo: () => void): void {
+    if (this._transactionDepth > 0) {
+      this._pendingRollbacks.push(undo);
+    }
   }
 
   private _isReadOnly = false;
@@ -431,9 +475,19 @@ export abstract class Model {
 
   /** Set a property on any data object (node or link) with change event. */
   setDataProperty(data: NodeData | LinkData, propertyName: string, value: unknown): void {
+    if (this._isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     const oldValue = data[propertyName];
     data[propertyName] = value;
 
+    this.recordRollback(() => {
+      if (oldValue === undefined) {
+        delete data[propertyName];
+      } else {
+        data[propertyName] = oldValue;
+      }
+    });
     const isNode = this._nodeDataArray.includes(data as NodeData);
     this.emit({
       type: 'property Changed',

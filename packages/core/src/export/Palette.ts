@@ -1,8 +1,8 @@
 import { Diagram } from '../diagram/Diagram.ts';
+import type { NodeData } from '../model/Model.ts';
 import type { Template } from '../template/Template.ts';
 import { templateToNodeData } from '../template/Template.ts';
 import { getAllTemplates, getTemplateById } from '../template/TemplateCollection.ts';
-import type { NodeData } from '../model/Model.ts';
 
 /**
  * A palette shows templates that can be dragged onto a diagram.
@@ -204,3 +204,7 @@ export function registerPalette(diagram: Diagram, palette: Palette): void {
 export function findPaletteForDiagram(diagram: Diagram): Palette | undefined {
   return paletteRegistry.get(diagram);
 }
+
+import { registerDomComponent } from '../panel/ComponentRegistry.ts';
+
+registerDomComponent(Palette);

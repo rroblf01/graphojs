@@ -1,6 +1,7 @@
+import type { NodeKey } from '../model/Model.ts';
+import { Group } from '../parts/Group.ts';
 import { Node } from '../parts/Node.ts';
 import { MoveNodeCommand } from '../undo/commands.ts';
-import type { NodeKey } from '../model/Model.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -30,7 +31,7 @@ export class DraggingTool extends Tool {
     )
       return false;
     const part = this.findPartAt(this.getDiagramPoint(e).x, this.getDiagramPoint(e).y);
-    return part instanceof Node && (part as Node).draggable;
+    return (part instanceof Node || part instanceof Group) && (part as Node).draggable;
   }
 
   override doMouseDown(e: MouseEvent): void {
@@ -47,29 +48,43 @@ export class DraggingTool extends Tool {
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);
 
-    if (part instanceof Node) {
+    if (part instanceof Node || part instanceof Group) {
       this.dragOrigin = point;
       this.nodeOrigin.clear();
 
-      // Store original positions of selected nodes (or the clicked node)
+      // Store original positions of selected parts (or the clicked part)
       const diagram = this.diagram;
       if (!diagram) return;
 
-      const selectedNodes = diagram.getSelectedParts().filter((p): p is Node => p instanceof Node);
-      if (selectedNodes.length === 0 || !selectedNodes.includes(part)) {
-        // If clicked node is not selected, select only it
+      const selectedParts = diagram
+        .getSelectedParts()
+        .filter((p): p is Node | Group => p instanceof Node || p instanceof Group);
+      if (selectedParts.length === 0 || !selectedParts.includes(part)) {
+        // If clicked part is not selected, select only it
         diagram.select(part);
-        this.nodeOrigin.set(part.key, { x: part.bounds.x, y: part.bounds.y });
+        this.addPartToDrag(part);
       } else {
-        // Store positions of all selected nodes
-        for (const node of selectedNodes) {
-          this.nodeOrigin.set(node.key, { x: node.bounds.x, y: node.bounds.y });
+        // Store positions of all selected parts
+        for (const p of selectedParts) {
+          this.addPartToDrag(p);
         }
       }
 
       this._isDragging = true;
       const canvas = this.diagram?.getRenderer().getCanvas();
       if (canvas) canvas.style.cursor = 'move';
+    }
+  }
+
+  /** Register a part (and, for groups, its member nodes) for dragging. */
+  private addPartToDrag(part: Node | Group): void {
+    this.nodeOrigin.set(part.key, { x: part.bounds.x, y: part.bounds.y });
+    if (part instanceof Group) {
+      for (const member of part.getAllParts()) {
+        if (member instanceof Node || member instanceof Group) {
+          this.nodeOrigin.set(member.key, { x: member.bounds.x, y: member.bounds.y });
+        }
+      }
     }
   }
 
@@ -159,10 +174,9 @@ export class DraggingTool extends Tool {
     }
   }
 
-  private getNodeByKey(key: NodeKey): Node | null {
+  private getNodeByKey(key: NodeKey): Node | Group | null {
     const diagram = this.diagram;
     if (!diagram) return null;
-    const part = diagram.findNodeForKey(key);
-    return part;
+    return diagram.findNodeForKey(key) ?? diagram.findGroupForKey(key);
   }
 }

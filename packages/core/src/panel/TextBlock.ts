@@ -93,7 +93,7 @@ export class TextBlock extends GraphObject {
   /** GoJS-compatible: The font family (e.g. "sans-serif"). */
   get fontFamily(): string {
     const m = /\s([\w-]+)$/.exec(this._font);
-    return m ? m[1]! : 'sans-serif';
+    return m ? (m[1] ?? 'sans-serif') : 'sans-serif';
   }
 
   set fontFamily(value: string) {
@@ -113,7 +113,7 @@ export class TextBlock extends GraphObject {
   /** GoJS-compatible: The font style (e.g. "bold", "italic"). */
   get fontStyle(): string {
     const m = /^(bold|italic|bold italic|italic bold)\s/.exec(this._font);
-    return m ? m[1]! : '';
+    return m ? (m[1] ?? '') : '';
   }
 
   set fontStyle(value: string) {

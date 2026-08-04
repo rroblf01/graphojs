@@ -3,20 +3,17 @@
  * Regression tests for bugs found during code review.
  * Each describe block maps to a specific bug fix.
  */
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
+  Binding,
   Diagram,
   GraphLinksModel,
   GraphObject,
+  type Link,
+  Node,
+  Panel,
   Shape,
   TextBlock,
-  Panel,
-  Node,
-  Link,
-  Binding,
-  Group,
-  UndoManager,
-  TreeModel,
 } from '../src/index.ts';
 
 function mockContext() {
@@ -106,7 +103,7 @@ describe('A1: converter applied only once', () => {
 
   it('prefixes the value once', () => {
     const t = new TextBlock();
-    const b = new Binding('text', 'color', (v: unknown) => '#' + String(v));
+    const b = new Binding('text', 'color', (v: unknown) => `#${String(v)}`);
     b.applyToTarget(t, { color: 'ff0000' } as never);
     expect(t.text).toBe('#ff0000'); // not '##ff0000'
   });
@@ -139,7 +136,7 @@ describe('A2: node/link key namespace collision', () => {
     const selected = d.getSelectedParts();
     expect(selected.length).toBe(1);
     expect(selected[0]).toBe(link); // the link, NOT node 1
-    expect(d.findNodeForKey(1)!.isSelected).toBe(false);
+    expect(d.findNodeForKey(1)?.isSelected).toBe(false);
   });
 
   it('removing a link does not remove the colliding node', () => {
@@ -368,7 +365,7 @@ describe('C13: link fromKey/toKey stay in sync after relink', () => {
     const linkKey = m.getLinkKey(linkData);
     const link = d.findLinkForKey(linkKey!);
     expect(link).not.toBeNull();
-    expect(link!.toKey).toBe(3); // updated, not stale 2
+    expect(link?.toKey).toBe(3); // updated, not stale 2
   });
 });
 
@@ -386,10 +383,10 @@ describe('C15: text edits are undoable and Escape does not commit', () => {
     d.commit(() => {
       m.setNodeProperty(1, 'label', 'New');
     }, 'text edit');
-    expect(m.getNodeData(1)!.label).toBe('New');
+    expect(m.getNodeData(1)?.label).toBe('New');
 
     d.undo();
-    expect(m.getNodeData(1)!.label).toBe('Old'); // undoable
+    expect(m.getNodeData(1)?.label).toBe('Old'); // undoable
     void undoCount;
   });
 
@@ -401,8 +398,8 @@ describe('C15: text edits are undoable and Escape does not commit', () => {
       ],
       linkDataArray: [{ from: 1, to: 2 }],
     });
-    m.setLinkProperty(m.getLinkDataArray()[0]!.key as number, 'label', 'L');
-    expect(m.getLinkDataArray()[0]!.label).toBe('L');
+    m.setLinkProperty(m.getLinkDataArray()[0]?.key as number, 'label', 'L');
+    expect(m.getLinkDataArray()[0]?.label).toBe('L');
   });
 });
 
@@ -429,8 +426,8 @@ describe('C16: relinking respects relinkableTo and finds link by key', () => {
 
     // Setting the 'to' of link A via its key must not affect link B
     m.setDataProperty(m.getLinkData('a')!, 'to', 3);
-    expect(m.getLinkData('a')!.to).toBe(3);
-    expect(m.getLinkData('b')!.to).toBe(2);
+    expect(m.getLinkData('a')?.to).toBe(3);
+    expect(m.getLinkData('b')?.to).toBe(2);
   });
 });
 
@@ -453,10 +450,10 @@ describe('C20: declarative ports resolve after layout', () => {
     expect(port).toBeDefined();
 
     // Simulate post-layout element positions (right edge of the node)
-    const portEl = node.panel!.elements.find((el) => el.portId === 'out')!;
+    const portEl = node.panel?.elements.find((el) => el.portId === 'out')!;
     portEl.setPosition(88, 25);
     node.updatePortSpots();
-    const p = port!.computePoint(0, 0, 100, 50);
+    const p = port?.computePoint(0, 0, 100, 50);
     expect(p.x).toBeCloseTo(88, 0);
     expect(p.x).toBeGreaterThan(0);
   });
@@ -499,7 +496,7 @@ describe('C24: Shape.clone copies strokeCap/strokeJoin; Part.copy clones panel',
     const copy = node.copy();
     expect(copy.panel).not.toBeNull();
     expect(copy.panel).not.toBe(p);
-    expect(copy.panel!.elementCount).toBe(1);
+    expect(copy.panel?.elementCount).toBe(1);
   });
 });
 
@@ -509,8 +506,8 @@ describe('D26: clones do not share mutable Margin', () => {
     t.margin = { top: 1, right: 2, bottom: 3, left: 4 } as never;
     const c = t.clone();
     c.margin = { top: 10, right: 10, bottom: 10, left: 10 } as never;
-    expect(t.margin!.top).toBe(1);
-    expect(c.margin!.top).toBe(10);
+    expect(t.margin?.top).toBe(1);
+    expect(c.margin?.top).toBe(10);
   });
 });
 
@@ -555,5 +552,196 @@ describe('D30: make() sets Picture source from a string', () => {
       source: string;
     };
     expect(pic.source).toBe('https://example.com/x.png');
+  });
+});
+
+describe('F1: AddNode/RemoveNode undo completeness', () => {
+  it('AddNodeCommand undo removes an auto-keyed node', () => {
+    const m = new GraphLinksModel();
+    const { AddNodeCommand } = require('../src/undo/commands.ts') as {
+      AddNodeCommand: new (model: never, data: never) => { execute(): void; undo(): void };
+    };
+    const cmd = new AddNodeCommand(m as never, { x: 0, y: 0, width: 100, height: 50 } as never);
+    cmd.execute();
+    expect(m.getNodeCount()).toBe(1);
+    cmd.undo();
+    expect(m.getNodeCount()).toBe(0);
+  });
+
+  it('RemoveNodeCommand undo restores cascade-removed links', () => {
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const { RemoveNodeCommand } = require('../src/undo/commands.ts') as {
+      RemoveNodeCommand: new (model: never, key: never) => { execute(): void; undo(): void };
+    };
+    const cmd = new RemoveNodeCommand(m as never, 1 as never);
+    cmd.execute();
+    expect(m.getNodeCount()).toBe(1);
+    expect(m.getLinkCount()).toBe(0);
+    cmd.undo();
+    expect(m.getNodeCount()).toBe(2);
+    expect(m.getLinkCount()).toBe(1); // link restored
+  });
+});
+
+describe('F1: Model.rollbackTransaction undoes mutations', () => {
+  it('rolls back addNode', () => {
+    const m = new GraphLinksModel();
+    m.startTransaction();
+    m.addNode({ key: 1, x: 0, y: 0, width: 100, height: 50 });
+    m.rollbackTransaction();
+    expect(m.getNodeCount()).toBe(0);
+  });
+
+  it('rolls back setNodeProperty', () => {
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50, name: 'A' }],
+    });
+    m.startTransaction();
+    m.setNodeProperty(1, 'name', 'B');
+    m.rollbackTransaction();
+    expect(m.getNodeData(1)?.name).toBe('A');
+  });
+});
+
+describe('F2: GoJS API gaps', () => {
+  it('$(go.Diagram, divId, props) constructs via make', () => {
+    const div = document.createElement('div');
+    div.id = 'f2-diagram';
+    document.body.appendChild(div);
+    const d = GraphObject.make(Diagram as never, 'f2-diagram', { isReadOnly: true });
+    expect(d).toBeInstanceOf(Diagram);
+    expect((d as unknown as { isReadOnly: boolean }).isReadOnly).toBe(true);
+    (d as unknown as { destroy(): void }).destroy();
+  });
+
+  it('model.isReadOnly blocks mutations', () => {
+    const m = new GraphLinksModel();
+    m.isReadOnly = true;
+    expect(() => m.addNode({ key: 1, x: 0, y: 0, width: 100, height: 50 })).toThrow();
+    m.isReadOnly = false;
+    expect(() => m.addNode({ key: 1, x: 0, y: 0, width: 100, height: 50 })).not.toThrow();
+  });
+
+  it('layer.visible hides a layer', () => {
+    const d = createDiagram();
+    const grid = d.findLayer('Grid');
+    expect(grid).not.toBeNull();
+    expect(grid?.visible).toBe(true);
+    grid!.visible = false;
+    expect(grid?.visible).toBe(false);
+  });
+
+  it('Placeholder constructs via make', () => {
+    const { Placeholder } = require('../src/panel/Placeholder.ts') as {
+      Placeholder: new () => { padding: number };
+    };
+    const ph = GraphObject.make(Placeholder as never, { padding: 20 }) as unknown as {
+      padding: number;
+    };
+    expect(ph.padding).toBe(20);
+  });
+
+  it('diagram.addParts/removeParts work', () => {
+    const d = createDiagram();
+    const node = new Node(1);
+    node.data = { key: 1, x: 0, y: 0, width: 100, height: 50 };
+    d.addParts([node]);
+    expect(d.findNodeForKey(1)).not.toBeNull();
+    d.removeParts([node]);
+    expect(d.findNodeForKey(1)).toBeNull();
+  });
+
+  it('template visible/opacity reach the Part', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(Node, 'Auto', $(Shape, 'Rectangle'), { visible: false, opacity: 0.5 });
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    d.model = m;
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.visible).toBe(false);
+    expect(node.opacity).toBe(0.5);
+  });
+
+  it('geometryString arcs are drawn as arcs, not straight lines', () => {
+    const { drawGeometryString } = require('../src/panel/GeometryString.ts') as {
+      drawGeometryString: (
+        ctx: Record<string, unknown>,
+        path: string,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+      ) => void;
+    };
+    const lines: Array<[number, number]> = [];
+    const ctx = {
+      beginPath: () => {},
+      moveTo: (_x: number, _y: number) => {},
+      lineTo: (x: number, y: number) => lines.push([x, y]),
+    };
+    // A semicircular arc from (0,0) to (10,0)
+    drawGeometryString(ctx as never, 'M0,0 A5,5 0 0 1 10,0', 0, 0, 10, 10);
+    expect(lines.length).toBeGreaterThan(2); // sampled, not a single straight line
+    const lastX = lines[lines.length - 1]?.[0];
+    expect(Number.isFinite(lastX)).toBe(true);
+    expect(lastX).toBeGreaterThan(8); // arc endpoint near (10,0)
+  });
+});
+
+describe('F3: ZoomingTool and two-way binding coverage', () => {
+  it('ZoomingTool respects the diagram minScale/maxScale', () => {
+    const d = createDiagram();
+    const { ZoomingTool } = require('../src/tool/ZoomingTool.ts') as {
+      ZoomingTool: new () => { diagram: unknown; doMouseWheel(e: WheelEvent): void };
+    };
+    const tool = new ZoomingTool();
+    tool.diagram = d;
+    // Force a zoom-out wheel event
+    const e = new WheelEvent('wheel', { deltaY: 120, clientX: 100, clientY: 100 });
+    // Make zoom-out fail at the configured minimum
+    d.setViewport(0, 0, 0.2);
+    tool.doMouseWheel(e);
+    const after = d.getViewport().scale;
+    expect(after).toBeGreaterThanOrEqual(d.minScale);
+  });
+
+  it('two-way Binding writes text back to the model via TextEditingTool', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(Shape, 'Rectangle'),
+      $(TextBlock, 'label', { editable: true }, new Binding('text', 'label').makeTwoWay()),
+    );
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50, label: 'Hello' }],
+    });
+    d.model = m;
+    const node = d.findNodeForKey(1) as Node;
+
+    const { TextEditingTool } = require('../src/tool/TextEditingTool.ts') as {
+      TextEditingTool: new () => {
+        diagram: unknown;
+        editNode(n: unknown): void;
+        stopEditing(commit: boolean): void;
+      };
+    };
+    const tool = new TextEditingTool();
+    tool.diagram = d;
+    tool.editNode(node);
+    const input = document.querySelector('.graphojs-text-editing') as HTMLInputElement;
+    expect(input).not.toBeNull();
+    input.value = 'World';
+    tool.stopEditing(true);
+    expect(m.getNodeData(1)?.label).toBe('World');
   });
 });

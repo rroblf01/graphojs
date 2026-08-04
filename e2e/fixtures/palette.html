@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GraphoJS Palette + Overview E2E</title>
+    <style>
+      #diagramDiv { width: 800px; height: 600px; border: 1px solid #ccc; }
+      #paletteDiv { width: 200px; height: 300px; border: 1px solid #ccc; }
+      #overviewDiv { width: 200px; height: 150px; border: 1px solid #ccc; }
+    </style>
+  </head>
+  <body>
+    <div id="paletteDiv"></div>
+    <div id="diagramDiv"></div>
+    <div id="overviewDiv"></div>
+    <script type="module">
+      import * as go from '../../packages/core/dist/go.js';
+
+      const $ = go.GraphObject.make;
+
+      const myDiagram = new go.Diagram('diagramDiv');
+      myDiagram.nodeTemplate = $(
+        go.Node,
+        'Auto',
+        $(go.Shape, 'RoundedRectangle', { fill: 'white', stroke: 'gray' }),
+        $(go.TextBlock, 'label', { margin: 8 }, new go.Binding('text', 'name')),
+      );
+      myDiagram.model = new go.GraphLinksModel({
+        nodeDataArray: [
+          { key: 1, name: 'Alpha', x: 0, y: 0, width: 120, height: 60 },
+        ],
+      });
+
+      const palette = new go.Palette(document.getElementById('paletteDiv'), myDiagram, go.getAllTemplates(), { showCategories: false });
+      palette.setTemplates([
+        { id: 'pal-item', name: 'PaletteItem', category: 'Custom', description: '', shape: 'RoundedRectangle', width: 100, height: 40, fill: 'lightyellow', stroke: 'orange', strokeWidth: 1, label: 'PaletteItem', labelColor: 'black', labelFont: '12px sans-serif' },
+      ]);
+      palette.nodeTemplate = $(
+        go.Node,
+        'Auto',
+        $(go.Shape, 'RoundedRectangle', { fill: 'lightyellow', stroke: 'orange' }),
+        $(go.TextBlock, 'label', { margin: 6 }, new go.Binding('text', 'name')),
+      );
+
+      const overview = new go.Overview(document.getElementById('overviewDiv'), myDiagram);
+
+      window.__diagram = myDiagram;
+      window.__palette = palette;
+      window.__overview = overview;
+      window.__go = go;
+    </script>
+  </body>
+</html>

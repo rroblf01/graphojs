@@ -4,7 +4,7 @@
  * Run with: npx vitest run packages/core/test/benchmark.test.ts
  * These are informational benchmarks, not strict correctness tests.
  */
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram, GraphLinksModel } from '../src/index.ts';
 
 function mockContext() {
@@ -91,7 +91,11 @@ describe('Large graph performance', () => {
     const elapsed = performance.now() - start;
 
     expect(diagram.getPart(1999)).not.toBeUndefined();
-    expect(diagram.findLinkForKey(diagram.getModel().getLinkKey(links[0]!))).not.toBeNull();
+    const firstLink = links[0];
+    expect(firstLink).toBeDefined();
+    if (firstLink) {
+      expect(diagram.findLinkForKey(diagram.getModel().getLinkKey(firstLink))).not.toBeNull();
+    }
 
     // Informational: report timing. Threshold is generous (5s) to avoid flakiness.
     console.log(`[benchmark] 2000 nodes + ${links.length} links synced in ${elapsed.toFixed(1)}ms`);
@@ -128,7 +132,7 @@ describe('Large graph performance', () => {
         y: Math.floor(i / 50) * 80,
         width: 100,
         height: 50,
-        label: 'N' + i,
+        label: `N${i}`,
       });
     }
     const links = [];

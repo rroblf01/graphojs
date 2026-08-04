@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('runs the GoJS Getting Started tutorial with graphojs in a real browser', async ({ page }) => {
   const errors: string[] = [];
@@ -12,7 +12,7 @@ test('runs the GoJS Getting Started tutorial with graphojs in a real browser', a
   const result = await page.waitForFunction(
     () => {
       const el = document.getElementById('result');
-      if (!el || !el.textContent) return null;
+      if (!el?.textContent) return null;
       return JSON.parse(el.textContent);
     },
     undefined,

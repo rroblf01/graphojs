@@ -84,6 +84,28 @@ export abstract class Tool {
     // Override in subclasses
   }
 
+  /**
+   * GoJS-compatible: Called when a tool operation starts (after canStart returns true).
+   */
+  doStart(_e: MouseEvent): void {
+    // Override in subclasses
+  }
+
+  /**
+   * GoJS-compatible: Called when a tool operation stops.
+   */
+  doStop(): void {
+    // Override in subclasses
+  }
+
+  /**
+   * GoJS-compatible: Determines whether this tool should start given the current event.
+   * Override in subclasses to return true when this tool should handle the event.
+   */
+  canStart(_toolName: string, _e: MouseEvent): boolean {
+    return false;
+  }
+
   /** Find a part at the given diagram coordinates. */
   findPartAt(x: number, y: number): Part | null {
     if (!this._diagram) return null;

@@ -87,6 +87,17 @@ export class Shape extends GraphObject {
     return this;
   }
 
+  /** Deep copy of this shape. */
+  override clone(): this {
+    const cloned = new Shape(this._shape) as this;
+    cloned.copyFrom(this);
+    cloned._fill = this._fill;
+    cloned._stroke = this._stroke;
+    cloned._strokeWidth = this._strokeWidth;
+    cloned._cornerRadius = this._cornerRadius;
+    return cloned;
+  }
+
   override measure(): Size {
     const w = this.width > 0 ? this.width : 100;
     const h = this.height > 0 ? this.height : 60;

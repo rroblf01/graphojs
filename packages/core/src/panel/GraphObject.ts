@@ -220,4 +220,31 @@ export abstract class GraphObject {
       height: this._actualSize.height,
     } as Rect;
   }
+
+  /**
+   * Copy the common properties from another GraphObject into this one.
+   * Used by template cloning (GoJS-compatible).
+   */
+  protected copyFrom(source: GraphObject): void {
+    this._name = source._name;
+    this._desiredSize = source._desiredSize
+      ? new SizeClass(source._desiredSize.width, source._desiredSize.height)
+      : null;
+    this._alignment = source._alignment;
+    this._margin = source._margin;
+    this._visible = source._visible;
+    this._opacity = source._opacity;
+    this._angle = source._angle;
+    this._cursor = source._cursor;
+  }
+
+  /**
+   * Create a deep copy of this GraphObject.
+   * Subclasses override to copy their specific properties.
+   */
+  clone(): this {
+    const cloned = Object.create(Object.getPrototypeOf(this)) as this;
+    cloned.copyFrom(this);
+    return cloned;
+  }
 }

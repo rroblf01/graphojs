@@ -1,6 +1,14 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import { Diagram, GraphLinksModel } from '../src/index.ts';
+import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest';
+import { Diagram, GraphLinksModel, GraphObject, Shape, TextBlock, Panel } from '../src/index.ts';
+
+const diagrams: Diagram[] = [];
+
+function createDiagram(): Diagram {
+  const diagram = new Diagram({ div: document.createElement('div') });
+  diagrams.push(diagram);
+  return diagram;
+}
 
 function mockContext() {
   return {
@@ -18,6 +26,7 @@ function mockContext() {
     stroke: vi.fn(),
     fill: vi.fn(),
     ellipse: vi.fn(),
+    arc: vi.fn(),
     roundRect: vi.fn(),
     fillText: vi.fn(),
     setLineDash: vi.fn(),
@@ -56,17 +65,23 @@ beforeAll(() => {
   } as unknown as typeof ResizeObserver;
 });
 
+afterEach(() => {
+  for (const d of diagrams) {
+    d.destroy();
+  }
+  diagrams.length = 0;
+});
+
 afterAll(() => {
   vi.restoreAllMocks();
 });
 
 describe('Diagram GoJS-compatible transactions', () => {
   it('should support startTransaction/commitTransaction', () => {
-    const div = document.createElement('div');
-    const diagram = new Diagram({ div });
+    const diagram = createDiagram();
     const model = new GraphLinksModel();
     model.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
-    diagram.model = model;
+    diagram.setModel(model);
 
     const started = diagram.startTransaction('test');
     expect(started).toBe(true);
@@ -75,14 +90,84 @@ describe('Diagram GoJS-compatible transactions', () => {
   });
 
   it('should support commit() helper', () => {
-    const div = document.createElement('div');
-    const diagram = new Diagram({ div });
+    const diagram = createDiagram();
     const model = new GraphLinksModel();
     model.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
-    diagram.model = model;
+    diagram.setModel(model);
 
     diagram.commit((d) => {
       expect(d).toBe(diagram);
     }, 'test commit');
+  });
+});
+
+describe('Diagram GoJS-compatible templates', () => {
+  it('should apply nodeTemplate to created nodes', () => {
+    const diagram = createDiagram();
+
+    const $ = GraphObject.make;
+    const template = $(
+      Panel,
+      'Auto',
+      $(Shape, 'RoundedRectangle', { fill: 'red', stroke: 'black' }),
+      $(TextBlock, 'Default', { name: 'label', font: '14px sans-serif' }),
+    );
+    diagram.nodeTemplate = template;
+
+    const model = new GraphLinksModel();
+    model.nodeDataArray = [{ key: 1, x: 0, y: 0, width: 100, height: 50 }];
+    diagram.setModel(model);
+
+    const node = diagram.getPart(1) as import('../src/parts/Node.ts').Node;
+    expect(node).not.toBeNull();
+    expect(node.panel).not.toBeNull();
+    expect(node.panel?.type).toBe('Auto');
+    expect(node.panel?.elementCount).toBe(2);
+    expect(node.panel?.elements[0]).toBeInstanceOf(Shape);
+    expect(node.findObject('label')).toBeInstanceOf(TextBlock);
+  });
+
+  it('should apply category-specific template from nodeTemplateMap', () => {
+    const diagram = createDiagram();
+
+    const $ = GraphObject.make;
+    const diamond = $(Panel, 'Auto', $(Shape, 'diamond', { fill: 'yellow' }));
+    diagram.addNodeTemplate('special', diamond);
+
+    const model = new GraphLinksModel();
+    model.nodeDataArray = [
+      { key: 1, x: 0, y: 0, width: 100, height: 50 },
+      { key: 2, x: 200, y: 0, width: 100, height: 50, category: 'special' },
+    ];
+    diagram.setModel(model);
+
+    const node1 = diagram.getPart(1) as import('../src/parts/Node.ts').Node;
+    const node2 = diagram.getPart(2) as import('../src/parts/Node.ts').Node;
+
+    expect(node1.panel).toBeNull();
+    expect(node2.panel).not.toBeNull();
+    const shape = node2.panel?.elements[0];
+    expect(shape).toBeInstanceOf(Shape);
+    expect((shape as Shape).shape).toBe('diamond');
+  });
+
+  it('should clone templates so nodes do not share the same panel instance', () => {
+    const diagram = createDiagram();
+
+    const $ = GraphObject.make;
+    const template = $(Panel, 'Auto', $(Shape, 'rect'));
+    diagram.nodeTemplate = template;
+
+    const model = new GraphLinksModel();
+    model.nodeDataArray = [
+      { key: 1, x: 0, y: 0, width: 100, height: 50 },
+      { key: 2, x: 200, y: 0, width: 100, height: 50 },
+    ];
+    diagram.setModel(model);
+
+    const node1 = diagram.getPart(1) as import('../src/parts/Node.ts').Node;
+    const node2 = diagram.getPart(2) as import('../src/parts/Node.ts').Node;
+
+    expect(node1.panel).not.toBe(node2.panel);
   });
 });

@@ -713,19 +713,7 @@ export class Diagram {
       if (isGroup) {
         let group = this.groups.get(key);
         if (!group) {
-          const x = (nodeData.x as number) ?? 0;
-          const y = (nodeData.y as number) ?? 0;
-          const width = (nodeData.width as number) ?? 100;
-          const height = (nodeData.height as number) ?? 50;
-          group = new Group(key, new RectClass(x, y, width, height));
-          group.fill = (nodeData.fill as string) ?? '#f0f0f0';
-          group.stroke = (nodeData.stroke as string) ?? '#666666';
-          // Assign to layer
-          const layerName = (nodeData.layer as string) ?? LayerNames.Default;
-          const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
-          if (layer) group.layer = layer;
-          this.parts.set(key, group);
-          this.groups.set(key, group);
+          group = this.createGroup(nodeData);
         }
 
         // Sync members: add nodes/links whose groupKey matches this group
@@ -739,20 +727,7 @@ export class Diagram {
       } else {
         let node = this.nodes.get(key);
         if (!node) {
-          const x = (nodeData.x as number) ?? 0;
-          const y = (nodeData.y as number) ?? 0;
-          const width = (nodeData.width as number) ?? 100;
-          const height = (nodeData.height as number) ?? 50;
-          node = Node.fromPosAndSize(key, x, y, width, height);
-          node.label = (nodeData.label as string) ?? '';
-          node.fill = (nodeData.fill as string) ?? '#cccccc';
-          node.stroke = (nodeData.stroke as string) ?? '#333333';
-          // Assign to layer
-          const layerName = (nodeData.layer as string) ?? LayerNames.Default;
-          const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
-          if (layer) node.layer = layer;
-          this.parts.set(key, node);
-          this.nodes.set(key, node);
+          node = this.createNode(nodeData);
         }
 
         // Add to parent group if specified
@@ -773,13 +748,7 @@ export class Diagram {
 
       let link = this.links.get(linkKey);
       if (!link) {
-        link = new Link(linkKey, linkData.from, linkData.to);
-        // Assign to layer
-        const layerName = (linkData.layer as string) ?? LayerNames.Default;
-        const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
-        if (layer) link.layer = layer;
-        this.parts.set(linkKey, link);
-        this.links.set(linkKey, link);
+        link = this.createLink(linkData);
       }
 
       // Link routing / ports / spots from model data
@@ -931,6 +900,16 @@ export class Diagram {
     const width = (nodeData.width as number) ?? 100;
     const height = (nodeData.height as number) ?? 50;
     const node = Node.fromPosAndSize(key, x, y, width, height);
+
+    // Apply GoJS-compatible template if set
+    const category = nodeData.category as string | undefined;
+    const template =
+      (category !== undefined ? this._nodeTemplateMap.get(category) : undefined) ??
+      this._nodeTemplate;
+    if (template) {
+      node.panel = template.clone();
+    }
+
     const layerName = (nodeData.layer as string) ?? LayerNames.Default;
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) node.layer = layer;
@@ -948,6 +927,15 @@ export class Diagram {
     const width = (nodeData.width as number) ?? 100;
     const height = (nodeData.height as number) ?? 50;
     const group = new Group(key, new RectClass(x, y, width, height));
+
+    // Apply GoJS-compatible group template if set
+    const category = nodeData.category as string | undefined;
+    const template = category !== undefined ? this._nodeTemplateMap.get(category) : undefined;
+    const groupTemplate = this._groupTemplate ?? template;
+    if (groupTemplate) {
+      group.panel = groupTemplate.clone();
+    }
+
     const layerName = (nodeData.layer as string) ?? LayerNames.Default;
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) group.layer = layer;
@@ -961,6 +949,16 @@ export class Diagram {
   private createLink(linkData: LinkData): Link {
     const linkKey = this.model.getLinkKey(linkData);
     const link = new Link(linkKey as NodeKey, linkData.from, linkData.to);
+
+    // Apply GoJS-compatible link template if set
+    const category = linkData.category as string | undefined;
+    const template =
+      (category !== undefined ? this._linkTemplateMap.get(category) : undefined) ??
+      this._linkTemplate;
+    if (template) {
+      link.panel = template.clone();
+    }
+
     const layerName = (linkData.layer as string) ?? LayerNames.Default;
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) link.layer = layer;

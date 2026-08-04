@@ -75,6 +75,17 @@ export class TextBlock extends GraphObject {
     return this;
   }
 
+  /** Deep copy of this text block. */
+  override clone(): this {
+    const cloned = new TextBlock(this._text) as this;
+    cloned.copyFrom(this);
+    cloned._color = this._color;
+    cloned._font = this._font;
+    cloned._textAlign = this._textAlign;
+    cloned._multiline = this._multiline;
+    return cloned;
+  }
+
   override measure(): Size {
     if (this.width > 0 && this.height > 0) {
       return new SizeClass(this.width, this.height);

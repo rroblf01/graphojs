@@ -559,6 +559,21 @@ export class Panel extends GraphObject {
       height: this.actualSize.height,
     } as Rect;
   }
+
+  /** Deep copy of this panel, including all child elements. */
+  override clone(): this {
+    const cloned = new Panel(this._type) as this;
+    cloned.copyFrom(this);
+    cloned._padding = this._padding;
+    cloned._spacing = this._spacing;
+    cloned._background = this._background;
+    for (const el of this._elements) {
+      cloned._elements.push(el.clone());
+    }
+    cloned._rowCount = this._rowCount;
+    cloned._columnCount = this._columnCount;
+    return cloned;
+  }
 }
 
 /**

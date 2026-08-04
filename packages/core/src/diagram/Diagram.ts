@@ -253,6 +253,9 @@ export class Diagram {
     // Create undo manager
     this._undoManager = new UndoManager();
 
+    // Wire the animation manager to report AnimationStarting/Finished events
+    this._animationManager.diagram = this;
+
     // Create command handler
     this._commandHandler = new CommandHandler(this);
 
@@ -266,25 +269,59 @@ export class Diagram {
     this.startRenderLoop();
   }
 
-  /** Register default interaction tools. */
+  /** Register default interaction tools in GoJS priority order. */
   private registerDefaultTools(): void {
-    this._toolManager.registerTool('clickSelecting', new ClickSelectingTool());
-    this._toolManager.registerTool('dragging', new DraggingTool());
-    this._toolManager.registerTool('panning', new PanningTool());
-    this._toolManager.registerTool('zooming', new ZoomingTool());
-    this._toolManager.registerTool('textEditing', new TextEditingTool());
-    this._toolManager.registerTool('linking', new LinkingTool());
-    this._toolManager.registerTool('relinking', new RelinkingTool());
-    this._toolManager.registerTool('resizing', new ResizingTool());
-    this._toolManager.registerTool('rotating', new RotatingTool());
-    this._toolManager.registerTool('dragSelecting', new DragSelectingTool());
+    const tm = this._toolManager;
+    tm.registerTool('clickSelecting', new ClickSelectingTool());
+    tm.registerTool('dragging', new DraggingTool());
+    tm.registerTool('panning', new PanningTool());
+    tm.registerTool('zooming', new ZoomingTool());
+    tm.registerTool('textEditing', new TextEditingTool());
+    tm.registerTool('linking', new LinkingTool());
+    tm.registerTool('relinking', new RelinkingTool());
+    tm.registerTool('resizing', new ResizingTool());
+    tm.registerTool('rotating', new RotatingTool());
+    tm.registerTool('dragSelecting', new DragSelectingTool());
 
-    // Activate default tools
-    this._toolManager.activateTool('clickSelecting');
-    this._toolManager.activateTool('dragging');
-    this._toolManager.activateTool('zooming');
-    this._toolManager.activateTool('resizing');
-    this._toolManager.activateTool('rotating');
+    // Populate per-event tool lists (GoJS mouseDownTools order)
+    for (const name of [
+      'relinking',
+      'resizing',
+      'rotating',
+      'linking',
+      'dragging',
+      'panning',
+      'clickSelecting',
+      'dragSelecting',
+    ]) {
+      const tool = tm.getTool(name);
+      if (tool) tm.addToolToList('mouseDown', tool);
+    }
+    // Wheel / click / double-click / key lists
+    const zooming = tm.getTool('zooming');
+    if (zooming) tm.addToolToList('wheel', zooming);
+    const clickSelecting = tm.getTool('clickSelecting');
+    if (clickSelecting) tm.addToolToList('click', clickSelecting);
+    const textEditing = tm.getTool('textEditing');
+    if (textEditing) tm.addToolToList('doubleClick', textEditing);
+    const panning = tm.getTool('panning');
+    if (panning) tm.addToolToList('mouseMove', panning);
+    for (const name of [
+      'dragging',
+      'linking',
+      'relinking',
+      'resizing',
+      'rotating',
+      'clickSelecting',
+      'dragSelecting',
+      'textEditing',
+    ]) {
+      const tool = tm.getTool(name);
+      if (tool) {
+        tm.addToolToList('mouseMove', tool);
+        tm.addToolToList('mouseUp', tool);
+      }
+    }
   }
 
   /** Get the tool manager. */
@@ -898,6 +935,10 @@ export class Diagram {
     this.addCanvasListener('dblclick', (e) => this.handleDoubleClick(e as MouseEvent));
     this.addCanvasListener('contextmenu', (e) => this.handleContextMenu(e as MouseEvent));
 
+    // Focus events
+    this.addCanvasListener('focus', () => this.fireDiagramEvent('GainedFocus'));
+    this.addCanvasListener('blur', () => this.fireDiagramEvent('LostFocus'));
+
     // Touch support
     this.addCanvasListener('touchstart', (e) => this.handleTouchStart(e as TouchEvent), {
       passive: false,
@@ -1311,6 +1352,7 @@ export class Diagram {
     this.parts.set(this.linkPartKey(linkKey as NodeKey), link);
     this.links.set(linkKey as NodeKey, link);
     this.fireDiagramEvent('PartAdded', link);
+    this.fireDiagramEvent('LinkCreated', link);
     this.markHitIndexDirty();
     return link;
   }
@@ -1669,6 +1711,7 @@ export class Diagram {
 
   /** Clear all selections. */
   clearSelection(): void {
+    this.fireDiagramEvent('ChangingSelection', null);
     for (const key of this.selectedParts) {
       const part = this.getPartByKey(key);
       if (part) part.isSelected = false;
@@ -1676,6 +1719,7 @@ export class Diagram {
     this.selectedParts.clear();
     this.invalidate();
     this.fireDiagramEvent('SelectionChanged', null);
+    this.fireDiagramEvent('ChangedSelection', null);
   }
 
   /** GoJS-compatible: Select a part, adding it to the current selection. */
@@ -1685,11 +1729,42 @@ export class Diagram {
       this.clearSelection();
     }
     if (this.selectedParts.has(part.key)) return true;
+    this.fireDiagramEvent('ChangingSelection', part);
     this.selectedParts.add(part.key);
     part.isSelected = true;
     this.invalidate();
     this.fireDiagramEvent('SelectionChanged', part);
+    this.fireDiagramEvent('ChangedSelection', part);
     return true;
+  }
+
+  /** GoJS-compatible: Deselect a part. */
+  deselect(part: Part): void {
+    if (!this.selectedParts.has(part.key)) return;
+    part.isSelected = false;
+    this.selectedParts.delete(part.key);
+    this.invalidate();
+    this.fireDiagramEvent('SelectionChanged', null);
+    this.fireDiagramEvent('ChangedSelection', null);
+  }
+
+  /** GoJS-compatible: Find a group part by its model key. */
+  findGroupForKey(key: NodeKey): Group | null {
+    return this.groups.get(key) ?? null;
+  }
+
+  /** GoJS-compatible: Collapse a group's subgraph, firing SubGraphCollapsed. */
+  collapseGroup(group: Group): void {
+    group.collapse();
+    this.fireDiagramEvent('SubGraphCollapsed', group);
+    this.invalidate();
+  }
+
+  /** GoJS-compatible: Expand a group's subgraph, firing SubGraphExpanded. */
+  expandGroup(group: Group): void {
+    group.expand();
+    this.fireDiagramEvent('SubGraphExpanded', group);
+    this.invalidate();
   }
 
   /** Get selected parts. */
@@ -1766,6 +1841,7 @@ export class Diagram {
     const links = Array.from(this.links.values());
     target.apply(nodes, links);
     this.invalidate();
+    this.fireDiagramEvent('LayoutCompleted', null, { layout: target });
   }
 
   /** GoJS-compatible: The HTML element this diagram renders into. */
@@ -2365,6 +2441,7 @@ export class Diagram {
     }
     this.invalidate();
     this.fireDiagramEvent('ViewportChanged', null, { x: targetX, y: targetY, scale: this._scale });
+    this.fireDiagramEvent('ScrollChanged', null, { x: targetX, y: targetY });
   }
 
   /** Zoom to fit all content. */

@@ -38,6 +38,7 @@ function createMockDiagram(): Diagram {
     invalidate: () => {},
     undo: () => undoManager.undo(),
     redo: () => undoManager.redo(),
+    fireDiagramEvent: () => {},
   } as unknown as Diagram;
 }
 

@@ -22,6 +22,22 @@ export class LinkingTool extends LinkingBaseTool {
     return super.targetNode;
   }
 
+  /** GoJS-compatible: start drawing a link when pressing on a port of a linkable node. */
+  override canStart(_toolName: string, e: MouseEvent): boolean {
+    if (e.button !== 0) return false;
+    if (
+      this.diagram &&
+      (this.diagram.isEnabled === false ||
+        this.diagram.isReadOnly === true ||
+        this.diagram.allowLink === false)
+    )
+      return false;
+    const point = this.getDiagramPoint(e);
+    const part = this.findPartAt(point.x, point.y);
+    // Only start linking from nodes that expose ports
+    return part instanceof Node && (part as Node).portCount > 0;
+  }
+
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
     // GoJS-compatible: respect isEnabled, read-only and allowLink flags

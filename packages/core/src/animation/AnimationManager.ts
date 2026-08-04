@@ -1,6 +1,11 @@
 import { Animation, type AnimationOptions } from './Animation.ts';
 import type { EasingName } from './Easing.ts';
 
+/** Minimal event-sink interface so Diagram can report animation events. */
+export interface DiagramEventsSink {
+  fireDiagramEvent(type: string, part?: unknown, data?: Record<string, unknown>): void;
+}
+
 /**
  * Manages and runs animations.
  */
@@ -8,6 +13,16 @@ export class AnimationManager {
   private animations: Animation[] = [];
   private animationFrameId: number | null = null;
   private _isAnimating = false;
+  private _diagram: DiagramEventsSink | null = null;
+
+  /** GoJS-compatible: The diagram this manager reports events to. */
+  get diagram(): DiagramEventsSink | null {
+    return this._diagram;
+  }
+
+  set diagram(value: DiagramEventsSink | null) {
+    this._diagram = value;
+  }
 
   /** Whether any animation is currently running. */
   get isAnimating(): boolean {
@@ -36,8 +51,20 @@ export class AnimationManager {
 
   /** Add an animation to the manager. */
   add(animation: Animation): void {
+    const wasRunning = this._isAnimating;
     this.animations.push(animation);
     animation.start();
+    // Fire AnimationStarting when the first animation begins
+    if (!wasRunning) {
+      this._diagram?.fireDiagramEvent('AnimationStarting');
+    }
+    animation.onDone(() => {
+      this.animations = this.animations.filter((a) => a !== animation);
+      if (this.animations.length === 0) {
+        this.stopLoop();
+        this._diagram?.fireDiagramEvent('AnimationFinished');
+      }
+    });
     this.ensureRunning();
   }
 

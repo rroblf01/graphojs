@@ -13,6 +13,13 @@ export class DragSelectingTool extends Tool {
     return this._isSelecting;
   }
 
+  /** GoJS-compatible: start rubber-band selection on empty background with primary button. */
+  override canStart(_toolName: string, e: MouseEvent): boolean {
+    if (e.button !== 0) return false;
+    const point = this.getDiagramPoint(e);
+    return this.findPartAt(point.x, point.y) === null;
+  }
+
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
 

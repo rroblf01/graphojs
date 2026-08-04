@@ -83,9 +83,13 @@ export abstract class Model {
     nodeData[this.nodeKeyProperty] = key;
   }
 
-  /** Generate a unique key. */
+  /** Generate a unique key that is not already in use. */
   generateKey(): NodeKey {
-    return this.nextKey++;
+    let key: NodeKey;
+    do {
+      key = this.nextKey++;
+    } while (this.containsNode(key));
+    return key;
   }
 
   /** Get all node data. */

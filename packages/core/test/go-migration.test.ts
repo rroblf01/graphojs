@@ -839,6 +839,50 @@ describe('GoJS Getting Started tutorial migration', () => {
     expect(myDiagram.scrollMode).toBe('infinite');
   });
 
+  it('fires GoJS events: ChangedSelection, ClipboardPasted, SelectionDeleted, LayoutCompleted', () => {
+    const myDiagram = createDiagram();
+    const fired: string[] = [];
+    myDiagram.addAnyDiagramListener((e) => fired.push(e.type));
+
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 0, y: 0, width: 100, height: 50 },
+      ],
+    });
+    myDiagram.model = model;
+
+    // Select + ChangedSelection
+    myDiagram.select(myDiagram.findNodeForKey(1) as never);
+    expect(fired).toContain('ChangedSelection');
+
+    // Copy + ClipboardChanged
+    myDiagram.commandHandler.copySelection();
+    expect(fired).toContain('ClipboardChanged');
+    expect(fired).toContain('SelectionCopied');
+
+    // Paste + ClipboardPasted
+    myDiagram.commandHandler.pasteClipboard();
+    expect(fired).toContain('ClipboardPasted');
+
+    // Delete + SelectionDeleted
+    myDiagram.select(myDiagram.findNodeForKey(1) as never);
+    myDiagram.commandHandler.deleteSelection();
+    expect(fired).toContain('SelectionDeleted');
+
+    // LayoutCompleted
+    myDiagram.layoutDiagram(new go.GridLayout({ spacing: 10 }));
+    expect(fired).toContain('LayoutCompleted');
+
+    // SubGraphCollapsed/Expanded
+    const g = new go.Group(99);
+    myDiagram.add(g);
+    myDiagram.collapseGroup(g);
+    myDiagram.expandGroup(g);
+    expect(fired).toContain('SubGraphCollapsed');
+    expect(fired).toContain('SubGraphExpanded');
+  });
+
   it('enforces isReadOnly/allowMove in interaction tools', () => {
     const myDiagram = createDiagram();
     const model = new go.GraphLinksModel({

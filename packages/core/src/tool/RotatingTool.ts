@@ -39,6 +39,16 @@ export class RotatingTool extends Tool {
     return Math.abs(point.x - handle.x) <= threshold && Math.abs(point.y - handle.y) <= threshold;
   }
 
+  /** GoJS-compatible: start rotating when pressing on the rotation handle of a selected node. */
+  override canStart(_toolName: string, e: MouseEvent): boolean {
+    if (e.button !== 0) return false;
+    if (this.diagram && (this.diagram.isEnabled === false || this.diagram.isReadOnly === true))
+      return false;
+    const point = this.getDiagramPoint(e);
+    const part = this.findPartAt(point.x, point.y);
+    return part instanceof Node && part.isSelected && this.isOnRotationHandle(part, point);
+  }
+
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
     if (this.diagram && (this.diagram.isEnabled === false || this.diagram.isReadOnly === true))

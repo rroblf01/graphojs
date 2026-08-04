@@ -39,6 +39,7 @@ function createMockDiagram(): Diagram {
     showTempLink: vi.fn(),
     hideTempLink: vi.fn(),
     getTempLink: () => null,
+    fireDiagramEvent: vi.fn(),
   } as unknown as Diagram;
 }
 
@@ -219,6 +220,7 @@ describe('LinkingTool cycle prevention', () => {
       hideTempLink: vi.fn(),
       getTempLink: () => null,
       getSelectedParts: () => [],
+      fireDiagramEvent: vi.fn(),
     } as unknown as Diagram;
   }
 

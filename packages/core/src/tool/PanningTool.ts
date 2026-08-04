@@ -23,6 +23,11 @@ export class PanningTool extends Tool {
     super.doDeactivate();
   }
 
+  /** GoJS-compatible: start panning on middle-button or shift+left drag. */
+  override canStart(_toolName: string, e: MouseEvent): boolean {
+    return e.button === 1 || (e.button === 0 && e.shiftKey);
+  }
+
   override doMouseDown(e: MouseEvent): void {
     if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
       this.isPanning = true;

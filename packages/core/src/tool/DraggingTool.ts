@@ -18,6 +18,20 @@ export class DraggingTool extends Tool {
     super.doActivate();
   }
 
+  /** GoJS-compatible: start dragging when the primary button is on a movable node. */
+  override canStart(_toolName: string, e: MouseEvent): boolean {
+    if (e.button !== 0) return false;
+    if (
+      this.diagram &&
+      (this.diagram.isEnabled === false ||
+        this.diagram.isReadOnly === true ||
+        this.diagram.allowMove === false)
+    )
+      return false;
+    const part = this.findPartAt(this.getDiagramPoint(e).x, this.getDiagramPoint(e).y);
+    return part instanceof Node && (part as Node).draggable;
+  }
+
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
     // GoJS-compatible: respect isEnabled, read-only and allowMove flags

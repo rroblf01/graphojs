@@ -84,6 +84,8 @@ export class TextEditingTool extends Tool {
       } else {
         this.commitNodeLabel(diagram, this.node, value);
       }
+      // GoJS-compatible: fire TextEdited after a successful edit
+      diagram.fireDiagramEvent('TextEdited', this.node, { text: value });
     }
 
     this.hideEditor();

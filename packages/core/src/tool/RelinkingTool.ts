@@ -26,6 +26,21 @@ export class RelinkingTool extends LinkingBaseTool {
     return this._end;
   }
 
+  /** GoJS-compatible: start reconnecting a link when pressing near its endpoint. */
+  override canStart(_toolName: string, e: MouseEvent): boolean {
+    if (e.button !== 0) return false;
+    if (
+      this.diagram &&
+      (this.diagram.isEnabled === false ||
+        this.diagram.isReadOnly === true ||
+        this.diagram.allowRelink === false)
+    )
+      return false;
+    const point = this.getDiagramPoint(e);
+    const part = this.findPartAt(point.x, point.y);
+    return part instanceof Link && (part as Link).relinkableFrom;
+  }
+
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
     // GoJS-compatible: respect isEnabled, read-only and allowRelink flags
@@ -104,6 +119,9 @@ export class RelinkingTool extends LinkingBaseTool {
     diagram
       .getUndoManager()
       .execute(new SetLinkPropertyCommand(model, linkKey, propertyName, newValue));
+
+    // GoJS-compatible: fire LinkRelinked after a successful reconnect
+    diagram.fireDiagramEvent('LinkRelinked', link, { propertyName, newValue });
     return true;
   }
 }

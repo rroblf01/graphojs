@@ -4,6 +4,11 @@ import { Tool } from './Tool.ts';
  * Tool for selecting parts by clicking.
  */
 export class ClickSelectingTool extends Tool {
+  /** GoJS-compatible: default selector — claims any primary click not handled by a higher-priority tool. */
+  override canStart(_toolName: string, e: MouseEvent): boolean {
+    return e.button === 0;
+  }
+
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
 

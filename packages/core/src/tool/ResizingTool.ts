@@ -95,6 +95,16 @@ export class ResizingTool extends Tool {
     return null;
   }
 
+  /** GoJS-compatible: start resizing when pressing on a resize handle of a selected node. */
+  override canStart(_toolName: string, e: MouseEvent): boolean {
+    if (e.button !== 0) return false;
+    if (this.diagram && (this.diagram.isEnabled === false || this.diagram.isReadOnly === true))
+      return false;
+    const point = this.getDiagramPoint(e);
+    const part = this.findPartAt(point.x, point.y);
+    return part instanceof Node && part.isSelected && this.getHandleAt(part, point) !== null;
+  }
+
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
     if (this.diagram && (this.diagram.isEnabled === false || this.diagram.isReadOnly === true))

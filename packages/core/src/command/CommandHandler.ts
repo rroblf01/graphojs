@@ -93,6 +93,11 @@ export class CommandHandler {
     }
 
     diagram.clearSelection();
+    // GoJS-compatible: fire SelectionDeleted after a successful delete
+    diagram.fireDiagramEvent('SelectionDeleted', null, {
+      nodeCount: nodeKeys.length,
+      linkCount: linkKeys.length,
+    });
     return true;
   }
 
@@ -137,7 +142,10 @@ export class CommandHandler {
     }
 
     this.clipboard = nodeData;
-    return nodeData.length > 0;
+    const count = nodeData.length;
+    this.diagram.fireDiagramEvent('ClipboardChanged', null, { count });
+    this.diagram.fireDiagramEvent('SelectionCopied', null, { count });
+    return count > 0;
   }
 
   /** Cut the selected parts (copy + delete). */
@@ -169,6 +177,8 @@ export class CommandHandler {
       undoManager.execute(new AddNodeCommand(model, copy));
     }
 
+    // GoJS-compatible: fire ClipboardPasted after a successful paste
+    this.diagram.fireDiagramEvent('ClipboardPasted', null, { count: this.clipboard.length });
     return true;
   }
 

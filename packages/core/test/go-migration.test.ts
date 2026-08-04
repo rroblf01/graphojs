@@ -831,4 +831,27 @@ describe('GoJS Getting Started tutorial migration', () => {
 
     expect(myDiagram.undoManager.isUndoingRedoing).toBe(false);
   });
+
+  it('enforces isReadOnly/allowMove in interaction tools', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    myDiagram.model = model;
+
+    const dragging = myDiagram.toolManager.getTool('dragging') as go.DraggingTool;
+    expect(dragging).toBeDefined();
+
+    // Read-only diagram: dragging should not start
+    myDiagram.isReadOnly = true;
+    expect(dragging.isActive).toBe(false);
+    expect(myDiagram.isReadOnly).toBe(true);
+
+    // allowMove = false should also block dragging
+    myDiagram.isReadOnly = false;
+    myDiagram.allowMove = false;
+    expect(myDiagram.allowMove).toBe(false);
+    expect(myDiagram.allowLink).toBe(true);
+    expect(myDiagram.allowRelink).toBe(true);
+  });
 });

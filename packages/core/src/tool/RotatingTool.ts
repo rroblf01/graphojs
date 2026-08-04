@@ -41,6 +41,7 @@ export class RotatingTool extends Tool {
 
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
+    if (this.diagram?.isReadOnly) return;
 
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);

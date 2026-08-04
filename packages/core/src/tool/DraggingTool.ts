@@ -20,6 +20,9 @@ export class DraggingTool extends Tool {
 
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
+    // GoJS-compatible: respect read-only and allowMove flags
+    if (this.diagram && (this.diagram.isReadOnly === true || this.diagram.allowMove === false))
+      return;
 
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);

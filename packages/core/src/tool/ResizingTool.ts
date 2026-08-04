@@ -97,7 +97,8 @@ export class ResizingTool extends Tool {
 
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
-    if (this.diagram?.isReadOnly) return;
+    if (this.diagram && (this.diagram.isEnabled === false || this.diagram.isReadOnly === true))
+      return;
 
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);

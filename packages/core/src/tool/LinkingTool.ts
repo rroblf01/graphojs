@@ -24,8 +24,13 @@ export class LinkingTool extends LinkingBaseTool {
 
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
-    // GoJS-compatible: respect read-only and allowLink flags
-    if (this.diagram && (this.diagram.isReadOnly === true || this.diagram.allowLink === false))
+    // GoJS-compatible: respect isEnabled, read-only and allowLink flags
+    if (
+      this.diagram &&
+      (this.diagram.isEnabled === false ||
+        this.diagram.isReadOnly === true ||
+        this.diagram.allowLink === false)
+    )
       return;
 
     const point = this.getDiagramPoint(e);

@@ -552,6 +552,17 @@ describe('GoJS Compatibility', () => {
       expect((panel.elements[1] as TextBlock).text).toBe('Y');
     });
 
+    it('should bind itemArray via a Binding (GoJS pattern)', () => {
+      const panel = new Panel('Vertical');
+      const itemTemplate = new TextBlock('item');
+      itemTemplate.setBinding(new Binding('text', 'text'));
+      panel.itemTemplate = itemTemplate;
+      panel.setBinding(new Binding('itemArray', 'items'));
+      panel.applyBindings({ items: [{ text: 'A' }, { text: 'B' }] } as never);
+      expect(panel.elementCount).toBe(2);
+      expect((panel.elements[0] as TextBlock).text).toBe('A');
+    });
+
     it('should clone item templates in clone()', () => {
       const panel = new Panel('Vertical');
       const template = new TextBlock('item');

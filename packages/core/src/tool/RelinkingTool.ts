@@ -28,8 +28,13 @@ export class RelinkingTool extends LinkingBaseTool {
 
   override doMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return;
-    // GoJS-compatible: respect read-only and allowRelink flags
-    if (this.diagram && (this.diagram.isReadOnly === true || this.diagram.allowRelink === false))
+    // GoJS-compatible: respect isEnabled, read-only and allowRelink flags
+    if (
+      this.diagram &&
+      (this.diagram.isEnabled === false ||
+        this.diagram.isReadOnly === true ||
+        this.diagram.allowRelink === false)
+    )
       return;
 
     const point = this.getDiagramPoint(e);

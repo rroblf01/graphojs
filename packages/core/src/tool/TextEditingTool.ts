@@ -54,8 +54,13 @@ export class TextEditingTool extends Tool {
   editNode(node: Node): void {
     const diagram = this.diagram;
     if (!diagram || this._isEditing) return;
-    // GoJS-compatible: respect read-only and allowTextEdit flags
-    if (diagram.isReadOnly === true || diagram.allowTextEdit === false) return;
+    // GoJS-compatible: respect isEnabled, read-only and allowTextEdit flags
+    if (
+      diagram.isEnabled === false ||
+      diagram.isReadOnly === true ||
+      diagram.allowTextEdit === false
+    )
+      return;
     if (!node.selectable) return;
 
     // Prefer an editable TextBlock in the visual tree; fall back to the node label

@@ -231,7 +231,7 @@ export class CommandHandler {
 
     diagram.clearSelection();
     for (const nodeData of model.getNodeDataArray()) {
-      const part = diagram.getPart(model.getNodeKey(nodeData));
+      const part = diagram.findNodeForKey(model.getNodeKey(nodeData));
       if (part) {
         diagram.select(part, true);
       }
@@ -239,7 +239,7 @@ export class CommandHandler {
     for (const linkData of model.getLinkDataArray()) {
       const key = model.getLinkKey(linkData);
       if (key === undefined) continue;
-      const part = diagram.getPart(key);
+      const part = diagram.findLinkForKey(key);
       if (part) {
         diagram.select(part, true);
       }

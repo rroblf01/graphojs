@@ -88,12 +88,8 @@ export class Binding {
    * Returns true if the property was set.
    */
   applyToTarget(target: BindingTarget, nodeData: NodeData): boolean {
-    const sourceValue = this.getSourceValue(nodeData, target);
-    let targetValue = sourceValue;
-
-    if (this._converter) {
-      targetValue = this._converter(sourceValue, nodeData);
-    }
+    // getSourceValue already applies the converter
+    const targetValue = this.getSourceValue(nodeData, target);
 
     if (targetValue === undefined || targetValue === null) {
       return false;

@@ -121,7 +121,7 @@ export class Diagram {
   private isDirty = true;
   private animationFrameId: number | null = null;
 
-  private selectedParts: Set<NodeKey> = new Set();
+  private selectedParts: Set<Part> = new Set();
   private _toolManager: ToolManager;
   private _undoManager: UndoManager;
   private _layers: Layer[] = [];
@@ -1308,7 +1308,7 @@ export class Diagram {
       case 'node Removed': {
         if (event.node) {
           const key = this._model.getNodeKey(event.node);
-          this.removePartByKey(key);
+          this.removePartByKey(key, 'node');
         }
         break;
       }
@@ -1324,7 +1324,7 @@ export class Diagram {
       case 'link Removed': {
         if (event.link) {
           const key = this.getLinkKeyOf(event.link);
-          if (key !== undefined) this.removePartByKey(key);
+          if (key !== undefined) this.removePartByKey(key, 'link');
         }
         break;
       }
@@ -1601,8 +1601,18 @@ export class Diagram {
     }
   }
 
-  private removePartByKey(key: NodeKey): void {
-    const part = this.getPartByKey(key);
+  private removePartByKey(key: NodeKey, type?: 'node' | 'link' | 'group'): void {
+    // Resolve by type to avoid node/link key namespace collisions
+    let part: Node | Link | Group | undefined;
+    if (type === 'link') {
+      part = this.links.get(key) ?? (this.parts.get(this.linkPartKey(key)) as Link | undefined);
+    } else if (type === 'group') {
+      part = this.groups.get(key);
+    } else if (type === 'node') {
+      part = this.nodes.get(key);
+    } else {
+      part = this.getPartByKey(key);
+    }
     if (!part) return;
 
     if (part instanceof Node) {
@@ -1612,13 +1622,13 @@ export class Diagram {
     } else if (part instanceof Link) {
       this.links.delete(key);
       this.parts.delete(this.linkPartKey(key));
-      this.selectedParts.delete(key);
+      this.selectedParts.delete(part);
       this.fireDiagramEvent('PartRemoved', part);
       this.markHitIndexDirty();
       return;
     }
     this.parts.delete(key);
-    this.selectedParts.delete(key);
+    this.selectedParts.delete(part);
     this.fireDiagramEvent('PartRemoved', part);
     this.markHitIndexDirty();
   }
@@ -1821,9 +1831,8 @@ export class Diagram {
   /** Clear all selections. */
   clearSelection(): void {
     this.fireDiagramEvent('ChangingSelection', null);
-    for (const key of this.selectedParts) {
-      const part = this.getPartByKey(key);
-      if (part) part.isSelected = false;
+    for (const part of this.selectedParts) {
+      part.isSelected = false;
     }
     this.selectedParts.clear();
     this.invalidate();
@@ -1837,11 +1846,11 @@ export class Diagram {
     if (!addToSelection) {
       this.clearSelection();
     }
-    if (this.selectedParts.has(part.key)) return true;
+    if (this.selectedParts.has(part)) return true;
     // Respect maxSelectionCount
     if (this.selectedParts.size >= this._maxSelectionCount) return false;
     this.fireDiagramEvent('ChangingSelection', part);
-    this.selectedParts.add(part.key);
+    this.selectedParts.add(part);
     part.isSelected = true;
     this.invalidate();
     this.fireDiagramEvent('SelectionChanged', part);
@@ -1851,9 +1860,9 @@ export class Diagram {
 
   /** GoJS-compatible: Deselect a part. */
   deselect(part: Part): void {
-    if (!this.selectedParts.has(part.key)) return;
+    if (!this.selectedParts.has(part)) return;
     part.isSelected = false;
-    this.selectedParts.delete(part.key);
+    this.selectedParts.delete(part);
     this.invalidate();
     this.fireDiagramEvent('SelectionChanged', null);
     this.fireDiagramEvent('ChangedSelection', null);
@@ -1883,8 +1892,7 @@ export class Diagram {
   /** Get selected parts. */
   getSelectedParts(): (Node | Link | Group)[] {
     const result: (Node | Link | Group)[] = [];
-    for (const key of this.selectedParts) {
-      const part = this.getPartByKey(key);
+    for (const part of this.selectedParts) {
       if (part instanceof Node || part instanceof Link || part instanceof Group) {
         result.push(part);
       }

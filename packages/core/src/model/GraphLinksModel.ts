@@ -204,9 +204,13 @@ export class GraphLinksModel extends Model {
     return this._linkDataArray.find((l) => this.getLinkKey(l) === key);
   }
 
-  /** Generate a unique link key. */
+  /** Generate a unique link key that is not already in use. */
   private generateLinkKey(): NodeKey {
-    return this.linkKeyCounter++;
+    let key: NodeKey;
+    do {
+      key = this.linkKeyCounter++;
+    } while (this.getLinkData(key));
+    return key;
   }
 
   /** Add a link. */
@@ -227,7 +231,13 @@ export class GraphLinksModel extends Model {
       throw new Error('Link validation failed');
     }
 
-    if (linkData[this.linkKeyProperty] === undefined || linkData[this.linkKeyProperty] === null) {
+    // Enforce link-key uniqueness (like addNode does for node keys)
+    if (linkData[this.linkKeyProperty] !== undefined && linkData[this.linkKeyProperty] !== null) {
+      const existingKey = linkData[this.linkKeyProperty];
+      if (this.getLinkData(existingKey as NodeKey)) {
+        throw new Error(`Link with key ${String(existingKey)} already exists`);
+      }
+    } else {
       linkData[this.linkKeyProperty] = this.generateLinkKey();
     }
 

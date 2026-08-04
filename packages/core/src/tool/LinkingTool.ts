@@ -126,7 +126,7 @@ export class LinkingTool extends LinkingBaseTool {
       // Fire LinkDrawn event
       const linkKey = model.getLinkKey(linkData);
       if (linkKey !== undefined) {
-        const link = diagram.getPart(linkKey);
+        const link = diagram.findLinkForKey(linkKey);
         if (link) {
           diagram.fireDiagramEvent('LinkDrawn', link, { from: source.key, to: target.key });
         }

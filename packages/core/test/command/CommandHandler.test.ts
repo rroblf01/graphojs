@@ -23,6 +23,14 @@ function createMockDiagram(): Diagram {
     getModel: () => model,
     getUndoManager: () => undoManager,
     getPart: (key: string | number) => parts.get(key),
+    findNodeForKey: (key: string | number) => {
+      const p = parts.get(key);
+      return p instanceof Node ? p : null;
+    },
+    findLinkForKey: (key: string | number) => {
+      const p = parts.get(key);
+      return p instanceof Link ? p : null;
+    },
     getSelectedParts: () => {
       const result: (Node | Link)[] = [];
       for (const [, part] of parts) {

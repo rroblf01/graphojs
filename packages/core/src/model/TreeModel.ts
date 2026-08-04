@@ -10,7 +10,7 @@ export interface TreeModelJSON extends ModelJSON {
  * Each node data has an optional `parent` property referencing its parent key.
  */
 export class TreeModel extends Model {
-  protected override nodeDataArray: NodeData[] = [];
+  protected override _nodeDataArray: NodeData[] = [];
   private parentKeyProperty = 'parent';
   private nextNodeKey = 1;
 
@@ -21,7 +21,7 @@ export class TreeModel extends Model {
     parentKeyProperty?: string;
   }) {
     super(options?.nodeKeyProperty);
-    if (options?.nodeDataArray) this.nodeDataArray = [...options.nodeDataArray];
+    if (options?.nodeDataArray) this._nodeDataArray = [...options.nodeDataArray];
     if (options?.parentKeyProperty) this.parentKeyProperty = options.parentKeyProperty;
   }
 
@@ -68,7 +68,7 @@ export class TreeModel extends Model {
 
   /** Get the direct children of a node. */
   getChildNodes(key: NodeKey): readonly NodeData[] {
-    return this.nodeDataArray.filter((d) => this.getParentKey(d) === key);
+    return this._nodeDataArray.filter((d) => this.getParentKey(d) === key);
   }
 
   /** Get the child keys of a node. */
@@ -109,7 +109,7 @@ export class TreeModel extends Model {
 
   /** Get the root nodes (nodes without a parent). */
   getRootNodes(): NodeData[] {
-    return this.nodeDataArray.filter((d) => this.getParentKey(d) === undefined);
+    return this._nodeDataArray.filter((d) => this.getParentKey(d) === undefined);
   }
 
   /** Get the depth (level) of a node. Root = 0. */
@@ -146,7 +146,7 @@ export class TreeModel extends Model {
       throw new Error(`Parent node ${String(parentKey)} not found`);
     }
 
-    this.nodeDataArray.push(nodeData);
+    this._nodeDataArray.push(nodeData);
     this.emit({
       type: 'node Added',
       model: this,
@@ -166,7 +166,7 @@ export class TreeModel extends Model {
     // Remove descendants first
     const descendants = this.getDescendants(key);
     for (const descendant of descendants) {
-      this.nodeDataArray.splice(this.nodeDataArray.indexOf(descendant), 1);
+      this._nodeDataArray.splice(this._nodeDataArray.indexOf(descendant), 1);
       this.emit({
         type: 'node Removed',
         model: this,
@@ -174,7 +174,7 @@ export class TreeModel extends Model {
       });
     }
 
-    this.nodeDataArray.splice(this.nodeDataArray.indexOf(data), 1);
+    this._nodeDataArray.splice(this._nodeDataArray.indexOf(data), 1);
     this.emit({
       type: 'node Removed',
       model: this,
@@ -217,7 +217,7 @@ export class TreeModel extends Model {
       class: 'TreeModel',
       nodeKeyProperty: this.nodeKeyProperty,
       parentKeyProperty: this.parentKeyProperty,
-      nodeDataArray: this.nodeDataArray.map((d) => ({ ...d })),
+      nodeDataArray: this._nodeDataArray.map((d) => ({ ...d })),
     };
   }
 

@@ -10,8 +10,8 @@ export interface GraphLinksModelJSON extends ModelJSON {
  * A model that supports nodes and links between nodes.
  */
 export class GraphLinksModel extends Model {
-  protected override nodeDataArray: NodeData[] = [];
-  protected linkDataArray: LinkData[] = [];
+  protected override _nodeDataArray: NodeData[] = [];
+  protected _linkDataArray: LinkData[] = [];
   private linkKeyProperty = 'key';
   private linkKeyCounter = 1;
 
@@ -23,8 +23,8 @@ export class GraphLinksModel extends Model {
     linkKeyProperty?: string;
   }) {
     super(options?.nodeKeyProperty);
-    if (options?.nodeDataArray) this.nodeDataArray = [...options.nodeDataArray];
-    if (options?.linkDataArray) this.linkDataArray = [...options.linkDataArray];
+    if (options?.nodeDataArray) this._nodeDataArray = [...options.nodeDataArray];
+    if (options?.linkDataArray) this._linkDataArray = [...options.linkDataArray];
     if (options?.linkKeyProperty) this.linkKeyProperty = options.linkKeyProperty;
   }
 
@@ -113,12 +113,41 @@ export class GraphLinksModel extends Model {
 
   /** Get all link data. */
   getLinkDataArray(): readonly LinkData[] {
-    return this.linkDataArray;
+    return this._linkDataArray;
+  }
+
+  /** GoJS-compatible: Get the link data array. */
+  get linkDataArray(): readonly LinkData[] {
+    return this._linkDataArray;
+  }
+
+  /** GoJS-compatible: Set the link data array, assigning keys and emitting events. */
+  set linkDataArray(value: LinkData[]) {
+    this.setLinkDataArray(value);
+  }
+
+  /** Set all link data, assigning missing keys and emitting add/remove events. */
+  setLinkDataArray(value: LinkData[]): void {
+    const oldKeys = new Set(this._linkDataArray.map((l) => this.getLinkKey(l)));
+    const newKeys = new Set(value.map((l) => l[this.linkKeyProperty] as NodeKey));
+    for (const key of oldKeys) {
+      if (key !== undefined && !newKeys.has(key)) {
+        this.removeLink(key);
+      }
+    }
+    this._linkDataArray = [];
+    for (const data of value) {
+      if (data[this.linkKeyProperty] === undefined || data[this.linkKeyProperty] === null) {
+        data[this.linkKeyProperty] = this.generateLinkKey();
+      }
+      this._linkDataArray.push(data);
+      this.emit({ type: 'link Added', model: this, link: data });
+    }
   }
 
   /** Get the number of links. */
   getLinkCount(): number {
-    return this.linkDataArray.length;
+    return this._linkDataArray.length;
   }
 
   /** Get the key of a link data object. */
@@ -158,7 +187,7 @@ export class GraphLinksModel extends Model {
 
   /** Get a link data object by key. */
   getLinkData(key: NodeKey): LinkData | undefined {
-    return this.linkDataArray.find((l) => this.getLinkKey(l) === key);
+    return this._linkDataArray.find((l) => this.getLinkKey(l) === key);
   }
 
   /** Generate a unique link key. */
@@ -188,7 +217,7 @@ export class GraphLinksModel extends Model {
       linkData[this.linkKeyProperty] = this.generateLinkKey();
     }
 
-    this.linkDataArray.push(linkData);
+    this._linkDataArray.push(linkData);
     this.emit({
       type: 'link Added',
       model: this,
@@ -204,15 +233,15 @@ export class GraphLinksModel extends Model {
 
   /** Remove a link by key. */
   removeLink(key: NodeKey): boolean {
-    const index = this.linkDataArray.findIndex((d) => this.getLinkKey(d) === key);
+    const index = this._linkDataArray.findIndex((d) => this.getLinkKey(d) === key);
     if (index === -1) return false;
 
-    const removed = this.linkDataArray[index];
+    const removed = this._linkDataArray[index];
     if (!removed || !this.validateLinkRemoval(removed)) {
       throw new Error('Link removal validation failed');
     }
 
-    this.linkDataArray.splice(index, 1);
+    this._linkDataArray.splice(index, 1);
     this.emit({
       type: 'link Removed',
       model: this,
@@ -223,27 +252,27 @@ export class GraphLinksModel extends Model {
 
   /** Get links connected to a node. */
   getLinksForNode(key: NodeKey): readonly LinkData[] {
-    return this.linkDataArray.filter((l) => l.from === key || l.to === key);
+    return this._linkDataArray.filter((l) => l.from === key || l.to === key);
   }
 
   /** Get links from a node. */
   getLinksFrom(key: NodeKey): readonly LinkData[] {
-    return this.linkDataArray.filter((l) => l.from === key);
+    return this._linkDataArray.filter((l) => l.from === key);
   }
 
   /** Get links to a node. */
   getLinksTo(key: NodeKey): readonly LinkData[] {
-    return this.linkDataArray.filter((l) => l.to === key);
+    return this._linkDataArray.filter((l) => l.to === key);
   }
 
   /** Check if a link exists between two nodes. */
   containsLink(from: NodeKey, to: NodeKey): boolean {
-    return this.linkDataArray.some((l) => l.from === from && l.to === to);
+    return this._linkDataArray.some((l) => l.from === from && l.to === to);
   }
 
   /** Remove all links connected to a node. */
   removeLinksForNode(key: NodeKey): void {
-    const toRemove = this.linkDataArray.filter((l) => l.from === key || l.to === key);
+    const toRemove = this._linkDataArray.filter((l) => l.from === key || l.to === key);
     for (const link of toRemove) {
       const linkKey = this.getLinkKey(link);
       if (linkKey !== undefined) {
@@ -264,8 +293,8 @@ export class GraphLinksModel extends Model {
       class: 'GraphLinksModel',
       nodeKeyProperty: this.nodeKeyProperty,
       linkKeyProperty: this.linkKeyProperty,
-      nodeDataArray: this.nodeDataArray.map((d) => ({ ...d })),
-      linkDataArray: this.linkDataArray.map((d) => ({ ...d })),
+      nodeDataArray: this._nodeDataArray.map((d) => ({ ...d })),
+      linkDataArray: this._linkDataArray.map((d) => ({ ...d })),
     };
   }
 
@@ -290,11 +319,22 @@ export class GraphLinksModel extends Model {
   override equals(other: Model): boolean {
     if (!(other instanceof GraphLinksModel)) return false;
     if (!super.equals(other)) return false;
-    if (this.linkDataArray.length !== other.linkDataArray.length) return false;
-    return this.linkDataArray.every((link, i) => {
+    if (this._linkDataArray.length !== other.linkDataArray.length) return false;
+    return this._linkDataArray.every((link, i) => {
       const otherLink = other.linkDataArray[i];
       return JSON.stringify(link) === JSON.stringify(otherLink);
     });
+  }
+
+  /** GoJS-compatible: Remove all nodes and links from the model. */
+  clear(): void {
+    for (const linkData of [...this._linkDataArray]) {
+      const key = this.getLinkKey(linkData);
+      if (key !== undefined) this.removeLink(key);
+    }
+    for (const nodeData of [...this._nodeDataArray]) {
+      this.removeNode(this.getNodeKey(nodeData));
+    }
   }
 
   /** Create a deep copy of this model. */

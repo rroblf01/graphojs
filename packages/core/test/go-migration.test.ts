@@ -293,4 +293,54 @@ describe('GoJS Getting Started tutorial migration', () => {
     diagrams.push(d);
     expect(d).toBeInstanceOf(go.Diagram);
   });
+
+  it('assigns nodeDataArray/linkDataArray after setting the model (GoJS pattern)', () => {
+    const myDiagram = createDiagram();
+    const model = new go.GraphLinksModel();
+    myDiagram.model = model;
+
+    // GoJS pattern: assign arrays after the model is connected
+    model.nodeDataArray = [
+      { key: 1, x: 0, y: 0, width: 100, height: 50 },
+      { key: 2, x: 200, y: 0, width: 100, height: 50 },
+    ];
+    model.linkDataArray = [{ from: 1, to: 2 }];
+
+    expect(myDiagram.findNodeForKey(1)).not.toBeNull();
+    expect(myDiagram.findNodeForKey(2)).not.toBeNull();
+    const linkKey = model.getLinkKey(model.linkDataArray[0]!);
+    expect(linkKey).not.toBeUndefined();
+    expect(myDiagram.findLinkForKey(linkKey!)).not.toBeNull();
+  });
+
+  it('auto-assigns keys when arrays are set without them', () => {
+    const model = new go.GraphLinksModel();
+    model.nodeDataArray = [{ name: 'A' }, { name: 'B' }];
+    model.linkDataArray = [{ from: 1, to: 2 }];
+    expect(model.nodeDataArray[0]!.key).toBeDefined();
+    expect(model.nodeDataArray[1]!.key).toBeDefined();
+    expect(model.linkDataArray[0]!.key).toBeDefined();
+  });
+
+  it('finds parts by data object and clears the diagram', () => {
+    const myDiagram = createDiagram();
+    const data = { key: 1, x: 0, y: 0, width: 100, height: 50 };
+    const model = new go.GraphLinksModel({ nodeDataArray: [data] });
+    myDiagram.model = model;
+
+    expect(myDiagram.findNodeForData(data)).not.toBeNull();
+
+    myDiagram.clear();
+    expect(myDiagram.getPart(1)).toBeUndefined();
+    expect(model.nodeDataArray.length).toBe(0);
+  });
+
+  it('centers the viewport on a rect and point', () => {
+    const myDiagram = createDiagram();
+    myDiagram.centerPoint({ x: 100, y: 100 });
+    const viewport = myDiagram.getViewport();
+    expect(viewport).toBeDefined();
+    myDiagram.centerRect({ x: 0, y: 0, width: 200, height: 100 } as never);
+    expect(myDiagram.getViewport()).toBeDefined();
+  });
 });

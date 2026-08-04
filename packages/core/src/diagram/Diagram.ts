@@ -1337,6 +1337,41 @@ export class Diagram {
     return this.parts.get(key);
   }
 
+  /** GoJS-compatible: Find a node part by its model key. */
+  findNodeForKey(key: NodeKey): Node | null {
+    return this.nodes.get(key) ?? null;
+  }
+
+  /** GoJS-compatible: Find a link part by its model key. */
+  findLinkForKey(key: NodeKey): Link | null {
+    return this.links.get(key) ?? null;
+  }
+
+  /** GoJS-compatible: Find a node part by its model data object. */
+  findNodeForData(data: NodeData): Node | null {
+    const key = this._model.getNodeKey(data);
+    return this.nodes.get(key) ?? null;
+  }
+
+  /** GoJS-compatible: Find a link part by its model data object. */
+  findLinkForData(data: LinkData): Link | null {
+    const key = this._model.getLinkKey(data);
+    if (key === undefined) return null;
+    return this.links.get(key) ?? null;
+  }
+
+  /** GoJS-compatible: Remove all parts and clear the model. */
+  clear(): void {
+    this.parts.clear();
+    this.nodes.clear();
+    this.links.clear();
+    this.groups.clear();
+    this.selectedParts.clear();
+    this._model.clear();
+    this.markHitIndexDirty();
+    this.invalidate();
+  }
+
   /** Show a temporary link preview (used by linking tools). */
   showTempLink(from: { x: number; y: number }, to: { x: number; y: number }): void {
     this.tempLink = { from, to };
@@ -1966,6 +2001,42 @@ export class Diagram {
     this.offsetY += dy;
 
     this.invalidate();
+  }
+
+  /** GoJS-compatible: Scroll the view so that a rect is visible (optionally centered). */
+  scrollToRect(rect: RectClass, center = false): void {
+    const canvasRect = this.canvas.getBoundingClientRect();
+    const viewW = canvasRect.width / this.scale;
+    const viewH = canvasRect.height / this.scale;
+
+    let targetX = this.offsetX;
+    let targetY = this.offsetY;
+
+    if (center) {
+      targetX = rect.x + rect.width / 2 - viewW / 2;
+      targetY = rect.y + rect.height / 2 - viewH / 2;
+    } else {
+      // Minimal scroll to bring the rect into view
+      if (rect.x < this.offsetX) targetX = rect.x;
+      if (rect.x + rect.width > this.offsetX + viewW) targetX = rect.x + rect.width - viewW;
+      if (rect.y < this.offsetY) targetY = rect.y;
+      if (rect.y + rect.height > this.offsetY + viewH) targetY = rect.y + rect.height - viewH;
+    }
+
+    this.setViewport(targetX, targetY);
+  }
+
+  /** GoJS-compatible: Scroll the view so that a rect is centered. */
+  centerRect(rect: RectClass): void {
+    this.scrollToRect(rect, true);
+  }
+
+  /** GoJS-compatible: Scroll the view so that a point is centered. */
+  centerPoint(p: { x: number; y: number }): void {
+    const canvasRect = this.canvas.getBoundingClientRect();
+    const viewW = canvasRect.width / this.scale;
+    const viewH = canvasRect.height / this.scale;
+    this.setViewport(p.x - viewW / 2, p.y - viewH / 2);
   }
 
   /** Get the bounds of all content in the diagram. */

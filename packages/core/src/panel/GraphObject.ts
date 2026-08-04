@@ -142,7 +142,7 @@ export abstract class GraphObject {
 
       if (arg instanceof BindingClass) {
         // A Binding on the part itself (rare, but support it)
-        panel.templateProperties['__binding__'] = arg;
+        panel.templateProperties.__binding__ = arg;
         continue;
       }
 

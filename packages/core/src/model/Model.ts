@@ -46,7 +46,7 @@ export interface ModelJSON {
  * Abstract base class for all models.
  */
 export abstract class Model {
-  protected nodeDataArray: NodeData[] = [];
+  protected _nodeDataArray: NodeData[] = [];
   protected nodeKeyProperty: string = 'key';
   protected listeners: ChangedEventHandler[] = [];
   private nextKey: number = 1;
@@ -82,22 +82,53 @@ export abstract class Model {
 
   /** Get all node data. */
   getNodeDataArray(): readonly NodeData[] {
-    return this.nodeDataArray;
+    return this._nodeDataArray;
+  }
+
+  /** GoJS-compatible: Get the node data array. */
+  get nodeDataArray(): readonly NodeData[] {
+    return this._nodeDataArray;
+  }
+
+  /** GoJS-compatible: Set the node data array, assigning keys and emitting events. */
+  set nodeDataArray(value: NodeData[]) {
+    this.setNodeDataArray(value);
+  }
+
+  /** Set all node data, assigning missing keys and emitting add/remove events. */
+  setNodeDataArray(value: NodeData[]): void {
+    // Remove nodes no longer present
+    const oldKeys = new Set(this._nodeDataArray.map((d) => this.getNodeKey(d)));
+    const newKeys = new Set(value.map((d) => d[this.nodeKeyProperty] as NodeKey));
+    for (const key of oldKeys) {
+      if (key !== undefined && !newKeys.has(key)) {
+        this.removeNode(key);
+      }
+    }
+    // Add/update new nodes
+    this._nodeDataArray = [];
+    for (const data of value) {
+      if (data[this.nodeKeyProperty] === undefined || data[this.nodeKeyProperty] === null) {
+        data[this.nodeKeyProperty] = this.generateKey();
+      }
+      this._nodeDataArray.push(data);
+      this.emit({ type: 'node Added', model: this, node: data });
+    }
   }
 
   /** Get the number of nodes. */
   getNodeCount(): number {
-    return this.nodeDataArray.length;
+    return this._nodeDataArray.length;
   }
 
   /** Check if a node exists. */
   containsNode(key: NodeKey): boolean {
-    return this.nodeDataArray.some((d) => this.getNodeKey(d) === key);
+    return this._nodeDataArray.some((d) => this.getNodeKey(d) === key);
   }
 
   /** Get node data by key. */
   getNodeData(key: NodeKey): NodeData | undefined {
-    return this.nodeDataArray.find((d) => this.getNodeKey(d) === key);
+    return this._nodeDataArray.find((d) => this.getNodeKey(d) === key);
   }
 
   /** Add a node. Returns the generated key if none provided. */
@@ -115,7 +146,7 @@ export abstract class Model {
       throw new Error(`Node with key ${key} already exists`);
     }
 
-    this.nodeDataArray.push(nodeData);
+    this._nodeDataArray.push(nodeData);
     this.emit({
       type: 'node Added',
       model: this,
@@ -126,15 +157,15 @@ export abstract class Model {
 
   /** Remove a node by key. */
   removeNode(key: NodeKey): boolean {
-    const index = this.nodeDataArray.findIndex((d) => this.getNodeKey(d) === key);
+    const index = this._nodeDataArray.findIndex((d) => this.getNodeKey(d) === key);
     if (index === -1) return false;
 
-    const removed = this.nodeDataArray[index];
+    const removed = this._nodeDataArray[index];
     if (!removed || !this.validateNodeRemoval(removed)) {
       throw new Error('Node removal validation failed');
     }
 
-    this.nodeDataArray.splice(index, 1);
+    this._nodeDataArray.splice(index, 1);
     this.emit({
       type: 'node Removed',
       model: this,
@@ -296,8 +327,8 @@ export abstract class Model {
 
   /** Check if this model equals another model. */
   equals(other: Model): boolean {
-    if (this.nodeDataArray.length !== other.nodeDataArray.length) return false;
-    return this.nodeDataArray.every((node, i) => {
+    if (this._nodeDataArray.length !== other.nodeDataArray.length) return false;
+    return this._nodeDataArray.every((node, i) => {
       const otherNode = other.nodeDataArray[i];
       return JSON.stringify(node) === JSON.stringify(otherNode);
     });

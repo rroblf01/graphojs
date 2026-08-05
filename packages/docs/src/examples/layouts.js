@@ -17,13 +17,14 @@ diagram.nodeTemplate = $(
     shadowColor: 'rgba(0,0,0,0.1)',
     shadowBlur: 4,
   }),
-  $(go.TextBlock, 'label', { margin: 6, font: '600 12px system-ui, sans-serif', stroke: '#4527a0' },
-    new go.Binding('text', 'label')),
+  $(
+    go.TextBlock,
+    'label',
+    { margin: 6, font: '600 12px system-ui, sans-serif', stroke: '#4527a0' },
+    new go.Binding('text', 'label'),
+  ),
 );
-diagram.linkTemplate = $(
-  go.Link,
-  $(go.Shape, { stroke: '#b39ddb', strokeWidth: 2 }),
-);
+diagram.linkTemplate = $(go.Link, $(go.Shape, { stroke: '#b39ddb', strokeWidth: 2 }));
 
 // Grafo en forma de árbol (funciona con varios layouts)
 const nodes = [];

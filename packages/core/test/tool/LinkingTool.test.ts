@@ -36,8 +36,7 @@ function createMockDiagram(): Diagram {
     },
     getPart: (key: string | number) =>
       nodes.find((n) => n.key === key) ?? links.find((l) => l.key === key),
-    findLinkForKey: (key: string | number) =>
-      links.find((l) => l.key === key) ?? null,
+    findLinkForKey: (key: string | number) => links.find((l) => l.key === key) ?? null,
     showTempLink: vi.fn(),
     hideTempLink: vi.fn(),
     getTempLink: () => null,

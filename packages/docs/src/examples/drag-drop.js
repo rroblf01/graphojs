@@ -17,8 +17,12 @@ diagram.nodeTemplate = $(
     shadowColor: 'rgba(0,0,0,0.15)',
     shadowBlur: 6,
   }),
-  $(go.TextBlock, 'label', { margin: 8, font: '600 12px system-ui, sans-serif', stroke: '#0d47a1' },
-    new go.Binding('text', 'label')),
+  $(
+    go.TextBlock,
+    'label',
+    { margin: 8, font: '600 12px system-ui, sans-serif', stroke: '#0d47a1' },
+    new go.Binding('text', 'label'),
+  ),
 );
 
 diagram.model = new go.GraphLinksModel({
@@ -45,7 +49,10 @@ status.style.cssText = 'font:600 12px system-ui, sans-serif;color:#546e7a;';
 
 function nextKey() {
   // key único: máximo key del modelo + 1
-  const keys = diagram.getModel().getNodeDataArray().map((d) => d.key ?? 0);
+  const keys = diagram
+    .getModel()
+    .getNodeDataArray()
+    .map((d) => d.key ?? 0);
   return Math.max(0, ...keys) + 1;
 }
 

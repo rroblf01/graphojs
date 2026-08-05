@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import type React from 'react';
+import { useEffect, useRef } from 'react';
 import {
   Diagram as GoDiagram,
-  Panel,
-  GraphLinksModel,
+  type Panel,
+  type GraphLinksModel,
   Palette as GoPalette,
   Overview as GoOverview,
   type Template,
@@ -72,8 +73,7 @@ export const Diagram: React.FC<DiagramProps> = ({
     onDiagramInit?.(diagram);
 
     const modelListener = (event: ChangedEvent) => onModelChangeRef.current?.(event);
-    const eventListener = (event: DiagramEvent) =>
-      onDiagramEventRef.current?.(event.type, event);
+    const eventListener = (event: DiagramEvent) => onDiagramEventRef.current?.(event.type, event);
     const selectionListener = () => onSelectionChangedRef.current?.(diagram);
 
     if (modelRef.current) diagram.model = modelRef.current;

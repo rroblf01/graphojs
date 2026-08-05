@@ -10,10 +10,14 @@ test('large graph (5000 nodes) performance in a real browser', async ({ page }) 
   await page.goto('/e2e/fixtures/perf-app.html');
 
   // Wait for the perf app to finish measuring and publish results.
-  await page.waitForFunction(() => {
-    const w = window as unknown as { __perf?: object };
-    return w.__perf !== undefined;
-  }, undefined, { timeout: 60000 });
+  await page.waitForFunction(
+    () => {
+      const w = window as unknown as { __perf?: object };
+      return w.__perf !== undefined;
+    },
+    undefined,
+    { timeout: 60000 },
+  );
 
   expect(errors, `page errors: ${errors.join('\n')}`).toEqual([]);
 

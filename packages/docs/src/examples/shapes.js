@@ -10,16 +10,26 @@ diagram.background = '#fafbfc';
 diagram.nodeTemplate = $(
   go.Node,
   'Auto',
-  $(go.Shape, 'Rectangle', {
-    stroke: '#37474f',
-    strokeWidth: 2,
-    minSize: { width: 90, height: 90 },
-    shadowColor: 'rgba(0,0,0,0.15)',
-    shadowBlur: 6,
-    fill: 'white',
-  }, new go.Binding('figure', 'figure'), new go.Binding('fill', 'fill')),
-  $(go.TextBlock, 'label', { margin: 6, font: '700 12px system-ui, sans-serif', stroke: '#263238' },
-    new go.Binding('text', 'label')),
+  $(
+    go.Shape,
+    'Rectangle',
+    {
+      stroke: '#37474f',
+      strokeWidth: 2,
+      minSize: { width: 90, height: 90 },
+      shadowColor: 'rgba(0,0,0,0.15)',
+      shadowBlur: 6,
+      fill: 'white',
+    },
+    new go.Binding('figure', 'figure'),
+    new go.Binding('fill', 'fill'),
+  ),
+  $(
+    go.TextBlock,
+    'label',
+    { margin: 6, font: '700 12px system-ui, sans-serif', stroke: '#263238' },
+    new go.Binding('text', 'label'),
+  ),
 );
 
 const figures = [

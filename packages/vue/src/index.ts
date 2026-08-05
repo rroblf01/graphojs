@@ -31,8 +31,7 @@ export const Diagram = defineComponent({
       default: null,
     },
     onDiagramEvent: {
-      type: Function as unknown as () =>
-        ((type: DiagramEventType, e: DiagramEvent) => void) | null,
+      type: Function as unknown as () => ((type: DiagramEventType, e: DiagramEvent) => void) | null,
       default: null,
     },
     onSelectionChanged: {

@@ -17,8 +17,12 @@ diagram.nodeTemplate = $(
     strokeWidth: 2,
     minSize: { width: 110, height: 44 },
   }),
-  $(go.TextBlock, 'label', { margin: 6, font: '600 12px system-ui, sans-serif', stroke: '#4527a0' },
-    new go.Binding('text', 'label')),
+  $(
+    go.TextBlock,
+    'label',
+    { margin: 6, font: '600 12px system-ui, sans-serif', stroke: '#4527a0' },
+    new go.Binding('text', 'label'),
+  ),
 );
 diagram.linkTemplate = $(
   go.Link,

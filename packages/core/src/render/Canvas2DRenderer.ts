@@ -450,11 +450,6 @@ export class Canvas2DRenderer implements Renderer {
       }
     }
 
-    const width = Math.max(link.bounds.width, 1);
-    const height = Math.max(link.bounds.height, 1);
-
-    // Use the panel's natural measured size instead of stretching it across the
-    // whole link bounds, to avoid filled-rect artifacts over the link path.
     const natural = panel.measure();
     const panelW = Math.max(1, natural.width || 40);
     const panelH = Math.max(1, natural.height || 20);

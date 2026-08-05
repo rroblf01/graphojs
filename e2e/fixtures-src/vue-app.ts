@@ -1,6 +1,13 @@
 import { createApp, h, ref } from 'vue';
 import { Diagram, Palette, Overview } from '@graphojs/vue';
-import { GraphObject, GraphLinksModel, type Diagram as GoDiagram, Shape, TextBlock, Panel } from 'graphojs';
+import {
+  GraphObject,
+  GraphLinksModel,
+  type Diagram as GoDiagram,
+  Shape,
+  TextBlock,
+  Panel,
+} from 'graphojs';
 
 const $ = GraphObject.make;
 

@@ -459,8 +459,9 @@ describe('C20: declarative ports resolve after layout', () => {
     expect(port).toBeDefined();
 
     // Simulate post-layout element positions (right edge of the node)
-    const portEl = node.panel?.elements.find((el) => el.portId === 'out')!;
-    portEl.setPosition(88, 25);
+    const portEl = node.panel?.elements.find((el) => el.portId === 'out');
+    expect(portEl).toBeDefined();
+    portEl?.setPosition(88, 25);
     node.updatePortSpots();
     const p = port?.computePoint(0, 0, 100, 50);
     expect(p.x).toBeCloseTo(88, 0);
@@ -1116,7 +1117,7 @@ describe('F4: Tools GoJS API surface', () => {
     expect(d.getModel().getNodeCount()).toBe(1);
     const data = d.getModel().getNodeDataArray()[0];
     expect(data?.label).toBe('new');
-    expect(data && Math.round((data.x as number))).toBe(100);
+    expect(data && Math.round(data.x as number)).toBe(100);
   });
 
   it('ContextMenuTool and LinkReshapingTool exist and wire up', () => {
@@ -1436,7 +1437,11 @@ describe('G9: geometry GoJS API gaps (Point/Rect/Size/Spot)', () => {
 
   it('Link copy copies curve/resizingSegmentIndex/segment orientations', () => {
     const { Link } = require('../src/parts/Link.ts') as {
-      Link: new (k: number, f: number, t: number) => {
+      Link: new (
+        k: number,
+        f: number,
+        t: number,
+      ) => {
         curve: string;
         resizingSegmentIndex: number;
         fromEndSegmentOrientation: number;
@@ -1530,7 +1535,12 @@ describe('H10: graph navigation + Link.fromNode/toNode + Shape bounds', () => {
     const d = navDiagram();
     const n2 = d.findNodeForKey(2) as Node;
     expect(n2.findLinksConnected()).toHaveLength(2);
-    expect(n2.findNodesConnected().map((n) => n.key).sort()).toEqual([1, 3]);
+    expect(
+      n2
+        .findNodesConnected()
+        .map((n) => n.key)
+        .sort(),
+    ).toEqual([1, 3]);
   });
 
   it('Node isTreeLeaf/findTreeParentNode/findTreeChildrenNodes', () => {
@@ -1684,7 +1694,8 @@ describe('J12: critical GoJS API gaps (Part surface, model data methods, layout,
         { key: 2, x: 0, y: 0 },
       ],
     });
-    d.layout = new (require('../src/layout/GridLayout.ts').GridLayout)() as unknown as typeof d.layout;
+    d.layout =
+      new (require('../src/layout/GridLayout.ts').GridLayout)() as unknown as typeof d.layout;
     expect(() => d.layoutParts([d.findNodeForKey(1), d.findNodeForKey(2)])).not.toThrow();
     const g = new GridLayout();
     g.spacing = 50;
@@ -1732,7 +1743,9 @@ describe('J12: critical GoJS API gaps (Part surface, model data methods, layout,
       };
     };
     const d = createDiagram();
-    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0, width: 50, height: 30 }] });
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 50, height: 30 }],
+    });
     const node = d.findNodeForKey(1) as Node;
     const tool = new DraggingTool();
     tool.diagram = d;

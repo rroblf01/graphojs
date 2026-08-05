@@ -1,4 +1,11 @@
-import { GraphObject, GraphLinksModel, Diagram as GoDiagram, Shape, TextBlock, Panel } from 'graphojs';
+import {
+  GraphObject,
+  GraphLinksModel,
+  Diagram as GoDiagram,
+  Shape,
+  TextBlock,
+  Panel,
+} from 'graphojs';
 
 const $ = GraphObject.make;
 

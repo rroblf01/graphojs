@@ -15,8 +15,12 @@ diagram.nodeTemplate = $(
     strokeWidth: 2,
     minSize: { width: 110, height: 46 },
   }),
-  $(go.TextBlock, 'label', { margin: 8, font: '600 13px system-ui, sans-serif', stroke: '#1b5e20' },
-    new go.Binding('text', 'label')),
+  $(
+    go.TextBlock,
+    'label',
+    { margin: 8, font: '600 13px system-ui, sans-serif', stroke: '#1b5e20' },
+    new go.Binding('text', 'label'),
+  ),
 );
 diagram.linkTemplate = $(
   go.Link,
@@ -64,7 +68,9 @@ mk('⬇ SVG', 'border:1px solid #90caf9;background:#e3f2fd;color:#0d47a1;', () =
   a.download = 'graphojs.svg';
   a.click();
 });
-mk('🖨 Imprimir', 'border:1px solid #ce93d8;background:#f3e5f5;color:#6a1b9a;', () => diagram.print());
+mk('🖨 Imprimir', 'border:1px solid #ce93d8;background:#f3e5f5;color:#6a1b9a;', () =>
+  diagram.print(),
+);
 document.getElementById('graphojs-root').appendChild(bar);
 
 window.__diagram = diagram;

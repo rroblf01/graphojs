@@ -17,12 +17,17 @@ diagram.nodeTemplate = $(
     shadowColor: 'rgba(25,118,210,0.2)',
     shadowBlur: 8,
   }),
-  $(go.TextBlock, 'label', {
-    margin: 8,
-    editable: true,
-    font: '600 13px system-ui, sans-serif',
-    stroke: '#0d47a1',
-  }, new go.Binding('text', 'label')),
+  $(
+    go.TextBlock,
+    'label',
+    {
+      margin: 8,
+      editable: true,
+      font: '600 13px system-ui, sans-serif',
+      stroke: '#0d47a1',
+    },
+    new go.Binding('text', 'label'),
+  ),
 );
 
 diagram.linkTemplate = $(
@@ -48,7 +53,8 @@ diagram.zoomToFit();
 // Log de selección bajo el diagrama
 const log = document.createElement('div');
 log.id = 'log';
-log.style.cssText = 'font: 600 12px system-ui, monospace;margin: 8px;color:#0d47a1;min-height:18px;';
+log.style.cssText =
+  'font: 600 12px system-ui, monospace;margin: 8px;color:#0d47a1;min-height:18px;';
 document.getElementById('graphojs-root').appendChild(log);
 
 diagram.addDiagramListener('SelectionChanged', () => {

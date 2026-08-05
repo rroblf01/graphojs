@@ -156,9 +156,7 @@ describe('@graphojs/react', () => {
     const nodeTemplate = $(Panel, 'Auto', $(Shape, 'Rectangle'));
     renderApp(
       React.createElement(Palette, {
-        templates: [
-          { id: 'a', name: 'A', category: 'c', shape: 'rect', width: 10, height: 10 },
-        ],
+        templates: [{ id: 'a', name: 'A', category: 'c', shape: 'rect', width: 10, height: 10 }],
         nodeTemplate,
       }),
     );

@@ -5,7 +5,13 @@
  * These are informational benchmarks, not strict correctness tests.
  */
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import { Diagram, GraphLinksModel, GridLayout, TreeLayout, ForceDirectedLayout } from '../src/index.ts';
+import {
+  Diagram,
+  GraphLinksModel,
+  GridLayout,
+  TreeLayout,
+  ForceDirectedLayout,
+} from '../src/index.ts';
 
 function mockContext() {
   return {

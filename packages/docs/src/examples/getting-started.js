@@ -18,11 +18,16 @@ diagram.nodeTemplate = $(
     shadowBlur: 6,
     shadowOffset: { x: 0, y: 2 },
   }),
-  $(go.TextBlock, 'label', {
-    margin: 8,
-    font: '600 14px system-ui, sans-serif',
-    stroke: '#0d47a1',
-  }, new go.Binding('text', 'label')),
+  $(
+    go.TextBlock,
+    'label',
+    {
+      margin: 8,
+      font: '600 14px system-ui, sans-serif',
+      stroke: '#0d47a1',
+    },
+    new go.Binding('text', 'label'),
+  ),
 );
 
 diagram.linkTemplate = $(

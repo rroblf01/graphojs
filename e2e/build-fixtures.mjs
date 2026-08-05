@@ -2,9 +2,9 @@ import { fileURLToPath } from 'node:url';
 import { join, resolve } from 'node:path';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const esbuild = (await import(
-  join(root, 'node_modules/.pnpm/esbuild@0.28.1/node_modules/esbuild/lib/main.js')
-)).default;
+const esbuild = (
+  await import(join(root, 'node_modules/.pnpm/esbuild@0.28.1/node_modules/esbuild/lib/main.js'))
+).default;
 const fixturesSrc = join(root, 'e2e', 'fixtures-src');
 const outDir = join(root, 'e2e', 'fixtures');
 

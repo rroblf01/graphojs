@@ -17,11 +17,16 @@ diagram.nodeTemplate = $(
     shadowColor: 'rgba(0,0,0,0.1)',
     shadowBlur: 5,
   }),
-  $(go.TextBlock, 'label', {
-    margin: 8,
-    font: '600 13px system-ui, sans-serif',
-    stroke: '#e65100',
-  }, new go.Binding('text', 'name')),
+  $(
+    go.TextBlock,
+    'label',
+    {
+      margin: 8,
+      font: '600 13px system-ui, sans-serif',
+      stroke: '#e65100',
+    },
+    new go.Binding('text', 'name'),
+  ),
 );
 
 // Enlace con etiqueta y flecha
@@ -30,10 +35,15 @@ diagram.linkTemplate = $(
   { routing: go.Link.Orthogonal, corner: 6 },
   $(go.Shape, { stroke: '#bdbdbd', strokeWidth: 2 }),
   $(go.Shape, { toArrow: 'Triangle', fill: '#757575', stroke: null }),
-  $(go.TextBlock, 'label', {
-    font: '600 11px system-ui, sans-serif',
-    stroke: '#616161',
-  }, new go.Binding('text', 'label')),
+  $(
+    go.TextBlock,
+    'label',
+    {
+      font: '600 11px system-ui, sans-serif',
+      stroke: '#616161',
+    },
+    new go.Binding('text', 'label'),
+  ),
 );
 
 diagram.model = new go.GraphLinksModel({

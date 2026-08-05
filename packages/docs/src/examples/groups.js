@@ -16,8 +16,12 @@ diagram.nodeTemplate = $(
     strokeWidth: 2,
     minSize: { width: 100, height: 40 },
   }),
-  $(go.TextBlock, 'label', { margin: 6, font: '600 12px system-ui, sans-serif', stroke: '#00695c' },
-    new go.Binding('text', 'label')),
+  $(
+    go.TextBlock,
+    'label',
+    { margin: 6, font: '600 12px system-ui, sans-serif', stroke: '#00695c' },
+    new go.Binding('text', 'label'),
+  ),
 );
 
 // Template para grupos
@@ -30,11 +34,16 @@ diagram.groupTemplate = $(
     strokeWidth: 2,
     minSize: { width: 260, height: 120 },
   }),
-  $(go.TextBlock, 'header', {
-    margin: 8,
-    font: '700 13px system-ui, sans-serif',
-    stroke: '#004d40',
-  }, new go.Binding('text', 'header')),
+  $(
+    go.TextBlock,
+    'header',
+    {
+      margin: 8,
+      font: '700 13px system-ui, sans-serif',
+      stroke: '#004d40',
+    },
+    new go.Binding('text', 'header'),
+  ),
 );
 
 diagram.model = new go.GraphLinksModel({

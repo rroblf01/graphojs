@@ -1441,6 +1441,7 @@ export class Diagram {
     const layerName = (nodeData.layer as string) ?? LayerNames.Default;
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) node.layer = layer;
+    node.diagram = this;
     this.parts.set(key, node);
     this.nodes.set(key, node);
     this.fireDiagramEvent('PartAdded', node);
@@ -1487,6 +1488,7 @@ export class Diagram {
     const layerName = (nodeData.layer as string) ?? LayerNames.Default;
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) group.layer = layer;
+    group.diagram = this;
     this.parts.set(key, group);
     this.groups.set(key, group);
     this.fireDiagramEvent('PartAdded', group);
@@ -1514,6 +1516,7 @@ export class Diagram {
     const layerName = (linkData.layer as string) ?? LayerNames.Default;
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) link.layer = layer;
+    link.diagram = this;
     this.parts.set(this.linkPartKey(linkKey as NodeKey), link);
     this.links.set(linkKey as NodeKey, link);
     this.fireDiagramEvent('PartAdded', link);
@@ -1679,6 +1682,7 @@ export class Diagram {
       part.layer.remove(part);
       part.layer = null;
     }
+    part.diagram = null;
 
     if (part instanceof Node) {
       this.nodes.delete(key);
@@ -1797,6 +1801,11 @@ export class Diagram {
   /** GoJS-compatible: Find a node part by its model key. */
   findNodeForKey(key: NodeKey): Node | null {
     return this.nodes.get(key) ?? null;
+  }
+
+  /** GoJS-compatible: Find a part (node, group, or link) by its model key. */
+  findPartForKey(key: NodeKey): Part | null {
+    return this.parts.get(key) ?? null;
   }
 
   /** GoJS-compatible: Find a link part by its model key. */
@@ -2715,6 +2724,7 @@ export class Diagram {
     const layer =
       this.getLayer(part.layerName ?? LayerNames.Default) ?? this.getLayer(LayerNames.Default);
     if (layer) part.layer = layer;
+    part.diagram = this;
     this.markHitIndexDirty();
     this.fireDiagramEvent('PartAdded', part);
     this.invalidate();

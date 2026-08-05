@@ -66,6 +66,33 @@ export class Point {
     return dx * dx + dy * dy;
   }
 
+  /** GoJS-compatible: The distance to another point. */
+  distance(other: Point): number {
+    const dx = this.x - other.x;
+    const dy = this.y - other.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  /** GoJS-compatible: Component-wise multiply (x*p.x, y*p.y). */
+  multiply(other: Point): Point {
+    return new Point(this.x * other.x, this.y * other.y);
+  }
+
+  /** GoJS-compatible: Whether either coordinate is NaN. */
+  isNaN(): boolean {
+    return Number.isNaN(this.x) || Number.isNaN(this.y);
+  }
+
+  /** GoJS-compatible: Create a point on a circle of the given radius at the given angle (radians). */
+  static polar(length: number, angle: number): Point {
+    return new Point(length * Math.cos(angle), length * Math.sin(angle));
+  }
+
+  /** GoJS-compatible: Create a random point with coordinates in [0, 1). */
+  static random(): Point {
+    return new Point(Math.random(), Math.random());
+  }
+
   /** GoJS-compatible: The cross product with another point (x1*y2 - y1*x2). */
   cross(other: Point): number {
     return this.x * other.y - this.y * other.x;

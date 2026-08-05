@@ -15,8 +15,11 @@ import {
   LinkReshapingTool,
   Node,
   Panel,
+  Point,
   Rect as RectClass,
   Shape,
+  Size,
+  Spot,
   TextBlock,
   TextEditingTool,
 } from '../src/index.ts';
@@ -1368,5 +1371,123 @@ describe('F7: GraphObject/Panel/Shape/TextBlock/Layout/UndoManager/Part props', 
     expect(l.resizingSegmentIndex).toBe(2);
     l.fromEndSegmentOrientation = 90;
     expect(l.fromEndSegmentOrientation).toBe(90);
+    l.toEndSegmentOrientation = 180;
+    expect(l.toEndSegmentOrientation).toBe(180);
+  });
+});
+
+describe('G9: geometry GoJS API gaps (Point/Rect/Size/Spot)', () => {
+  it('Point distance/polar/isNaN/multiply/random', () => {
+    const a = new Point(0, 0);
+    const b = new Point(3, 4);
+    expect(a.distance(b)).toBe(5);
+    expect(a.distanceSquared(b)).toBe(25);
+    expect(new Point(3, 4).multiply(new Point(2, 2))).toEqual(new Point(6, 8));
+    expect(new Point(Number.NaN, 1).isNaN()).toBe(true);
+    expect(new Point(1, 1).isNaN()).toBe(false);
+    const p = Point.polar(10, 0);
+    expect(p.x).toBeCloseTo(10, 5);
+    expect(p.y).toBeCloseTo(0, 5);
+    const r = Point.random();
+    expect(r.x).toBeGreaterThanOrEqual(0);
+    expect(r.x).toBeLessThan(1);
+    expect(r.y).toBeGreaterThanOrEqual(0);
+    expect(r.y).toBeLessThan(1);
+  });
+
+  it('Rect grow/position/size/centerX/centerY/setToPosition/setToSize', () => {
+    const r = new RectClass(0, 0, 100, 50);
+    expect(r.grow(10)).toEqual(new RectClass(-10, -10, 120, 70));
+    expect(r.centerX).toBe(50);
+    expect(r.centerY).toBe(25);
+    expect(r.position).toEqual(new Point(0, 0));
+    r.position = new Point(5, 6);
+    expect(r.x).toBe(5);
+    expect(r.y).toBe(6);
+    expect(r.size).toEqual(new Size(100, 50));
+    r.size = new Size(200, 80);
+    expect(r.width).toBe(200);
+    expect(r.height).toBe(80);
+    const r2 = new RectClass(1, 2, 10, 20);
+    r2.setToPosition(new Point(7, 8));
+    expect(r2.x).toBe(7);
+    expect(r2.y).toBe(8);
+    r2.setToSize(new Size(30, 40));
+    expect(r2.width).toBe(30);
+    expect(r2.height).toBe(40);
+  });
+
+  it('Spot GoJS aliases Top/Bottom/Left/Right/Middle*', () => {
+    expect(Spot.Top).toEqual(Spot.TopCenter);
+    expect(Spot.Bottom).toEqual(Spot.BottomCenter);
+    expect(Spot.Left).toEqual(Spot.MiddleLeft);
+    expect(Spot.Right).toEqual(Spot.MiddleRight);
+    expect(Spot.MiddleCenter).toEqual(Spot.Center);
+    expect(Spot.MiddleLeft).toEqual(Spot.LeftMiddle);
+    expect(Spot.MiddleRight).toEqual(Spot.RightMiddle);
+    expect(Spot.fromName('MiddleCenter')).toEqual(Spot.Center);
+    expect(Spot.fromName('Top')).toEqual(Spot.TopCenter);
+    expect(Spot.fromName('Left')).toEqual(Spot.MiddleLeft);
+    expect(Spot.fromName('Bottom')).toEqual(Spot.BottomCenter);
+    expect(Spot.parse('MiddleCenter')).toEqual(Spot.Center);
+    expect(Spot.parse('Top')).toEqual(Spot.TopCenter);
+  });
+
+  it('Link copy copies curve/resizingSegmentIndex/segment orientations', () => {
+    const { Link } = require('../src/parts/Link.ts') as {
+      Link: new (k: number, f: number, t: number) => {
+        curve: string;
+        resizingSegmentIndex: number;
+        fromEndSegmentOrientation: number;
+        toEndSegmentOrientation: number;
+        copy(): unknown;
+      };
+    };
+    const l = new Link(1, 2, 3);
+    l.curve = 'Bezier';
+    l.resizingSegmentIndex = 1;
+    l.fromEndSegmentOrientation = 45;
+    l.toEndSegmentOrientation = 90;
+    const c = l.copy() as {
+      curve: string;
+      resizingSegmentIndex: number;
+      fromEndSegmentOrientation: number;
+      toEndSegmentOrientation: number;
+    };
+    expect(c.curve).toBe('Bezier');
+    expect(c.resizingSegmentIndex).toBe(1);
+    expect(c.fromEndSegmentOrientation).toBe(45);
+    expect(c.toEndSegmentOrientation).toBe(90);
+  });
+
+  it('Part findDiagram/findLayer + Diagram findPartForKey', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0 }],
+      linkDataArray: [],
+    });
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.diagram).toBe(d);
+    expect(node.findDiagram()).toBe(d);
+    expect(node.findLayer()).not.toBeNull();
+    expect(d.findPartForKey(1)).toBe(node);
+    expect(d.findPartForKey(999)).toBeNull();
+  });
+
+  it('GraphObject parent/part/isVisibleObject', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0 }],
+      linkDataArray: [],
+    });
+    const node = d.findNodeForKey(1) as Node;
+    const shape = new Shape('Rectangle');
+    node.addVisual(shape);
+    expect(node.elements[0]).toBe(shape);
+    expect(shape.isVisibleObject).toBe(true);
+    shape.visible = false;
+    expect(shape.isVisibleObject).toBe(false);
+    shape.visible = true;
+    expect(shape.part).toBe(node);
   });
 });

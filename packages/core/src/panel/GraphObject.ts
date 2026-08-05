@@ -9,6 +9,7 @@ import type { NodeData } from '../model/Model.ts';
 import { isDomComponent } from './ComponentRegistry.ts';
 import { getPanelFactory } from './PanelRegistry.ts';
 import { isPartCtor } from './PartRegistry.ts';
+import type { Part } from '../parts/Part.ts';
 
 /**
  * Base class for all visual elements that can appear in a Panel.
@@ -263,6 +264,32 @@ export abstract class GraphObject {
 
   set visible(value: boolean) {
     this._visible = value;
+  }
+
+  /** GoJS-compatible: Whether this object and all of its ancestors are visible. */
+  get isVisibleObject(): boolean {
+    let current: GraphObject | null = this;
+    while (current) {
+      if (!current.visible) return false;
+      current = current.parent;
+    }
+    return true;
+  }
+
+  /** GoJS-compatible: The parent panel of this object (or null). */
+  get parent(): GraphObject | null {
+    return this.parentPanel;
+  }
+
+  /** GoJS-compatible: The Part that contains this object (or null). */
+  get part(): Part | null {
+    let current: GraphObject | null = this;
+    while (current) {
+      const owner = (current as unknown as { partRef?: Part | null }).partRef;
+      if (owner) return owner;
+      current = current.parent;
+    }
+    return null;
   }
 
   /** The opacity of this object (0-1). */

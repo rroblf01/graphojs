@@ -1,4 +1,5 @@
 import type { Binding } from '../binding/Binding.ts';
+import type { Diagram } from '../diagram/Diagram.ts';
 import { Point } from '../geometry/Point.ts';
 import type { Rect } from '../geometry/Rect.ts';
 import type { Layer } from '../layer/Layer.ts';
@@ -43,6 +44,7 @@ export abstract class Part {
   private _deletable = true;
   private _copyable = true;
   private _isHighlighted = false;
+  private _diagram: Diagram | null = null;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -275,6 +277,26 @@ export abstract class Part {
     }
   }
 
+  /** GoJS-compatible: The diagram that this part is in (or null). */
+  get diagram(): Diagram | null {
+    return this._diagram;
+  }
+
+  /** Set the diagram this part belongs to. */
+  set diagram(value: Diagram | null) {
+    this._diagram = value;
+  }
+
+  /** GoJS-compatible: Find the diagram that contains this part. */
+  findDiagram(): Diagram | null {
+    return this._diagram;
+  }
+
+  /** GoJS-compatible: Find the layer that contains this part. */
+  findLayer(): Layer | null {
+    return this._layer;
+  }
+
   /** The tooltip text shown when hovering over this part. */
   get tooltip(): string {
     return this._tooltip;
@@ -346,6 +368,9 @@ export abstract class Part {
   /** GoJS-compatible: Set the panel used to render this part's visual tree. */
   set panel(value: Panel | null) {
     this._panel = value;
+    if (value) {
+      (value as unknown as { partRef?: Part }).partRef = this;
+    }
   }
 
   /** GoJS-compatible: Get the child elements in this part's visual tree. */
@@ -356,9 +381,9 @@ export abstract class Part {
   /** GoJS-compatible: Add a child element to this part's visual tree. */
   addVisual(element: GraphObject): this {
     if (!this._panel) {
-      this._panel = new Panel('Auto');
+      this.panel = new Panel('Auto');
     }
-    this._panel.add(element);
+    this._panel?.add(element);
     return this;
   }
 

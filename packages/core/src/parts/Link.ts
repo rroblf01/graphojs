@@ -104,6 +104,7 @@ export class Link extends Part {
   private _curve: 'None' | 'Bezier' | 'JumpOver' | 'AvoidsNodes' = 'None';
   private _resizingSegmentIndex = -1;
   private _fromEndSegmentOrientation = 0;
+  private _toEndSegmentOrientation = 0;
 
   /** GoJS-compatible: The type of curve used for this link. */
   get curve(): 'None' | 'Bezier' | 'JumpOver' | 'AvoidsNodes' {
@@ -130,6 +131,15 @@ export class Link extends Part {
 
   set fromEndSegmentOrientation(value: number) {
     this._fromEndSegmentOrientation = value;
+  }
+
+  /** GoJS-compatible: The orientation of the segment entering the to-end. */
+  get toEndSegmentOrientation(): number {
+    return this._toEndSegmentOrientation;
+  }
+
+  set toEndSegmentOrientation(value: number) {
+    this._toEndSegmentOrientation = value;
   }
 
   get fromPort(): { x: number; y: number } {
@@ -431,6 +441,10 @@ export class Link extends Part {
     cloned._jumpOver = this._jumpOver;
     cloned._isTreeLink = this._isTreeLink;
     cloned._treeLinkRoute = this._treeLinkRoute;
+    cloned._curve = this._curve;
+    cloned._resizingSegmentIndex = this._resizingSegmentIndex;
+    cloned._fromEndSegmentOrientation = this._fromEndSegmentOrientation;
+    cloned._toEndSegmentOrientation = this._toEndSegmentOrientation;
     return cloned;
   }
 

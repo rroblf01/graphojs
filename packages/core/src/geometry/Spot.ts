@@ -25,25 +25,42 @@ export class Spot {
   static readonly TopLeft = new Spot(0, 0);
   /** Spot at the top-center. */
   static readonly TopCenter = new Spot(0.5, 0);
+  /** GoJS-compatible: Spot at the top-center. */
+  static readonly Top = new Spot(0.5, 0);
   /** Spot at the top-right corner. */
   static readonly TopRight = new Spot(1, 0);
   /** Spot at the middle of the left edge. */
   static readonly LeftMiddle = new Spot(0, 0.5);
+  /** GoJS-compatible: Spot at the middle of the left edge. */
+  static readonly MiddleLeft = new Spot(0, 0.5);
+  /** GoJS-compatible: Spot at the middle of the left edge. */
+  static readonly Left = new Spot(0, 0.5);
   /** Spot at the center. */
   static readonly Center = new Spot(0.5, 0.5);
+  /** GoJS-compatible: Spot at the center. */
+  static readonly MiddleCenter = new Spot(0.5, 0.5);
   /** Spot at the middle of the right edge. */
   static readonly RightMiddle = new Spot(1, 0.5);
+  /** GoJS-compatible: Spot at the middle of the right edge. */
+  static readonly MiddleRight = new Spot(1, 0.5);
+  /** GoJS-compatible: Spot at the middle of the right edge. */
+  static readonly Right = new Spot(1, 0.5);
   /** Spot at the bottom-left corner. */
   static readonly BottomLeft = new Spot(0, 1);
   /** Spot at the bottom-center. */
   static readonly BottomCenter = new Spot(0.5, 1);
+  /** GoJS-compatible: Spot at the bottom-center. */
+  static readonly Bottom = new Spot(0.5, 1);
   /** Spot at the bottom-right corner. */
   static readonly BottomRight = new Spot(1, 1);
   /** GoJS-compatible: A spot with no meaningful position. */
   static readonly None = new Spot(Number.NaN, Number.NaN);
 
-  /** GoJS-compatible: Parse a string like "0,0" or "1 1 4 4". */
+  /** GoJS-compatible: Parse a string like "0,0", "1 1 4 4", or a standard name like "MiddleCenter". */
   static parse(value: string): Spot {
+    if (/^[a-zA-Z]+$/.test(value)) {
+      return Spot.fromName(value);
+    }
     const nums = value
       .split(/[,\s]+/)
       .map(Number)
@@ -94,18 +111,25 @@ export class Spot {
     switch (name) {
       case 'TopLeft':
         return Spot.TopLeft;
+      case 'Top':
       case 'TopCenter':
         return Spot.TopCenter;
       case 'TopRight':
         return Spot.TopRight;
+      case 'Left':
+      case 'MiddleLeft':
       case 'LeftMiddle':
-        return Spot.LeftMiddle;
+        return Spot.MiddleLeft;
       case 'Center':
-        return Spot.Center;
+      case 'MiddleCenter':
+        return Spot.MiddleCenter;
+      case 'Right':
+      case 'MiddleRight':
       case 'RightMiddle':
-        return Spot.RightMiddle;
+        return Spot.MiddleRight;
       case 'BottomLeft':
         return Spot.BottomLeft;
+      case 'Bottom':
       case 'BottomCenter':
         return Spot.BottomCenter;
       case 'BottomRight':

@@ -1,5 +1,5 @@
 import { Point } from './Point.ts';
-import type { Size } from './Size.ts';
+import { Size } from './Size.ts';
 
 /**
  * A 2D rectangle defined by position (x, y) and size (width, height).
@@ -145,6 +145,36 @@ export class Rect {
     return { x: this.x + this.width / 2, y: this.y + this.height / 2 };
   }
 
+  /** GoJS-compatible: The x coordinate of the center of this rect. */
+  get centerX(): number {
+    return this.x + this.width / 2;
+  }
+
+  /** GoJS-compatible: The y coordinate of the center of this rect. */
+  get centerY(): number {
+    return this.y + this.height / 2;
+  }
+
+  /** GoJS-compatible: The position (top-left) as a Point. */
+  get position(): Point {
+    return new Point(this.x, this.y);
+  }
+
+  set position(pos: Point) {
+    this.x = pos.x;
+    this.y = pos.y;
+  }
+
+  /** GoJS-compatible: The size as a Size. */
+  get size(): Size {
+    return new Size(this.width, this.height);
+  }
+
+  set size(size: Size) {
+    this.width = size.width;
+    this.height = size.height;
+  }
+
   /** Get the left edge x coordinate. */
   get left(): number {
     return this.x;
@@ -235,6 +265,25 @@ export class Rect {
   inflate(dx: number, dy?: number): Rect {
     const dyVal = dy ?? dx;
     return new Rect(this.x - dx, this.y - dyVal, this.width + 2 * dx, this.height + 2 * dyVal);
+  }
+
+  /** GoJS-compatible: Expand this rect by the given amount on all sides. */
+  grow(s: number): Rect {
+    return new Rect(this.x - s, this.y - s, this.width + 2 * s, this.height + 2 * s);
+  }
+
+  /** GoJS-compatible: In-place mutation of position returning this rect. */
+  setToPosition(pos: Point): this {
+    this.x = pos.x;
+    this.y = pos.y;
+    return this;
+  }
+
+  /** GoJS-compatible: In-place mutation of size returning this rect. */
+  setToSize(size: Size): this {
+    this.width = size.width;
+    this.height = size.height;
+    return this;
   }
 
   /** Shrink this rect by the given margin on all sides. */

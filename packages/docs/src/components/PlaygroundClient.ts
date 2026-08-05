@@ -1,8 +1,10 @@
 /**
- * Client-side playground logic: mounts a CodeMirror editor (into the
- * `.playground__editor` element) and runs the user's code in an isolated
- * iframe (`.playground__frame`) with an import map that resolves `graphojs`
+ * Client-side playground logic: mounts an editable code editor and runs the
+ * user's code in an isolated iframe via an import map that resolves `graphojs`
  * to the vendored dist.
+ *
+ * A native <textarea> is used for editing: it has reliable click→cursor
+ * mapping in this layout, so typing always lands on the line the user clicked.
  */
 
 export interface PlaygroundOptions {
@@ -27,51 +29,19 @@ export function mountPlayground(root: HTMLElement, opts: PlaygroundOptions): voi
     if (split) split.style.gridTemplateColumns = '1fr';
   }
 
-  let editor: {
-    state: { doc: { toString(): string; length: number } };
-    dispatch: (tr: unknown) => void;
-  } | null = null;
+  let textarea: HTMLTextAreaElement | null = null;
 
   if (!opts.readonly && editorHost) {
-    void Promise.all([
-      import('@codemirror/state'),
-      import('@codemirror/view'),
-      import('@codemirror/lang-javascript'),
-    ]).then(([state, view, js]) => {
-      const { EditorState } = state;
-      const { EditorView, keymap, lineNumbers, highlightActiveLine } = view;
-      const { javascript } = js;
-
-      editor = new EditorView({
-        parent: editorHost,
-        state: EditorState.create({
-          doc: initialCode,
-          extensions: [
-            lineNumbers(),
-            highlightActiveLine(),
-            javascript(),
-            EditorView.lineWrapping,
-            keymap.of([
-              {
-                key: 'Mod-Enter',
-                run: () => {
-                  runPlayground();
-                  return true;
-                },
-              },
-            ]),
-          ],
-        }),
-      }) as unknown as {
-        state: { doc: { toString(): string; length: number } };
-        dispatch: (tr: unknown) => void;
-      };
-    });
+    textarea = document.createElement('textarea');
+    textarea.value = initialCode;
+    textarea.spellcheck = false;
+    textarea.setAttribute('aria-label', 'Código del ejemplo');
+    textarea.className = 'graphojs-playground-editor';
+    editorHost.appendChild(textarea);
   }
 
   function currentCode(): string {
-    if (editor) return editor.state.doc.toString();
-    return initialCode;
+    return textarea ? textarea.value : initialCode;
   }
 
   function runPlayground(): void {
@@ -86,11 +56,7 @@ export function mountPlayground(root: HTMLElement, opts: PlaygroundOptions): voi
 
   runBtn?.addEventListener('click', runPlayground);
   resetBtn?.addEventListener('click', () => {
-    if (editor) {
-      editor.dispatch({
-        changes: { from: 0, to: editor.state.doc.length, insert: initialCode },
-      });
-    }
+    if (textarea) textarea.value = initialCode;
     runPlayground();
   });
 

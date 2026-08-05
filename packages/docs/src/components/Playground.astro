@@ -1,6 +1,6 @@
 ---
 /**
- * Playground component: shows editable example code (CodeMirror) and runs it
+ * Playground component: shows editable example code and runs it
  * in an isolated iframe via an import map to the vendored graphojs dist.
  *
  * Usage (in MD/MDX):
@@ -18,7 +18,7 @@ const { code, height = 420, readonly = false } = Astro.props;
 
 <div
   class="playground-root"
-  style="height: {height}px"
+  style={`height: ${height}px`}
   data-pg-code={code}
   data-pg-readonly={readonly ? 'true' : 'false'}
   data-pg-height={height}
@@ -76,16 +76,19 @@ const { code, height = 420, readonly = false } = Astro.props;
     display: grid;
     grid-template-columns: 1fr 1fr;
     flex: 1;
-    min-height: 320px;
+    min-height: 0;
   }
   .playground__editor {
     border-right: 1px solid var(--sl-color-gray-5);
-    overflow: auto;
-    font-size: 0.85rem;
+    overflow: hidden;
+    min-height: 0;
+    height: 100%;
   }
   .playground__frame {
     background: #fff;
     overflow: hidden;
+    min-height: 0;
+    height: 100%;
   }
   .playground__frame iframe {
     width: 100%;
@@ -96,6 +99,8 @@ const { code, height = 420, readonly = false } = Astro.props;
   @media (max-width: 720px) {
     .playground__split {
       grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
+      overflow: auto;
     }
     .playground__editor {
       border-right: 0;

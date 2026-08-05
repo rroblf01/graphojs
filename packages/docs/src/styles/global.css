@@ -2,67 +2,21 @@
   --sl-color-accent: #1976d2;
 }
 
-/* Make playground iframes fill their container */
-.playground {
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 8px;
-  overflow: hidden;
-  margin: 1.5rem 0;
-}
-
-.playground__toolbar {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
-  background: var(--sl-color-gray-6);
-  border-bottom: 1px solid var(--sl-color-gray-5);
-}
-
-.playground__toolbar button {
-  padding: 0.3rem 0.75rem;
-  font-size: 0.85rem;
-  border-radius: 6px;
-  border: 1px solid var(--sl-color-gray-4);
-  background: var(--sl-color-gray-7);
-  color: var(--sl-color-white);
-  cursor: pointer;
-}
-
-.playground__toolbar button:hover {
-  background: var(--sl-color-accent);
-  border-color: var(--sl-color-accent);
-}
-
-.playground__split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.playground__editor {
-  min-height: 320px;
-  border-right: 1px solid var(--sl-color-gray-5);
-  font-size: 0.85rem;
-}
-
-.playground__frame {
-  min-height: 320px;
-  background: #fff;
-}
-
-.playground__frame iframe {
+/* Playground editor (native textarea) styling */
+.playground__editor textarea.graphojs-playground-editor {
   width: 100%;
   height: 100%;
+  resize: none;
   border: 0;
-  display: block;
-}
-
-@media (max-width: 720px) {
-  .playground__split {
-    grid-template-columns: 1fr;
-  }
-  .playground__editor {
-    border-right: 0;
-    border-bottom: 1px solid var(--sl-color-gray-5);
-  }
+  outline: 0;
+  padding: 0.5rem 0.75rem;
+  box-sizing: border-box;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--sl-color-white);
+  background: var(--sl-color-gray-7);
+  white-space: pre;
+  overflow: auto;
+  tab-size: 2;
 }

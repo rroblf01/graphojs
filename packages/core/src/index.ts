@@ -1,5 +1,7 @@
 export const version = '0.1.0';
 
+// Events
+export { InputEvent } from './events/InputEvent.ts';
 export type { AnimationOptions } from './animation/Animation.ts';
 // Animations
 export { Animation } from './animation/Animation.ts';

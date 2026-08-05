@@ -39,6 +39,7 @@ export {
 export type { DiagramOptions } from './diagram/Diagram.ts';
 // Diagram
 export { Diagram } from './diagram/Diagram.ts';
+export { InputEvent } from './events/InputEvent.ts';
 export type {
   DiagramEvent,
   DiagramEventHandler,

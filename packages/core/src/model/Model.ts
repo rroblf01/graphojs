@@ -315,6 +315,17 @@ export abstract class Model {
     return true;
   }
 
+  /** GoJS-compatible: Add a node data object to the model. */
+  addNodeData(nodeData: NodeData): void {
+    this.addNode(nodeData);
+  }
+
+  /** GoJS-compatible: Remove a node data object (or its key) from the model. */
+  removeNodeData(key: NodeKey | NodeData): boolean {
+    const nodeKey = typeof key === 'object' && key !== null ? this.getNodeKey(key) : key;
+    return this.removeNode(nodeKey);
+  }
+
   /** Set a property on a node. */
   setNodeProperty(key: NodeKey, propertyName: string, value: unknown): void {
     if (this._isReadOnly) {

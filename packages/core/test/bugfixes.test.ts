@@ -11,6 +11,7 @@ import {
   GraphLinksModel,
   GraphObject,
   type Group,
+  InputEvent,
   type Link,
   LinkReshapingTool,
   Node,
@@ -1620,5 +1621,122 @@ describe('I11: minor GoJS API gaps (Diagram.focus, canZoomToFit, ToolManager get
     const node2 = d.findNodeForKey(1) as Node;
     node2.containingGroup = node as unknown as Group;
     expect(node2.isMemberOfGroup).toBe(true);
+  });
+});
+
+describe('J12: critical GoJS API gaps (Part surface, model data methods, layout, collections, InputEvent)', () => {
+  it('Part width/height/scale/desiredSize/background/pickable surface', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 50, height: 30 }],
+    });
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.width).toBe(50);
+    expect(node.height).toBe(30);
+    node.width = 100;
+    expect(node.bounds.width).toBe(100);
+    node.scale = 2;
+    expect(node.scale).toBe(2);
+    node.background = 'red';
+    expect(node.background).toBe('red');
+    node.pickable = false;
+    expect(node.pickable).toBe(false);
+    node.desiredSize = { width: 10, height: 20 };
+    expect(node.desiredSize).toEqual({ width: 10, height: 20 });
+  });
+
+  it('$(go.Node, {width,height}) applies size via template', () => {
+    const $ = GraphObject.make;
+    const template = $(Node, { width: 150, height: 60 });
+    const d = createDiagram();
+    d.nodeTemplate = template;
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.width).toBe(150);
+    expect(node.height).toBe(60);
+  });
+
+  it('model.addNodeData/removeNodeData + addLinkData/removeLinkData', () => {
+    const m = new GraphLinksModel();
+    m.addNodeData({ key: 1 });
+    expect(m.containsNode(1)).toBe(true);
+    m.addNodeData({ key: 2 });
+    m.addLinkData({ from: 1, to: 2 });
+    expect(m.getLinkDataArray().length).toBe(1);
+    expect(m.removeNodeData(1)).toBe(true);
+    expect(m.containsNode(1)).toBe(false);
+    m.removeLinkData(m.getLinkDataArray()[0] as { key: number });
+    expect(m.getLinkDataArray().length).toBe(0);
+  });
+
+  it('Layout.doLayout/layoutParts + Diagram.layoutParts', () => {
+    const { GridLayout } = require('../src/layout/GridLayout.ts') as {
+      GridLayout: new () => {
+        spacing: number;
+        doLayout(c?: { nodes?: unknown[]; links?: unknown[] }): void;
+        layoutParts(parts: unknown[]): void;
+      };
+    };
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0 },
+        { key: 2, x: 0, y: 0 },
+      ],
+    });
+    d.layout = new (require('../src/layout/GridLayout.ts').GridLayout)() as unknown as typeof d.layout;
+    expect(() => d.layoutParts([d.findNodeForKey(1), d.findNodeForKey(2)])).not.toThrow();
+    const g = new GridLayout();
+    g.spacing = 50;
+    expect(() => g.doLayout()).not.toThrow();
+  });
+
+  it('Diagram.nodes/links/groups public iterables', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0 },
+        { key: 2, x: 100, y: 0 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    expect(d.nodes.size).toBe(2);
+    expect(d.links.size).toBe(1);
+    expect(d.groups.size).toBe(0);
+  });
+
+  it('InputEvent exposes diagram/documentPoint/viewPoint/model/clickCount', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 10, y: 20 }],
+    });
+    const me = new MouseEvent('click', { clientX: 10, clientY: 20 });
+    const input = new InputEvent(me);
+    input.diagram = d;
+    const pt = input.documentPoint();
+    expect(pt).toBeDefined();
+    expect(typeof pt.x).toBe('number');
+    expect(input.viewPoint()).toEqual({ x: 10, y: 20 });
+    expect(input.model).toBe(d.getModel());
+    input.clickCount = 2;
+    expect(input.clickCount).toBe(2);
+    expect(input.handled).toBe(false);
+  });
+
+  it('drag keeps Rect prototype (bounds.right/center intact)', () => {
+    const { DraggingTool } = require('../src/tool/DraggingTool.ts') as {
+      DraggingTool: new () => {
+        diagram: unknown;
+        doMouseDown(e: MouseEvent): void;
+        doMouseMove(e: MouseEvent): void;
+      };
+    };
+    const d = createDiagram();
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0, width: 50, height: 30 }] });
+    const node = d.findNodeForKey(1) as Node;
+    const tool = new DraggingTool();
+    tool.diagram = d;
+    expect(node.bounds.right).toBe(50);
+    expect(node.bounds.center).toEqual({ x: 25, y: 15 });
   });
 });

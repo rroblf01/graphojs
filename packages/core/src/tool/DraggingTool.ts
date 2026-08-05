@@ -109,12 +109,8 @@ export class DraggingTool extends Tool {
           newX = diagram.snapValue(newX);
           newY = diagram.snapValue(newY);
         }
-        node.bounds = {
-          x: newX,
-          y: newY,
-          width: node.bounds.width,
-          height: node.bounds.height,
-        } as never;
+        node.bounds.x = newX;
+        node.bounds.y = newY;
       }
     }
 

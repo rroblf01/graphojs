@@ -17,6 +17,7 @@ import {
   LayoutNetwork,
   Diagram,
   GraphLinksModel,
+  InputEvent,
 } from '../src/index.ts';
 import { Group } from '../src/parts/Group.ts';
 
@@ -655,7 +656,7 @@ describe('GoJS Compatibility', () => {
         click: () => clicks++,
       });
       expect(typeof shape.click).toBe('function');
-      shape.click?.({} as MouseEvent, shape);
+      shape.click?.(new InputEvent(new MouseEvent('click')) as never, shape);
       expect(clicks).toBe(1);
     });
   });

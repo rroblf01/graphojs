@@ -1,7 +1,7 @@
-import type { Link } from '../parts/Link.ts';
-import type { Node } from '../parts/Node.ts';
+import { Link } from '../parts/Link.ts';
+import { Node } from '../parts/Node.ts';
+import type { Part } from '../parts/Part.ts';
 import { LayoutNetwork } from './LayoutNetwork.ts';
-
 /**
  * Options for layout configuration.
  */
@@ -164,6 +164,34 @@ export abstract class Layout {
     return this._network;
   }
 
+  /** GoJS-compatible: Perform the layout on a collection of parts (or this diagram's parts). */
+  doLayout(collection?: { nodes?: readonly Node[]; links?: readonly Link[] }): void {
+    const nodes = (collection?.nodes ?? this.diagramParts()) as Node[];
+    const links = (collection?.links ?? this.diagramLinks()) as Link[];
+    this.apply(nodes, links);
+  }
+
+  /** GoJS-compatible: Perform the layout on the given parts. */
+  layoutParts(parts: readonly Part[]): void {
+    const nodes = parts.filter((p): p is Node => p instanceof Node) as Node[];
+    const links = parts.filter((p): p is Link => p instanceof Link) as Link[];
+    this.apply(nodes, links);
+  }
+
+  /** The nodes this layout applies to when no collection is given. */
+  private diagramParts(): Node[] {
+    const diagram = (this as unknown as { diagram?: { allNodes?: () => Node[] } }).diagram;
+    if (diagram && typeof diagram.allNodes === 'function') return diagram.allNodes();
+    return [];
+  }
+
+  /** The links this layout applies to when no collection is given. */
+  private diagramLinks(): Link[] {
+    const diagram = (this as unknown as { diagram?: { allLinks?: () => Link[] } }).diagram;
+    if (diagram && typeof diagram.allLinks === 'function') return diagram.allLinks();
+    return [];
+  }
+
   /** GoJS-compatible: The current layout network (or null). */
   get network(): LayoutNetwork | null {
     return this._network;
@@ -180,7 +208,7 @@ export abstract class Layout {
     if (!this._network) return;
     for (const vertex of this._network.vertices) {
       if (vertex.node) {
-        vertex.node.bounds = vertex.bounds.clone() as never;
+        vertex.node.bounds = vertex.bounds.clone();
       }
     }
   }

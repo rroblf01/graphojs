@@ -365,6 +365,18 @@ export class GraphLinksModel extends Model {
     return true;
   }
 
+  /** GoJS-compatible: Add a link data object to the model. */
+  addLinkData(linkData: LinkData): void {
+    this.addLink(linkData);
+  }
+
+  /** GoJS-compatible: Remove a link data object (or its key) from the model. */
+  removeLinkData(key: NodeKey | LinkData): boolean {
+    const linkKey =
+      typeof key === 'object' && key !== null ? (this.getLinkKey(key) as NodeKey) : key;
+    return this.removeLink(linkKey);
+  }
+
   /** Get links connected to a node. */
   getLinksForNode(key: NodeKey): readonly LinkData[] {
     return this._linkDataArray.filter((l) => l.from === key || l.to === key);

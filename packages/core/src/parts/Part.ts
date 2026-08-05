@@ -2,6 +2,7 @@ import type { Binding } from '../binding/Binding.ts';
 import type { Diagram } from '../diagram/Diagram.ts';
 import { Point } from '../geometry/Point.ts';
 import type { Rect } from '../geometry/Rect.ts';
+import type { Size } from '../geometry/Size.ts';
 import type { Layer } from '../layer/Layer.ts';
 import type { NodeData, NodeKey } from '../model/Model.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
@@ -45,6 +46,13 @@ export abstract class Part {
   private _copyable = true;
   private _isHighlighted = false;
   private _diagram: Diagram | null = null;
+  private _scale = 1;
+  private _background: string | null = null;
+  private _pickable = true;
+  private _cursor = '';
+  private _minSize = { width: 0, height: 0 };
+  private _maxSize = { width: Infinity, height: Infinity };
+  private _desiredSize: { width: number; height: number } | null = null;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -88,6 +96,111 @@ export abstract class Part {
 
   set bounds(value: Rect) {
     this._bounds = value;
+  }
+
+  /** GoJS-compatible: The width of this part (delegates to its bounds). */
+  get width(): number {
+    return this._bounds.width;
+  }
+
+  set width(value: number) {
+    this._bounds.width = value;
+  }
+
+  /** GoJS-compatible: The height of this part (delegates to its bounds). */
+  get height(): number {
+    return this._bounds.height;
+  }
+
+  set height(value: number) {
+    this._bounds.height = value;
+  }
+
+  /** GoJS-compatible: The desired size of this part. */
+  get desiredSize(): Size | null {
+    if (this._desiredSize === null) return null;
+    return { width: this._desiredSize.width, height: this._desiredSize.height } as unknown as Size;
+  }
+
+  set desiredSize(value: Size | { width: number; height: number } | null) {
+    if (value === null) {
+      this._desiredSize = null;
+      return;
+    }
+    this._desiredSize = { width: value.width, height: value.height };
+  }
+
+  /** GoJS-compatible: The scale of this part. */
+  get scale(): number {
+    return this._scale;
+  }
+
+  set scale(value: number) {
+    this._scale = value;
+  }
+
+  /** GoJS-compatible: The background color of this part. */
+  get background(): string | null {
+    return this._background;
+  }
+
+  set background(value: string | null) {
+    this._background = value;
+  }
+
+  /** GoJS-compatible: Whether this part is pickable (hit-testable). */
+  get pickable(): boolean {
+    return this._pickable;
+  }
+
+  set pickable(value: boolean) {
+    this._pickable = value;
+  }
+
+  /** GoJS-compatible: The cursor shown when hovering this part. */
+  get cursor(): string {
+    return this._cursor;
+  }
+
+  set cursor(value: string) {
+    this._cursor = value;
+  }
+
+  /** GoJS-compatible: The minimum size of this part. */
+  get minSize(): { width: number; height: number } {
+    return this._minSize;
+  }
+
+  set minSize(value: { width: number; height: number }) {
+    this._minSize = value;
+  }
+
+  /** GoJS-compatible: The maximum size of this part. */
+  get maxSize(): { width: number; height: number } {
+    return this._maxSize;
+  }
+
+  set maxSize(value: { width: number; height: number }) {
+    this._maxSize = value;
+  }
+
+  /** GoJS-compatible: The actual bounds of this part in document coordinates. */
+  get actualBounds(): Rect {
+    return this._bounds;
+  }
+
+  set actualBounds(value: Rect) {
+    this._bounds = value;
+  }
+
+  /** GoJS-compatible: Whether this part and its ancestors are visible. */
+  get isVisibleObject(): boolean {
+    let current: Part | null = this;
+    while (current) {
+      if (!current.visible) return false;
+      current = current.containingGroup as Part | null;
+    }
+    return true;
   }
 
   get visible(): boolean {
@@ -178,11 +291,8 @@ export abstract class Part {
 
   set location(value: Point) {
     const spot = this._locationSpot;
-    this._bounds = {
-      ...this._bounds,
-      x: value.x - this._bounds.width * spot.x,
-      y: value.y - this._bounds.height * spot.y,
-    } as Rect;
+    this._bounds.x = value.x - this._bounds.width * spot.x;
+    this._bounds.y = value.y - this._bounds.height * spot.y;
   }
 
   /** GoJS-compatible: The spot in the part that corresponds to the location point. */
@@ -512,11 +622,8 @@ export abstract class Part {
 
   /** Set the position (top-left), preserving size. */
   set position(value: { x: number; y: number }) {
-    this._bounds = {
-      ...this._bounds,
-      x: value.x,
-      y: value.y,
-    } as Rect;
+    this._bounds.x = value.x;
+    this._bounds.y = value.y;
   }
 
   /** Get the size. */

@@ -10,6 +10,7 @@ import { isDomComponent } from './ComponentRegistry.ts';
 import { getPanelFactory } from './PanelRegistry.ts';
 import { isPartCtor } from './PartRegistry.ts';
 import type { Part } from '../parts/Part.ts';
+import type { InputEvent } from '../events/InputEvent.ts';
 
 /**
  * Base class for all visual elements that can appear in a Panel.
@@ -29,6 +30,19 @@ export abstract class GraphObject {
     'zOrder',
     'angle',
     'category',
+    'width',
+    'height',
+    'desiredSize',
+    'scale',
+    'background',
+    'pickable',
+    'margin',
+    'minSize',
+    'maxSize',
+    'cursor',
+    'actualBounds',
+    'deletable',
+    'copyable',
   ]);
   private _name: string = '';
   private _desiredSize: Size | null = null;
@@ -43,13 +57,13 @@ export abstract class GraphObject {
   private _bindings: Binding[] = [];
 
   // GoJS-compatible event handler properties (set via property maps)
-  click?: (e: MouseEvent, obj: GraphObject) => void;
-  doubleClick?: (e: MouseEvent, obj: GraphObject) => void;
-  contextClick?: (e: MouseEvent, obj: GraphObject) => void;
-  mouseEnter?: (e: MouseEvent, obj: GraphObject, prev: GraphObject | null) => void;
-  mouseLeave?: (e: MouseEvent, obj: GraphObject, prev: GraphObject | null) => void;
-  mouseOver?: (e: MouseEvent, obj: GraphObject) => void;
-  mouseOut?: (e: MouseEvent, obj: GraphObject) => void;
+  click?: (e: InputEvent, obj: GraphObject) => void;
+  doubleClick?: (e: InputEvent, obj: GraphObject) => void;
+  contextClick?: (e: InputEvent, obj: GraphObject) => void;
+  mouseEnter?: (e: InputEvent, obj: GraphObject, prev: GraphObject | null) => void;
+  mouseLeave?: (e: InputEvent, obj: GraphObject, prev: GraphObject | null) => void;
+  mouseOver?: (e: InputEvent, obj: GraphObject) => void;
+  mouseOut?: (e: InputEvent, obj: GraphObject) => void;
 
   /** The panel this object belongs to (set when added). Used for ofObject resolution. */
   parentPanel: GraphObject | null = null;

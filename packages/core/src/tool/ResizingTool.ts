@@ -199,7 +199,10 @@ export class ResizingTool extends Tool {
       height = this._minHeight;
     }
 
-    this._node.bounds = { x, y, width, height } as never;
+    this._node.bounds.x = x;
+    this._node.bounds.y = y;
+    this._node.bounds.width = width;
+    this._node.bounds.height = height;
     this.diagram?.invalidate();
   }
 

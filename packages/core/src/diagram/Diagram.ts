@@ -1,5 +1,6 @@
 import { AnimationManager } from '../animation/AnimationManager.ts';
 import { CommandHandler } from '../command/CommandHandler.ts';
+import { InputEvent } from '../events/InputEvent.ts';
 import type { ContextMenu } from '../export/ContextMenu.ts';
 import { handleDrop } from '../export/Palette.ts';
 import { PNGExporter } from '../export/PNGExporter.ts';
@@ -106,9 +107,9 @@ export class Diagram {
   private renderer: Renderer;
   private _model: GraphLinksModel;
   private parts: Map<NodeKey, Node | Link | Group> = new Map();
-  private nodes: Map<NodeKey, Node> = new Map();
-  private groups: Map<NodeKey, Group> = new Map();
-  private links: Map<NodeKey, Link> = new Map();
+  private _nodes: Map<NodeKey, Node> = new Map();
+  private _groups: Map<NodeKey, Group> = new Map();
+  private _links: Map<NodeKey, Link> = new Map();
 
   private _scale = 1;
   private offsetX = 0;
@@ -539,8 +540,8 @@ export class Diagram {
     let minY = 0;
     let maxX = 1000;
     let maxY = 1000;
-    if (this.nodes.size > 0) {
-      for (const [, node] of this.nodes) {
+    if (this._nodes.size > 0) {
+      for (const [, node] of this._nodes) {
         minX = Math.min(minX, node.bounds.x);
         minY = Math.min(minY, node.bounds.y);
         maxX = Math.max(maxX, node.bounds.right);
@@ -549,9 +550,9 @@ export class Diagram {
     }
     const world = new RectClass(minX, minY, maxX - minX, maxY - minY);
     const parts: (Node | Link | Group)[] = [
-      ...this.nodes.values(),
-      ...this.links.values(),
-      ...this.groups.values(),
+      ...this._nodes.values(),
+      ...this._links.values(),
+      ...this._groups.values(),
     ];
     this.virtualization.rebuild(parts, world);
   }
@@ -821,7 +822,12 @@ export class Diagram {
     const part = this.findPartAt(point.x, point.y);
     if (part) {
       const obj = this.findHitGraphObject(part, point);
-      if (obj?.contextClick) obj.contextClick(e, obj);
+      if (obj?.contextClick) {
+        const input = new InputEvent(e);
+        input.diagram = this;
+        input.targetObject = obj;
+        obj.contextClick(input, obj);
+      }
     }
     // Part-level context menu template takes precedence
     if (part?.contextMenu) {
@@ -883,7 +889,13 @@ export class Diagram {
     // GraphObject.doubleClick handler
     if (part) {
       const obj = this.findHitGraphObject(part, point);
-      if (obj?.doubleClick) obj.doubleClick(e, obj);
+      if (obj?.doubleClick) {
+        const input = new InputEvent(e);
+        input.diagram = this;
+        input.targetObject = obj;
+        input.clickCount = 2;
+        obj.doubleClick(input, obj);
+      }
     }
 
     const textEditing = this._toolManager.getTool('textEditing');
@@ -909,7 +921,13 @@ export class Diagram {
     } else {
       // GraphObject.click handler
       const obj = this.findHitGraphObject(part, point);
-      if (obj?.click) obj.click(e, obj);
+      if (obj?.click) {
+        const input = new InputEvent(e);
+        input.diagram = this;
+        input.targetObject = obj;
+        input.clickCount = 1;
+        obj.click(input, obj);
+      }
       this.fireDiagramEvent('ObjectSingleClicked', part, { x: point.x, y: point.y });
     }
   }
@@ -1198,13 +1216,13 @@ export class Diagram {
       const isGroup = nodeData.isGroup === true;
 
       if (isGroup) {
-        let group = this.groups.get(key);
+        let group = this._groups.get(key);
         if (!group) {
           group = this.createGroup(nodeData);
         }
 
         // Sync members: add nodes/links whose groupKey matches this group
-        for (const [memberKey, node] of this.nodes) {
+        for (const [memberKey, node] of this._nodes) {
           if (node.containingGroup === group) continue;
           const memberData = this._model.getNodeData(memberKey);
           if (memberData && memberData.group === key) {
@@ -1212,7 +1230,7 @@ export class Diagram {
           }
         }
       } else {
-        let node = this.nodes.get(key);
+        let node = this._nodes.get(key);
         if (!node) {
           node = this.createNode(nodeData);
         }
@@ -1220,7 +1238,7 @@ export class Diagram {
         // Add to parent group if specified
         const groupKey = nodeData.group;
         if (groupKey !== undefined) {
-          const parentGroup = this.groups.get(groupKey as NodeKey);
+          const parentGroup = this._groups.get(groupKey as NodeKey);
           if (parentGroup && !parentGroup.contains(node)) {
             parentGroup.add(node);
           }
@@ -1233,7 +1251,7 @@ export class Diagram {
       const linkKey = this.getLinkKeyOf(linkData);
       if (linkKey === undefined) continue;
 
-      let link = this.links.get(linkKey);
+      let link = this._links.get(linkKey);
       if (!link) {
         link = this.createLink(linkData);
       }
@@ -1263,8 +1281,8 @@ export class Diagram {
       link.labelFont = (linkData.labelFont as string) ?? link.labelFont;
 
       // Update link ports based on node positions and port connections
-      const fromNode = this.nodes.get(linkData.from);
-      const toNode = this.nodes.get(linkData.to);
+      const fromNode = this._nodes.get(linkData.from);
+      const toNode = this._nodes.get(linkData.to);
       if (fromNode && toNode) {
         const fromPoint = fromNode.getConnectionPoint(
           toNode.center,
@@ -1291,7 +1309,7 @@ export class Diagram {
       // Add to parent group if specified
       const groupKey = linkData.group;
       if (groupKey !== undefined) {
-        const parentGroup = this.groups.get(groupKey as NodeKey);
+        const parentGroup = this._groups.get(groupKey as NodeKey);
         if (parentGroup && !parentGroup.contains(link)) {
           parentGroup.add(link);
         }
@@ -1387,7 +1405,7 @@ export class Diagram {
     const isGroup = nodeData.isGroup === true;
 
     if (isGroup) {
-      let group = this.groups.get(key);
+      let group = this._groups.get(key);
       if (!group) {
         group = this.createGroup(nodeData);
       }
@@ -1396,7 +1414,7 @@ export class Diagram {
       return;
     }
 
-    let node = this.nodes.get(key);
+    let node = this._nodes.get(key);
     if (!node) {
       node = this.createNode(nodeData);
     }
@@ -1408,7 +1426,7 @@ export class Diagram {
     const linkKey = this.getLinkKeyOf(linkData);
     if (linkKey === undefined) return;
 
-    let link = this.links.get(linkKey);
+    let link = this._links.get(linkKey);
     if (!link) {
       link = this.createLink(linkData);
     }
@@ -1443,7 +1461,7 @@ export class Diagram {
     if (layer) node.layer = layer;
     node.diagram = this;
     this.parts.set(key, node);
-    this.nodes.set(key, node);
+    this._nodes.set(key, node);
     this.fireDiagramEvent('PartAdded', node);
     this.markHitIndexDirty();
     return node;
@@ -1460,6 +1478,14 @@ export class Diagram {
       }
       if (key === '__binding__') {
         (part as unknown as { addBinding: (b: unknown) => void }).addBinding(value);
+        continue;
+      }
+      if (key === 'width') {
+        part.bounds.width = value as number;
+        continue;
+      }
+      if (key === 'height') {
+        part.bounds.height = value as number;
         continue;
       }
       (part as unknown as Record<string, unknown>)[key] = value;
@@ -1490,7 +1516,7 @@ export class Diagram {
     if (layer) group.layer = layer;
     group.diagram = this;
     this.parts.set(key, group);
-    this.groups.set(key, group);
+    this._groups.set(key, group);
     this.fireDiagramEvent('PartAdded', group);
     this.markHitIndexDirty();
     return group;
@@ -1518,7 +1544,7 @@ export class Diagram {
     if (layer) link.layer = layer;
     link.diagram = this;
     this.parts.set(this.linkPartKey(linkKey as NodeKey), link);
-    this.links.set(linkKey as NodeKey, link);
+    this._links.set(linkKey as NodeKey, link);
     this.fireDiagramEvent('PartAdded', link);
     this.fireDiagramEvent('LinkCreated', link);
     this.markHitIndexDirty();
@@ -1559,8 +1585,16 @@ export class Diagram {
     // Update spatial index incrementally if built
     this.hitIndex?.remove(node);
 
-    const { x, y, width, height } = this.nodeDataBounds(nodeData);
-    node.bounds = new RectClass(x, y, width, height);
+    if (!node.bounds) {
+      node.bounds = new RectClass(0, 0, 100, 50);
+    }
+    const { x, y } = this.nodeDataBounds(nodeData);
+    // Only override width/height when the node data explicitly defines them;
+    // otherwise keep the size from the template (or the initial creation).
+    if (nodeData.width !== undefined) node.bounds.width = nodeData.width as number;
+    if (nodeData.height !== undefined) node.bounds.height = nodeData.height as number;
+    node.bounds.x = x;
+    node.bounds.y = y;
     node.label = (nodeData.label as string) ?? node.label;
     node.fill = (nodeData.fill as string) ?? node.fill;
     node.stroke = (nodeData.stroke as string) ?? node.stroke;
@@ -1570,7 +1604,7 @@ export class Diagram {
     // Add to parent group if specified
     const groupKey = nodeData.group;
     if (groupKey !== undefined) {
-      const parentGroup = this.groups.get(groupKey as NodeKey);
+      const parentGroup = this._groups.get(groupKey as NodeKey);
       if (parentGroup && !parentGroup.contains(node)) {
         parentGroup.add(node);
       }
@@ -1618,8 +1652,8 @@ export class Diagram {
     link.labelColor = (linkData.labelColor as string) ?? link.labelColor;
     link.labelFont = (linkData.labelFont as string) ?? link.labelFont;
 
-    const fromNode = this.nodes.get(linkData.from);
-    const toNode = this.nodes.get(linkData.to);
+    const fromNode = this._nodes.get(linkData.from);
+    const toNode = this._nodes.get(linkData.to);
     if (fromNode && toNode) {
       const fromPoint = fromNode.getConnectionPoint(
         toNode.center,
@@ -1644,7 +1678,7 @@ export class Diagram {
 
     const groupKey = linkData.group;
     if (groupKey !== undefined) {
-      const parentGroup = this.groups.get(groupKey as NodeKey);
+      const parentGroup = this._groups.get(groupKey as NodeKey);
       if (parentGroup && !parentGroup.contains(link)) {
         parentGroup.add(link);
       }
@@ -1654,7 +1688,7 @@ export class Diagram {
   }
 
   private syncGroupMembers(group: Group): void {
-    for (const [memberKey, node] of this.nodes) {
+    for (const [memberKey, node] of this._nodes) {
       if (node.containingGroup === group) continue;
       const memberData = this._model.getNodeData(memberKey);
       if (memberData && memberData.group === group.key) {
@@ -1667,11 +1701,11 @@ export class Diagram {
     // Resolve by type to avoid node/link key namespace collisions
     let part: Node | Link | Group | undefined;
     if (type === 'link') {
-      part = this.links.get(key) ?? (this.parts.get(this.linkPartKey(key)) as Link | undefined);
+      part = this._links.get(key) ?? (this.parts.get(this.linkPartKey(key)) as Link | undefined);
     } else if (type === 'group') {
-      part = this.groups.get(key);
+      part = this._groups.get(key);
     } else if (type === 'node') {
-      part = this.nodes.get(key);
+      part = this._nodes.get(key);
     } else {
       part = this.getPartByKey(key);
     }
@@ -1685,11 +1719,11 @@ export class Diagram {
     part.diagram = null;
 
     if (part instanceof Node) {
-      this.nodes.delete(key);
+      this._nodes.delete(key);
     } else if (part instanceof Group) {
-      this.groups.delete(key);
+      this._groups.delete(key);
     } else if (part instanceof Link) {
-      this.links.delete(key);
+      this._links.delete(key);
       this.parts.delete(this.linkPartKey(key));
       this.selectedParts.delete(part);
       this.fireDiagramEvent('PartRemoved', part);
@@ -1738,21 +1772,21 @@ export class Diagram {
 
     // Fallback: linear scan (accurate for links/groups crossing the point)
     // Check nodes first (on top)
-    for (const [, node] of this.nodes) {
+    for (const [, node] of this._nodes) {
       if (node.shapeContainsPoint({ x, y })) {
         return node;
       }
     }
 
     // Check links
-    for (const [, link] of this.links) {
+    for (const [, link] of this._links) {
       if (link.containsPoint({ x, y })) {
         return link;
       }
     }
 
     // Check groups (below nodes)
-    for (const [, group] of this.groups) {
+    for (const [, group] of this._groups) {
       if (group.containsPoint({ x, y })) {
         return group;
       }
@@ -1800,7 +1834,7 @@ export class Diagram {
 
   /** GoJS-compatible: Find a node part by its model key. */
   findNodeForKey(key: NodeKey): Node | null {
-    return this.nodes.get(key) ?? null;
+    return this._nodes.get(key) ?? null;
   }
 
   /** GoJS-compatible: Find a part (node, group, or link) by its model key. */
@@ -1810,28 +1844,28 @@ export class Diagram {
 
   /** GoJS-compatible: Find a link part by its model key. */
   findLinkForKey(key: NodeKey): Link | null {
-    return this.links.get(key) ?? null;
+    return this._links.get(key) ?? null;
   }
 
   /** GoJS-compatible: Find a node part by its model data object. */
   findNodeForData(data: NodeData): Node | null {
     const key = this._model.getNodeKey(data);
-    return this.nodes.get(key) ?? null;
+    return this._nodes.get(key) ?? null;
   }
 
   /** GoJS-compatible: Find a link part by its model data object. */
   findLinkForData(data: LinkData): Link | null {
     const key = this.getLinkKeyOf(data);
     if (key === undefined) return null;
-    return this.links.get(key) ?? null;
+    return this._links.get(key) ?? null;
   }
 
   /** GoJS-compatible: Remove all parts and clear the model. */
   clear(): void {
     this.parts.clear();
-    this.nodes.clear();
-    this.links.clear();
-    this.groups.clear();
+    this._nodes.clear();
+    this._links.clear();
+    this._groups.clear();
     this.selectedParts.clear();
     this._model.clear();
     this.markHitIndexDirty();
@@ -1882,7 +1916,7 @@ export class Diagram {
     partialInclusion = true,
   ): void {
     const r = rect as unknown as RectClass;
-    for (const [, node] of this.nodes) {
+    for (const [, node] of this._nodes) {
       const hit = partialInclusion
         ? node.bounds.intersects(r)
         : r.containsRect(node.bounds as unknown as RectClass);
@@ -1890,7 +1924,7 @@ export class Diagram {
         this.select(node, true);
       }
     }
-    for (const [, link] of this.links) {
+    for (const [, link] of this._links) {
       const hit = partialInclusion
         ? link.bounds.intersects(r)
         : r.containsRect(link.bounds as unknown as RectClass);
@@ -1954,7 +1988,7 @@ export class Diagram {
 
   /** GoJS-compatible: Find a group part by its model key. */
   findGroupForKey(key: NodeKey): Group | null {
-    return this.groups.get(key) ?? null;
+    return this._groups.get(key) ?? null;
   }
 
   /** GoJS-compatible: Collapse a group's subgraph, firing SubGraphCollapsed. */
@@ -1991,7 +2025,22 @@ export class Diagram {
 
   /** GoJS-compatible: All links in this diagram. */
   get allLinks(): Link[] {
-    return Array.from(this.links.values());
+    return Array.from(this._links.values());
+  }
+
+  /** GoJS-compatible: The nodes in this diagram. */
+  get nodes(): ReadonlyMap<NodeKey, Node> {
+    return this._nodes;
+  }
+
+  /** GoJS-compatible: The links in this diagram. */
+  get links(): ReadonlyMap<NodeKey, Link> {
+    return this._links;
+  }
+
+  /** GoJS-compatible: The groups in this diagram. */
+  get groups(): ReadonlyMap<NodeKey, Group> {
+    return this._groups;
   }
 
   /** GoJS-compatible: Whether a node (group) subgraph is expanded. */
@@ -2068,9 +2117,9 @@ export class Diagram {
     // Clear stale parts and history when switching to a different model
     for (const layer of this._layers) layer.clear();
     this.parts.clear();
-    this.nodes.clear();
-    this.links.clear();
-    this.groups.clear();
+    this._nodes.clear();
+    this._links.clear();
+    this._groups.clear();
     this.selectedParts.clear();
     this._undoManager.clear();
     this._model = model;
@@ -2122,8 +2171,8 @@ export class Diagram {
   private applyDiagramLayout(): void {
     const layout = this._layout;
     if (!layout) return;
-    const nodes = Array.from(this.nodes.values());
-    const links = Array.from(this.links.values());
+    const nodes = Array.from(this._nodes.values());
+    const links = Array.from(this._links.values());
     layout.apply(nodes, links);
     this.invalidate();
   }
@@ -2132,11 +2181,21 @@ export class Diagram {
   layoutDiagram(layout?: Layout): void {
     const target = layout ?? this._layout;
     if (!target) return;
-    const nodes = Array.from(this.nodes.values());
-    const links = Array.from(this.links.values());
+    const nodes = Array.from(this._nodes.values());
+    const links = Array.from(this._links.values());
     target.apply(nodes, links);
     this.invalidate();
     this.fireDiagramEvent('LayoutCompleted', null, { layout: target });
+  }
+
+  /** GoJS-compatible: Run the layout on the given parts. */
+  layoutParts(parts: readonly Part[]): void {
+    const target = this._layout;
+    if (!target) return;
+    const nodes = parts.filter((p): p is Node => p instanceof Node);
+    const links = parts.filter((p): p is Link => p instanceof Link);
+    target.apply(nodes, links);
+    this.invalidate();
   }
 
   /** GoJS-compatible: The HTML element this diagram renders into. */
@@ -2713,20 +2772,20 @@ export class Diagram {
     if (key === undefined) return;
     if (this.parts.has(key)) return;
     if (part instanceof Node) {
-      this.nodes.set(key, part);
+      this._nodes.set(key, part);
       this.parts.set(key, part);
       // Keep the model in sync when adding a part with attached data
       if (part.data && !this._model.containsNode(key)) {
         this._model.addNode({ ...part.data });
       }
     } else if (part instanceof Group) {
-      this.groups.set(key, part);
+      this._groups.set(key, part);
       this.parts.set(key, part);
       if (part.data && !this._model.containsNode(key)) {
         this._model.addNode({ ...part.data });
       }
     } else if (part instanceof Link) {
-      this.links.set(key, part);
+      this._links.set(key, part);
       this.parts.set(this.linkPartKey(key), part);
       const linkData = part.data as LinkData | null;
       if (linkData && !this.getLinkKeyOf(linkData)) {
@@ -2779,7 +2838,7 @@ export class Diagram {
     let targetY = y;
 
     // In 'document' scroll mode, keep the viewport within the content bounds
-    if (this._scrollMode === 'document' && this.nodes.size > 0) {
+    if (this._scrollMode === 'document' && this._nodes.size > 0) {
       const content = this.getContentBounds();
       const rect = this.canvas.getBoundingClientRect();
       const viewW = rect.width / this._scale;
@@ -2810,7 +2869,7 @@ export class Diagram {
    * recomputes them (keeps links following nodes during drags).
    */
   invalidateLinksForNode(nodeKey: NodeKey): void {
-    for (const [, link] of this.links) {
+    for (const [, link] of this._links) {
       if (link.fromKey === nodeKey || link.toKey === nodeKey) {
         link.setPathPoints([]);
       }
@@ -2822,14 +2881,14 @@ export class Diagram {
 
   /** Zoom to fit all content. */
   zoomToFit(padding = 50): void {
-    if (this.nodes.size === 0) return;
+    if (this._nodes.size === 0) return;
 
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
     let maxY = -Infinity;
 
-    for (const [, node] of this.nodes) {
+    for (const [, node] of this._nodes) {
       minX = Math.min(minX, node.bounds.x);
       minY = Math.min(minY, node.bounds.y);
       maxX = Math.max(maxX, node.bounds.right);
@@ -2927,7 +2986,7 @@ export class Diagram {
 
   /** Get the bounds of all content in the diagram. */
   getContentBounds(): RectClass {
-    if (this.nodes.size === 0) {
+    if (this._nodes.size === 0) {
       return new RectClass(0, 0, 0, 0);
     }
 
@@ -2936,7 +2995,7 @@ export class Diagram {
     let maxX = -Infinity;
     let maxY = -Infinity;
 
-    for (const [, node] of this.nodes) {
+    for (const [, node] of this._nodes) {
       minX = Math.min(minX, node.bounds.x);
       minY = Math.min(minY, node.bounds.y);
       maxX = Math.max(maxX, node.bounds.right);
@@ -2998,7 +3057,7 @@ export class Diagram {
   /** GoJS-compatible: Find all nodes that are tree roots (no parent key). */
   findTreeRoots(): Node[] {
     const roots: Node[] = [];
-    for (const [, node] of this.nodes) {
+    for (const [, node] of this._nodes) {
       const data = node.data;
       if (data && this.treeParentKeyOf(data) === undefined) {
         roots.push(node);
@@ -3010,7 +3069,7 @@ export class Diagram {
   /** GoJS-compatible: Find the tree children of a node. */
   findTreeChildren(node: Node): Node[] {
     const children: Node[] = [];
-    for (const [, other] of this.nodes) {
+    for (const [, other] of this._nodes) {
       const data = other.data;
       if (data && this.treeParentKeyOf(data) === node.key) {
         children.push(other);
@@ -3092,9 +3151,9 @@ export class Diagram {
 
     // Clear parts and caches
     this.parts.clear();
-    this.nodes.clear();
-    this.groups.clear();
-    this.links.clear();
+    this._nodes.clear();
+    this._groups.clear();
+    this._links.clear();
     this.selectedParts.clear();
     this.virtualization?.clear();
     this.partPool.clear();

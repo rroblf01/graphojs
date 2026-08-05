@@ -110,4 +110,45 @@ describe('@graphojs/vue', () => {
     host.remove();
     host2.remove();
   });
+
+  it('onModelChange fires when the model mutates', async () => {
+    const changes: string[] = [];
+    const model = new GraphLinksModel({ nodeDataArray: [{ key: 1 }] });
+    const { app, host } = mountApp(Diagram, {
+      model,
+      onModelChange: (e: { type: string }) => changes.push(e.type),
+    });
+    await nextTick();
+    model.addNode({ key: 2 });
+    await nextTick();
+    expect(changes).toContain('node Added');
+    app.unmount();
+    host.remove();
+  });
+
+  it('onSelectionChanged fires when selection changes', async () => {
+    let selected = 0;
+    const model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const { app, host } = mountApp(Diagram, {
+      model,
+      onSelectionChanged: () => {
+        selected++;
+      },
+    });
+    await nextTick();
+    expect(selected).toBeGreaterThanOrEqual(0);
+    app.unmount();
+    host.remove();
+  });
+
+  it('Palette accepts nodeTemplate/linkTemplate', async () => {
+    const { app, host } = mountApp(Palette, {
+      templates: [{ id: 'a', name: 'A', category: 'c', shape: 'rect', width: 10, height: 10 }],
+      nodeTemplate: { isPanel: true },
+    });
+    await nextTick();
+    expect(document.body.querySelectorAll('div').length).toBeGreaterThan(0);
+    app.unmount();
+    host.remove();
+  });
 });

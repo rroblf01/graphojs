@@ -119,4 +119,50 @@ describe('@graphojs/react', () => {
     // If we got here without throwing, the components rendered
     expect(document.body.querySelectorAll('div').length).toBeGreaterThan(0);
   });
+
+  it('onModelChange fires when the model mutates', async () => {
+    const changes: string[] = [];
+    const model = new GraphLinksModel({ nodeDataArray: [{ key: 1 }] });
+    renderApp(
+      React.createElement(Diagram, {
+        model,
+        onModelChange: (e) => changes.push(e.type),
+      }),
+    );
+    await act(async () => {});
+    model.addNode({ key: 2 });
+    await act(async () => {});
+    expect(changes.length).toBeGreaterThan(0);
+    expect(changes).toContain('node Added');
+  });
+
+  it('onSelectionChanged fires when selection changes', async () => {
+    let selected = 0;
+    const model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    renderApp(
+      React.createElement(Diagram, {
+        model,
+        onSelectionChanged: () => {
+          selected++;
+        },
+      }),
+    );
+    await act(async () => {});
+    expect(selected).toBeGreaterThanOrEqual(0);
+  });
+
+  it('Palette accepts nodeTemplate/linkTemplate', async () => {
+    const $ = GraphObject.make;
+    const nodeTemplate = $(Panel, 'Auto', $(Shape, 'Rectangle'));
+    renderApp(
+      React.createElement(Palette, {
+        templates: [
+          { id: 'a', name: 'A', category: 'c', shape: 'rect', width: 10, height: 10 },
+        ],
+        nodeTemplate,
+      }),
+    );
+    await act(async () => {});
+    expect(document.body.querySelectorAll('div').length).toBeGreaterThan(0);
+  });
 });

@@ -6,6 +6,9 @@ import {
   Palette as GoPalette,
   Overview as GoOverview,
   type Template,
+  type DiagramEvent,
+  type DiagramEventType,
+  type ChangedEvent,
 } from 'graphojs';
 
 export interface DiagramProps {
@@ -21,6 +24,12 @@ export interface DiagramProps {
   initDiagram?: (diagram: GoDiagram) => void;
   /** Called after initDiagram with the diagram instance. */
   onDiagramInit?: (diagram: GoDiagram) => void;
+  /** GoJS-compatible: called whenever the diagram's model changes. */
+  onModelChange?: (event: ChangedEvent) => void;
+  /** Called for every fired diagram event of the given type. */
+  onDiagramEvent?: (type: DiagramEventType, event: DiagramEvent) => void;
+  /** Sugar for the "SelectionChanged" diagram event. */
+  onSelectionChanged?: (diagram: GoDiagram) => void;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -36,11 +45,21 @@ export const Diagram: React.FC<DiagramProps> = ({
   groupTemplate,
   initDiagram,
   onDiagramInit,
+  onModelChange,
+  onDiagramEvent,
+  onSelectionChanged,
   className,
   style,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const diagramRef = useRef<GoDiagram | null>(null);
+  const modelRef = useRef(model);
+  const onModelChangeRef = useRef(onModelChange);
+  const onDiagramEventRef = useRef(onDiagramEvent);
+  const onSelectionChangedRef = useRef(onSelectionChanged);
+  onModelChangeRef.current = onModelChange;
+  onDiagramEventRef.current = onDiagramEvent;
+  onSelectionChangedRef.current = onSelectionChanged;
 
   // Create / destroy the diagram
   // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect
@@ -51,7 +70,30 @@ export const Diagram: React.FC<DiagramProps> = ({
     diagramRef.current = diagram;
     initDiagram?.(diagram);
     onDiagramInit?.(diagram);
+
+    const modelListener = (event: ChangedEvent) => onModelChangeRef.current?.(event);
+    const eventListener = (event: DiagramEvent) =>
+      onDiagramEventRef.current?.(event.type, event);
+    const selectionListener = () => onSelectionChangedRef.current?.(diagram);
+
+    if (modelRef.current) diagram.model = modelRef.current;
+    if (onModelChangeRef.current) {
+      diagram.addModelChangedListener(modelListener);
+      diagram.addDiagramListener('ModelChanged', () => {});
+    }
+    if (onDiagramEventRef.current) {
+      diagram.addAnyDiagramListener(eventListener);
+    }
+    if (onSelectionChangedRef.current) {
+      diagram.addDiagramListener('SelectionChanged', selectionListener);
+    }
+
     return () => {
+      if (onModelChangeRef.current) diagram.removeModelChangedListener(modelListener);
+      if (onDiagramEventRef.current) diagram.removeAnyDiagramListener(eventListener);
+      if (onSelectionChangedRef.current) {
+        diagram.removeDiagramListener('SelectionChanged', selectionListener);
+      }
       diagram.destroy();
       diagramRef.current = null;
     };
@@ -59,8 +101,21 @@ export const Diagram: React.FC<DiagramProps> = ({
 
   // Sync props
   useEffect(() => {
-    if (model && diagramRef.current) diagramRef.current.model = model;
+    if (model && diagramRef.current) {
+      diagramRef.current.model = model;
+      modelRef.current = model;
+    }
   }, [model]);
+
+  // Re-subscribe model-change listener when the callback changes
+  useEffect(() => {
+    const diagram = diagramRef.current;
+    if (!diagram) return;
+    if (!onModelChange) return;
+    const listener = (event: ChangedEvent) => onModelChange?.(event);
+    diagram.addModelChangedListener(listener);
+    return () => diagram.removeModelChangedListener(listener);
+  }, [onModelChange]);
 
   useEffect(() => {
     if (diagramRef.current) diagramRef.current.nodeTemplate = nodeTemplate ?? null;
@@ -86,12 +141,22 @@ export const Diagram: React.FC<DiagramProps> = ({
 export interface PaletteProps {
   /** GoJS-compatible: palette data templates. */
   templates?: Template[];
+  /** GoJS-compatible: node template applied to the palette's internal diagram. */
+  nodeTemplate?: Panel | null;
+  /** GoJS-compatible: link template applied to the palette's internal diagram. */
+  linkTemplate?: Panel | null;
   className?: string;
   style?: React.CSSProperties;
 }
 
 /** A React component that renders a palette of draggable templates. */
-export const Palette: React.FC<PaletteProps> = ({ templates = [], className, style }) => {
+export const Palette: React.FC<PaletteProps> = ({
+  templates = [],
+  nodeTemplate,
+  linkTemplate,
+  className,
+  style,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const paletteRef = useRef<GoPalette | null>(null);
 
@@ -111,6 +176,16 @@ export const Palette: React.FC<PaletteProps> = ({ templates = [], className, sty
   useEffect(() => {
     paletteRef.current?.setTemplates(templates);
   }, [templates]);
+
+  useEffect(() => {
+    const palette = paletteRef.current;
+    if (palette) palette.getDiagram().nodeTemplate = nodeTemplate ?? null;
+  }, [nodeTemplate]);
+
+  useEffect(() => {
+    const palette = paletteRef.current;
+    if (palette) palette.getDiagram().linkTemplate = linkTemplate ?? null;
+  }, [linkTemplate]);
 
   return (
     <div

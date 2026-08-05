@@ -104,8 +104,11 @@ myDiagram.commit((d) => {
 
 ## Performance
 
-Minified bundle: **~59 KB gzip** (235 KB raw) — smaller than GoJS (~130 KB gzip).
-Tree-shaking works for consumers; importing just `Diagram` yields ~58 KB gzip.
+Minified bundle: **~67 KB gzip** (265 KB raw) — smaller than GoJS (~130 KB gzip).
+Tree-shaking works for consumers; importing just `Diagram` loads only the core
+chunk. The predefined palette templates (`graphojs/templates`) are split into a
+separate lazy subpath (~1 KB gzip) that is only loaded when you create a default
+palette.
 
 Benchmarks (see `packages/core/test/benchmark.test.ts`):
 

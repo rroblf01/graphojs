@@ -107,10 +107,10 @@ describe('Palette', () => {
 });
 
 describe('createDefaultPalette', () => {
-  it('should create palette with all templates', () => {
+  it('should create palette with all templates', async () => {
     const container = document.createElement('div');
     const diagram = createMockDiagram();
-    const palette = createDefaultPalette(container, diagram);
+    const palette = await createDefaultPalette(container, diagram);
 
     const items = palette.getElement().querySelectorAll('[data-template-id]');
     expect(items.length).toBeGreaterThan(basicShapes.length);

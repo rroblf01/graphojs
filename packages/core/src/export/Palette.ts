@@ -2,7 +2,6 @@ import { Diagram } from '../diagram/Diagram.ts';
 import type { NodeData } from '../model/Model.ts';
 import type { Template } from '../template/Template.ts';
 import { templateToNodeData } from '../template/Template.ts';
-import { getAllTemplates, getTemplateById } from '../template/TemplateCollection.ts';
 
 /**
  * A palette shows templates that can be dragged onto a diagram.
@@ -153,7 +152,7 @@ export class Palette {
    * Called externally by the diagram's drop handling.
    */
   handleDropOnDiagram(templateId: string, diagramX: number, diagramY: number): NodeData | null {
-    const template = getTemplateById(templateId) ?? this.templates.find((t) => t.id === templateId);
+    const template = this.templates.find((t) => t.id === templateId);
     if (!template) return null;
 
     const model = this.diagram.getModel();
@@ -165,12 +164,17 @@ export class Palette {
   }
 }
 
-/** Create a palette with all predefined templates. */
-export function createDefaultPalette(
+/**
+ * Create a palette with all predefined templates.
+ * The predefined templates are loaded lazily so they do not inflate the
+ * main bundle unless a default palette is actually created.
+ */
+export async function createDefaultPalette(
   container: HTMLElement,
   diagram: Diagram,
   options?: { showCategories?: boolean },
-): Palette {
+): Promise<Palette> {
+  const { getAllTemplates } = await import('../template/TemplateCollection.ts');
   return new Palette(container, diagram, getAllTemplates(), options);
 }
 

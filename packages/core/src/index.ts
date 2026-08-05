@@ -156,18 +156,9 @@ export { PartPool } from './spatial/PartPool.ts';
 export { QuadTree } from './spatial/QuadTree.ts';
 export { createRectPool, RectPool } from './spatial/RectPool.ts';
 export { VirtualizationManager } from './spatial/VirtualizationManager.ts';
-// Templates
+// Templates (data templates are available via the "graphojs/templates" subpath)
 export type { Template } from './template/Template.ts';
 export { templateToNodeData } from './template/Template.ts';
-export {
-  basicShapes,
-  dataFlowShapes,
-  flowchartShapes,
-  getAllTemplates,
-  getTemplateById,
-  getTemplateCategories,
-  getTemplatesByCategory,
-} from './template/TemplateCollection.ts';
 export { ClickCreatingTool } from './tool/ClickCreatingTool.ts';
 export { ClickSelectingTool } from './tool/ClickSelectingTool.ts';
 export { ContextMenuTool } from './tool/ContextMenuTool.ts';

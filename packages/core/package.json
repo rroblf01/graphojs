@@ -23,6 +23,11 @@
       "types": "./dist/go.d.ts",
       "import": "./dist/go.js",
       "require": "./dist/go.cjs"
+    },
+    "./templates": {
+      "types": "./dist/templates.d.ts",
+      "import": "./dist/templates.js",
+      "require": "./dist/templates.cjs"
     }
   },
   "files": [

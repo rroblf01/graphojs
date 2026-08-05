@@ -70,6 +70,21 @@ These are intentional simplifications in GraphoJS:
 | Licensed (proprietary) | MIT open source |
 | `Part` IS a `GraphObject` | `Part` has a `panel` (visual tree); template parts are Panels |
 | `go.Binding` on any object | Supported on Parts and GraphObject elements |
+| `go.getAllTemplates()` / `go.basicShapes` in the main namespace | Moved to the lazy `graphojs/templates` subpath to keep the core bundle lean |
+
+If you used the predefined palette templates (`go.getAllTemplates`,
+`go.basicShapes`, `go.flowchartShapes`, `go.dataFlowShapes`, `go.getTemplateById`,
+`go.getTemplatesByCategory`, `go.getTemplateCategories`), import them from the
+`graphojs/templates` subpath instead:
+
+```diff
+- import * as go from "graphojs/go";
+- go.getAllTemplates()
++ import * as go from "graphojs/go";
++ import { getAllTemplates } from "graphojs/templates";
++ getAllTemplates()
+```
+
 
 ## Verifying your migration
 

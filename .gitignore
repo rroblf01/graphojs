@@ -10,3 +10,5 @@ test-results/
 .env.local
 .idea/
 .vscode/
+# Generated e2e fixture bundles (built by e2e/build-fixtures.mjs)
+e2e/fixtures/*.js

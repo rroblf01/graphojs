@@ -10,7 +10,7 @@ export default defineConfig({
     baseURL: 'http://localhost:4173',
   },
   webServer: {
-    command: 'node e2e/server.mjs',
+    command: 'node e2e/build-fixtures.mjs && node e2e/server.mjs',
     port: 4173,
     reuseExistingServer: true,
   },

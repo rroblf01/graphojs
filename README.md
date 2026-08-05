@@ -169,7 +169,7 @@ pnpm test:e2e
 - [x] Layouts (Grid, Tree, Circular, ForceDirected, LayeredDigraph, Spot)
 - [x] Undo/redo, groups, bindings, templates, events, virtualization
 - [x] GoJS-compatible API (`graphojs/go`)
-- [ ] React / Vue wrappers
+- [x] React / Vue wrappers
 - [ ] npm publication & documentation
 - [ ] Performance benchmarks on large graphs
 

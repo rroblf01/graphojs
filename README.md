@@ -110,13 +110,22 @@ chunk. The predefined palette templates (`graphojs/templates`) are split into a
 separate lazy subpath (~1 KB gzip) that is only loaded when you create a default
 palette.
 
-Benchmarks (see `packages/core/test/benchmark.test.ts`):
+Benchmarks (see `packages/core/test/benchmark.test.ts` and `e2e/perf.spec.ts`):
 
-| Operation | 2000 nodes + 2000 links |
+| Operation | Result |
 |---|---|
-| Model sync | ~19 ms (one-time) |
-| Render (per frame) | ~8 ms (~125 FPS budget) |
-| 500 incremental updates | ~1.3 ms |
+| Model sync (jsdom) | 2000 nodes + 2000 links in ~40 ms |
+| Render per frame (jsdom mock) | ~10 ms for 2000 nodes + 2000 links |
+| 500 incremental updates | ~2 ms |
+| Layouts (jsdom) | grid ~2 ms / tree ~39 ms on 2000 nodes |
+| Hit-test `findPartAt` | ~0.03 ms per call over 2000 nodes |
+| Pan hot-path (`setViewport` + bounds) | ~0.09 ms per step |
+| **Large graph in a real browser** (`e2e/perf.spec.ts`) | 5000 nodes + 5000 links: model sync ~170 ms, first render ~35 ms, ~105 FPS during interaction |
+
+Run the jsdom benchmarks with `npx vitest run packages/core/test/benchmark.test.ts`
+and the real-browser large-graph benchmark with `npx playwright test e2e/perf.spec.ts`.
+The browser thresholds are deliberately generous to avoid CI flakiness; they only
+fail on severe regressions.
 
 The render loop skips frames when nothing changed (`isDirty`), and rendering uses
 viewport culling, dirty-rect redraw, Path2D caching, and text-measure caching.
@@ -171,7 +180,7 @@ pnpm test:e2e
 - [x] GoJS-compatible API (`graphojs/go`)
 - [x] React / Vue wrappers
 - [ ] npm publication & documentation
-- [ ] Performance benchmarks on large graphs
+- [x] Performance benchmarks on large graphs
 
 ## License
 

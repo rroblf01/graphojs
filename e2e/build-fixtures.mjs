@@ -17,6 +17,7 @@ const alias = {
 const targets = [
   { entry: join(fixturesSrc, 'react-app.tsx'), outfile: join(outDir, 'react-app.js') },
   { entry: join(fixturesSrc, 'vue-app.ts'), outfile: join(outDir, 'vue-app.js') },
+  { entry: join(fixturesSrc, 'perf-app.ts'), outfile: join(outDir, 'perf-app.js') },
 ];
 
 for (const t of targets) {

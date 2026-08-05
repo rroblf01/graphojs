@@ -5,7 +5,7 @@
  * These are informational benchmarks, not strict correctness tests.
  */
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import { Diagram, GraphLinksModel } from '../src/index.ts';
+import { Diagram, GraphLinksModel, GridLayout, TreeLayout, ForceDirectedLayout } from '../src/index.ts';
 
 function mockContext() {
   return {
@@ -153,5 +153,121 @@ describe('Large graph performance', () => {
       `[benchmark] avg render ${avg.toFixed(2)}ms for 2000 nodes + ${links.length} links`,
     );
     expect(avg).toBeLessThan(50);
+  });
+
+  it('runs layouts on large graphs efficiently', () => {
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    const model = new GraphLinksModel();
+    const nodes: Array<{ key: number; x: number; y: number; width: number; height: number }> = [];
+    for (let i = 0; i < 2000; i++) {
+      nodes.push({ key: i, x: (i % 50) * 120, y: Math.floor(i / 50) * 80, width: 100, height: 50 });
+    }
+    // Use a tree-shaped (acyclic) link structure so TreeLayout terminates.
+    const links: Array<{ from: number; to: number }> = [];
+    for (let i = 1; i < 2000; i++) {
+      links.push({ from: Math.floor((i - 1) / 2), to: i });
+    }
+    model.nodeDataArray = nodes;
+    model.linkDataArray = links;
+    diagram.model = model;
+
+    const parts = Array.from(diagram.nodes.values());
+    const allLinks = Array.from(diagram.links.values());
+
+    const grid = new GridLayout();
+    let t = performance.now();
+    grid.apply(parts, allLinks);
+    const gridMs = performance.now() - t;
+
+    const tree = new TreeLayout();
+    t = performance.now();
+    tree.apply(parts, allLinks);
+    const treeMs = performance.now() - t;
+
+    console.log(
+      `[benchmark] grid layout on 2000 nodes ${gridMs.toFixed(1)}ms; tree layout ${treeMs.toFixed(1)}ms`,
+    );
+    expect(gridMs).toBeLessThan(2000);
+    expect(treeMs).toBeLessThan(2000);
+  });
+
+  it('runs force-directed layout on a moderately sized graph', () => {
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    const model = new GraphLinksModel();
+    const n = 400;
+    const nodes: Array<{ key: number; x: number; y: number; width: number; height: number }> = [];
+    for (let i = 0; i < n; i++) {
+      nodes.push({ key: i, x: (i % 20) * 120, y: Math.floor(i / 20) * 80, width: 100, height: 50 });
+    }
+    const links: Array<{ from: number; to: number }> = [];
+    for (let i = 1; i < n; i++) {
+      links.push({ from: Math.floor((i - 1) / 2), to: i });
+    }
+    model.nodeDataArray = nodes;
+    model.linkDataArray = links;
+    diagram.model = model;
+
+    const parts = Array.from(diagram.nodes.values());
+    const allLinks = Array.from(diagram.links.values());
+
+    const fd = new ForceDirectedLayout({ maxIterations: 100 });
+    const t = performance.now();
+    fd.apply(parts, allLinks);
+    const fdMs = performance.now() - t;
+
+    console.log(`[benchmark] force-directed layout on ${n} nodes ${fdMs.toFixed(1)}ms`);
+    expect(fdMs).toBeLessThan(10000);
+  }, 30000);
+
+  it('hit-testing findPartAt is not catastrophically slow with 2000 nodes', () => {
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    const model = new GraphLinksModel();
+    const nodes: Array<{ key: number; x: number; y: number; width: number; height: number }> = [];
+    for (let i = 0; i < 2000; i++) {
+      nodes.push({ key: i, x: (i % 50) * 120, y: Math.floor(i / 50) * 80, width: 100, height: 50 });
+    }
+    model.nodeDataArray = nodes;
+    diagram.model = model;
+
+    // Probe near the edge of a node (the worst case that triggers a full scan)
+    const start = performance.now();
+    for (let i = 0; i < 1000; i++) {
+      diagram.findPartAt(10 + (i % 100), 10 + (i % 50));
+    }
+    const elapsed = performance.now() - start;
+    const perCall = elapsed / 1000;
+
+    console.log(
+      `[benchmark] hit-test findPartAt avg ${perCall.toFixed(3)}ms over 2000 nodes (${elapsed.toFixed(1)}ms for 1000 calls)`,
+    );
+    expect(perCall).toBeLessThan(5);
+  });
+
+  it('pan hot-path (setViewport + content bounds) stays responsive', () => {
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    const model = new GraphLinksModel();
+    const nodes: Array<{ key: number; x: number; y: number; width: number; height: number }> = [];
+    for (let i = 0; i < 2000; i++) {
+      nodes.push({ key: i, x: (i % 50) * 120, y: Math.floor(i / 50) * 80, width: 100, height: 50 });
+    }
+    model.nodeDataArray = nodes;
+    diagram.model = model;
+
+    const start = performance.now();
+    for (let i = 0; i < 200; i++) {
+      diagram.setViewport(i * 10, 0, 1);
+      diagram.getContentBounds();
+    }
+    const elapsed = performance.now() - start;
+    const perCall = elapsed / 200;
+
+    console.log(
+      `[benchmark] pan hot-path (setViewport+bounds) avg ${perCall.toFixed(3)}ms (${elapsed.toFixed(1)}ms for 200 iterations)`,
+    );
+    expect(perCall).toBeLessThan(10);
   });
 });

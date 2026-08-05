@@ -2,6 +2,15 @@
   --sl-color-accent: #1976d2;
 }
 
+/* Playground result iframe. Global (not scoped) because the iframe is created
+   at runtime, so scoped Astro styles would not apply to it. */
+.playground__frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
 /* Playground editor (native textarea) styling */
 .playground__editor textarea.graphojs-playground-editor {
   width: 100%;

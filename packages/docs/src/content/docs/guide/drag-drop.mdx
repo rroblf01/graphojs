@@ -1,28 +1,41 @@
 ---
 title: Drag & drop
-description: Añade nodos arrastrando desde una palette o con un botón.
+description: Añade nodos dinámicamente y arrástralos por el lienzo.
 ---
 
 import Playground from '../../../components/Playground.astro';
 import dragDropExample from '../../../examples/drag-drop.js?raw';
 
-Puedes añadir nodos al diagrama dinámicamente, ya sea arrastrando desde una
-palette o programáticamente.
+Puedes añadir nodos al diagrama dinámicamente y luego moverlos arrastrando.
 
-<Playground code={dragDropExample} height={480} />
+<Playground code={dragDropExample} height={500} />
 
-## Añadir nodos programáticamente
+## Añadir nodos
+
+El panel bajo el diagrama tiene un botón **+ Añadir nodo**. Cada clic crea un
+nodo con una **key única** y lo coloca en una posición de grid (sin
+superponerse).
 
 ```js
-model.addNodeData({ key: 5, label: 'Nuevo', x: 150, y: 100 });
+model.addNodeData({ key: 2, label: 'Nuevo', x: 40, y: 40 });
 ```
 
-## Palette y drop
+## Keys únicas
 
-`go.Palette` muestra templates arrastrables. Al soltarlos sobre el diagrama se
-crea un nodo nuevo. El patrón completo está en `e2e/fixtures/palette.html`.
+Es importante generar keys que no colisionen:
 
-## Reaccionar a los cambios
+```js
+const keys = model.getNodeDataArray().map((d) => d.key ?? 0);
+const next = Math.max(0, ...keys) + 1;
+```
 
-`diagram.addDiagramListener('PartAdded', ...)` se dispara cuando se añade un
-nodo. Prueba a pulsar **+ Añadir nodo** varias veces.
+## Arrastrar
+
+Una vez añadidos, los nodos se mueven con el ratón (DraggingTool) y la
+posición se guarda en el modelo de forma **undoable** (Ctrl/Cmd+Z lo deshace).
+
+## Drag real desde una palette
+
+Para arrastrar desde una `Palette` al diagrama, consulta
+`e2e/fixtures/palette.html` — el patrón es el mismo, pero el nodo se crea con
+los datos del template soltado.

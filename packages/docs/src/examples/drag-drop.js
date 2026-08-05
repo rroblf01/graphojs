@@ -1,4 +1,4 @@
-// GraphoJS: arrastra elementos desde una palette al diagrama.
+// GraphoJS: añade nodos al diagrama (simula un drag & drop desde una palette).
 import * as go from 'graphojs/go';
 
 const $ = go.GraphObject.make;
@@ -17,57 +17,55 @@ diagram.nodeTemplate = $(
     shadowColor: 'rgba(0,0,0,0.15)',
     shadowBlur: 6,
   }),
-  $(go.TextBlock, 'label', { margin: 8, font: '600 12px system-ui, sans-serif' },
+  $(go.TextBlock, 'label', { margin: 8, font: '600 12px system-ui, sans-serif', stroke: '#0d47a1' },
     new go.Binding('text', 'label')),
 );
 
 diagram.model = new go.GraphLinksModel({
-  nodeDataArray: [{ key: 1, label: 'Suelta aquí' }],
+  nodeDataArray: [{ key: 1, label: 'Nodo inicial' }],
   linkDataArray: [],
 });
+diagram.zoomToFit();
 
-// Palette con templates arrastrables (definición; el botón de abajo simula el drop)
-const shapes = ['Rectangle', 'Ellipse', 'Diamond', 'RoundedRectangle'];
-const fills = ['#e3f2fd', '#fce4ec', '#e8f5e9', '#fff8e1'];
-const templates = shapes.map((shape, i) => ({
-  id: `tpl-${i}`,
-  name: shape,
-  category: 'shapes',
-  shape: shape.toLowerCase(),
-  width: 110,
-  height: 46,
-  fill: fills[i],
-  stroke: '#1976d2',
-  strokeWidth: 2,
-  label: shape,
-}));
+// Layout del panel de controles debajo del diagrama
+const panel = document.createElement('div');
+panel.style.cssText =
+  'display:flex;gap:8px;align-items:center;margin-top:8px;padding:8px 10px;' +
+  'background:#f1f3f5;border-radius:8px;border:1px solid #e0e3e7;flex-wrap:wrap;';
+panel.textContent = 'Añade nodos con el botón, arrástralos en el lienzo:';
 
-// Registrar el drop: cuando se suelta un template sobre el diagrama
-diagram.addDiagramListener('PartAdded', () => {
-  diagram.zoomToFit();
-});
-
-window.__diagram = diagram;
-window.__paletteTemplates = templates;
-
-// Botón para añadir un nodo aleatorio (simula el drop)
-const btn = document.createElement('button');
-btn.textContent = '+ Añadir nodo';
-btn.style.cssText =
+const addBtn = document.createElement('button');
+addBtn.textContent = '+ Añadir nodo';
+addBtn.style.cssText =
   'padding:6px 14px;font:600 12px system-ui, sans-serif;border-radius:6px;' +
-  'border:1px solid #90caf9;background:#e3f2fd;color:#0d47a1;cursor:pointer;margin:8px 0;';
-btn.addEventListener('click', () => {
-  const n = diagram.getModel().getNodeCount();
+  'border:1px solid #90caf9;background:#e3f2fd;color:#0d47a1;cursor:pointer;';
+
+const status = document.createElement('span');
+status.style.cssText = 'font:600 12px system-ui, sans-serif;color:#546e7a;';
+
+function nextKey() {
+  // key único: máximo key del modelo + 1
+  const keys = diagram.getModel().getNodeDataArray().map((d) => d.key ?? 0);
+  return Math.max(0, ...keys) + 1;
+}
+
+function addNode() {
+  const key = nextKey();
+  const col = (key - 1) % 4;
+  const row = Math.floor((key - 1) / 4);
   diagram.getModel().addNodeData({
-    key: n + 1,
-    label: `Nodo ${n + 1}`,
-    x: 100 + Math.random() * 200,
-    y: 100 + Math.random() * 150,
-    shape: 'roundedRect',
-    fill: '#e3f2fd',
+    key,
+    label: `Nodo ${key}`,
+    x: 40 + col * 130,
+    y: 40 + row * 70,
   });
+  status.textContent = `${key} nodo(s) en el lienzo`;
   diagram.zoomToFit();
-});
-document.getElementById('graphojs-root').appendChild(btn);
+}
+
+addBtn.addEventListener('click', addNode);
+panel.appendChild(addBtn);
+panel.appendChild(status);
+document.getElementById('graphojs-root').appendChild(panel);
 
 window.__diagram = diagram;

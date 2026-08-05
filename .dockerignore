@@ -1,0 +1,23 @@
+# Dependencies
+**/node_modules
+**/dist
+**/.astro
+
+# Git
+.git
+.gitignore
+
+# Build artifacts
+coverage
+playwright-report
+test-results
+*.tsbuildinfo
+
+# Local
+.env
+.env.local
+*.log
+.DS_Store
+
+# Docs generated vendor
+packages/docs/public/vendor

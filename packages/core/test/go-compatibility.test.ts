@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+// @vitest-environment jsdom
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 import {
   go,
   GraphObject,
@@ -14,8 +15,61 @@ import {
   Size,
   Margin,
   LayoutNetwork,
+  Diagram,
+  GraphLinksModel,
 } from '../src/index.ts';
 import { Group } from '../src/parts/Group.ts';
+
+function mockContext() {
+  return {
+    save: vi.fn(),
+    restore: vi.fn(),
+    scale: vi.fn(),
+    translate: vi.fn(),
+    setTransform: vi.fn(),
+    clearRect: vi.fn(),
+    fillRect: vi.fn(),
+    strokeRect: vi.fn(),
+    beginPath: vi.fn(),
+    moveTo: vi.fn(),
+    lineTo: vi.fn(),
+    stroke: vi.fn(),
+    fill: vi.fn(),
+    ellipse: vi.fn(),
+    arc: vi.fn(),
+    arcTo: vi.fn(),
+    quadraticCurveTo: vi.fn(),
+    bezierCurveTo: vi.fn(),
+    closePath: vi.fn(),
+    roundRect: vi.fn(),
+    fillText: vi.fn(),
+    setLineDash: vi.fn(),
+    drawImage: vi.fn(),
+    clip: vi.fn(),
+    fillStyle: '',
+    strokeStyle: '',
+    lineWidth: 1,
+    globalAlpha: 1,
+    font: '',
+    textBaseline: '',
+    textAlign: '',
+    lineJoin: '',
+    lineCap: '',
+    createLinearGradient: vi.fn(() => ({ addColorStop: vi.fn() })),
+  } as unknown as CanvasRenderingContext2D;
+}
+
+beforeAll(() => {
+  HTMLCanvasElement.prototype.getContext = vi.fn(() =>
+    mockContext(),
+  ) as unknown as typeof HTMLCanvasElement.prototype.getContext;
+  class ResizeObserverMock {
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+  }
+  (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver = ResizeObserverMock;
+});
 
 describe('GoJS Compatibility', () => {
   describe('go namespace', () => {
@@ -146,21 +200,43 @@ describe('GoJS Compatibility', () => {
     });
   });
 
-  describe('Link.fromNode / toNode aliases', () => {
-    it('should have fromNode and toNode getters', () => {
-      const link = new Link(100, 1, 2);
-      expect(link.fromNode).toBe(1);
-      expect(link.toNode).toBe(2);
+  describe('Link.fromNode / toNode semantics', () => {
+    function makeDiagram(): Diagram {
+      const d = new Diagram({ div: document.createElement('div') });
+      d.model = new GraphLinksModel({
+        nodeDataArray: [
+          { key: 1, x: 0, y: 0 },
+          { key: 2, x: 100, y: 0 },
+          { key: 3, x: 200, y: 0 },
+        ],
+        linkDataArray: [
+          { key: 10, from: 1, to: 2 },
+          { key: 11, from: 2, to: 3 },
+        ],
+      });
+      return d;
+    }
+
+    it('fromNode/toNode return the Node object, fromKey/toKey return numbers', () => {
+      const d = makeDiagram();
+      const link = d.findLinkForKey(10) as Link | null;
+      expect(link).not.toBeNull();
+      expect(link?.fromNode?.key).toBe(1);
+      expect(link?.toNode?.key).toBe(2);
+      expect(link?.fromKey).toBe(1);
+      expect(link?.toKey).toBe(2);
     });
 
-    it('should have fromNode and toNode setters', () => {
+    it('fromNode/toNode setters accept Node objects or keys', () => {
       const link = new Link(100, 1, 2);
-      link.fromNode = 3;
-      link.toNode = 4;
-      expect(link.fromNode).toBe(3);
-      expect(link.toNode).toBe(4);
+      link.fromKey = 3;
+      link.toKey = 4;
       expect(link.fromKey).toBe(3);
       expect(link.toKey).toBe(4);
+      link.fromNode = 5;
+      link.toNode = 6;
+      expect(link.fromKey).toBe(5);
+      expect(link.toKey).toBe(6);
     });
   });
 

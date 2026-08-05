@@ -2,6 +2,8 @@ import { Rect } from '../geometry/Rect.ts';
 import type { Spot } from '../geometry/Spot.ts';
 import type { NodeKey } from '../model/Model.ts';
 import { Part } from './Part.ts';
+import type { Node } from './Node.ts';
+import type { Diagram } from '../diagram/Diagram.ts';
 
 export type LinkRouting = 'straight' | 'orthogonal' | 'curved';
 export type ArrowheadStyle = 'triangle' | 'openArrow' | 'diamond' | 'circle' | 'none';
@@ -71,26 +73,56 @@ export class Link extends Part {
     return this._fromKey;
   }
 
-  /** GoJS-compatible alias for fromKey. */
-  get fromNode(): NodeKey {
-    return this._fromKey;
+  set fromKey(value: NodeKey) {
+    this._fromKey = value;
   }
 
-  set fromNode(value: NodeKey) {
-    this._fromKey = value;
+  /** GoJS-compatible: The source node of this link (or null). */
+  get fromNode(): Node | null {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return null;
+    return diagram.findNodeForKey(this._fromKey);
+  }
+
+  set fromNode(value: Node | NodeKey | null) {
+    if (value === null || typeof value === 'number' || typeof value === 'string') {
+      this._fromKey = value as NodeKey;
+    } else {
+      this._fromKey = value.key;
+    }
   }
 
   get toKey(): NodeKey {
     return this._toKey;
   }
 
-  /** GoJS-compatible alias for toKey. */
-  get toNode(): NodeKey {
-    return this._toKey;
+  set toKey(value: NodeKey) {
+    this._toKey = value;
   }
 
-  set toNode(value: NodeKey) {
-    this._toKey = value;
+  /** GoJS-compatible: The destination node of this link (or null). */
+  get toNode(): Node | null {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return null;
+    return diagram.findNodeForKey(this._toKey);
+  }
+
+  set toNode(value: Node | NodeKey | null) {
+    if (value === null || typeof value === 'number' || typeof value === 'string') {
+      this._toKey = value as NodeKey;
+    } else {
+      this._toKey = value.key;
+    }
+  }
+
+  /** GoJS-compatible: Find the source node of this link (or null). */
+  findFromNode(): Node | null {
+    return this.fromNode;
+  }
+
+  /** GoJS-compatible: Find the destination node of this link (or null). */
+  findToNode(): Node | null {
+    return this.toNode;
   }
 
   get routing(): LinkRouting {

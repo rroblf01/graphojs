@@ -5,6 +5,8 @@ import { Part } from './Part.ts';
 import { Panel } from '../panel/Panel.ts';
 import { Port } from './Port.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
+import type { Link } from './Link.ts';
+import type { Diagram } from '../diagram/Diagram.ts';
 
 export type NodeShape = 'rect' | 'ellipse' | 'roundedRect';
 
@@ -291,6 +293,85 @@ export class Node extends Part {
         // Bounding box already confirmed inside
         return true;
     }
+  }
+
+  /** GoJS-compatible: All links that point into this node. */
+  findLinksInto(): Link[] {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return [];
+    return diagram.allLinks.filter((l) => l.toKey === this.key);
+  }
+
+  /** GoJS-compatible: All links that point out of this node. */
+  findLinksOutOf(): Link[] {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return [];
+    return diagram.allLinks.filter((l) => l.fromKey === this.key);
+  }
+
+  /** GoJS-compatible: All links connected to this node (in or out). */
+  findLinksConnected(): Link[] {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return [];
+    return diagram.allLinks.filter((l) => l.fromKey === this.key || l.toKey === this.key);
+  }
+
+  /** GoJS-compatible: The source nodes of the links pointing into this node. */
+  findNodesInto(): Node[] {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return [];
+    const result: Node[] = [];
+    for (const l of this.findLinksInto()) {
+      const node = diagram.findNodeForKey(l.fromKey);
+      if (node) result.push(node);
+    }
+    return result;
+  }
+
+  /** GoJS-compatible: The destination nodes of the links pointing out of this node. */
+  findNodesOutOf(): Node[] {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return [];
+    const result: Node[] = [];
+    for (const l of this.findLinksOutOf()) {
+      const node = diagram.findNodeForKey(l.toKey);
+      if (node) result.push(node);
+    }
+    return result;
+  }
+
+  /** GoJS-compatible: All nodes connected to this node by a link. */
+  findNodesConnected(): Node[] {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return [];
+    const result: Node[] = [];
+    for (const l of this.findLinksConnected()) {
+      const node =
+        l.fromKey === this.key
+          ? diagram.findNodeForKey(l.toKey)
+          : diagram.findNodeForKey(l.fromKey);
+      if (node) result.push(node);
+    }
+    return result;
+  }
+
+  /** GoJS-compatible: Whether this node is a tree leaf (no tree children). */
+  isTreeLeaf(): boolean {
+    return this.findTreeChildrenNodes().length === 0;
+  }
+
+  /** GoJS-compatible: The parent node in the tree structure (or null). */
+  findTreeParentNode(): Node | null {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return null;
+    return diagram.findTreeParent(this);
+  }
+
+  /** GoJS-compatible: The child nodes in the tree structure. */
+  findTreeChildrenNodes(): Node[] {
+    const diagram = this.diagram as Diagram | null;
+    if (!diagram) return [];
+    return diagram.findTreeChildren(this);
   }
 }
 

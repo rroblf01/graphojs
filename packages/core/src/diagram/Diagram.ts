@@ -1594,8 +1594,8 @@ export class Diagram {
   private updateLinkFromData(link: Link, linkData: LinkData): void {
     this.hitIndex?.remove(link);
     // Keep fromKey/toKey in sync with the model (fixes stale endpoints after relink)
-    if (linkData.from !== link.fromKey) link.fromNode = linkData.from;
-    if (linkData.to !== link.toKey) link.toNode = linkData.to;
+    if (linkData.from !== link.fromKey) link.fromKey = linkData.from;
+    if (linkData.to !== link.toKey) link.toKey = linkData.to;
     const routing = linkData.routing;
     if (routing === 'orthogonal' || routing === 'curved') {
       link.routing = routing;
@@ -1987,6 +1987,11 @@ export class Diagram {
   /** GoJS-compatible: The set of currently selected parts. */
   get selection(): (Node | Link | Group)[] {
     return this.getSelectedParts();
+  }
+
+  /** GoJS-compatible: All links in this diagram. */
+  get allLinks(): Link[] {
+    return Array.from(this.links.values());
   }
 
   /** GoJS-compatible: Whether a node (group) subgraph is expanded. */
@@ -2985,12 +2990,10 @@ export class Diagram {
 
   /** GoJS-compatible: Find all nodes that are tree roots (no parent key). */
   findTreeRoots(): Node[] {
-    const model = this._model as unknown as { getParentKey?: (d: NodeData) => NodeKey | undefined };
-    if (!model.getParentKey) return [];
     const roots: Node[] = [];
     for (const [, node] of this.nodes) {
       const data = node.data;
-      if (data && model.getParentKey(data) === undefined) {
+      if (data && this.treeParentKeyOf(data) === undefined) {
         roots.push(node);
       }
     }
@@ -2999,12 +3002,10 @@ export class Diagram {
 
   /** GoJS-compatible: Find the tree children of a node. */
   findTreeChildren(node: Node): Node[] {
-    const model = this._model as unknown as { getParentKey?: (d: NodeData) => NodeKey | undefined };
-    if (!model.getParentKey) return [];
     const children: Node[] = [];
     for (const [, other] of this.nodes) {
       const data = other.data;
-      if (data && model.getParentKey(data) === node.key) {
+      if (data && this.treeParentKeyOf(data) === node.key) {
         children.push(other);
       }
     }
@@ -3013,13 +3014,22 @@ export class Diagram {
 
   /** GoJS-compatible: Find the tree parent of a node, or null. */
   findTreeParent(node: Node): Node | null {
-    const model = this._model as unknown as { getParentKey?: (d: NodeData) => NodeKey | undefined };
-    if (!model.getParentKey) return null;
     const data = node.data;
     if (!data) return null;
-    const parentKey = model.getParentKey(data);
+    const parentKey = this.treeParentKeyOf(data);
     if (parentKey === undefined) return null;
     return this.findNodeForKey(parentKey);
+  }
+
+  /** Resolve the tree parent key of a node data object (via model or the "parent" property). */
+  private treeParentKeyOf(data: NodeData): NodeKey | undefined {
+    const model = this._model as unknown as { getParentKey?: (d: NodeData) => NodeKey | undefined };
+    if (model.getParentKey) {
+      const key = model.getParentKey(data);
+      if (key !== undefined) return key;
+    }
+    const parent = (data as Record<string, unknown>).parent;
+    return parent === null || parent === undefined ? undefined : (parent as NodeKey);
   }
 
   /** Destroy the diagram and clean up resources. */

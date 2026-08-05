@@ -1491,3 +1491,90 @@ describe('G9: geometry GoJS API gaps (Point/Rect/Size/Spot)', () => {
     expect(shape.part).toBe(node);
   });
 });
+
+describe('H10: graph navigation + Link.fromNode/toNode + Shape bounds', () => {
+  function navDiagram(): Diagram {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0 },
+        { key: 2, x: 100, y: 0 },
+        { key: 3, x: 200, y: 0 },
+      ],
+      linkDataArray: [
+        { key: 10, from: 1, to: 2 },
+        { key: 11, from: 2, to: 3 },
+      ],
+    });
+    return d;
+  }
+
+  it('Node findLinksInto/findLinksOutOf/findNodesInto/findNodesOutOf', () => {
+    const d = navDiagram();
+    const n1 = d.findNodeForKey(1) as Node;
+    const n2 = d.findNodeForKey(2) as Node;
+    const n3 = d.findNodeForKey(3) as Node;
+    expect(n1.findLinksOutOf()).toHaveLength(1);
+    expect(n1.findLinksInto()).toHaveLength(0);
+    expect(n1.findNodesOutOf().map((n) => n.key)).toEqual([2]);
+    expect(n2.findLinksInto()).toHaveLength(1);
+    expect(n2.findLinksOutOf()).toHaveLength(1);
+    expect(n2.findNodesInto().map((n) => n.key)).toEqual([1]);
+    expect(n2.findNodesOutOf().map((n) => n.key)).toEqual([3]);
+    expect(n3.findLinksInto()).toHaveLength(1);
+    expect(n3.findLinksOutOf()).toHaveLength(0);
+  });
+
+  it('Node findLinksConnected/findNodesConnected', () => {
+    const d = navDiagram();
+    const n2 = d.findNodeForKey(2) as Node;
+    expect(n2.findLinksConnected()).toHaveLength(2);
+    expect(n2.findNodesConnected().map((n) => n.key).sort()).toEqual([1, 3]);
+  });
+
+  it('Node isTreeLeaf/findTreeParentNode/findTreeChildrenNodes', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, parent: null, x: 0, y: 0 },
+        { key: 2, parent: 1, x: 100, y: 0 },
+        { key: 3, parent: 2, x: 200, y: 0 },
+      ],
+      linkDataArray: [],
+    });
+    const n1 = d.findNodeForKey(1) as Node;
+    const n2 = d.findNodeForKey(2) as Node;
+    const n3 = d.findNodeForKey(3) as Node;
+    expect(n1.findTreeChildrenNodes().map((n) => n.key)).toEqual([2]);
+    expect(n2.findTreeParentNode()?.key).toBe(1);
+    expect(n2.findTreeChildrenNodes().map((n) => n.key)).toEqual([3]);
+    expect(n3.isTreeLeaf()).toBe(true);
+    expect(n2.isTreeLeaf()).toBe(false);
+  });
+
+  it('Link fromNode/toNode return Node objects and findFromNode/findToNode', () => {
+    const d = navDiagram();
+    const link = d.findLinkForKey(10) as Link;
+    expect(link.fromNode?.key).toBe(1);
+    expect(link.toNode?.key).toBe(2);
+    expect(link.findFromNode()?.key).toBe(1);
+    expect(link.findToNode()?.key).toBe(2);
+    expect(link.fromKey).toBe(1);
+    expect(link.toKey).toBe(2);
+    link.fromNode = 3;
+    expect(link.fromKey).toBe(3);
+    link.fromKey = 1;
+    const n3 = d.findNodeForKey(3) as Node;
+    link.toNode = n3;
+    expect(link.toKey).toBe(3);
+  });
+
+  it('Shape getGeometricBounds/getStrokeBounds', () => {
+    const s = new Shape('Rectangle');
+    s.width = 100;
+    s.height = 50;
+    s.strokeWidth = 4;
+    expect(s.getGeometricBounds()).toEqual(new RectClass(0, 0, 100, 50));
+    expect(s.getStrokeBounds()).toEqual(new RectClass(-2, -2, 104, 54));
+  });
+});

@@ -1,5 +1,6 @@
 import type { Size } from '../geometry/Size.ts';
 import { Size as SizeClass } from '../geometry/Size.ts';
+import { Rect } from '../geometry/Rect.ts';
 import { PathCache } from '../render/RenderCache.ts';
 import { ShapeRenderer } from '../shapes/ShapeRenderer.ts';
 import type { ShapeType } from '../shapes/ShapeTypes.ts';
@@ -250,6 +251,20 @@ export class Shape extends GraphObject {
     const w = this.width > 0 ? this.width : 100;
     const h = this.height > 0 ? this.height : 60;
     return new SizeClass(w, h);
+  }
+
+  /** GoJS-compatible: The bounds of this shape's geometry (at its current size). */
+  getGeometricBounds(): Rect {
+    const w = this.width > 0 ? this.width : this.actualSize.width;
+    const h = this.height > 0 ? this.height : this.actualSize.height;
+    return new Rect(0, 0, w || 0, h || 0);
+  }
+
+  /** GoJS-compatible: The bounds of this shape's geometry inflated by the stroke width. */
+  getStrokeBounds(): Rect {
+    const b = this.getGeometricBounds();
+    const s = this._strokeWidth / 2;
+    return new Rect(b.x - s, b.y - s, b.width + this._strokeWidth, b.height + this._strokeWidth);
   }
 
   override draw(

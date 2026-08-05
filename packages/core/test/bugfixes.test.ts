@@ -1578,3 +1578,47 @@ describe('H10: graph navigation + Link.fromNode/toNode + Shape bounds', () => {
     expect(s.getStrokeBounds()).toEqual(new RectClass(-2, -2, 104, 54));
   });
 });
+
+describe('I11: minor GoJS API gaps (Diagram.focus, canZoomToFit, ToolManager getters, Part state)', () => {
+  it('Diagram.focus does not throw', () => {
+    const d = createDiagram();
+    expect(() => d.focus()).not.toThrow();
+  });
+
+  it('CommandHandler canZoomToFit reflects allowZoom', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0 }],
+    });
+    const ch = d.getCommandHandler();
+    expect(ch.canZoomToFit()).toBe(true);
+    expect(ch.zoomToFit()).toBe(true);
+    d.allowZoom = false;
+    expect(ch.canZoomToFit()).toBe(false);
+    expect(ch.zoomToFit()).toBe(false);
+  });
+
+  it('ToolManager currentTool/mouseDownTools/mouseMoveTools/mouseUpTools', () => {
+    const d = createDiagram();
+    const tm = d.getToolManager();
+    expect(tm.mouseDownTools).toBeDefined();
+    expect(tm.mouseMoveTools).toBeDefined();
+    expect(tm.mouseUpTools).toBeDefined();
+    expect(Array.isArray(tm.mouseDownTools)).toBe(true);
+    expect(tm.currentTool).toBeNull();
+  });
+
+  it('Part isPositioned/isMemberOfGroup', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0 }],
+      linkDataArray: [],
+    });
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.isPositioned).toBe(true);
+    expect(node.isMemberOfGroup).toBe(false);
+    const node2 = d.findNodeForKey(1) as Node;
+    node2.containingGroup = node as unknown as Group;
+    expect(node2.isMemberOfGroup).toBe(true);
+  });
+});

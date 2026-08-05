@@ -12,14 +12,14 @@ export class ToolManager {
   private activeToolName: string | null = null;
 
   // GoJS-style tool lists per event type
-  private mouseDownTools: Tool[] = [];
-  private mouseMoveTools: Tool[] = [];
-  private mouseUpTools: Tool[] = [];
-  private wheelTools: Tool[] = [];
-  private clickTools: Tool[] = [];
-  private doubleClickTools: Tool[] = [];
-  private keyDownTools: Tool[] = [];
-  private keyUpTools: Tool[] = [];
+  private mouseDownToolsList: Tool[] = [];
+  private mouseMoveToolsList: Tool[] = [];
+  private mouseUpToolsList: Tool[] = [];
+  private wheelToolsList: Tool[] = [];
+  private clickToolsList: Tool[] = [];
+  private doubleClickToolsList: Tool[] = [];
+  private keyDownToolsList: Tool[] = [];
+  private keyUpToolsList: Tool[] = [];
 
   constructor(diagram: Diagram) {
     this.diagram = diagram;
@@ -61,6 +61,26 @@ export class ToolManager {
   /** Get all registered tool names. */
   getToolNames(): string[] {
     return Array.from(this.tools.keys());
+  }
+
+  /** GoJS-compatible: The currently active tool (or null). */
+  get currentTool(): Tool | null {
+    return this.activeTool;
+  }
+
+  /** GoJS-compatible: The tool list consulted on mouse-down events. */
+  get mouseDownTools(): readonly Tool[] {
+    return this.mouseDownToolsList;
+  }
+
+  /** GoJS-compatible: The tool list consulted on mouse-move events. */
+  get mouseMoveTools(): readonly Tool[] {
+    return this.mouseMoveToolsList;
+  }
+
+  /** GoJS-compatible: The tool list consulted on mouse-up events. */
+  get mouseUpTools(): readonly Tool[] {
+    return this.mouseUpToolsList;
   }
 
   /** GoJS-compatible: Add a tool to a specific event list. */
@@ -120,21 +140,21 @@ export class ToolManager {
   private getList(listName: string): Tool[] {
     switch (listName) {
       case 'mouseDown':
-        return this.mouseDownTools;
+        return this.mouseDownToolsList;
       case 'mouseMove':
-        return this.mouseMoveTools;
+        return this.mouseMoveToolsList;
       case 'mouseUp':
-        return this.mouseUpTools;
+        return this.mouseUpToolsList;
       case 'wheel':
-        return this.wheelTools;
+        return this.wheelToolsList;
       case 'click':
-        return this.clickTools;
+        return this.clickToolsList;
       case 'doubleClick':
-        return this.doubleClickTools;
+        return this.doubleClickToolsList;
       case 'keyDown':
-        return this.keyDownTools;
+        return this.keyDownToolsList;
       case 'keyUp':
-        return this.keyUpTools;
+        return this.keyUpToolsList;
       default:
         return [];
     }
@@ -142,14 +162,14 @@ export class ToolManager {
 
   private removeFromLists(tool: Tool): void {
     for (const list of [
-      this.mouseDownTools,
-      this.mouseMoveTools,
-      this.mouseUpTools,
-      this.wheelTools,
-      this.clickTools,
-      this.doubleClickTools,
-      this.keyDownTools,
-      this.keyUpTools,
+      this.mouseDownToolsList,
+      this.mouseMoveToolsList,
+      this.mouseUpToolsList,
+      this.wheelToolsList,
+      this.clickToolsList,
+      this.doubleClickToolsList,
+      this.keyDownToolsList,
+      this.keyUpToolsList,
     ]) {
       const index = list.indexOf(tool);
       if (index !== -1) list.splice(index, 1);
@@ -213,7 +233,7 @@ export class ToolManager {
     }
 
     // Try to find a tool that can handle this event
-    const tool = this.findToolForEvent(this.mouseDownTools, e);
+    const tool = this.findToolForEvent(this.mouseDownToolsList, e);
     if (tool) {
       const name = this.findToolName(tool);
       if (name) {
@@ -233,7 +253,7 @@ export class ToolManager {
 
     // Only pick up a tool on mousemove while a button is held (drag), never on hover
     if (e.buttons > 0) {
-      const tool = this.findToolForEvent(this.mouseMoveTools, e);
+      const tool = this.findToolForEvent(this.mouseMoveToolsList, e);
       if (tool) {
         const name = this.findToolName(tool);
         if (name) {
@@ -255,7 +275,7 @@ export class ToolManager {
     }
 
     // Try to find a tool that can handle this event
-    const tool = this.findToolForEvent(this.mouseUpTools, e);
+    const tool = this.findToolForEvent(this.mouseUpToolsList, e);
     if (tool) {
       const name = this.findToolName(tool);
       if (name) {
@@ -276,7 +296,7 @@ export class ToolManager {
     }
 
     // Try to find a tool in wheelTools (unlikely to have canStart, so just use the first enabled one)
-    for (const tool of this.wheelTools) {
+    for (const tool of this.wheelToolsList) {
       if (tool.isEnabled) {
         const name = this.findToolName(tool);
         if (name) {
@@ -296,7 +316,7 @@ export class ToolManager {
       return;
     }
 
-    for (const tool of this.keyDownTools) {
+    for (const tool of this.keyDownToolsList) {
       if (tool.isEnabled) {
         tool.doKeyDown(e);
       }
@@ -310,7 +330,7 @@ export class ToolManager {
       return;
     }
 
-    for (const tool of this.keyUpTools) {
+    for (const tool of this.keyUpToolsList) {
       if (tool.isEnabled) {
         tool.doKeyUp(e);
       }
@@ -324,7 +344,7 @@ export class ToolManager {
       return;
     }
 
-    for (const tool of this.clickTools) {
+    for (const tool of this.clickToolsList) {
       if (tool.isEnabled) {
         tool.doClick(e);
       }
@@ -338,7 +358,7 @@ export class ToolManager {
       return;
     }
 
-    for (const tool of this.doubleClickTools) {
+    for (const tool of this.doubleClickToolsList) {
       if (tool.isEnabled) {
         tool.doDoubleClick(e);
       }

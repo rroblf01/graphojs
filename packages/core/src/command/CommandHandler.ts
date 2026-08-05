@@ -752,9 +752,14 @@ export class CommandHandler {
     return true;
   }
 
+  /** GoJS-compatible: Whether the diagram can zoom to fit. */
+  canZoomToFit(): boolean {
+    return this.canModify() && this.diagram.allowZoom;
+  }
+
   /** GoJS-compatible: Zoom to fit the entire diagram in the viewport. */
   zoomToFit(): boolean {
-    if (!this.canModify()) return false;
+    if (!this.canZoomToFit()) return false;
     this.diagram.zoomToFit();
     return true;
   }

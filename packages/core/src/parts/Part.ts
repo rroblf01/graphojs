@@ -259,6 +259,16 @@ export abstract class Part {
     this._containingGroup = value;
   }
 
+  /** GoJS-compatible: Whether this part is a member of a group. */
+  get isMemberOfGroup(): boolean {
+    return this._containingGroup !== null;
+  }
+
+  /** GoJS-compatible: Whether this part has been given a position/bounds. */
+  get isPositioned(): boolean {
+    return this._bounds.isReal();
+  }
+
   /** Get the layer this part belongs to. */
   get layer(): Layer | null {
     return this._layer;

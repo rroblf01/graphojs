@@ -2149,6 +2149,13 @@ export class Diagram {
     return this.container;
   }
 
+  /** GoJS-compatible: Give keyboard focus to the diagram's div. */
+  focus(): void {
+    if (this.container && typeof this.container.focus === 'function') {
+      this.container.focus();
+    }
+  }
+
   /** GoJS-compatible: The background color of the diagram. */
   get background(): string {
     return this.backgroundColor;

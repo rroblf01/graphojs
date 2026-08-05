@@ -1,0 +1,31 @@
+---
+title: Modelo
+description: "Trabaja con GraphLinksModel y TreeModel: nodos, enlaces y datos."
+---
+
+import Playground from '../../../components/Playground.astro';
+import modelExample from '../../../examples/model.js?raw';
+
+El modelo guarda los datos del diagrama. `GraphLinksModel` tiene
+`nodeDataArray` y `linkDataArray`, y expone la API GoJS para modificarlos.
+
+<Playground code={modelExample} height={440} />
+
+## API de mutación
+
+GraphoJS implementa los métodos canónicos de GoJS:
+
+- `model.addNodeData(nodeData)` / `model.addLinkData(linkData)`
+- `model.removeNodeData(key)` / `model.removeLinkData(key)`
+- `model.setDataProperty(data, prop, value)` — actualiza y notifica
+- `model.getNodeDataArray()` / `model.getLinkDataArray()`
+
+## Reacción al cambio
+
+Al mutar el modelo dentro de `diagram.commit(...)`, los cambios son
+**undoable** y el diagrama se actualiza automáticamente.
+
+## TreeModel
+
+Para estructuras jerárquicas (árboles) existe `TreeModel`, con `parent` en los
+datos. Ver [Diagrama](/guide/diagram/) para árboles y navegación.

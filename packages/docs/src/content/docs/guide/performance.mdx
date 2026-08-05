@@ -1,0 +1,28 @@
+---
+title: Rendimiento
+description: Benchmarks y consejos para grafos grandes.
+---
+
+import Playground from '../../../components/Playground.astro';
+import performanceExample from '../../../examples/performance.js?raw';
+
+GraphoJS usa culling de viewport, redibujado por dirty-rect, caché de Path2D y
+medición de texto. Prueba la sincronización de 2000 nodos + 2000 enlaces:
+
+<Playground code={performanceExample} height={440} />
+
+## Métricas
+
+- **Sync de modelo** (2000 nodos + 2000 links): ~40 ms (jsdom) / ~170 ms (browser real)
+- **Render por frame**: ~10 ms
+- **FPS** en browser con 5000 nodos: ~100 FPS
+
+Los benchmarks reales viven en `packages/core/test/benchmark.test.ts` y
+`e2e/perf.spec.ts`.
+
+## Consejos
+
+- Usa templates ligeros (evita sombras y geometrías complejas en cada frame).
+- Para ForceDirected, limita `maxIterations`.
+- Aprovecha `findPartsInRect` y la navegación de grafo en vez de recorrer
+  todos los nodos.

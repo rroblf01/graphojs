@@ -1,0 +1,27 @@
+---
+title: Interacción
+description: Selección, arrastre, edición de texto y eventos del diagrama.
+---
+
+import Playground from '../../../components/Playground.astro';
+import interactionExample from '../../../examples/interaction.js?raw';
+
+GraphoJS incluye herramientas de interacción: seleccionar con clic, mover
+arrastrando y editar texto con doble clic.
+
+<Playground code={interactionExample} height={460} />
+
+## Eventos
+
+`diagram.addDiagramListener('SelectionChanged', handler)` te deja reaccionar a
+cambios de selección, movimiento, redimensionado y más.
+
+## Edición de texto
+
+Un `TextBlock` con `editable: true` permite editar la etiqueta con doble clic.
+Los cambios se aplican al modelo de forma transaccional.
+
+## Flags de interacción
+
+El diagrama respeta `isReadOnly`, `allowMove`, `allowCopy`, `allowDelete`,
+`allowZoom`, `allowTextEdit`, `allowLink` y `allowRelink` (igual que GoJS).

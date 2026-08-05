@@ -1,0 +1,21 @@
+---
+title: Export
+description: PNG, SVG y print del diagrama.
+---
+
+import Playground from '../../../components/Playground.astro';
+import exportExample from '../../../examples/export.js?raw';
+
+Puedes exportar el diagrama a imagen PNG, SVG o imprimirlo.
+
+<Playground code={exportExample} height={460} />
+
+## API de export
+
+- `diagram.makeImage({ scale, background, padding })` → `HTMLCanvasElement`
+- `diagram.makeImageData({ scale })` → data URL de PNG
+- `diagram.makeSvg()` → `SVGElement`
+- `diagram.print()` → imprime el diagrama
+
+El playground de arriba expone `__exportImage`, `__exportSvg` y `__print`
+para probarlos desde la consola del navegador.

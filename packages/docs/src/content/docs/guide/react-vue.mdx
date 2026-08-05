@@ -1,0 +1,43 @@
+---
+title: React y Vue
+description: Usa GraphoJS con @graphojs/react y @graphojs/vue.
+---
+
+import Playground from '../../../components/Playground.astro';
+import reactVueExample from '../../../examples/react-vue.js?raw';
+
+GraphoJS tiene wrappers para React (`@graphojs/react`) y Vue (`@graphojs/vue`).
+Ambos montan el mismo núcleo y exponen los callbacks que el core ya ofrece.
+
+<Playground code={reactVueExample} height={440} />
+
+## React
+
+```tsx
+import { Diagram, Palette, Overview } from '@graphojs/react';
+import { GraphLinksModel, GraphObject } from 'graphojs';
+
+<Diagram
+  model={model}
+  nodeTemplate={template}
+  initDiagram={(d) => d.zoomToFit()}
+  onSelectionChanged={() => {}}
+/>
+```
+
+## Vue
+
+```vue
+<script setup>
+import { Diagram } from '@graphojs/vue';
+</script>
+
+<template>
+  <Diagram :model="model" :node-template="template" />
+</template>
+```
+
+## Callbacks
+
+Ambos wrappers exponen `initDiagram`, `onModelChange`, `onDiagramEvent` y
+`onSelectionChanged` (y en Vue los emits equivalentes).

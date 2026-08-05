@@ -1,0 +1,29 @@
+---
+title: Layouts
+description: Grid, Tree, Circular y ForceDirected con un clic.
+---
+
+import Playground from '../../../components/Playground.astro';
+import layoutsExample from '../../../examples/layouts.js?raw';
+
+GraphoJS incluye varios layouts: `GridLayout`, `TreeLayout`, `CircularLayout`,
+`ForceDirectedLayout`, `LayeredDigraphLayout` y `SpotLayout`.
+
+<Playground code={layoutsExample} height={460} />
+
+## Usar un layout
+
+```js
+diagram.layout = new go.GridLayout();
+diagram.layoutDiagram();
+```
+
+## Cambiar en runtime
+
+Puedes asignar un layout nuevo y relanzar `layoutDiagram()` en cualquier
+momento (el ejemplo de arriba lo hace con `__setLayout`).
+
+## Nota sobre ForceDirected
+
+`ForceDirectedLayout` es O(n²); para grafos grandes conviene limitar
+`maxIterations` o usarlo con menos nodos.

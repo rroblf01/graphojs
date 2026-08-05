@@ -1,0 +1,36 @@
+---
+title: Templates
+description: Personaliza nodos, enlaces y grupos con GraphObject.make y bindings.
+---
+
+import Playground from '../../../components/Playground.astro';
+import templatesExample from '../../../examples/templates.js?raw';
+
+Los templates definen cómo se renderiza cada nodo, enlace o grupo. Se construyen
+con `GraphObject.make` (el atajo `$`) y pueden usar **bindings** para leer datos
+del modelo.
+
+<Playground code={templatesExample} height={460} />
+
+## Estructura de un template
+
+Un template de nodo es un `Panel` (aquí de tipo `Auto`) con hijos:
+
+- `go.Shape` — la forma (fill, stroke, tamaño mínimo).
+- `go.TextBlock` — la etiqueta, enlazada a una propiedad del dato.
+
+## Bindings
+
+`new go.Binding('text', 'name')` enlaza `data.name` a la propiedad `text` del
+`TextBlock`. Al cambiar el modelo, la etiqueta se actualiza automáticamente.
+
+## Part-level properties
+
+Propiedades como `background`, `width`, `height` o `scale` en el mapa de props
+del template se aplican **al Part** (no al Panel), igual que en GoJS.
+
+## Enlaces
+
+Un template de enlace suele tener:
+- Un `Shape` que dibuja la línea.
+- Un `Shape` con `toArrow` para la flecha.

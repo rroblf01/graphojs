@@ -12,3 +12,7 @@ test-results/
 .vscode/
 # Generated e2e fixture bundles (built by e2e/build-fixtures.mjs)
 e2e/fixtures/*.js
+# Astro docs site
+packages/docs/.astro/
+packages/docs/dist/
+packages/docs/public/vendor/

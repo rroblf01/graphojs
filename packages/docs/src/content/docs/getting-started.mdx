@@ -1,0 +1,36 @@
+---
+title: Empezar
+description: Crea tu primer diagrama con GraphoJS en menos de un minuto.
+---
+
+import Playground from '../../components/Playground.astro';
+import gettingStarted from '../../examples/getting-started.js?raw';
+
+GraphoJS es una alternativa open-source (MIT) a GoJS. La mayoría de las
+aplicaciones migran cambiando **solo la línea de import**.
+
+## Instalación
+
+```bash
+npm install graphojs
+# o, para el namespace compatible con GoJS:
+import * as go from 'graphojs/go';
+```
+
+## Tu primer diagrama
+
+El siguiente playground muestra un diagrama con tres nodos y dos enlaces.
+Edita el código y pulsa **Run** (o Ctrl/Cmd+Enter) para ver el resultado.
+
+<Playground code={gettingStarted} height={460} />
+
+## Qué ha pasado
+
+1. `go.Diagram('graphojs-root')` crea el diagrama dentro del elemento con ese id.
+2. `diagram.nodeTemplate` define cómo se dibuja cada nodo (una forma + una etiqueta).
+3. `diagram.model` es un `GraphLinksModel` con `nodeDataArray` y `linkDataArray`.
+4. El motor se encarga del render, los eventos y las interacciones.
+
+## Siguiente paso
+
+Continúa con [Templates](/guide/templates/) para personalizar nodos y enlaces.

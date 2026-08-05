@@ -1,0 +1,105 @@
+---
+/**
+ * Playground component: shows editable example code (CodeMirror) and runs it
+ * in an isolated iframe via an import map to the vendored graphojs dist.
+ *
+ * Usage (in MD/MDX):
+ *   <Playground code={`...`} height={420} />
+ */
+interface Props {
+  code: string;
+  height?: number;
+  readonly?: boolean;
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro frontmatter props are used in the template
+const { code, height = 420, readonly = false } = Astro.props;
+---
+
+<div
+  class="playground-root"
+  style="height: {height}px"
+  data-pg-code={code}
+  data-pg-readonly={readonly ? 'true' : 'false'}
+  data-pg-height={height}
+>
+  <div class="playground__toolbar">
+    <button class="pg-run" type="button">▶ Run</button>
+    <button class="pg-reset" type="button">↺ Reset</button>
+  </div>
+  <div class="playground__split">
+    <div class="playground__editor"></div>
+    <div class="playground__frame"></div>
+  </div>
+</div>
+
+<script>
+  import { mountPlayground } from './PlaygroundClient';
+  const rootEls = document.querySelectorAll('.playground-root');
+  rootEls.forEach((el) => {
+    const c = el.getAttribute('data-pg-code') ?? '';
+    const ro = el.getAttribute('data-pg-readonly') === 'true';
+    mountPlayground(el as HTMLElement, { code: c, readonly: ro });
+  });
+</script>
+
+<style>
+  .playground-root {
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .playground__toolbar {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--sl-color-gray-6);
+    border-bottom: 1px solid var(--sl-color-gray-5);
+  }
+  .playground__toolbar button {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: 1px solid var(--sl-color-gray-4);
+    background: var(--sl-color-gray-7);
+    color: var(--sl-color-white);
+    cursor: pointer;
+  }
+  .playground__toolbar button:hover {
+    background: var(--sl-color-accent);
+    border-color: var(--sl-color-accent);
+  }
+  .playground__split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex: 1;
+    min-height: 320px;
+  }
+  .playground__editor {
+    border-right: 1px solid var(--sl-color-gray-5);
+    overflow: auto;
+    font-size: 0.85rem;
+  }
+  .playground__frame {
+    background: #fff;
+    overflow: hidden;
+  }
+  .playground__frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  @media (max-width: 720px) {
+    .playground__split {
+      grid-template-columns: 1fr;
+    }
+    .playground__editor {
+      border-right: 0;
+      border-bottom: 1px solid var(--sl-color-gray-5);
+    }
+  }
+</style>

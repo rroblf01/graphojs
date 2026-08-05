@@ -12,6 +12,8 @@
   },
   "scripts": {
     "build": "pnpm -C packages/core build && pnpm -C packages/react build && pnpm -C packages/vue build",
+    "build:docs": "pnpm -C packages/core build && pnpm -C packages/docs build",
+    "docs:dev": "pnpm -C packages/docs dev",
     "typecheck": "pnpm -r typecheck",
     "lint": "biome lint .",
     "format": "biome format --write .",

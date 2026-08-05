@@ -1,9 +1,11 @@
-// GraphoJS interaction: click to select, drag to move, double-click to edit text.
+// GraphoJS interaction: clic para seleccionar, arrastrar para mover, doble clic para editar texto.
 import * as go from 'graphojs/go';
 
 const $ = go.GraphObject.make;
 
 const diagram = new go.Diagram('graphojs-root');
+diagram.background = '#fafbfc';
+
 diagram.nodeTemplate = $(
   go.Node,
   'Auto',
@@ -11,9 +13,22 @@ diagram.nodeTemplate = $(
     fill: 'white',
     stroke: '#1976d2',
     strokeWidth: 2,
-    minSize: { width: 100, height: 50 },
+    minSize: { width: 120, height: 52 },
+    shadowColor: 'rgba(25,118,210,0.2)',
+    shadowBlur: 8,
   }),
-  $(go.TextBlock, 'label', { margin: 8, editable: true }, new go.Binding('text', 'label')),
+  $(go.TextBlock, 'label', {
+    margin: 8,
+    editable: true,
+    font: '600 13px system-ui, sans-serif',
+    stroke: '#0d47a1',
+  }, new go.Binding('text', 'label')),
+);
+
+diagram.linkTemplate = $(
+  go.Link,
+  $(go.Shape, { stroke: '#90a4ae', strokeWidth: 2 }),
+  $(go.Shape, { toArrow: 'Triangle', fill: '#546e7a', stroke: null }),
 );
 
 diagram.model = new go.GraphLinksModel({
@@ -28,15 +43,17 @@ diagram.model = new go.GraphLinksModel({
   ],
 });
 
-// Log selection changes.
-let log = document.createElement('div');
+diagram.zoomToFit();
+
+// Log de selección bajo el diagrama
+const log = document.createElement('div');
 log.id = 'log';
-log.style.cssText = 'font:12px monospace;margin:8px;color:#555;';
+log.style.cssText = 'font: 600 12px system-ui, monospace;margin: 8px;color:#0d47a1;min-height:18px;';
 document.getElementById('graphojs-root').appendChild(log);
 
 diagram.addDiagramListener('SelectionChanged', () => {
-  const keys = diagram.selection.map((p) => p.key).join(', ');
-  log.textContent = `selection: ${keys}`;
+  const names = diagram.selection.map((p) => p.data?.label ?? p.key).join(', ');
+  log.textContent = `selección: ${names || '(ninguna)'}`;
 });
 
 window.__diagram = diagram;

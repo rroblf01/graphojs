@@ -1,0 +1,28 @@
+---
+title: Layout circular
+description: Distribuye nodos en un anillo con CircularLayout.
+---
+
+import Playground from '../../../components/Playground.astro';
+import circularExample from '../../../examples/circular.js?raw';
+
+`CircularLayout` coloca los nodos en un círculo, ideal para redes o ciclos.
+
+<Playground code={circularExample} height={500} />
+
+## Cómo funciona
+
+```js
+diagram.layout = new go.CircularLayout({ radius: 130 });
+diagram.layoutDiagram();
+```
+
+Cada nodo lleva su color en `data.color`, enlazado al `fill` del `Shape` con
+`new go.Binding('fill', 'color')`.
+
+## Bindings de datos
+
+- `go.Binding('figure', 'figure')` — cambia la forma del nodo.
+- `go.Binding('fill', 'fill')` — cambia el color desde el modelo.
+
+Prueba a cambiar `radius` o los colores de `palette` en el código.

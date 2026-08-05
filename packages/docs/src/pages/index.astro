@@ -1,28 +1,17 @@
 ---
-import { getCollection } from 'astro:content';
-// biome-ignore lint/correctness/noUnusedVariables: used in the Astro template below
-const docs = await getCollection('docs');
+// La home redirige a la documentación directamente.
 ---
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>GraphoJS</title>
-    <style>
-      body { font-family: system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 0 1rem; color: #222; }
-      h1 { color: #1976d2; }
-      a { color: #1976d2; }
-      li { margin: 0.4rem 0; }
-    </style>
+    <meta http-equiv="refresh" content="0; url=/getting-started/" />
+    <script>
+      window.location.replace('/getting-started/');
+    </script>
   </head>
   <body>
-    <h1>GraphoJS</h1>
-    <p>Alternativa open-source (MIT) a GoJS: diagramas interactivos con canvas 2D.</p>
-    <ul>
-      {docs.map((d) => (
-        <li>
-          <a href={`/${d.id}/`}>{d.data.title}</a>
-        </li>
-      ))}
-    </ul>
+    <p>Redirigiendo a la documentación… <a href="/getting-started/">Ir a empezar</a></p>
   </body>
 </html>

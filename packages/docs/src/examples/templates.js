@@ -1,30 +1,39 @@
-// GraphoJS templates: customize nodes, links and groups with bindings.
+// GraphoJS templates: nodos, enlaces y grupos personalizados con bindings.
 import * as go from 'graphojs/go';
 
 const $ = go.GraphObject.make;
 
 const diagram = new go.Diagram('graphojs-root');
+diagram.background = '#fafbfc';
 
 diagram.nodeTemplate = $(
   go.Node,
   'Auto',
   $(go.Shape, 'RoundedRectangle', {
-    fill: 'lightyellow',
+    fill: '#fff8e1',
     stroke: '#f57c00',
     strokeWidth: 2,
-    minSize: { width: 120, height: 50 },
+    minSize: { width: 130, height: 52 },
+    shadowColor: 'rgba(0,0,0,0.1)',
+    shadowBlur: 5,
   }),
-  $(go.TextBlock, { margin: 8, stroke: '#333' }, new go.Binding('text', 'name')),
-  {
-    // Part-level properties on the node itself
-    background: 'transparent',
-  },
+  $(go.TextBlock, 'label', {
+    margin: 8,
+    font: '600 13px system-ui, sans-serif',
+    stroke: '#e65100',
+  }, new go.Binding('text', 'name')),
 );
 
+// Enlace con etiqueta y flecha
 diagram.linkTemplate = $(
   go.Link,
-  $(go.Shape, { stroke: '#666', strokeWidth: 2 }),
-  $(go.Shape, { toArrow: 'Triangle', fill: '#666', stroke: null }),
+  { routing: go.Link.Orthogonal, corner: 6 },
+  $(go.Shape, { stroke: '#bdbdbd', strokeWidth: 2 }),
+  $(go.Shape, { toArrow: 'Triangle', fill: '#757575', stroke: null }),
+  $(go.TextBlock, 'label', {
+    font: '600 11px system-ui, sans-serif',
+    stroke: '#616161',
+  }, new go.Binding('text', 'label')),
 );
 
 diagram.model = new go.GraphLinksModel({
@@ -34,9 +43,10 @@ diagram.model = new go.GraphLinksModel({
     { key: 3, name: 'Gamma' },
   ],
   linkDataArray: [
-    { from: 1, to: 2 },
-    { from: 2, to: 3 },
+    { from: 1, to: 2, label: 'usa' },
+    { from: 2, to: 3, label: 'produce' },
   ],
 });
 
+diagram.zoomToFit();
 window.__diagram = diagram;

@@ -1,0 +1,26 @@
+---
+title: Figuras de Shape
+description: Las figuras de Shape disponibles y cómo usarlas.
+---
+
+import Playground from '../../../components/Playground.astro';
+import shapesExample from '../../../examples/shapes.js?raw';
+
+GraphoJS incluye ~70 figuras de Shape. El `figure` de un `Shape` determina su
+forma, y puede venir del modelo con un binding.
+
+<Playground code={shapesExample} height={500} />
+
+## Figuras disponibles
+
+`Rectangle`, `RoundedRectangle`, `Ellipse`, `Diamond`, `Triangle`, `Hexagon`,
+`Star`, `Cross`, `Cylinder`, `Document`, `Parallelogram`, y muchas más.
+
+## Cambiar la forma dinámicamente
+
+```js
+$(go.Shape, 'Rectangle', {}, new go.Binding('figure', 'figure'))
+```
+
+El `figure` se lee de `data.figure`, así que cada nodo puede tener una forma
+distinta. Prueba a cambiar `figure` o `fill` en los datos.

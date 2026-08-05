@@ -1,0 +1,32 @@
+---
+title: Grupos
+description: Agrupa nodos relacionados con Group.
+---
+
+import Playground from '../../../components/Playground.astro';
+import groupsExample from '../../../examples/groups.js?raw';
+
+`Group` permite agrupar nodos relacionados visualmente. Los nodos con
+`group: <key>` se convierten en miembros del grupo.
+
+<Playground code={groupsExample} height={500} />
+
+## Cómo funciona
+
+```js
+diagram.groupTemplate = $(go.Group, 'Vertical', ...);
+// ...
+{ key: 2, group: 1, label: 'API' }
+```
+
+El `groupTemplate` define el aspecto del grupo; los nodos con `group: 1`
+quedan dentro.
+
+## API de grupos
+
+- `group.memberParts` / `group.memberNodes` / `group.memberLinks`
+- `group.isSubGraphExpanded` — colapsar/expandir
+- `diagram.collapseGroup(g)` / `diagram.expandGroup(g)`
+- `part.containingGroup` — el grupo de un nodo
+
+Prueba a añadir más nodos con `group: 1` o `group: 4`.

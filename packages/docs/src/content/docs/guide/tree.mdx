@@ -1,0 +1,34 @@
+---
+title: Árboles
+description: Jerarquías expandibles con TreeModel o el campo parent.
+---
+
+import Playground from '../../../components/Playground.astro';
+import treeExample from '../../../examples/tree.js?raw';
+
+Para estructuras jerárquicas, usa un campo `parent` en los datos y `TreeLayout`
+para ordenar el árbol.
+
+<Playground code={treeExample} height={500} />
+
+## Jerarquía con parent
+
+Los datos usan `parent` para indicar el nodo padre:
+
+```js
+{ key: 4, parent: 2, label: 'Nivel 3a' }
+```
+
+`TreeLayout` ordena automáticamente según la profundidad.
+
+## Navegación de árbol
+
+- `diagram.findTreeRoots()` — nodos sin padre.
+- `node.findTreeParentNode()` — el padre.
+- `node.findTreeChildrenNodes()` — los hijos.
+- `node.isTreeLeaf()` — sin hijos.
+
+## Expandir / colapsar
+
+Con `Group.isSubGraphExpanded` y `diagram.collapseGroup`/`expandGroup` puedes
+hacer subárboles colapsables. Prueba a cambiar `nodeSpacing` en el layout.

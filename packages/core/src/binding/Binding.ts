@@ -1,6 +1,6 @@
 import type { NodeData } from '../model/Model.ts';
-import type { Part } from '../parts/Part.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
+import type { Part } from '../parts/Part.ts';
 
 /** An object that can be the target of a binding: a Part or a GraphObject. */
 export type BindingTarget = Part | GraphObject;
@@ -62,6 +62,16 @@ export class Binding {
   /** Whether this is a TwoWay binding. */
   get twoWay(): boolean {
     return this._twoWay;
+  }
+
+  /** GoJS-compatible: Set the mode to BindingMode.OneWay or BindingMode.TwoWay. */
+  set mode(value: number) {
+    this._twoWay = value === 1;
+  }
+
+  /** GoJS-compatible: Get the mode (BindingMode.OneWay or BindingMode.TwoWay). */
+  get mode(): number {
+    return this._twoWay ? 1 : 0;
   }
 
   /** Set a converter function that transforms model data → target property. */

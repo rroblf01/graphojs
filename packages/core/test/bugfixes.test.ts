@@ -6,14 +6,19 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   Binding,
+  ClickCreatingTool,
   Diagram,
   GraphLinksModel,
   GraphObject,
+  type Group,
   type Link,
+  LinkReshapingTool,
   Node,
   Panel,
+  Rect as RectClass,
   Shape,
   TextBlock,
+  TextEditingTool,
 } from '../src/index.ts';
 
 function mockContext() {
@@ -743,5 +748,625 @@ describe('F3: ZoomingTool and two-way binding coverage', () => {
     input.value = 'World';
     tool.stopEditing(true);
     expect(m.getNodeData(1)?.label).toBe('World');
+  });
+});
+
+describe('F1: constants/enums + geometry helpers', () => {
+  it('exports GoJS enum constant values', async () => {
+    const go = await import('../src/go.ts');
+    expect(go.BindingMode.OneWay).toBe(0);
+    expect(go.BindingMode.TwoWay).toBe(1);
+    expect(go.Position.None).toBe(-1);
+    expect(go.Position.TopLeft).toBe(0);
+    expect(go.Position.MiddleCenter).toBe(4);
+    expect(go.Alignment.TopLeft).toBe(0);
+    expect(go.Alignment.Center).toBe(2);
+    expect(go.Alignment.BottomRight).toBe(5);
+    expect(go.Object.Panel).toBe(0);
+    expect(go.Object.Binding).toBe(5);
+    expect(go.AutoScale.Uniform).toBe(1);
+    expect(go.ScrollBehavior.NoScrollbars).toBe(2);
+  });
+
+  it('Point has copy/offset/distanceSquared/cross', async () => {
+    const { Point } = await import('../src/index.ts');
+    const p = new Point(3, 4);
+    const c = p.copy();
+    expect(c).not.toBe(p);
+    expect(c.x).toBe(3);
+    expect(c.y).toBe(4);
+    expect(p.offset(1, 2)).toEqual({ x: 4, y: 6 });
+    expect(new Point(3, 4).distanceSquared(new Point(0, 0))).toBe(25);
+    expect(new Point(0, 1).cross(new Point(1, 0))).toBe(-1);
+  });
+
+  it('Rect copy/isReal/computeSides/relativeTo', async () => {
+    const { Point, Rect, Spot } = await import('../src/index.ts');
+    const r = new Rect(1, 2, 10, 20);
+    const c = r.copy();
+    expect(c).not.toBe(r);
+    expect(c.width).toBe(10);
+    expect(new Rect(1, 1, 10, 10).isReal()).toBe(true);
+    expect(new Rect(Number.NaN, 1, 10, 10).isReal()).toBe(false);
+    const s = r.computeSides(5);
+    expect(s.x).toBe(6);
+    expect(s.y).toBe(7);
+    expect(s.width).toBe(0);
+    expect(s.height).toBe(10);
+    const spot = r.relativeTo(Spot.TopLeft);
+    expect(spot.x).toBe(1);
+    expect(spot.y).toBe(2);
+    const cspot = r.relativeTo(Spot.Center);
+    expect(cspot).toBeInstanceOf(Point);
+    expect(cspot.x).toBe(6);
+    expect(cspot.y).toBe(12);
+  });
+
+  it('Spot.None parse isSpot setSpot spotToPoint pointToSpot', async () => {
+    const { Point, Spot } = await import('../src/index.ts');
+    expect(Number.isNaN(Spot.None.x)).toBe(true);
+    expect(Spot.isSpot(Spot.TopLeft)).toBe(true);
+    const parsed = Spot.parse('Center');
+    expect(parsed.x).toBe(0.5);
+    expect(parsed.y).toBe(0.5);
+    const target = new Spot(0.25, 0.75);
+    const spot = target.copy();
+    spot.setSpot(1, 1);
+    expect(spot.x).toBe(1);
+    expect(spot.y).toBe(1);
+    const p = new Point(10, 10);
+    const result = Spot.Center.spotToPoint(0, 0, 100, 100);
+    expect(result.x).toBe(50);
+    expect(result.y).toBe(50);
+    const back = Spot.Center.pointToSpot(p.x, p.y, 0, 0, 100, 100);
+    expect(back.x).toBeCloseTo(0.1);
+    expect(back.y).toBeCloseTo(0.1);
+  });
+
+  it('Size.copy and Margin.copy', async () => {
+    const { Margin, Size } = await import('../src/index.ts');
+    const sz = new Size(2, 3);
+    const sc = sz.copy();
+    expect(sc).not.toBe(sz);
+    expect(sc.width).toBe(2);
+    expect(sc.height).toBe(3);
+    const mg = new Margin(1, 2, 3, 4);
+    const mc = mg.copy();
+    expect(mc).not.toBe(mg);
+    expect(mc.top).toBe(1);
+    expect(mc.right).toBe(2);
+    expect(mc.bottom).toBe(3);
+    expect(mc.left).toBe(4);
+  });
+
+  it('Binding.mode getter/setter', async () => {
+    const { Binding } = await import('../src/index.ts');
+    const b = new Binding('text', 'label');
+    expect(b.mode).toBe(0);
+    b.mode = 1;
+    expect(b.mode).toBe(1);
+  });
+});
+
+describe('F2: Model GoJS API surface', () => {
+  it('makeNodeData/copyNodeData/mergeNodeData', () => {
+    const m = new GraphLinksModel();
+    const proto = m.makeNodeData({ text: 'x' });
+    expect(proto).toEqual({ text: 'x' });
+    const copy = m.copyNodeData({ a: 1 });
+    expect(copy).toEqual({ a: 1 });
+    const target: Record<string, unknown> = { a: 1 };
+    m.mergeNodeData(target, { b: 2 });
+    expect(target).toEqual({ a: 1, b: 2 });
+  });
+
+  it('findNodeDataForKey/findNodeDataForPart aliases', () => {
+    const m = new GraphLinksModel({ nodeDataArray: [{ key: 7, label: 'A' }] });
+    expect(m.findNodeDataForKey(7)?.label).toBe('A');
+    expect(m.findNodeDataForPart(7)?.label).toBe('A');
+    expect(m.findNodeDataForKey(99)).toBeUndefined();
+  });
+
+  it('nodeCategoryProperty getter/setter', () => {
+    const m = new GraphLinksModel();
+    expect(m.nodeCategoryProperty).toBe('category');
+    m.nodeCategoryProperty = 'kind';
+    const data = { key: 1, kind: 'special' };
+    expect(m.getCategoryForNodeData(data)).toBe('special');
+    m.setCategoryForNodeData(data, 'default');
+    expect(data.kind).toBe('default');
+  });
+
+  it('usesUndoManager/isModified/clearIsModified', () => {
+    const m = new GraphLinksModel();
+    expect(m.usesUndoManager).toBe(true);
+    m.usesUndoManager = false;
+    expect(m.usesUndoManager).toBe(false);
+    m.isModified = true;
+    m.clearIsModified();
+    expect(m.isModified).toBe(false);
+    m.addNode({ key: 1 });
+    expect(m.isModified).toBe(true);
+    m.clearIsModified();
+    m.setNodeProperty(1, 'label', 'a');
+    expect(m.isModified).toBe(true);
+  });
+
+  it('makeLinkData/copyLinkData/mergeLinkData/findLinkDataForKey', () => {
+    const m = new GraphLinksModel({ nodeDataArray: [{ key: 1 }, { key: 2 }] });
+    const ld = m.makeLinkData({ from: 1, to: 2, text: 'edge' });
+    expect(ld.from).toBe(1);
+    expect(ld.text).toBe('edge');
+    expect(m.copyLinkData(ld)).toEqual(ld);
+    const t: Record<string, unknown> = { from: 1, to: 2 };
+    m.mergeLinkData(t, { weight: 5 });
+    expect(t.weight).toBe(5);
+    const key = m.addLink(ld);
+    expect(m.findLinkDataForKey(key)).toBe(ld);
+  });
+
+  it('relinkNodeData updates links and linkFromPortIdProperty/linkToPortIdProperty', () => {
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1 }, { key: 2 }],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    m.linkFromPortIdProperty = 'fromPort';
+    m.linkToPortIdProperty = 'toPort';
+    expect(m.linkFromPortIdProperty).toBe('fromPort');
+    m.relinkNodeData(1, 3);
+    expect(m.getLinkDataArray()[0].from).toBe(3);
+    expect(m.getLinkDataArray()[0].to).toBe(2);
+  });
+});
+
+describe('F3: Diagram GoJS API surface', () => {
+  it('minScale/maxScale setters clamp zoom', () => {
+    const d = createDiagram();
+    d.minScale = 0.2;
+    d.maxScale = 5;
+    expect(d.minScale).toBe(0.2);
+    expect(d.maxScale).toBe(5);
+    d.scale = 0.1;
+    expect(d.scale).toBeGreaterThanOrEqual(0.2);
+    d.scale = 10;
+    expect(d.scale).toBeLessThanOrEqual(5);
+  });
+
+  it('selection returns selected parts', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 40, height: 40 }],
+    });
+    d.model = m;
+    const node = d.findNodeForKey(1) as Node;
+    d.select(node);
+    expect(d.selection).toHaveLength(1);
+    expect(d.selection[0]).toBe(node);
+    d.clearSelection();
+    expect(d.selection).toHaveLength(0);
+  });
+
+  it('modelChanged setter receives model events', () => {
+    const d = createDiagram();
+    const events: string[] = [];
+    d.modelChanged = (ev) => events.push(ev.type);
+    d.model.addNode({ key: 99, x: 0, y: 0 });
+    d.model.setNodeProperty(99, 'label', 'x');
+    expect(events).toEqual(['node Added', 'property Changed']);
+    d.modelChanged = null;
+    const before = events.length;
+    d.model.addNode({ key: 100, x: 0, y: 0 });
+    expect(events.length).toBe(before);
+  });
+
+  it('documentBounds/viewportBounds/computeBounds/actualBounds', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 30 },
+        { key: 2, x: 100, y: 80, width: 50, height: 30 },
+      ],
+    });
+    d.model = m;
+    const bounds = d.computeBounds();
+    expect(bounds.width).toBe(150);
+    expect(bounds.height).toBe(110);
+    expect(d.documentBounds.width).toBe(150);
+    expect(d.actualBounds.width).toBe(150);
+    expect(d.viewportBounds).toBeInstanceOf(RectClass);
+  });
+
+  it('getCanvasBounds returns container rect', () => {
+    const d = createDiagram();
+    const cb = d.getCanvasBounds();
+    expect(typeof cb.x).toBe('number');
+    expect(typeof cb.y).toBe('number');
+    expect(cb.width).toBeGreaterThanOrEqual(0);
+  });
+
+  it('horizontalScrollPosition/verticalScrollPosition round trip', () => {
+    const d = createDiagram();
+    d.horizontalScrollPosition = 25;
+    d.verticalScrollPosition = 40;
+    expect(d.horizontalScrollPosition).toBe(25);
+    expect(d.verticalScrollPosition).toBe(40);
+  });
+
+  it('grid/contentAlignment/autoScale/scrollBehavior/requestUpdate', () => {
+    const d = createDiagram();
+    d.grid = { opacity: 0.1 };
+    expect(d.grid).toEqual({ opacity: 0.1 });
+    d.contentAlignment = { x: 0.5, y: 0.5 };
+    expect((d.contentAlignment as { x: number }).x).toBe(0.5);
+    d.autoScale = 1;
+    expect(d.autoScale).toBe(1);
+    d.scrollBehavior = 2;
+    expect(d.scrollBehavior).toBe(2);
+    expect(() => d.requestUpdate()).not.toThrow();
+    d.padding = 10;
+    expect(d.padding).toBe(10);
+  });
+
+  it('isTreeExpanded reflects group state', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, isGroup: true }, { key: 2 }],
+      linkDataArray: [],
+    });
+    d.model = m;
+    const group = d.getPart(1) as Group;
+    d.collapseGroup(group);
+    expect(d.isTreeExpanded(group)).toBe(false);
+    d.expandGroup(group);
+    expect(d.isTreeExpanded(group)).toBe(true);
+  });
+});
+
+describe('F4: Tools GoJS API surface', () => {
+  it('LinkingTool.archetypeLinkData seeds new links', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({ nodeDataArray: [{ key: 1 }, { key: 2 }] });
+    d.model = m;
+    const { LinkingTool } = require('../src/tool/LinkingTool.ts') as {
+      LinkingTool: new () => {
+        diagram: unknown;
+        createLink(a: unknown, b: unknown): boolean;
+        archetypeLinkData: { color?: string };
+      };
+    };
+    const tool = new LinkingTool();
+    tool.diagram = d;
+    tool.archetypeLinkData = { color: 'red' };
+    const n1 = d.findNodeForKey(1) as Node;
+    const n2 = d.findNodeForKey(2) as Node;
+    expect(tool.createLink(n1, n2)).toBe(true);
+    const link = d.findLinkForKey(1);
+    expect(link).not.toBeNull();
+    expect(link?.data?.color).toBe('red');
+  });
+
+  it('TextEditingTool.textBlock getter', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(Shape, 'Rectangle'),
+      $(TextBlock, 'label', { editable: true }, new Binding('text', 'label').makeTwoWay()),
+    );
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50, label: 'Hi' }],
+    });
+    d.model = m;
+    const node = d.findNodeForKey(1) as Node;
+    const tool = new TextEditingTool();
+    tool.diagram = d;
+    tool.editNode(node);
+    expect(tool.textBlock).not.toBeNull();
+    tool.stopEditing(false);
+  });
+
+  it('PanningTool.panSpeed/DragSelectingTool.isPartialInclusion/ResizingTool.minSize', () => {
+    const { PanningTool } = require('../src/tool/PanningTool.ts') as {
+      PanningTool: new () => { panSpeed: number };
+    };
+    const pan = new PanningTool();
+    pan.panSpeed = 2;
+    expect(pan.panSpeed).toBe(2);
+
+    const { DragSelectingTool } = require('../src/tool/DragSelectingTool.ts') as {
+      DragSelectingTool: new () => { isPartialInclusion: boolean };
+    };
+    const drag = new DragSelectingTool();
+    expect(drag.isPartialInclusion).toBe(true);
+    drag.isPartialInclusion = false;
+    expect(drag.isPartialInclusion).toBe(false);
+
+    const { ResizingTool } = require('../src/tool/ResizingTool.ts') as {
+      ResizingTool: new () => {
+        minSize: { width: number; height: number };
+        maxSize: { width: number; height: number };
+        minWidth: number;
+      };
+    };
+    const resize = new ResizingTool();
+    resize.minSize = { width: 30, height: 40 };
+    expect(resize.minWidth).toBe(30);
+    expect(resize.minSize).toEqual({ width: 30, height: 40 });
+    resize.maxSize = { width: 500, height: 600 };
+    expect(resize.maxSize).toEqual({ width: 500, height: 600 });
+  });
+
+  it('ClickCreatingTool adds a node on empty click', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel();
+    const tool = new ClickCreatingTool();
+    tool.diagram = d;
+    tool.archetypeNodeData = { label: 'new' };
+    const click = new MouseEvent('mouseup', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+    });
+    tool.doMouseUp(click);
+    expect(d.getModel().getNodeCount()).toBe(1);
+    const data = d.getModel().getNodeDataArray()[0];
+    expect(data?.label).toBe('new');
+    expect(data && Math.round((data.x as number))).toBe(100);
+  });
+
+  it('ContextMenuTool and LinkReshapingTool exist and wire up', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel();
+    const tm = (d as unknown as { _toolManager: { getTool(n: string): unknown } })._toolManager;
+    expect(tm.getTool('clickCreating')).not.toBeUndefined();
+    expect(tm.getTool('contextMenu')).not.toBeUndefined();
+    expect(tm.getTool('linkReshaping')).not.toBeUndefined();
+  });
+
+  it('LinkReshapingTool reshapes a reshapable link', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 40, height: 40 },
+        { key: 2, x: 200, y: 0, width: 40, height: 40 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    d.model = m;
+    const link = d.findLinkForKey(1) as Link;
+    link.reshapable = true;
+    link.setPathPoints([
+      { x: 20, y: 20 },
+      { x: 110, y: 40 },
+      { x: 220, y: 20 },
+    ]);
+    const tool = new LinkReshapingTool();
+    tool.diagram = d;
+    const down = new MouseEvent('mousedown', { button: 0, clientX: 110, clientY: 40 });
+    tool.doMouseDown(down);
+    expect(tool.currentLink).toBe(link);
+    const move = new MouseEvent('mousemove', { button: 0, clientX: 130, clientY: 60 });
+    tool.doMouseMove(move);
+    tool.doMouseUp(move);
+    expect(link.pathPoints[1]).toEqual({ x: 130, y: 60 });
+  });
+});
+
+describe('F5: CommandHandler zoom + pasteSelection', () => {
+  it('increaseZoom/decreaseZoom/resetZoom respect limits', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const ch = d.getCommandHandler();
+    d.scale = 1;
+    expect(ch.increaseZoom(2)).toBe(true);
+    expect(d.scale).toBe(2);
+    expect(ch.decreaseZoom(4)).toBe(true);
+    expect(d.scale).toBe(0.5);
+    expect(ch.resetZoom()).toBe(true);
+    expect(d.scale).toBe(1);
+    d.scale = d.maxScale;
+    expect(ch.canIncreaseZoom()).toBe(false);
+    d.scale = d.minScale;
+    expect(ch.canDecreaseZoom()).toBe(false);
+  });
+
+  it('zoomToFit invokes diagram.zoomToFit', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const ch = d.getCommandHandler();
+    const spy = vi.spyOn(d, 'zoomToFit');
+    expect(ch.zoomToFit()).toBe(true);
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('pasteSelection pastes clipboard at offset', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 10, y: 20, width: 50, height: 30 }],
+    });
+    d.model = m;
+    const ch = d.getCommandHandler();
+    expect(ch.pasteSelection()).toBe(false);
+    const node = d.findNodeForKey(1) as Node;
+    d.select(node);
+    expect(ch.copySelection()).toBe(true);
+    expect(ch.pasteSelection()).toBe(true);
+    expect(m.getNodeCount()).toBe(2);
+  });
+
+  it('pasteSelection at position lands first node there', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 10, y: 20, width: 50, height: 30 }],
+    });
+    d.model = m;
+    const ch = d.getCommandHandler();
+    const node = d.findNodeForKey(1) as Node;
+    d.select(node);
+    ch.copySelection();
+    expect(ch.pasteSelection({ x: 100, y: 200 })).toBe(true);
+    const pasted = m.getNodeDataArray().filter((n) => (n as { key?: unknown }).key !== 1);
+    expect(pasted).toHaveLength(1);
+    expect((pasted[0] as { x?: number }).x).toBe(100);
+    expect((pasted[0] as { y?: number }).y).toBe(200);
+  });
+});
+
+describe('F7: GraphObject/Panel/Shape/TextBlock/Layout/UndoManager/Part props', () => {
+  it('GraphObject grid/alignmentFocus/scale/shadow/pickable/copyable', () => {
+    const $ = GraphObject.make;
+    const shape = $(Shape, 'Rectangle');
+    shape.row = 2;
+    shape.column = 3;
+    shape.rowSpan = 2;
+    shape.columnSpan = 1;
+    shape.alignmentFocus = { x: 0.5, y: 0.5 };
+    shape.scale = 1.5;
+    shape.isShadowed = true;
+    shape.shadowColor = 'red';
+    shape.shadowOffset = { x: 2, y: 2 };
+    shape.shadowBlur = 5;
+    expect(shape.row).toBe(2);
+    expect(shape.column).toBe(3);
+    expect(shape.rowSpan).toBe(2);
+    expect(shape.columnSpan).toBe(1);
+    expect(shape.scale).toBe(1.5);
+    expect(shape.isShadowed).toBe(true);
+    expect(shape.shadow).toBe('red');
+    expect(shape.pickable).toBe(true);
+    shape.pickable = false;
+    expect(shape.pickable).toBe(false);
+    shape.copyable = false;
+    expect(shape.copyable).toBe(false);
+  });
+
+  it('Panel addSeparator/defaultAlignment', () => {
+    const p = new Panel('Vertical');
+    const sep = p.addSeparator();
+    expect(sep).toBeDefined();
+    expect(p.separators).toHaveLength(1);
+    expect(p.elements).toHaveLength(1);
+    p.defaultAlignment = { x: 0, y: 1 };
+    expect(p.defaultAlignment).toEqual({ x: 0, y: 1 });
+  });
+
+  it('Shape strokeDashArray/fromGeometry/toGeometry', () => {
+    const s = new Shape('Rectangle');
+    s.strokeDashArray = [4, 2];
+    expect(s.strokeDashArray).toEqual([4, 2]);
+    s.fromGeometry = 'M0 0 L10 10';
+    expect(s.fromGeometry).toBe('M0 0 L10 10');
+    expect(s.toGeometry).toBe('M0 0 L10 10');
+  });
+
+  it('TextBlock isBold/isItalic/isUnderline/overflow/maxLines', () => {
+    const t = new TextBlock('hi');
+    t.isBold = true;
+    expect(t.isBold).toBe(true);
+    t.isItalic = true;
+    expect(t.isItalic).toBe(true);
+    t.isUnderline = true;
+    expect(t.isUnderline).toBe(true);
+    t.overflow = 'ellipsis';
+    expect(t.overflow).toBe('ellipsis');
+    t.maxLines = 2;
+    expect(t.maxLines).toBe(2);
+  });
+
+  it('Layout options: GridLayout columnSpacing/rowSpacing/wrappingWidth, TreeLayout angle, ForceDirected defaultSpringLength, isInitial/isFinal/isOngoing', () => {
+    const { GridLayout } = require('../src/layout/GridLayout.ts') as {
+      GridLayout: new () => {
+        columnSpacing: number;
+        rowSpacing: number;
+        wrappingWidth: number;
+      };
+    };
+    const grid = new GridLayout();
+    grid.columnSpacing = 30;
+    grid.rowSpacing = 10;
+    grid.wrappingWidth = 500;
+    expect(grid.columnSpacing).toBe(30);
+    expect(grid.rowSpacing).toBe(10);
+    expect(grid.wrappingWidth).toBe(500);
+
+    const { TreeLayout } = require('../src/layout/TreeLayout.ts') as {
+      TreeLayout: new () => { angle: number; setChildLinkStyle(s: string): void };
+    };
+    const tree = new TreeLayout();
+    tree.angle = 90;
+    expect(tree.angle).toBe(90);
+    expect(() => tree.setChildLinkStyle('orthogonal')).not.toThrow();
+
+    const { ForceDirectedLayout } = require('../src/layout/ForceDirectedLayout.ts') as {
+      ForceDirectedLayout: new () => { defaultSpringLength: number };
+    };
+    const fd = new ForceDirectedLayout();
+    fd.defaultSpringLength = 200;
+    expect(fd.defaultSpringLength).toBe(200);
+  });
+
+  it('Layout isInitial/isFinal/isOngoing', () => {
+    // Layout is abstract; use GridLayout which extends it
+    const { GridLayout } = require('../src/layout/GridLayout.ts') as {
+      GridLayout: new () => {
+        isInitial: boolean;
+        isFinal: boolean;
+        isOngoing: boolean;
+      };
+    };
+    const grid = new GridLayout();
+    expect(grid.isInitial).toBe(true);
+    grid.isFinal = false;
+    expect(grid.isFinal).toBe(false);
+    grid.isOngoing = false;
+    expect(grid.isOngoing).toBe(false);
+  });
+
+  it('UndoManager clearsHistory/setTransactionIsSeparateFromHistory/skipUndoManager', () => {
+    const d = createDiagram();
+    const um = d.getUndoManager();
+    expect(um.clearsHistory).toBe(true);
+    um.clearsHistory = false;
+    expect(um.clearsHistory).toBe(false);
+    expect(() => um.setTransactionIsSeparateFromHistory()).not.toThrow();
+    expect(um.skipUndoManager).toBe(false);
+    um.skipUndoManager = true;
+    expect(um.skipUndoManager).toBe(true);
+  });
+
+  it('Part deletable/copyable/isHighlighted + Link curve/resizingSegmentIndex', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0 }],
+      linkDataArray: [],
+    });
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.deletable).toBe(true);
+    node.deletable = false;
+    expect(node.deletable).toBe(false);
+    node.copyable = false;
+    expect(node.copyable).toBe(false);
+    node.isHighlighted = true;
+    expect(node.isHighlighted).toBe(true);
+
+    const { Link } = require('../src/parts/Link.ts') as {
+      Link: new (
+        k: unknown,
+        f: unknown,
+        t: unknown,
+      ) => {
+        curve: string;
+        resizingSegmentIndex: number;
+        fromEndSegmentOrientation: number;
+      };
+    };
+    const l = new Link(1, 2, 3);
+    l.curve = 'Bezier';
+    expect(l.curve).toBe('Bezier');
+    l.resizingSegmentIndex = 2;
+    expect(l.resizingSegmentIndex).toBe(2);
+    l.fromEndSegmentOrientation = 90;
+    expect(l.fromEndSegmentOrientation).toBe(90);
   });
 });

@@ -1,8 +1,8 @@
+import type { Margin } from '../geometry/Margin.ts';
+import type { Rect } from '../geometry/Rect.ts';
 import type { Size } from '../geometry/Size.ts';
 import { Size as SizeClass } from '../geometry/Size.ts';
-import type { Margin } from '../geometry/Margin.ts';
 import { Spot } from '../geometry/Spot.ts';
-import type { Rect } from '../geometry/Rect.ts';
 import { GraphObject } from './GraphObject.ts';
 import { Shape } from './Shape.ts';
 
@@ -191,6 +191,42 @@ export class Panel extends GraphObject {
     this._elements.push(element);
     this.recountGrid();
     return this;
+  }
+
+  private _separators: GraphObject[] = [];
+
+  /** GoJS-compatible: Add a visual separator element to this panel. */
+  addSeparator(separator?: GraphObject): GraphObject {
+    const sep = separator ?? this.createSeparator();
+    this._separators.push(sep);
+    this._elements.push(sep);
+    this.recountGrid();
+    return sep;
+  }
+
+  /** Create a default vertical/horizontal separator line. */
+  private createSeparator(): GraphObject {
+    const line = new Shape('Line');
+    line.stroke = '#cccccc';
+    line.strokeWidth = 1;
+    line.desiredSize = new SizeClass(1, 20);
+    return line;
+  }
+
+  /** GoJS-compatible: The separators added to this panel. */
+  get separators(): readonly GraphObject[] {
+    return this._separators;
+  }
+
+  private _defaultAlignment: { x: number; y: number } | null = null;
+
+  /** GoJS-compatible: The default alignment for elements in Spot panels. */
+  get defaultAlignment(): { x: number; y: number } | null {
+    return this._defaultAlignment;
+  }
+
+  set defaultAlignment(value: { x: number; y: number } | null) {
+    this._defaultAlignment = value;
   }
 
   /** GoJS-compatible: Insert an element at a specific index. */
@@ -767,4 +803,5 @@ export function shape(shape?: Shape['shape']): Shape {
 
 // Register the panel factory for GraphObject.make to use (avoids import cycles)
 import { registerPanelFactory } from './PanelRegistry.ts';
+
 registerPanelFactory((type?: string) => new Panel(type as PanelType));

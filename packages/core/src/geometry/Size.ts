@@ -52,6 +52,11 @@ export class Size {
     return new Size(this.width, this.height);
   }
 
+  /** GoJS-compatible: Return a copy of this size. */
+  copy(): Size {
+    return new Size(this.width, this.height);
+  }
+
   /** Scale this size by a factor. */
   scale(factor: number): Size {
     return new Size(this.width * factor, this.height * factor);

@@ -27,10 +27,13 @@ import { type DiagramJSON, Serializer } from '../serialization/Serializer.ts';
 import { PartPool } from '../spatial/PartPool.ts';
 import { QuadTree } from '../spatial/QuadTree.ts';
 import { VirtualizationManager } from '../spatial/VirtualizationManager.ts';
+import { ClickCreatingTool } from '../tool/ClickCreatingTool.ts';
 import { ClickSelectingTool } from '../tool/ClickSelectingTool.ts';
+import { ContextMenuTool } from '../tool/ContextMenuTool.ts';
 import { DraggingTool } from '../tool/DraggingTool.ts';
 import { DragSelectingTool } from '../tool/DragSelectingTool.ts';
 import { LinkingTool } from '../tool/LinkingTool.ts';
+import { LinkReshapingTool } from '../tool/LinkReshapingTool.ts';
 import { PanningTool } from '../tool/PanningTool.ts';
 import { RelinkingTool } from '../tool/RelinkingTool.ts';
 import { ResizingTool } from '../tool/ResizingTool.ts';
@@ -181,9 +184,23 @@ export class Diagram {
     return this._minScale;
   }
 
+  /** GoJS-compatible: Set the minimum zoom scale. */
+  set minScale(value: number) {
+    if (Number.isFinite(value) && value > 0) {
+      this._minScale = value;
+    }
+  }
+
   /** GoJS-compatible: The maximum zoom scale. */
   get maxScale(): number {
     return this._maxScale;
+  }
+
+  /** GoJS-compatible: Set the maximum zoom scale. */
+  set maxScale(value: number) {
+    if (Number.isFinite(value) && value > 0) {
+      this._maxScale = value;
+    }
   }
 
   // Touch support state
@@ -298,17 +315,22 @@ export class Diagram {
     tm.registerTool('resizing', new ResizingTool());
     tm.registerTool('rotating', new RotatingTool());
     tm.registerTool('dragSelecting', new DragSelectingTool());
+    tm.registerTool('clickCreating', new ClickCreatingTool());
+    tm.registerTool('contextMenu', new ContextMenuTool());
+    tm.registerTool('linkReshaping', new LinkReshapingTool());
 
     // Populate per-event tool lists (GoJS mouseDownTools order)
     for (const name of [
       'relinking',
       'resizing',
       'rotating',
+      'linkReshaping',
       'linking',
       'dragging',
       'panning',
       'dragSelecting',
       'clickSelecting',
+      'clickCreating',
     ]) {
       const tool = tm.getTool(name);
       if (tool) tm.addToolToList('mouseDown', tool);
@@ -1846,14 +1868,24 @@ export class Diagram {
   }
 
   /** Select all parts intersecting a rectangle. */
-  selectPartsInRect(rect: { x: number; y: number; width: number; height: number }): void {
+  selectPartsInRect(
+    rect: { x: number; y: number; width: number; height: number },
+    partialInclusion = true,
+  ): void {
+    const r = rect as unknown as RectClass;
     for (const [, node] of this.nodes) {
-      if (node.bounds.intersects(rect as unknown as RectClass)) {
+      const hit = partialInclusion
+        ? node.bounds.intersects(r)
+        : r.containsRect(node.bounds as unknown as RectClass);
+      if (hit) {
         this.select(node, true);
       }
     }
     for (const [, link] of this.links) {
-      if (link.bounds.intersects(rect as unknown as RectClass)) {
+      const hit = partialInclusion
+        ? link.bounds.intersects(r)
+        : r.containsRect(link.bounds as unknown as RectClass);
+      if (hit) {
         this.select(link, true);
       }
     }
@@ -1941,6 +1973,77 @@ export class Diagram {
       }
     }
     return result;
+  }
+
+  /** GoJS-compatible: The set of currently selected parts. */
+  get selection(): (Node | Link | Group)[] {
+    return this.getSelectedParts();
+  }
+
+  /** GoJS-compatible: Whether a node (group) subgraph is expanded. */
+  isTreeExpanded(node: Node): boolean {
+    if (node instanceof Group) {
+      return node.isSubGraphExpanded;
+    }
+    return true;
+  }
+
+  /** GoJS-compatible: Get the bounds of the diagram canvas in page/screen coordinates. */
+  getCanvasBounds(): { x: number; y: number; width: number; height: number } {
+    const rect = this.container.getBoundingClientRect();
+    return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
+  }
+
+  private _gridPattern: unknown = null;
+
+  /** GoJS-compatible: A Shape (or null) used as a grid pattern behind the diagram. */
+  get grid(): unknown {
+    return this._gridPattern;
+  }
+
+  set grid(value: unknown) {
+    this._gridPattern = value;
+    this.invalidate();
+  }
+
+  private _contentAlignment: Spot | null = null;
+
+  /** GoJS-compatible: The alignment of the diagram content within the viewport. */
+  get contentAlignment(): Spot | null {
+    return this._contentAlignment ?? this._initialContentAlignment;
+  }
+
+  set contentAlignment(value: Spot | null) {
+    this._contentAlignment = value;
+    this.invalidate();
+  }
+
+  private _autoScale: number = 0;
+
+  /** GoJS-compatible: AutoScale mode (0=None, 1=Uniform, 2=Fit). */
+  get autoScale(): number {
+    return this._autoScale;
+  }
+
+  set autoScale(value: number) {
+    this._autoScale = value;
+    this.invalidate();
+  }
+
+  private _scrollBehavior: number = 0;
+
+  /** GoJS-compatible: How scrolling and scrollbars behave. */
+  get scrollBehavior(): number {
+    return this._scrollBehavior;
+  }
+
+  set scrollBehavior(value: number) {
+    this._scrollBehavior = value;
+  }
+
+  /** GoJS-compatible: Request a redraw of the diagram. */
+  requestUpdate(): void {
+    this.invalidate();
   }
 
   /** Set the model. */
@@ -2061,6 +2164,23 @@ export class Diagram {
   /** GoJS-compatible: Remove a model changed listener. */
   removeModelChangedListener(listener: (event: ChangedEvent) => void): void {
     this._model.removeChangedListener(listener);
+  }
+
+  private _modelChangedListener: ((event: ChangedEvent) => void) | null = null;
+
+  /** GoJS-compatible: A listener called when the model changes (single handler). */
+  set modelChanged(listener: ((event: ChangedEvent) => void) | null) {
+    if (this._modelChangedListener) {
+      this._model.removeChangedListener(this._modelChangedListener);
+    }
+    this._modelChangedListener = listener;
+    if (listener) {
+      this._model.addChangedListener(listener);
+    }
+  }
+
+  get modelChanged(): ((event: ChangedEvent) => void) | null {
+    return this._modelChangedListener;
   }
 
   /** Get a layer by name. */
@@ -2546,8 +2666,8 @@ export class Diagram {
     return this._padding;
   }
 
-  set padding(value: number) {
-    this._padding = value;
+  set padding(value: number | { left: number; top: number; right: number; bottom: number }) {
+    this._padding = typeof value === 'number' ? value : value.left;
     this.invalidate();
   }
 
@@ -2813,6 +2933,44 @@ export class Diagram {
       rect.width / this._scale,
       rect.height / this._scale,
     );
+  }
+
+  /** GoJS-compatible: The bounds of the document (all content). */
+  get documentBounds(): RectClass {
+    return this.getContentBounds();
+  }
+
+  /** GoJS-compatible: The bounds of the viewport. */
+  get viewportBounds(): RectClass {
+    return this.getViewportBounds();
+  }
+
+  /** GoJS-compatible: The bounds of all content, including links. */
+  computeBounds(): RectClass {
+    return this.getContentBounds();
+  }
+
+  /** GoJS-compatible: The actual bounds currently occupied by parts. */
+  get actualBounds(): RectClass {
+    return this.getContentBounds();
+  }
+
+  /** GoJS-compatible: The horizontal scroll position in document coordinates. */
+  get horizontalScrollPosition(): number {
+    return this.offsetX;
+  }
+
+  set horizontalScrollPosition(value: number) {
+    this.setViewport(value, this.offsetY);
+  }
+
+  /** GoJS-compatible: The vertical scroll position in document coordinates. */
+  get verticalScrollPosition(): number {
+    return this.offsetY;
+  }
+
+  set verticalScrollPosition(value: number) {
+    this.setViewport(this.offsetX, value);
   }
 
   /** GoJS-compatible: Find all nodes that are tree roots (no parent key). */

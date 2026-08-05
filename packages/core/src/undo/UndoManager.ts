@@ -51,6 +51,36 @@ export class UndoManager {
     this.maxHistorySize = Math.max(1, value);
   }
 
+  private _clearsHistory = true;
+
+  /** GoJS-compatible: Whether undo/redo history is cleared by non-undoable actions. */
+  get clearsHistory(): boolean {
+    return this._clearsHistory;
+  }
+
+  set clearsHistory(value: boolean) {
+    this._clearsHistory = value;
+  }
+
+  private separateTransaction: Transaction | null = null;
+
+  /** GoJS-compatible: Mark the current transaction as separate from history. */
+  setTransactionIsSeparateFromHistory(): void {
+    const current = this.transactionStack[this.transactionStack.length - 1];
+    if (current) this.separateTransaction = current;
+  }
+
+  /** GoJS-compatible: Whether commands should skip undo recording. */
+  private _skipUndoManager = false;
+
+  get skipUndoManager(): boolean {
+    return this._skipUndoManager;
+  }
+
+  set skipUndoManager(value: boolean) {
+    this._skipUndoManager = value;
+  }
+
   /** GoJS-compatible: Whether the UndoManager is currently undoing or redoing. */
   get isUndoingRedoing(): boolean {
     return this.isExecuting;

@@ -58,6 +58,7 @@ export abstract class Model {
   protected nodeKeyProperty: string = 'key';
   protected listeners: ChangedEventHandler[] = [];
   private nextKey: number = 1;
+  private _nodeCategoryProperty = 'category';
 
   constructor(nodeKeyProperty?: string) {
     if (nodeKeyProperty) this.nodeKeyProperty = nodeKeyProperty;
@@ -151,6 +152,107 @@ export abstract class Model {
     return this._nodeDataArray.find((d) => this.getNodeKey(d) === key);
   }
 
+  /** GoJS-compatible: Find node data by key (alias). */
+  findNodeDataForKey(key: NodeKey): NodeData | undefined {
+    return this.getNodeData(key);
+  }
+
+  /** GoJS-compatible: Find node data by key (alias). */
+  getNodeDataForKey(key: NodeKey): NodeData | undefined {
+    return this.getNodeData(key);
+  }
+
+  /** GoJS-compatible: Make a new node data object from a prototype. */
+  makeNodeData(value?: Partial<NodeData>): NodeData {
+    return { ...(value ?? {}) };
+  }
+
+  /** GoJS-compatible: Copy a node data object. */
+  copyNodeData(nodeData: NodeData): NodeData {
+    return { ...nodeData };
+  }
+
+  /** GoJS-compatible: Merge new data into an existing node data object. */
+  mergeNodeData(nodeData: NodeData, newData: Partial<NodeData>): void {
+    Object.assign(nodeData, newData);
+  }
+
+  /** GoJS-compatible: Find the node data that corresponds to a part (by key). */
+  findNodeDataForPart(partKey: NodeKey): NodeData | undefined {
+    return this.getNodeData(partKey);
+  }
+
+  /** GoJS-compatible: Get or set the node category property name. */
+  get nodeCategoryProperty(): string {
+    return this._nodeCategoryProperty;
+  }
+
+  set nodeCategoryProperty(value: string) {
+    this._nodeCategoryProperty = value;
+  }
+
+  /** GoJS-compatible: Get the category of a node data object. */
+  getCategoryForNodeData(nodeData: NodeData): string {
+    return (nodeData[this._nodeCategoryProperty] as string) ?? '';
+  }
+
+  /** GoJS-compatible: Set the category of a node data object. */
+  setCategoryForNodeData(nodeData: NodeData, category: string): void {
+    nodeData[this._nodeCategoryProperty] = category;
+  }
+
+  /** GoJS-compatible: Get or set the key property (GoJS name). */
+  getKeyProperty(): string {
+    return this.nodeKeyProperty;
+  }
+
+  setKeyProperty(value: string): void {
+    this.nodeKeyProperty = value;
+  }
+
+  private _usesUndoManager = true;
+  private _undoManager: unknown = null;
+
+  /** GoJS-compatible: Whether this model supports undo/redo. */
+  get usesUndoManager(): boolean {
+    return this._usesUndoManager;
+  }
+
+  set usesUndoManager(value: boolean) {
+    this._usesUndoManager = value;
+  }
+
+  /** GoJS-compatible: Get the associated UndoManager. */
+  getUndoManager(): unknown {
+    return this._undoManager;
+  }
+
+  /** GoJS-compatible: Set the associated UndoManager. */
+  setUndoManager(undoManager: unknown): void {
+    this._undoManager = undoManager;
+  }
+
+  /** GoJS-compatible: Whether the model has been modified since the last clear. */
+  private _isModified = false;
+
+  get isModified(): boolean {
+    return this._isModified;
+  }
+
+  set isModified(value: boolean) {
+    this._isModified = value;
+  }
+
+  /** GoJS-compatible: Clear the modified flag. */
+  clearIsModified(): void {
+    this._isModified = false;
+  }
+
+  /** GoJS-compatible: Mark modified when a mutation happens. */
+  protected markModified(): void {
+    this._isModified = true;
+  }
+
   /** Add a node. Returns the generated key if none provided. */
   addNode(nodeData: NodeData): NodeKey {
     if (this._isReadOnly) {
@@ -175,6 +277,7 @@ export abstract class Model {
       const idx = this._nodeDataArray.findIndex((d) => this.getNodeKey(d) === nodeKey);
       if (idx !== -1) this._nodeDataArray.splice(idx, 1);
     });
+    this.markModified();
     this.emit({
       type: 'node Added',
       model: this,
@@ -203,6 +306,7 @@ export abstract class Model {
         this._nodeDataArray.push(removedData);
       }
     });
+    this.markModified();
     this.emit({
       type: 'node Removed',
       model: this,
@@ -231,6 +335,7 @@ export abstract class Model {
         nodeData[propertyName] = oldValue;
       }
     });
+    this.markModified();
     this.emit({
       type: 'property Changed',
       model: this,
@@ -488,6 +593,7 @@ export abstract class Model {
         data[propertyName] = oldValue;
       }
     });
+    this.markModified();
     const isNode = this._nodeDataArray.includes(data as NodeData);
     this.emit({
       type: 'property Changed',

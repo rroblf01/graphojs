@@ -357,6 +357,140 @@ export abstract class GraphObject {
     this._margin = value;
   }
 
+  private _row = 0;
+  private _column = 0;
+  private _rowSpan = 1;
+  private _columnSpan = 1;
+
+  /** GoJS-compatible: The row index for table panels. */
+  get row(): number {
+    return this._row;
+  }
+
+  set row(value: number) {
+    this._row = value;
+  }
+
+  /** GoJS-compatible: The column index for table panels. */
+  get column(): number {
+    return this._column;
+  }
+
+  set column(value: number) {
+    this._column = value;
+  }
+
+  /** GoJS-compatible: The number of rows this object spans. */
+  get rowSpan(): number {
+    return this._rowSpan;
+  }
+
+  set rowSpan(value: number) {
+    this._rowSpan = value;
+  }
+
+  /** GoJS-compatible: The number of columns this object spans. */
+  get columnSpan(): number {
+    return this._columnSpan;
+  }
+
+  set columnSpan(value: number) {
+    this._columnSpan = value;
+  }
+
+  private _alignmentFocus: Spot | null = null;
+
+  /** GoJS-compatible: The spot within this object used for alignment/placement. */
+  get alignmentFocus(): Spot | null {
+    return this._alignmentFocus;
+  }
+
+  set alignmentFocus(value: Spot | null) {
+    this._alignmentFocus = value;
+  }
+
+  private _scale = 1;
+
+  /** GoJS-compatible: The scale of this object relative to its normal size. */
+  get scale(): number {
+    return this._scale;
+  }
+
+  set scale(value: number) {
+    this._scale = value;
+  }
+
+  private _isShadowed = false;
+  private _shadowColor = 'rgba(0,0,0,0.3)';
+  private _shadowOffset = { x: 3, y: 3 };
+  private _shadowBlur = 4;
+
+  /** GoJS-compatible: Whether this object casts a drop shadow. */
+  get isShadowed(): boolean {
+    return this._isShadowed;
+  }
+
+  set isShadowed(value: boolean) {
+    this._isShadowed = value;
+  }
+
+  /** GoJS-compatible: The drop shadow color. */
+  get shadowColor(): string {
+    return this._shadowColor;
+  }
+
+  set shadowColor(value: string) {
+    this._shadowColor = value;
+  }
+
+  /** GoJS-compatible: The drop shadow offset. */
+  get shadowOffset(): { x: number; y: number } {
+    return this._shadowOffset;
+  }
+
+  set shadowOffset(value: { x: number; y: number }) {
+    this._shadowOffset = value;
+  }
+
+  /** GoJS-compatible: The drop shadow blur radius. */
+  get shadowBlur(): number {
+    return this._shadowBlur;
+  }
+
+  set shadowBlur(value: number) {
+    this._shadowBlur = value;
+  }
+
+  /** GoJS-compatible: Alias for shadowColor. */
+  get shadow(): string {
+    return this._shadowColor;
+  }
+
+  set shadow(value: string) {
+    this._shadowColor = value;
+  }
+
+  private _pickable = true;
+  private _copyable = true;
+
+  /** GoJS-compatible: Whether this object can be hit-tested. */
+  get pickable(): boolean {
+    return this._pickable;
+  }
+
+  set pickable(value: boolean) {
+    this._pickable = value;
+  }
+
+  /** GoJS-compatible: Whether this object is included when copying its part. */
+  get copyable(): boolean {
+    return this._copyable;
+  }
+
+  set copyable(value: boolean) {
+    this._copyable = value;
+  }
+
   /**
    * Measure the natural size of this object.
    * Returns the size this object would like to occupy.

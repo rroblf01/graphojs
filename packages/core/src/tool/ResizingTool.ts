@@ -49,6 +49,29 @@ export class ResizingTool extends Tool {
     this._minHeight = value;
   }
 
+  /** GoJS-compatible: The minimum size for resized parts. */
+  get minSize(): { width: number; height: number } {
+    return { width: this._minWidth, height: this._minHeight };
+  }
+
+  set minSize(value: { width: number; height: number }) {
+    this._minWidth = value.width;
+    this._minHeight = value.height;
+  }
+
+  private _maxWidth = Infinity;
+  private _maxHeight = Infinity;
+
+  /** GoJS-compatible: The maximum size for resized parts. */
+  get maxSize(): { width: number; height: number } {
+    return { width: this._maxWidth, height: this._maxHeight };
+  }
+
+  set maxSize(value: { width: number; height: number }) {
+    this._maxWidth = value.width;
+    this._maxHeight = value.height;
+  }
+
   /**
    * Find which resize handle (if any) is under a point for a selected node.
    */

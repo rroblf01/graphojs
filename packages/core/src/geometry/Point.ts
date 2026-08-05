@@ -49,6 +49,28 @@ export class Point {
     return new Point(this.x, this.y);
   }
 
+  /** GoJS-compatible: Return a copy of this point. */
+  copy(): Point {
+    return new Point(this.x, this.y);
+  }
+
+  /** GoJS-compatible: Return a new point offset by (dx, dy). */
+  offset(dx: number, dy: number): Point {
+    return new Point(this.x + dx, this.y + dy);
+  }
+
+  /** GoJS-compatible: The squared distance to another point. */
+  distanceSquared(other: Point): number {
+    const dx = this.x - other.x;
+    const dy = this.y - other.y;
+    return dx * dx + dy * dy;
+  }
+
+  /** GoJS-compatible: The cross product with another point (x1*y2 - y1*x2). */
+  cross(other: Point): number {
+    return this.x * other.y - this.y * other.x;
+  }
+
   /** Add another point to this point. */
   add(other: Point): Point {
     return new Point(this.x + other.x, this.y + other.y);

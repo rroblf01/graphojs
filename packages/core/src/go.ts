@@ -24,9 +24,18 @@ export {
 } from './animation/Easing.ts';
 // Binding
 export { Binding, bind } from './binding/Binding.ts';
-export type { Alignment } from './command/CommandHandler.ts';
+export type { AlignDirection } from './command/CommandHandler.ts';
 // Command System
 export { CommandHandler, createCommandHandler } from './command/CommandHandler.ts';
+// GoJS-compatible constant objects
+export {
+  Alignment,
+  AutoScale,
+  BindingMode,
+  Object,
+  Position,
+  ScrollBehavior,
+} from './constants.ts';
 export type { DiagramOptions } from './diagram/Diagram.ts';
 // Diagram
 export { Diagram } from './diagram/Diagram.ts';
@@ -107,11 +116,14 @@ export { Port, Ports } from './parts/Port.ts';
 export type { DiagramJSON } from './serialization/Serializer.ts';
 // Serialization
 export { Serializer } from './serialization/Serializer.ts';
+export { ClickCreatingTool } from './tool/ClickCreatingTool.ts';
 export { ClickSelectingTool } from './tool/ClickSelectingTool.ts';
+export { ContextMenuTool } from './tool/ContextMenuTool.ts';
 export { DraggingTool } from './tool/DraggingTool.ts';
 export { DragSelectingTool } from './tool/DragSelectingTool.ts';
 export { LinkingBaseTool } from './tool/LinkingBaseTool.ts';
 export { LinkingTool } from './tool/LinkingTool.ts';
+export { LinkReshapingTool } from './tool/LinkReshapingTool.ts';
 export { PanningTool } from './tool/PanningTool.ts';
 export { RelinkingTool } from './tool/RelinkingTool.ts';
 export type { ResizeHandle } from './tool/ResizingTool.ts';

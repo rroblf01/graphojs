@@ -7,6 +7,17 @@ import { LinkingBaseTool } from './LinkingBaseTool.ts';
  * Tool for creating links by dragging from a node to another node.
  */
 export class LinkingTool extends LinkingBaseTool {
+  private _archetypeLinkData: LinkData | null = null;
+
+  /** GoJS-compatible: A template of properties for links created by this tool. */
+  get archetypeLinkData(): LinkData | null {
+    return this._archetypeLinkData;
+  }
+
+  set archetypeLinkData(value: LinkData | null) {
+    this._archetypeLinkData = value;
+  }
+
   /** Whether a linking drag is in progress. */
   get isLinking(): boolean {
     return this.isDragging;
@@ -115,6 +126,7 @@ export class LinkingTool extends LinkingBaseTool {
     }
 
     const linkData: LinkData = {
+      ...(this._archetypeLinkData ?? {}),
       from: source.key,
       to: target.key,
     };

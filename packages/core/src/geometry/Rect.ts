@@ -1,4 +1,4 @@
-import type { Point } from './Point.ts';
+import { Point } from './Point.ts';
 import type { Size } from './Size.ts';
 
 /**
@@ -68,6 +68,56 @@ export class Rect {
   /** Return a copy of this rect. */
   clone(): Rect {
     return new Rect(this.x, this.y, this.width, this.height);
+  }
+
+  /** GoJS-compatible: Return a copy of this rect. */
+  copy(): Rect {
+    return new Rect(this.x, this.y, this.width, this.height);
+  }
+
+  /** GoJS-compatible: Whether the rect has finite, non-negative dimensions. */
+  isReal(): boolean {
+    return (
+      Number.isFinite(this.x) &&
+      Number.isFinite(this.y) &&
+      Number.isFinite(this.width) &&
+      Number.isFinite(this.height) &&
+      this.width >= 0 &&
+      this.height >= 0
+    );
+  }
+
+  /** GoJS-compatible: Inset the rect on all sides by a margin value or {left,top,right,bottom}. */
+  computeSides(
+    margin: number | { left: number; top: number; right: number; bottom: number },
+  ): Rect {
+    const m =
+      typeof margin === 'number'
+        ? { left: margin, top: margin, right: margin, bottom: margin }
+        : margin;
+    return new Rect(
+      this.x + m.left,
+      this.y + m.top,
+      Math.max(0, this.width - m.left - m.right),
+      Math.max(0, this.height - m.top - m.bottom),
+    );
+  }
+
+  /** GoJS-compatible: Compute the point in this rect for the given spot. */
+  relativeTo(spot: { x: number; y: number; offsetX: number; offsetY: number }): Point {
+    return new Point(
+      this.x + spot.x * this.width + spot.offsetX,
+      this.y + spot.y * this.height + spot.offsetY,
+    );
+  }
+
+  /** GoJS-compatible: In-place mutation returning this rect. */
+  setTo(x: number, y: number, width: number, height: number): this {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    return this;
   }
 
   /** Get the top-left corner. */

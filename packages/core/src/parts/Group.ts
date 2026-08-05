@@ -1,10 +1,10 @@
-import { Rect } from '../geometry/Rect.ts';
 import { Point } from '../geometry/Point.ts';
-import type { NodeKey } from '../model/Model.ts';
-import { Part } from './Part.ts';
-import type { Node } from './Node.ts';
-import type { Link } from './Link.ts';
+import { Rect } from '../geometry/Rect.ts';
 import type { Layout } from '../layout/Layout.ts';
+import type { NodeKey } from '../model/Model.ts';
+import type { Link } from './Link.ts';
+import type { Node } from './Node.ts';
+import { Part } from './Part.ts';
 
 /**
  * A group is a Part that can contain other Parts (nodes and links).
@@ -16,7 +16,6 @@ export class Group extends Part {
   private _isGroup = true;
   private _layout: Layout | null = null;
   private _placeholderPadding = 10;
-  private _isHighlighted = false;
   private _location = { x: 0, y: 0 };
 
   constructor(key: NodeKey, bounds?: Rect) {
@@ -77,16 +76,6 @@ export class Group extends Part {
   /** Set the placeholder padding. */
   set placeholderPadding(value: number) {
     this._placeholderPadding = value;
-  }
-
-  /** Whether this group is highlighted. */
-  get isHighlighted(): boolean {
-    return this._isHighlighted;
-  }
-
-  /** Set whether this group is highlighted. */
-  set isHighlighted(value: boolean) {
-    this._isHighlighted = value;
   }
 
   /** Get the location of the group. */
@@ -219,4 +208,5 @@ export class Group extends Part {
 }
 
 import { registerPartCtor } from '../panel/PartRegistry.ts';
+
 registerPartCtor(Group);

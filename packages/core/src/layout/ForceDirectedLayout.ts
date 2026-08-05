@@ -1,5 +1,5 @@
-import type { Node } from '../parts/Node.ts';
 import type { Link } from '../parts/Link.ts';
+import type { Node } from '../parts/Node.ts';
 import { Layout, type LayoutOptions } from './Layout.ts';
 
 /**
@@ -31,6 +31,15 @@ export class ForceDirectedLayout extends Layout {
     this.defaultLinkDistance = options.defaultLinkDistance ?? 150;
     this.maxIterations = options.maxIterations ?? 300;
     this.convergenceThreshold = options.convergenceThreshold ?? 0.01;
+  }
+
+  /** GoJS-compatible: The default spring length between linked nodes. */
+  get defaultSpringLength(): number {
+    return this.defaultLinkDistance;
+  }
+
+  set defaultSpringLength(value: number) {
+    this.defaultLinkDistance = value;
   }
 
   override apply(nodes: Node[], links: Link[]): void {

@@ -1,11 +1,11 @@
 import type { Size } from '../geometry/Size.ts';
 import { Size as SizeClass } from '../geometry/Size.ts';
-import type { ShapeType } from '../shapes/ShapeTypes.ts';
-import { ShapeRenderer } from '../shapes/ShapeRenderer.ts';
 import { PathCache } from '../render/RenderCache.ts';
-import { GraphObject } from './GraphObject.ts';
+import { ShapeRenderer } from '../shapes/ShapeRenderer.ts';
+import type { ShapeType } from '../shapes/ShapeTypes.ts';
 import { normalizeShapeType } from '../shapes/ShapeTypes.ts';
 import { drawGeometryString } from './GeometryString.ts';
+import { GraphObject } from './GraphObject.ts';
 
 /** Shared path cache for all panel shapes (avoids recomputing complex paths). */
 const sharedPathCache = new PathCache();
@@ -138,6 +138,42 @@ export class Shape extends GraphObject {
 
   set strokeWidth(value: number) {
     this._strokeWidth = value;
+  }
+
+  private _strokeDashArray: number[] = [];
+
+  /** GoJS-compatible: The dash pattern for stroking the outline. */
+  get strokeDashArray(): number[] {
+    return this._strokeDashArray;
+  }
+
+  set strokeDashArray(value: number[]) {
+    this._strokeDashArray = Array.isArray(value) ? value : [];
+  }
+
+  /** GoJS-compatible: Get the geometry as a string (alias of geometryString). */
+  get fromGeometry(): unknown {
+    return this._geometryString || null;
+  }
+
+  /** GoJS-compatible: Set the geometry from a geometry string or object. */
+  set fromGeometry(value: unknown) {
+    if (typeof value === 'string') {
+      this._geometryString = value;
+    } else if (value && typeof value === 'object') {
+      const gs = (value as { string?: unknown }).string;
+      if (typeof gs === 'string') this._geometryString = gs;
+    }
+  }
+
+  /** GoJS-compatible: Get the geometry (alias of fromGeometry). */
+  get toGeometry(): unknown {
+    return this._geometryString || null;
+  }
+
+  /** GoJS-compatible: Set the geometry (alias of fromGeometry). */
+  set toGeometry(value: unknown) {
+    this.fromGeometry = value;
   }
 
   private _strokeCap: 'butt' | 'round' | 'square' = 'butt';

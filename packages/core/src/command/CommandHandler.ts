@@ -13,7 +13,7 @@ import {
   SetZOrderCommand,
 } from '../undo/commands.ts';
 
-export type Alignment = 'left' | 'right' | 'top' | 'bottom' | 'centerH' | 'centerV';
+export type AlignDirection = 'left' | 'right' | 'top' | 'bottom' | 'centerH' | 'centerV';
 
 /**
  * Handles high-level editing commands for a diagram.
@@ -179,9 +179,59 @@ export class CommandHandler {
 
   /** Paste the clipboard (nodes + links) into the diagram (undoable). */
   pasteClipboard(offset = 20): boolean {
+    return this.pasteClipboardAtOffset(offset);
+  }
+
+  /** Paste the clipboard so the first node lands at the given position. */
+  pasteClipboardAt(x: number, y: number): boolean {
     if (!this.canModify()) return false;
     if (this.clipboard.nodes.length === 0) return false;
 
+    const model = this.diagram.getModel();
+    const undoManager = this.diagram.getUndoManager();
+    const keyMap = new Map<unknown, unknown>();
+    const first = this.clipboard.nodes[0];
+    const firstX = (first?.x as number) ?? 0;
+    const firstY = (first?.y as number) ?? 0;
+    const dx = x - firstX;
+    const dy = y - firstY;
+
+    undoManager.beginTransaction('paste');
+    try {
+      for (let i = 0; i < this.clipboard.nodes.length; i++) {
+        const data = this.clipboard.nodes[i];
+        if (!data) continue;
+        const copy: NodeData = { ...data };
+        const oldKey = this.clipboard.oldKeys[i];
+        const newKey = model.generateKey();
+        copy[model.getNodeKeyProperty()] = newKey;
+        if (oldKey !== undefined) keyMap.set(oldKey, newKey);
+
+        copy.x = ((copy.x as number) ?? 0) + dx;
+        copy.y = ((copy.y as number) ?? 0) + dy;
+
+        undoManager.execute(new AddNodeCommand(model, copy));
+      }
+
+      const linkKeyProperty = model.getLinkKeyProperty();
+      for (const linkData of this.clipboard.links) {
+        const fromKey = keyMap.get(linkData.from);
+        const toKey = keyMap.get(linkData.to);
+        if (fromKey === undefined || toKey === undefined) continue;
+        const copy: NodeData = { ...linkData };
+        delete copy[linkKeyProperty];
+        undoManager.execute(new AddLinkCommand(model, copy as Parameters<typeof model.addLink>[0]));
+      }
+    } finally {
+      undoManager.commitTransaction();
+    }
+
+    this.diagram.fireDiagramEvent('ClipboardPasted', null, { count: this.clipboard.nodes.length });
+    this.diagram.invalidate();
+    return true;
+  }
+
+  private pasteClipboardAtOffset(offset = 20): boolean {
     const model = this.diagram.getModel();
     const undoManager = this.diagram.getUndoManager();
     const keyMap = new Map<unknown, unknown>();
@@ -313,7 +363,7 @@ export class CommandHandler {
   }
 
   /** Align selected nodes (needs at least 2). Returns true if aligned. */
-  align(alignment: Alignment): boolean {
+  align(alignment: AlignDirection): boolean {
     if (!this.canModify()) return false;
     const nodes = this.getSelectedNodes();
     if (nodes.length < 2) return false;
@@ -669,6 +719,54 @@ export class CommandHandler {
     if (this.diagram.getSelectedParts().length === 0) return false;
     this.copySelection();
     return this.pasteClipboard(20);
+  }
+
+  /** GoJS-compatible: Whether increaseZoom is possible. */
+  canIncreaseZoom(): boolean {
+    return this.diagram.scale < this.diagram.maxScale;
+  }
+
+  /** GoJS-compatible: Zoom in by a factor. */
+  increaseZoom(factor = 1.25): boolean {
+    if (!this.canIncreaseZoom()) return false;
+    this.diagram.scale = Math.min(this.diagram.maxScale, this.diagram.scale * factor);
+    return true;
+  }
+
+  /** GoJS-compatible: Whether decreaseZoom is possible. */
+  canDecreaseZoom(): boolean {
+    return this.diagram.scale > this.diagram.minScale;
+  }
+
+  /** GoJS-compatible: Zoom out by a factor. */
+  decreaseZoom(factor = 1.25): boolean {
+    if (!this.canDecreaseZoom()) return false;
+    this.diagram.scale = Math.max(this.diagram.minScale, this.diagram.scale / factor);
+    return true;
+  }
+
+  /** GoJS-compatible: Reset the zoom to 1. */
+  resetZoom(): boolean {
+    if (!this.canModify()) return false;
+    this.diagram.scale = 1;
+    return true;
+  }
+
+  /** GoJS-compatible: Zoom to fit the entire diagram in the viewport. */
+  zoomToFit(): boolean {
+    if (!this.canModify()) return false;
+    this.diagram.zoomToFit();
+    return true;
+  }
+
+  /** GoJS-compatible: Paste the current clipboard at the given position, if any. */
+  pasteSelection(position?: { x: number; y: number }): boolean {
+    if (!this.canModify()) return false;
+    if (this.clipboard.nodes.length === 0) return false;
+    if (position) {
+      return this.pasteClipboardAt(position.x, position.y);
+    }
+    return this.pasteClipboard(10);
   }
 }
 

@@ -52,6 +52,61 @@ export class GraphLinksModel extends Model {
     this.linkKeyProperty = property;
   }
 
+  /** GoJS-compatible: Get or set the link key property (GoJS names). */
+  getLinkKeyPropertyName(): string {
+    return this.linkKeyProperty;
+  }
+
+  /** GoJS-compatible: The property name that holds the "from" port id. */
+  private _linkFromPortIdProperty = 'fromPort';
+
+  get linkFromPortIdProperty(): string {
+    return this._linkFromPortIdProperty;
+  }
+
+  set linkFromPortIdProperty(value: string) {
+    this._linkFromPortIdProperty = value;
+  }
+
+  /** GoJS-compatible: The property name that holds the "to" port id. */
+  private _linkToPortIdProperty = 'toPort';
+
+  get linkToPortIdProperty(): string {
+    return this._linkToPortIdProperty;
+  }
+
+  set linkToPortIdProperty(value: string) {
+    this._linkToPortIdProperty = value;
+  }
+
+  /** GoJS-compatible: Make a new link data object from a prototype. */
+  makeLinkData(value?: Partial<LinkData>): LinkData {
+    return { ...(value ?? {}) } as LinkData;
+  }
+
+  /** GoJS-compatible: Copy a link data object. */
+  copyLinkData(linkData: LinkData): LinkData {
+    return { ...linkData };
+  }
+
+  /** GoJS-compatible: Merge new data into an existing link data object. */
+  mergeLinkData(linkData: LinkData, newData: Partial<LinkData>): void {
+    Object.assign(linkData, newData);
+  }
+
+  /** GoJS-compatible: Find link data by key. */
+  findLinkDataForKey(key: NodeKey): LinkData | undefined {
+    return this.getLinkData(key);
+  }
+
+  /** GoJS-compatible: Relink a node: update all links to/from the old key to the new key. */
+  relinkNodeData(nodeKey: NodeKey, newKey: NodeKey): void {
+    for (const link of this._linkDataArray) {
+      if (link.from === nodeKey) link.from = newKey;
+      if (link.to === nodeKey) link.to = newKey;
+    }
+  }
+
   private _isValidLink: LinkValidationCallback | null = null;
   private _isValidLinkRemoval: LinkValidationCallback | null = null;
   private _allowsSelfLoops = true;
@@ -205,6 +260,7 @@ export class GraphLinksModel extends Model {
         linkData[propertyName] = oldValue;
       }
     });
+    this.markModified();
     this.emit({
       type: 'property Changed',
       model: this,
@@ -266,6 +322,7 @@ export class GraphLinksModel extends Model {
       const idx = this._linkDataArray.findIndex((l) => this.getLinkKey(l) === linkKey);
       if (idx !== -1) this._linkDataArray.splice(idx, 1);
     });
+    this.markModified();
     this.emit({
       type: 'link Added',
       model: this,
@@ -299,6 +356,7 @@ export class GraphLinksModel extends Model {
         this._linkDataArray.push(removedData);
       }
     });
+    this.markModified();
     this.emit({
       type: 'link Removed',
       model: this,

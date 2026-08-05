@@ -112,13 +112,70 @@ export class TextBlock extends GraphObject {
 
   /** GoJS-compatible: The font style (e.g. "bold", "italic"). */
   get fontStyle(): string {
-    const m = /^(bold|italic|bold italic|italic bold)\s/.exec(this._font);
+    const m = /^(bold italic|italic bold|bold|italic)\s/.exec(this._font);
     return m ? (m[1] ?? '') : '';
   }
 
   set fontStyle(value: string) {
     const style = value ? `${value} ` : '';
     this._font = `${style}${this.fontSize}px ${this.fontFamily}`;
+  }
+
+  /** GoJS-compatible: Whether the text is bold. */
+  get isBold(): boolean {
+    return this.fontStyle.includes('bold');
+  }
+
+  set isBold(value: boolean) {
+    const italic = this.isItalic;
+    const bold = value;
+    const style = `${bold ? 'bold' : ''} ${italic ? 'italic' : ''}`.trim();
+    this.fontStyle = style;
+  }
+
+  /** GoJS-compatible: Whether the text is italic. */
+  get isItalic(): boolean {
+    return this.fontStyle.includes('italic');
+  }
+
+  set isItalic(value: boolean) {
+    const bold = this.isBold;
+    const italic = value;
+    const style = `${bold ? 'bold' : ''} ${italic ? 'italic' : ''}`.trim();
+    this.fontStyle = style;
+  }
+
+  private _isUnderline = false;
+
+  /** GoJS-compatible: Whether the text is underlined. */
+  get isUnderline(): boolean {
+    return this._isUnderline;
+  }
+
+  set isUnderline(value: boolean) {
+    this._isUnderline = value;
+  }
+
+  private _overflow = 'visible';
+
+  /** GoJS-compatible: How overflowing text is handled ("visible", "hidden", "ellipsis", "clip"). */
+  get overflow(): string {
+    return this._overflow;
+  }
+
+  set overflow(value: string) {
+    this._overflow = value;
+  }
+
+  private _maxLines = Infinity;
+
+  /** GoJS-compatible: The maximum number of lines of text. */
+  get maxLines(): number {
+    return this._maxLines;
+  }
+
+  set maxLines(value: number) {
+    this._maxLines = value;
   }
 
   get textAlign(): 'left' | 'center' | 'right' {

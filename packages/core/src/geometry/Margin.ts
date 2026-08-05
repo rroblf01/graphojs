@@ -78,6 +78,11 @@ export class Margin {
     return new Margin(this.top, this.right, this.bottom, this.left);
   }
 
+  /** GoJS-compatible: Return a copy of this margin. */
+  copy(): Margin {
+    return new Margin(this.top, this.right, this.bottom, this.left);
+  }
+
   /** Get the total horizontal margin (left + right). */
   get horizontal(): number {
     return this.left + this.right;

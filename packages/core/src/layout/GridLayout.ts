@@ -1,5 +1,5 @@
-import type { Node } from '../parts/Node.ts';
 import type { Link } from '../parts/Link.ts';
+import type { Node } from '../parts/Node.ts';
 import { Layout, type LayoutOptions } from './Layout.ts';
 
 /**
@@ -35,6 +35,35 @@ export class GridLayout extends Layout {
     this.spacingX = options.spacingX ?? 20;
     this.spacingY = options.spacingY ?? 20;
     this.startingPosition = options.startingPosition ?? { x: 0, y: 0 };
+  }
+
+  /** GoJS-compatible: Horizontal spacing between cells. */
+  get columnSpacing(): number {
+    return this.spacingX;
+  }
+
+  set columnSpacing(value: number) {
+    this.spacingX = value;
+  }
+
+  /** GoJS-compatible: Vertical spacing between cells. */
+  get rowSpacing(): number {
+    return this.spacingY;
+  }
+
+  set rowSpacing(value: number) {
+    this.spacingY = value;
+  }
+
+  private _wrappingWidth = Infinity;
+
+  /** GoJS-compatible: The maximum width of a row of cells before wrapping. */
+  get wrappingWidth(): number {
+    return this._wrappingWidth;
+  }
+
+  set wrappingWidth(value: number) {
+    this._wrappingWidth = value;
   }
 
   override apply(nodes: Node[], _links: Link[]): void {

@@ -1,6 +1,6 @@
 import { Rect } from '../geometry/Rect.ts';
-import type { NodeKey } from '../model/Model.ts';
 import type { Spot } from '../geometry/Spot.ts';
+import type { NodeKey } from '../model/Model.ts';
 import { Part } from './Part.ts';
 
 export type LinkRouting = 'straight' | 'orthogonal' | 'curved';
@@ -99,6 +99,37 @@ export class Link extends Part {
 
   set routing(value: LinkRouting) {
     this._routing = value;
+  }
+
+  private _curve: 'None' | 'Bezier' | 'JumpOver' | 'AvoidsNodes' = 'None';
+  private _resizingSegmentIndex = -1;
+  private _fromEndSegmentOrientation = 0;
+
+  /** GoJS-compatible: The type of curve used for this link. */
+  get curve(): 'None' | 'Bezier' | 'JumpOver' | 'AvoidsNodes' {
+    return this._curve;
+  }
+
+  set curve(value: 'None' | 'Bezier' | 'JumpOver' | 'AvoidsNodes') {
+    this._curve = value;
+  }
+
+  /** GoJS-compatible: The segment index being resized, or -1. */
+  get resizingSegmentIndex(): number {
+    return this._resizingSegmentIndex;
+  }
+
+  set resizingSegmentIndex(value: number) {
+    this._resizingSegmentIndex = value;
+  }
+
+  /** GoJS-compatible: The orientation of the segment leaving the from-end. */
+  get fromEndSegmentOrientation(): number {
+    return this._fromEndSegmentOrientation;
+  }
+
+  set fromEndSegmentOrientation(value: number) {
+    this._fromEndSegmentOrientation = value;
   }
 
   get fromPort(): { x: number; y: number } {
@@ -469,4 +500,5 @@ export class Link extends Part {
 }
 
 import { registerPartCtor } from '../panel/PartRegistry.ts';
+
 registerPartCtor(Link);

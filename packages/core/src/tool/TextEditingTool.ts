@@ -1,7 +1,7 @@
 import type { Diagram } from '../diagram/Diagram.ts';
-import { Node } from '../parts/Node.ts';
 import { Panel } from '../panel/Panel.ts';
 import { TextBlock } from '../panel/TextBlock.ts';
+import { Node } from '../parts/Node.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -11,7 +11,7 @@ import { Tool } from './Tool.ts';
  */
 export class TextEditingTool extends Tool {
   private input: HTMLInputElement | null = null;
-  private textBlock: TextBlock | null = null;
+  private _editingTextBlock: TextBlock | null = null;
   private node: Node | null = null;
   private _isEditing = false;
 
@@ -27,7 +27,12 @@ export class TextEditingTool extends Tool {
 
   /** Get the TextBlock currently being edited, or null. */
   get editingTextBlock(): TextBlock | null {
-    return this.textBlock;
+    return this._editingTextBlock;
+  }
+
+  /** GoJS-compatible: The TextBlock currently being edited, or null. */
+  get textBlock(): TextBlock | null {
+    return this._editingTextBlock;
   }
 
   /** Find the first editable TextBlock in a node's visual tree. */
@@ -66,7 +71,7 @@ export class TextEditingTool extends Tool {
     // Prefer an editable TextBlock in the visual tree; fall back to the node label
     const textBlock = this.findEditableTextBlock(node);
     this.node = node;
-    this.textBlock = textBlock;
+    this._editingTextBlock = textBlock;
     this.showEditor(diagram);
     this._isEditing = true;
   }
@@ -78,14 +83,14 @@ export class TextEditingTool extends Tool {
     const diagram = this.diagram;
     const value = this.input.value;
     const node = this.node;
-    const textBlock = this.textBlock;
+    const textBlock = this._editingTextBlock;
 
     // Prevent re-entrancy: hide/clear BEFORE committing so a synchronous blur
     // from removing the input cannot double-commit or commit a cancelled edit.
     this.hideEditor();
     this._isEditing = false;
     this.node = null;
-    this.textBlock = null;
+    this._editingTextBlock = null;
 
     if (commit && diagram) {
       // Wrap the model write in a transaction so text edits are undoable
@@ -158,7 +163,7 @@ export class TextEditingTool extends Tool {
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.value = this.textBlock ? this.textBlock.text : this.node.label;
+    input.value = this._editingTextBlock ? this._editingTextBlock.text : this.node.label;
     input.className = 'graphojs-text-editing';
     input.style.cssText = `
       position:fixed;
@@ -167,8 +172,8 @@ export class TextEditingTool extends Tool {
       width:${size.width}px;
       height:${size.height}px;
       box-sizing:border-box;
-      font:${this.textBlock?.font ?? this.node.labelFont};
-      color:${this.textBlock?.color ?? this.node.labelColor};
+      font:${this._editingTextBlock?.font ?? this.node.labelFont};
+      color:${this._editingTextBlock?.color ?? this.node.labelColor};
       text-align:center;
       border:2px solid #2196f3;
       outline:none;

@@ -7,6 +7,16 @@ import { Tool } from './Tool.ts';
 export class DragSelectingTool extends Tool {
   private _isSelecting = false;
   private _startPoint = { x: 0, y: 0 };
+  private _isPartialInclusion = true;
+
+  /** GoJS-compatible: Whether partially-enclosed parts are selected too. */
+  get isPartialInclusion(): boolean {
+    return this._isPartialInclusion;
+  }
+
+  set isPartialInclusion(value: boolean) {
+    this._isPartialInclusion = value;
+  }
 
   /** Whether a rubber-band selection is in progress. */
   get isSelecting(): boolean {
@@ -72,7 +82,7 @@ export class DragSelectingTool extends Tool {
 
     // Only select if the drag was large enough to be a box (not a click)
     if (width > 3 || height > 3) {
-      diagram.selectPartsInRect({ x, y, width, height });
+      diagram.selectPartsInRect({ x, y, width, height }, this._isPartialInclusion);
     }
   }
 }

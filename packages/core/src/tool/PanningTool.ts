@@ -9,6 +9,16 @@ export class PanningTool extends Tool {
   private panStartY = 0;
   private panOffsetX = 0;
   private panOffsetY = 0;
+  private _panSpeed = 1;
+
+  /** GoJS-compatible: Multiplier for panning speed. */
+  get panSpeed(): number {
+    return this._panSpeed;
+  }
+
+  set panSpeed(value: number) {
+    this._panSpeed = value;
+  }
 
   override doActivate(): void {
     super.doActivate();
@@ -49,8 +59,8 @@ export class PanningTool extends Tool {
     if (!this.isPanning || !this.diagram) return;
 
     const viewport = this.diagram.getViewport();
-    const dx = (e.clientX - this.panStartX) / viewport.scale;
-    const dy = (e.clientY - this.panStartY) / viewport.scale;
+    const dx = ((e.clientX - this.panStartX) / viewport.scale) * this._panSpeed;
+    const dy = ((e.clientY - this.panStartY) / viewport.scale) * this._panSpeed;
 
     this.diagram.setViewport(this.panOffsetX - dx, this.panOffsetY - dy);
   }

@@ -1,12 +1,12 @@
+import type { Binding } from '../binding/Binding.ts';
 import { Point } from '../geometry/Point.ts';
 import type { Rect } from '../geometry/Rect.ts';
-import type { NodeKey, NodeData } from '../model/Model.ts';
-import type { Binding } from '../binding/Binding.ts';
-import type { Group } from './Group.ts';
 import type { Layer } from '../layer/Layer.ts';
-import type { Adornment, AdornmentName } from './Adornment.ts';
-import { Panel } from '../panel/Panel.ts';
+import type { NodeData, NodeKey } from '../model/Model.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
+import { Panel } from '../panel/Panel.ts';
+import type { Adornment, AdornmentName } from './Adornment.ts';
+import type { Group } from './Group.ts';
 
 /**
  * Base class for all visual parts in a diagram.
@@ -40,6 +40,9 @@ export abstract class Part {
   private _category = '';
   private _dragAlpha = 1;
   private _isInDocumentBounds = true;
+  private _deletable = true;
+  private _copyable = true;
+  private _isHighlighted = false;
 
   constructor(key: NodeKey, bounds: Rect) {
     this._key = key;
@@ -48,6 +51,33 @@ export abstract class Part {
 
   get key(): NodeKey {
     return this._key;
+  }
+
+  /** GoJS-compatible: Whether this part can be deleted. */
+  get deletable(): boolean {
+    return this._deletable;
+  }
+
+  set deletable(value: boolean) {
+    this._deletable = value;
+  }
+
+  /** GoJS-compatible: Whether this part can be copied. */
+  get copyable(): boolean {
+    return this._copyable;
+  }
+
+  set copyable(value: boolean) {
+    this._copyable = value;
+  }
+
+  /** GoJS-compatible: Whether this part is currently highlighted. */
+  get isHighlighted(): boolean {
+    return this._isHighlighted;
+  }
+
+  set isHighlighted(value: boolean) {
+    this._isHighlighted = value;
   }
 
   get bounds(): Rect {

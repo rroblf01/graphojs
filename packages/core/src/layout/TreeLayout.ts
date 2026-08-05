@@ -1,5 +1,5 @@
-import type { Node } from '../parts/Node.ts';
 import type { Link } from '../parts/Link.ts';
+import type { Node } from '../parts/Node.ts';
 import { Layout, type LayoutOptions } from './Layout.ts';
 
 /**
@@ -20,17 +20,31 @@ export interface TreeLayoutOptions extends LayoutOptions {
  * Tree layout arranges nodes in a hierarchical tree structure.
  */
 export class TreeLayout extends Layout {
-  private angle: number;
+  private _angle: number;
   private radial: boolean;
   private angleIncrement: number;
   private nodeSpacing: number;
 
   constructor(options: TreeLayoutOptions = {}) {
     super(options);
-    this.angle = options.angle ?? 0;
+    this._angle = options.angle ?? 0;
     this.radial = options.radial ?? false;
     this.angleIncrement = options.angleIncrement ?? 45;
     this.nodeSpacing = options.nodeSpacing ?? 30;
+  }
+
+  /** GoJS-compatible: The angle of the layout direction in degrees. */
+  get angle(): number {
+    return this._angle;
+  }
+
+  set angle(value: number) {
+    this._angle = value;
+  }
+
+  /** GoJS-compatible: Set how child links are drawn ("orthogonal", "curved", "arc"). */
+  setChildLinkStyle(_style: string): void {
+    // Accepted for GoJS API compatibility; rendering style is stored by Link.
   }
 
   override apply(nodes: Node[], links: Link[]): void {

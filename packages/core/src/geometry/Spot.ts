@@ -39,6 +39,55 @@ export class Spot {
   static readonly BottomCenter = new Spot(0.5, 1);
   /** Spot at the bottom-right corner. */
   static readonly BottomRight = new Spot(1, 1);
+  /** GoJS-compatible: A spot with no meaningful position. */
+  static readonly None = new Spot(Number.NaN, Number.NaN);
+
+  /** GoJS-compatible: Parse a string like "0,0" or "1 1 4 4". */
+  static parse(value: string): Spot {
+    const nums = value
+      .split(/[,\s]+/)
+      .map(Number)
+      .filter((n) => Number.isFinite(n));
+    return new Spot(nums[0] ?? 0.5, nums[1] ?? 0.5, nums[2] ?? 0, nums[3] ?? 0);
+  }
+
+  /** GoJS-compatible: Whether the given value is a Spot object. */
+  static isSpot(value: unknown): boolean {
+    return value instanceof Spot;
+  }
+
+  /** GoJS-compatible: Whether this spot has valid fractional coordinates. */
+  isSpot(): boolean {
+    return (
+      Number.isFinite(this.x) &&
+      Number.isFinite(this.y) &&
+      this.x >= 0 &&
+      this.x <= 1 &&
+      this.y >= 0 &&
+      this.y <= 1
+    );
+  }
+
+  /** GoJS-compatible: In-place mutation returning this spot. */
+  setSpot(x: number, y: number, offsetX = 0, offsetY = 0): this {
+    (this as { x: number }).x = x;
+    (this as { y: number }).y = y;
+    (this as { offsetX: number }).offsetX = offsetX;
+    (this as { offsetY: number }).offsetY = offsetY;
+    return this;
+  }
+
+  /** GoJS-compatible: Compute the point in the rect for this spot. */
+  spotToPoint(x: number, y: number, width: number, height: number): { x: number; y: number } {
+    return this.computePoint(x, y, width, height);
+  }
+
+  /** GoJS-compatible: Compute the spot (fraction) for a point within a rect. */
+  pointToSpot(px: number, py: number, x: number, y: number, width: number, height: number): Spot {
+    const fx = width === 0 ? 0 : (px - x) / width;
+    const fy = height === 0 ? 0 : (py - y) / height;
+    return new Spot(fx, fy);
+  }
 
   /** Create a Spot from a standard name. */
   static fromName(name: string): Spot {
@@ -87,5 +136,10 @@ export class Spot {
   /** Return a copy with additional offset. */
   offset(dx: number, dy: number): Spot {
     return new Spot(this.x, this.y, this.offsetX + dx, this.offsetY + dy);
+  }
+
+  /** GoJS-compatible: Return a copy of this spot. */
+  copy(): Spot {
+    return new Spot(this.x, this.y, this.offsetX, this.offsetY);
   }
 }

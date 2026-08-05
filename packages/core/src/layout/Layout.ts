@@ -1,5 +1,5 @@
-import type { Node } from '../parts/Node.ts';
 import type { Link } from '../parts/Link.ts';
+import type { Node } from '../parts/Node.ts';
 import { LayoutNetwork } from './LayoutNetwork.ts';
 
 /**
@@ -183,5 +183,36 @@ export abstract class Layout {
         vertex.node.bounds = vertex.bounds.clone() as never;
       }
     }
+  }
+
+  private _isInitial = true;
+  private _isFinal = true;
+  private _isOngoing = true;
+
+  /** GoJS-compatible: Whether this is the initial layout of the diagram. */
+  get isInitial(): boolean {
+    return this._isInitial;
+  }
+
+  set isInitial(value: boolean) {
+    this._isInitial = value;
+  }
+
+  /** GoJS-compatible: Whether this is the final layout of a cycle. */
+  get isFinal(): boolean {
+    return this._isFinal;
+  }
+
+  set isFinal(value: boolean) {
+    this._isFinal = value;
+  }
+
+  /** GoJS-compatible: Whether the layout is ongoing (auto-layout is active). */
+  get isOngoing(): boolean {
+    return this._isOngoing;
+  }
+
+  set isOngoing(value: boolean) {
+    this._isOngoing = value;
   }
 }

@@ -10,6 +10,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'GraphoJS',
+      favicon: '/favicon.ico',
       sidebar: [
         { label: 'Empezar', link: '/getting-started/' },
         {

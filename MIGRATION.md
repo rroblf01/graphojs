@@ -36,12 +36,19 @@ list. Highlights:
 
 ## Framework wrappers
 
-- React: `@graphojs/react` provides `<Diagram>`, `<Palette>`, `<Overview>`
-- Vue 3: `@graphojs/vue` provides `Diagram`, `Palette`, `Overview` components
+- React: `graphojs/react` provides `<Diagram>`, `<Palette>`, `<Overview>`
+- Vue 3: `graphojs/vue` provides `Diagram`, `Palette`, `Overview` components
+
+React and Vue are optional peer dependencies — install them to use the subpath:
+
+```bash
+npm install graphojs react   # for graphojs/react
+npm install graphojs vue     # for graphojs/vue
+```
 
 ```tsx
 // React
-import { Diagram } from "@graphojs/react";
+import { Diagram } from "graphojs/react";
 import * as go from "graphojs/go";
 
 const model = new go.GraphLinksModel({ /* ... */ });
@@ -51,7 +58,7 @@ const model = new go.GraphLinksModel({ /* ... */ });
 ```vue
 <!-- Vue -->
 <script setup>
-import { Diagram } from "@graphojs/vue";
+import { Diagram } from "graphojs/vue";
 import * as go from "graphojs/go";
 const model = new go.GraphLinksModel({ /* ... */ });
 </script>

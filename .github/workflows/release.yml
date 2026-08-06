@@ -25,16 +25,7 @@ jobs:
       - run: pnpm build
       - run: pnpm test
       - name: Publish to npm
-        run: |
-          for pkg in core react vue; do
-            name=$(node -p "require('./packages/$pkg/package.json').name")
-            version=$(node -p "require('./packages/$pkg/package.json').version")
-            if npm view "$name@$version" >/dev/null 2>&1; then
-              echo "skip $name@$version (already published)"
-            else
-              pnpm -C "packages/$pkg" publish --no-git-checks
-            fi
-          done
+        run: pnpm -C packages/core publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Create GitHub Release

@@ -4,11 +4,11 @@ An open-source, MIT-licensed alternative to GoJS for building interactive diagra
 
 ## Packages
 
-| Package           | npm                                                                                                       | Description                                  |
-| ----------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| `graphojs`        | [![npm](https://img.shields.io/npm/v/graphojs.svg)](https://www.npmjs.com/package/graphojs)               | Core library (framework-agnostic, Canvas 2D) |
-| `@graphojs/react` | [![npm](https://img.shields.io/npm/v/@graphojs/react.svg)](https://www.npmjs.com/package/@graphojs/react) | React wrapper                                |
-| `@graphojs/vue`   | [![npm](https://img.shields.io/npm/v/@graphojs/vue.svg)](https://www.npmjs.com/package/@graphojs/vue)     | Vue wrapper                                  |
+| Package                 | npm                                                                                                                 | Description                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `graphojs`              | [![npm](https://img.shields.io/npm/v/graphojs.svg)](https://www.npmjs.com/package/graphojs)                         | Core library (framework-agnostic, Canvas 2D) |
+| `graphojs/react`        | [![npm](https://img.shields.io/npm/v/graphojs.svg)](https://www.npmjs.com/package/graphojs)                         | React wrapper (subpath, optional peer)       |
+| `graphojs/vue`          | [![npm](https://img.shields.io/npm/v/graphojs.svg)](https://www.npmjs.com/package/graphojs)                         | Vue 3 wrapper (subpath, optional peer)       |
 
 ## Status
 

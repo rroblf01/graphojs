@@ -8,7 +8,7 @@ import {
   type DiagramEvent,
   type DiagramEventType,
   type ChangedEvent,
-} from 'graphojs';
+} from '../index.ts';
 import { defineComponent, h, onMounted, onUnmounted, ref, watch } from 'vue';
 
 /**
@@ -210,4 +210,4 @@ export const Overview = defineComponent({
   },
 });
 
-export const version: string = '0.1.0';
+export const version: string = '0.2.0';

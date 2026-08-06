@@ -42,11 +42,26 @@ diagram.model = new go.GraphLinksModel({
 - `graphojs` — main entry (`Diagram`, `GraphLinksModel`, `GraphObject`, `Shape`, ...)
 - `graphojs/go` — full `go.*` namespace for GoJS compatibility
 - `graphojs/templates` — predefined palette templates (`getAllTemplates`, `basicShapes`, `dataFlowShapes`, `flowchartShapes`)
+- `graphojs/react` — React wrapper (`Diagram`, `Palette`, `Overview` components)
+- `graphojs/vue` — Vue 3 wrapper (`Diagram`, `Palette`, `Overview` components)
+
+React and Vue are optional peer dependencies: install them only if you use the
+corresponding subpath.
 
 ## React / Vue
 
-- [@graphojs/react](https://www.npmjs.com/package/@graphojs/react) — React wrapper
-- [@graphojs/vue](https://www.npmjs.com/package/@graphojs/vue) — Vue wrapper
+```bash
+npm install graphojs react          # for graphojs/react
+npm install graphojs vue            # for graphojs/vue
+```
+
+```tsx
+// React
+import { Diagram } from 'graphojs/react';
+
+// Vue
+import { Diagram } from 'graphojs/vue';
+```
 
 ## License
 

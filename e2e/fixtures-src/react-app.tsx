@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import React, { useState } from 'react';
-import { Diagram, Palette, Overview } from '@graphojs/react';
+import { Diagram, Palette, Overview } from 'graphojs/react';
 import {
   GraphObject,
   GraphLinksModel,

@@ -5,13 +5,25 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-08-06
+
+### Changed
+
+- The React and Vue wrappers are now **subpaths of the `graphojs` package**
+  instead of separate `@graphojs/react` / `@graphojs/vue` packages. Import them
+  as `graphojs/react` and `graphojs/vue`. `react`, `react-dom`, and `vue` are
+  optional peer dependencies — install them only if you use the corresponding
+  subpath.
+- Added `homepage` (https://graphojs.ricardorobles.es/) to the package.
+
 ## [0.1.0] - 2026-08-06
 
-First public release on npm. Three packages are published together:
+First public release on npm. The `graphojs` package ships the core library
+plus optional wrapper subpaths:
 
 - [`graphojs`](https://www.npmjs.com/package/graphojs) — core library (Canvas 2D, GoJS-compatible API)
-- [`@graphojs/react`](https://www.npmjs.com/package/@graphojs/react) — React wrapper
-- [`@graphojs/vue`](https://www.npmjs.com/package/@graphojs/vue) — Vue 3 wrapper
+- [`graphojs/react`](https://www.npmjs.com/package/graphojs) — React wrapper (optional peer dependency)
+- [`graphojs/vue`](https://www.npmjs.com/package/graphojs) — Vue 3 wrapper (optional peer dependency)
 
 ### Added
 
@@ -45,7 +57,7 @@ First public release on npm. Three packages are published together:
 - `graphojs/go` subpath exposing the full `go.*` namespace for drop-in
   GoJS compatibility.
 
-#### React (`@graphojs/react`)
+#### React (`graphojs/react`)
 
 - `Diagram`, `Palette`, and `Overview` components that create the underlying
   widgets once and update reactively when props change.
@@ -53,7 +65,7 @@ First public release on npm. Three packages are published together:
   `initDiagram`, `onDiagramInit`, `onModelChange`, `onDiagramEvent`,
   `onSelectionChanged`, `className`, `style`.
 
-#### Vue (`@graphojs/vue`)
+#### Vue (`graphojs/vue`)
 
 - `Diagram`, `Palette`, and `Overview` components (Vue 3.5+) with reactive
   prop watching and emitted events (`diagram-init`, `model-change`,
@@ -90,4 +102,5 @@ First public release on npm. Three packages are published together:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[0.2.0]: https://github.com/rroblf01/graphojs/releases/tag/v0.2.0
 [0.1.0]: https://github.com/rroblf01/graphojs/releases/tag/v0.1.0

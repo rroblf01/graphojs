@@ -1,6 +1,6 @@
 // GraphoJS + React/Vue: los wrappers montan el mismo núcleo.
-// Este playground demuestra el Diagram del core; los wrappers @graphojs/react
-// y @graphojs/vue envuelven exactamente este componente.
+// Este playground demuestra el Diagram del core; los wrappers graphojs/react
+// y graphojs/vue envuelven exactamente este componente.
 import * as go from 'graphojs/go';
 
 const $ = go.GraphObject.make;

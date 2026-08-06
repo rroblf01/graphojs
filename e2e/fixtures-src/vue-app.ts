@@ -1,5 +1,5 @@
 import { createApp, h, ref } from 'vue';
-import { Diagram, Palette, Overview } from '@graphojs/vue';
+import { Diagram, Palette, Overview } from 'graphojs/vue';
 import {
   GraphObject,
   GraphLinksModel,

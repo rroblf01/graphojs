@@ -10,10 +10,8 @@ WORKDIR /app
 # Root config needed by the TypeScript build (tsconfig.base.json) and pnpm
 COPY .npmrc package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 
-# Install workspace dependencies (core + react + vue + docs)
+# Install workspace dependencies (core + docs)
 COPY packages/core/package.json packages/core/package.json
-COPY packages/react/package.json packages/react/package.json
-COPY packages/vue/package.json packages/vue/package.json
 COPY packages/docs/package.json packages/docs/package.json
 RUN pnpm install --frozen-lockfile
 

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('@graphojs/react mounts Diagram/Palette/Overview in a real browser', async ({ page }) => {
+test('graphojs/react mounts Diagram/Palette/Overview in a real browser', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
   page.on('console', (msg) => {

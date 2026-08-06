@@ -157,7 +157,7 @@ export type { UndoManagerEvent, UndoManagerEventHandler } from './undo/UndoManag
 // Undo
 export { UndoManager } from './undo/UndoManager.ts';
 
-export const version = '0.1.0';
+export const version = '0.2.0';
 
 export type { ContextMenuItem, ContextMenuOptions } from './export/ContextMenu.ts';
 export { ContextMenu, createDefaultContextMenu } from './export/ContextMenu.ts';

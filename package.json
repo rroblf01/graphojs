@@ -1,6 +1,6 @@
 {
   "name": "graphojs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An open-source, MIT-licensed alternative to GoJS: interactive diagramming for the web.",
   "license": "MIT",
   "author": "Ricardo Robles Fernandez",
@@ -11,7 +11,7 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "pnpm -C packages/core build && pnpm -C packages/react build && pnpm -C packages/vue build",
+    "build": "pnpm -C packages/core build",
     "build:docs": "pnpm -C packages/core build && pnpm -C packages/docs build",
     "docs:dev": "pnpm -C packages/docs dev",
     "typecheck": "pnpm -r typecheck",

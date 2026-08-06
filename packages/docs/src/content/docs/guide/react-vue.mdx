@@ -1,20 +1,28 @@
 ---
 title: React y Vue
-description: Usa GraphoJS con @graphojs/react y @graphojs/vue.
+description: Usa GraphoJS con graphojs/react y graphojs/vue.
 ---
 
 import Playground from '../../../components/Playground.astro';
 import reactVueExample from '../../../examples/react-vue.js?raw';
 
-GraphoJS tiene wrappers para React (`@graphojs/react`) y Vue (`@graphojs/vue`).
-Ambos montan el mismo núcleo y exponen los callbacks que el core ya ofrece.
+GraphoJS tiene wrappers para React (`graphojs/react`) y Vue (`graphojs/vue`)
+como subpaths del paquete `graphojs`. React y Vue son dependencias opcionales:
+instálalas solo si usas el subpath correspondiente.
 
 <Playground code={reactVueExample} height={440} />
+
+## Instalación
+
+```bash
+npm install graphojs react          # para graphojs/react
+npm install graphojs vue            # para graphojs/vue
+```
 
 ## React
 
 ```tsx
-import { Diagram, Palette, Overview } from '@graphojs/react';
+import { Diagram, Palette, Overview } from 'graphojs/react';
 import { GraphLinksModel, GraphObject } from 'graphojs';
 
 <Diagram
@@ -29,7 +37,7 @@ import { GraphLinksModel, GraphObject } from 'graphojs';
 
 ```vue
 <script setup>
-import { Diagram } from '@graphojs/vue';
+import { Diagram } from 'graphojs/vue';
 </script>
 
 <template>

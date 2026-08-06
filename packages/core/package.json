@@ -1,9 +1,10 @@
 {
   "name": "graphojs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An open-source, MIT-licensed alternative to GoJS: interactive diagramming for the web.",
   "license": "MIT",
   "author": "Ricardo Robles Fernandez",
+  "homepage": "https://graphojs.ricardorobles.es/",
   "repository": {
     "type": "git",
     "url": "https://github.com/rroblf01/graphojs"
@@ -31,6 +32,32 @@
       "types": "./dist/templates.d.ts",
       "import": "./dist/templates.js",
       "require": "./dist/templates.cjs"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
+    },
+    "./vue": {
+      "types": "./dist/vue/index.d.ts",
+      "import": "./dist/vue.js",
+      "require": "./dist/vue.cjs"
+    }
+  },
+  "peerDependencies": {
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "vue": ">=3.5.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
     }
   },
   "files": [
@@ -53,5 +80,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vue": "^3.5.0"
   }
 }

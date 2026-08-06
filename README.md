@@ -12,7 +12,7 @@ An open-source, MIT-licensed alternative to GoJS for building interactive diagra
 
 ## Status
 
-**Work in progress** — not yet published. See the [Roadmap](#roadmap) for planned features.
+Published on npm. See the [Roadmap](#roadmap) for planned features.
 
 ## GoJS Compatibility
 
@@ -179,7 +179,7 @@ pnpm test:e2e
 - [x] Undo/redo, groups, bindings, templates, events, virtualization
 - [x] GoJS-compatible API (`graphojs/go`)
 - [x] React / Vue wrappers
-- [ ] npm publication & documentation
+- [x] npm publication & documentation
 - [x] Performance benchmarks on large graphs
 
 ## License

@@ -10,6 +10,10 @@ import { isDomComponent } from './ComponentRegistry.ts';
 import { getPanelFactory } from './PanelRegistry.ts';
 import { isPartCtor } from './PartRegistry.ts';
 import type { Part } from '../parts/Part.ts';
+import type { Node } from '../parts/Node.ts';
+import type { Link } from '../parts/Link.ts';
+import type { Group } from '../parts/Group.ts';
+import type { Panel } from './Panel.ts';
 import type { InputEvent } from '../events/InputEvent.ts';
 
 /**
@@ -128,7 +132,9 @@ export abstract class GraphObject {
    *   const shape = $(go.Shape, "RoundedRectangle", { fill: "white", stroke: "gray" });
    *   const panel = $(go.Panel, "Auto", shape, $(go.TextBlock, "Hello"));
    */
-  static make<T>(ctor: new (...args: unknown[]) => T, ...args: unknown[]): T {
+  static make(ctor: typeof Node | typeof Link | typeof Group, ...args: unknown[]): Panel;
+  static make<T>(ctor: new (...args: never[]) => T, ...args: unknown[]): T;
+  static make<T>(ctor: new (...args: never[]) => T, ...args: unknown[]): T {
     // GoJS-compatible: $(go.Node/'go.Link'/'go.Group', panelType, ...children, props)
     // builds a template Panel carrying the part properties to apply on instantiation.
     if (isPartCtor(ctor)) {
@@ -189,12 +195,13 @@ export abstract class GraphObject {
    * support such as "undoManager.isEnabled").
    */
   private static makeDomComponent(
-    ctor: new (...args: unknown[]) => unknown,
+    ctor: new (...args: never[]) => unknown,
     args: unknown[],
   ): unknown {
     const first = args[0];
+    const anyCtor = ctor as unknown as new (...args: unknown[]) => unknown;
     // eslint-disable-next-line new-cap
-    const obj = first !== undefined ? new ctor(first) : new ctor();
+    const obj = first !== undefined ? new anyCtor(first) : new anyCtor();
     for (let i = 1; i < args.length; i++) {
       const arg = args[i];
       if (arg && typeof arg === 'object') {

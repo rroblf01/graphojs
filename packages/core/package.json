@@ -13,6 +13,9 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -45,6 +48,7 @@
   ],
   "scripts": {
     "build": "tsup && tsc --emitDeclarationOnly --declaration --declarationDir dist --noEmit false",
+    "prepublishOnly": "pnpm build",
     "types": "tsc --emitDeclarationOnly --declaration --declarationDir dist --noEmit false",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

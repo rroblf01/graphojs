@@ -85,12 +85,15 @@ export class TextEditingTool extends Tool {
     const node = this.node;
     const textBlock = this._editingTextBlock;
 
-    // Prevent re-entrancy: hide/clear BEFORE committing so a synchronous blur
-    // from removing the input cannot double-commit or commit a cancelled edit.
-    this.hideEditor();
+    // Prevent re-entrancy: clear _isEditing BEFORE hiding the input, so the
+    // synchronous blur that removing a focused element triggers hits this
+    // same guard above and returns immediately — otherwise that reentrant
+    // call (which always commits) would run to completion first and commit
+    // even a cancelled (Escape) edit before this outer call resumes.
     this._isEditing = false;
     this.node = null;
     this._editingTextBlock = null;
+    this.hideEditor();
 
     if (commit && diagram) {
       // Wrap the model write in a transaction so text edits are undoable
@@ -114,9 +117,12 @@ export class TextEditingTool extends Tool {
     textBlock.text = value;
     diagram.invalidate();
 
-    // If the TextBlock has a binding to a model property, write the value back
+    // If the TextBlock has a two-way binding to a model property, write the
+    // value back — a one-way binding is a read-only display of the source
+    // and must not be overwritten by an interactive edit.
     for (const binding of textBlock.bindings) {
       if (binding.targetProperty === 'text') {
+        if (!binding.twoWay) return;
         const nodeData = node.data;
         if (nodeData) {
           diagram.getModel().setDataProperty(nodeData, binding.sourceProperty, value);

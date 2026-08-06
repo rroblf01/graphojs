@@ -6,7 +6,8 @@ import { Layout, type LayoutOptions } from './Layout.ts';
  * Options for tree layout.
  */
 export interface TreeLayoutOptions extends LayoutOptions {
-  /** Angle in degrees for radial layout. Default: 0 */
+  /** Angle in degrees for the tree's growth direction (0=down, 90=right, 180=up, 270=left) in the
+   *  non-radial layout, or the start angle in the radial layout. Default: 0 */
   angle?: number;
   /** Whether to use radial layout. Default: false */
   radial?: boolean;
@@ -51,30 +52,33 @@ export class TreeLayout extends Layout {
     if (nodes.length === 0) return;
 
     const nodeMap = new Map(nodes.map((n) => [n.key, n]));
-    const roots = this.findRoots(nodes, links);
+    let roots = this.findRoots(nodes, links);
 
-    if (roots.length === 0 && nodes.length > 0) {
+    if (roots.length === 0) {
       // No roots found, treat first node as root
       const firstNode = nodes[0];
       if (firstNode) {
-        roots.push(firstNode);
+        roots = [firstNode];
       }
     }
 
-    const firstRoot = roots[0];
-    if (!firstRoot) return;
-
-    // Build tree structure
-    const tree = this.buildTree(firstRoot.key, links, nodeMap);
-
-    // Calculate subtree sizes
-    this.calculateSubtreeSizes(tree);
-
-    // Position nodes
     if (this.radial) {
-      this.positionRadial(tree, 0, 0, this.angle, 360);
+      const firstRoot = roots[0];
+      if (firstRoot) {
+        const tree = this.buildTree(firstRoot.key, links, nodeMap, new Set());
+        this.calculateSubtreeSizes(tree);
+        this.positionRadial(tree, 0, 0, this.angle, 360);
+      }
     } else {
-      this.positionTree(tree, 0, 0);
+      // Lay out every root's tree (a forest) side by side along the cross axis,
+      // instead of only the first root.
+      let crossOffset = 0;
+      for (const root of roots) {
+        const tree = this.buildTree(root.key, links, nodeMap, new Set());
+        this.calculateSubtreeSizes(tree);
+        this.positionTree(tree, crossOffset + tree.crossExtent / 2, 0);
+        crossOffset += tree.crossExtent + this.nodeSpacing;
+      }
     }
 
     // Center the layout
@@ -83,69 +87,126 @@ export class TreeLayout extends Layout {
     }
   }
 
+  /** Whether the configured angle grows the tree horizontally (90/270) rather than vertically. */
+  private isHorizontal(): boolean {
+    const normalized = ((this._angle % 360) + 360) % 360;
+    return normalized === 90 || normalized === 270;
+  }
+
+  /** A node's extent along the sibling-spread (cross) axis. */
+  private crossSize(node: Node): number {
+    return this.isHorizontal() ? node.bounds.height : node.bounds.width;
+  }
+
+  /** A node's extent along the depth (main/growth) axis. */
+  private mainSize(node: Node): number {
+    return this.isHorizontal() ? node.bounds.width : node.bounds.height;
+  }
+
   private buildTree(
     rootKey: string | number,
     links: Link[],
     nodeMap: Map<string | number, Node>,
+    visited: Set<string | number>,
   ): TreeNode {
     const node = nodeMap.get(rootKey);
     if (!node) {
-      return { node: null as unknown as Node, children: [], width: 0, height: 0 };
+      return { node: null as unknown as Node, children: [], crossExtent: 0, mainExtent: 0 };
     }
+    // Cycle guard: if this key is already an ancestor in the current
+    // recursion, stop descending instead of recursing forever.
+    if (visited.has(rootKey)) {
+      return { node, children: [], crossExtent: 0, mainExtent: 0 };
+    }
+    visited.add(rootKey);
 
     const childNodes = this.getChildren(rootKey, links, nodeMap);
-    const children = childNodes.map((child) => this.buildTree(child.key, links, nodeMap));
+    const children = childNodes.map((child) =>
+      this.buildTree(child.key, links, nodeMap, visited),
+    );
 
-    return { node, children, width: 0, height: 0 };
+    return { node, children, crossExtent: 0, mainExtent: 0 };
   }
 
   private calculateSubtreeSizes(tree: TreeNode): void {
-    if (tree.children.length === 0) {
-      tree.width = 0;
-      tree.height = 0;
+    if (!tree.node) {
+      tree.crossExtent = 0;
+      tree.mainExtent = 0;
       return;
     }
 
-    let totalWidth = 0;
-    let maxHeight = 0;
+    const ownCross = this.crossSize(tree.node);
 
-    for (const child of tree.children) {
-      this.calculateSubtreeSizes(child);
-      totalWidth += child.width + (child.width > 0 ? this.nodeSpacing : 0);
-      maxHeight = Math.max(maxHeight, child.height);
+    if (tree.children.length === 0) {
+      tree.crossExtent = ownCross;
+      tree.mainExtent = this.mainSize(tree.node);
+      return;
     }
 
-    tree.width = Math.max(totalWidth - this.nodeSpacing, 0);
-    tree.height = maxHeight + this.spacing;
+    let childrenCross = 0;
+    let maxChildMain = 0;
+    for (const child of tree.children) {
+      this.calculateSubtreeSizes(child);
+      childrenCross += child.crossExtent;
+      maxChildMain = Math.max(maxChildMain, child.mainExtent);
+    }
+    childrenCross += this.nodeSpacing * (tree.children.length - 1);
+
+    // A subtree must be at least as wide (cross-axis) as its own node, so a
+    // large parent with narrow children doesn't overlap its neighbors.
+    tree.crossExtent = Math.max(ownCross, childrenCross);
+    tree.mainExtent = this.mainSize(tree.node) + this.spacing + maxChildMain;
   }
 
-  private positionTree(tree: TreeNode, x: number, y: number): void {
+  private positionTree(tree: TreeNode, crossCenter: number, mainPos: number): void {
     if (!tree.node) return;
 
-    // Position this node
-    const nodeWidth = tree.node.bounds.width;
-    const dx = x - nodeWidth / 2 - tree.node.bounds.x;
-    const dy = y - tree.node.bounds.y;
-    tree.node.bounds = tree.node.bounds.offset(dx, dy);
+    this.placeNode(tree.node, crossCenter, mainPos);
 
     if (tree.children.length === 0) return;
 
-    // Calculate starting x for children
-    const totalChildWidth = tree.width;
-    let currentX = x - totalChildWidth / 2;
-
-    // Position children
+    const nextMain = mainPos + this.mainSize(tree.node) + this.spacing;
+    let cursor = crossCenter - tree.crossExtent / 2;
     for (const child of tree.children) {
-      const childWidth = child.node ? child.node.bounds.width : 0;
-
-      if (child.children.length > 0) {
-        this.positionTree(child, currentX + child.width / 2 + childWidth / 2, y + this.spacing);
-      } else {
-        this.positionTree(child, currentX + childWidth / 2, y + this.spacing);
-      }
-
-      currentX += child.width + this.nodeSpacing;
+      cursor += child.crossExtent / 2;
+      this.positionTree(child, cursor, nextMain);
+      cursor += child.crossExtent / 2 + this.nodeSpacing;
     }
+  }
+
+  /**
+   * Move a node so its center sits at crossCenter along the sibling-spread
+   * axis and its leading edge sits at mainPos along the growth axis, mapping
+   * the logical (cross, main) position to real (x, y) according to `angle`:
+   * 0 grows downward, 90 rightward, 180 upward, 270 leftward.
+   */
+  private placeNode(node: Node, crossCenter: number, mainPos: number): void {
+    const w = node.bounds.width;
+    const h = node.bounds.height;
+    const angle = ((this._angle % 360) + 360) % 360;
+    let x: number;
+    let y: number;
+    switch (angle) {
+      case 90:
+        x = mainPos;
+        y = crossCenter - h / 2;
+        break;
+      case 180:
+        x = crossCenter - w / 2;
+        y = -mainPos - h;
+        break;
+      case 270:
+        x = -mainPos - w;
+        y = crossCenter - h / 2;
+        break;
+      default:
+        x = crossCenter - w / 2;
+        y = mainPos;
+        break;
+    }
+    const dx = x - node.bounds.x;
+    const dy = y - node.bounds.y;
+    node.bounds = node.bounds.offset(dx, dy);
   }
 
   private positionRadial(
@@ -173,7 +234,7 @@ export class TreeLayout extends Layout {
     let currentAngle = startAngle;
 
     for (const child of tree.children) {
-      const radius = this.spacing + (child.width / 2) * (Math.PI / 180) * this.spacing;
+      const radius = this.spacing + (child.crossExtent / 2) * (Math.PI / 180) * this.spacing;
       const angle = (currentAngle * Math.PI) / 180;
       const childCx = cx + Math.cos(angle) * radius;
       const childCy = cy + Math.sin(angle) * radius;
@@ -187,6 +248,8 @@ export class TreeLayout extends Layout {
 interface TreeNode {
   node: Node;
   children: TreeNode[];
-  width: number;
-  height: number;
+  /** Extent along the sibling-spread axis (width for vertical growth, height for horizontal). */
+  crossExtent: number;
+  /** Extent along the depth/growth axis (height for vertical growth, width for horizontal). */
+  mainExtent: number;
 }

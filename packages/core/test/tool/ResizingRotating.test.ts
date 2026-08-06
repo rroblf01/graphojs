@@ -22,6 +22,7 @@ function createMockDiagram(node: Node): Diagram {
     getUndoManager: () => undoManager,
     getDiagramPoint: () => ({ x: 0, y: 0 }),
     findPartAt: (x: number, y: number) => (node.containsPoint({ x, y }) ? node : null),
+    getSelectedParts: () => (node.isSelected ? [node] : []),
     getPart: () => node,
     invalidate: vi.fn(),
     invalidateLinksForNode: vi.fn(),
@@ -74,6 +75,20 @@ describe('ResizingTool', () => {
     expect(tool.getHandleAt(node, { x: 25, y: 75 })).toBe('se');
     // The old, unrotated corner position is no longer where anything is drawn.
     expect(tool.getHandleAt(node, { x: 100, y: 50 })).toBeNull();
+  });
+
+  it('should not start resizing a node with resizable=false', () => {
+    const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
+    node.isSelected = true;
+    node.resizable = false;
+    const diagram = createMockDiagram(node);
+    const tool = new ResizingTool();
+    tool.diagram = diagram;
+    tool.isEnabled = true;
+
+    const event = new MouseEvent('mousedown', { button: 0 });
+    tool.doMouseDown(event);
+    expect(tool.isResizing).toBe(false);
   });
 
   it('should start resizing on selected node handle', () => {
@@ -182,6 +197,27 @@ describe('RotatingTool', () => {
     expect(tool.isOnRotationHandle(node, { x: 95, y: 25 })).toBe(true);
     // The old, unrotated handle position is no longer where anything is drawn.
     expect(tool.isOnRotationHandle(node, { x: 50, y: -20 })).toBe(false);
+  });
+
+  it('should not start rotating a node with rotatable=false', () => {
+    // createMockDiagram's getDiagramPoint always resolves clicks to (0,0),
+    // so position the node such that its (unrotated) rotation handle — at
+    // (x + width/2, y - 20) — lands exactly there.
+    const node = Node.fromPosAndSize(1, -50, 20, 100, 50);
+    node.isSelected = true;
+    node.rotatable = false;
+    const diagram = createMockDiagram(node);
+    const tool = new RotatingTool();
+    tool.diagram = diagram;
+    expect(tool.getRotationHandlePoint(node)).toEqual({ x: 0, y: 0 });
+
+    const event = new MouseEvent('mousedown', { button: 0 });
+    tool.doMouseDown(event);
+    expect(tool.isRotating).toBe(false);
+
+    node.rotatable = true;
+    tool.doMouseDown(event);
+    expect(tool.isRotating).toBe(true);
   });
 
   it('should rotate a node', () => {

@@ -37,6 +37,7 @@ function createMockDiagram(): Diagram {
     getPart: (key: string | number) =>
       nodes.find((n) => n.key === key) ?? links.find((l) => l.key === key),
     findLinkForKey: (key: string | number) => links.find((l) => l.key === key) ?? null,
+    findNodeForKey: (key: string | number) => nodes.find((n) => n.key === key) ?? null,
     showTempLink: vi.fn(),
     hideTempLink: vi.fn(),
     getTempLink: () => null,
@@ -197,6 +198,40 @@ describe('RelinkingTool', () => {
     expect(linkData?.to).toBe(3);
   });
 
+  it('rejects a reconnect that would create a duplicate link', () => {
+    const diagram = createMockDiagram();
+    const model = diagram.getModel();
+    model.allowsDuplicateLinks = false;
+    model.addLink({ key: 100, from: 1, to: 2 });
+    model.addLink({ key: 101, from: 3, to: 2 });
+
+    const link = new Link(101, 3, 2);
+    const tool = new RelinkingTool();
+    tool.diagram = diagram;
+    const node1 = diagram.getPart(1) as Node;
+    // Reconnecting link 101's 'from' end to node 1 would duplicate link 100 (1 -> 2)
+    (tool as unknown as { _end: 'from' | 'to' | null })._end = 'from';
+
+    expect(tool.reconnectLink(link, node1)).toBe(false);
+    expect(model.getLinkData(101)?.from).toBe(3); // unchanged
+  });
+
+  it('rejects a reconnect that would create a self-loop when the model disallows them', () => {
+    const diagram = createMockDiagram();
+    const model = diagram.getModel();
+    model.allowsSelfLoops = false;
+    model.addLink({ key: 100, from: 1, to: 2 });
+
+    const link = new Link(100, 1, 2);
+    const tool = new RelinkingTool();
+    tool.diagram = diagram;
+    const node1 = diagram.getPart(1) as Node;
+    (tool as unknown as { _end: 'from' | 'to' | null })._end = 'to';
+
+    expect(tool.reconnectLink(link, node1)).toBe(false); // would make 1 -> 1
+    expect(model.getLinkData(100)?.to).toBe(2); // unchanged
+  });
+
   it('creates a link through the full mouse gesture (down, move, up)', () => {
     const diagram = createMockDiagram();
     const tool = new LinkingTool();
@@ -291,6 +326,27 @@ describe('LinkingTool cycle prevention', () => {
     expect(tool.createLink(diagram.getPart(3) as Node, diagram.getPart(2) as Node)).toBe(false);
 
     // Linking a node to itself is prevented
+    expect(tool.createLink(diagram.getPart(1) as Node, diagram.getPart(1) as Node)).toBe(false);
+  });
+
+  it('allows a self-loop when the model permits it and cycle prevention is off', () => {
+    const diagram = createChainDiagram();
+    const tool = new LinkingTool();
+    tool.diagram = diagram;
+    tool.preventCycles = false;
+    const model = diagram.getModel();
+    expect(model.allowsSelfLoops).toBe(true); // default
+
+    expect(tool.createLink(diagram.getPart(1) as Node, diagram.getPart(1) as Node)).toBe(true);
+  });
+
+  it('rejects a self-loop when the model explicitly disallows them', () => {
+    const diagram = createChainDiagram();
+    const tool = new LinkingTool();
+    tool.diagram = diagram;
+    tool.preventCycles = false;
+    diagram.getModel().allowsSelfLoops = false;
+
     expect(tool.createLink(diagram.getPart(1) as Node, diagram.getPart(1) as Node)).toBe(false);
   });
 

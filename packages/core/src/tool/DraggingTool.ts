@@ -62,13 +62,16 @@ export class DraggingTool extends Tool {
       if (selectedParts.length === 0 || !selectedParts.includes(part)) {
         // If clicked part is not selected, select only it
         diagram.select(part);
-        this.addPartToDrag(part);
+        if (part.draggable) this.addPartToDrag(part);
       } else {
-        // Store positions of all selected parts
+        // Store positions of all selected, draggable parts — a non-draggable
+        // part within a multi-selection stays put while the rest moves.
         for (const p of selectedParts) {
-          this.addPartToDrag(p);
+          if (p.draggable) this.addPartToDrag(p);
         }
       }
+
+      if (this.nodeOrigin.size === 0) return;
 
       this._isDragging = true;
       const canvas = this.diagram?.getRenderer().getCanvas();

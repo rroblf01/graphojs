@@ -126,6 +126,16 @@ export class RelinkingTool extends LinkingBaseTool {
     const newValue = newEnd.key;
     if (linkData[propertyName] === newValue) return false;
 
+    // Validate the reconnection the same way a freshly-drawn link would be
+    // (self-loop policy, duplicate-link policy, isValidLink/cycle checks) —
+    // reconnecting an existing link must not bypass what link creation enforces.
+    const otherKey = this._end === 'from' ? link.toKey : link.fromKey;
+    const otherNode = diagram.findNodeForKey(otherKey);
+    if (!otherNode) return false;
+    const source = this._end === 'from' ? newEnd : otherNode;
+    const target = this._end === 'from' ? otherNode : newEnd;
+    if (!this.validateLink(source, target, model)) return false;
+
     // Execute as an undoable command
     diagram
       .getUndoManager()

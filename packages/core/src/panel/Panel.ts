@@ -286,9 +286,16 @@ export class Panel extends GraphObject {
     let rows = 0;
     let cols = 0;
     for (const el of this._elements) {
-      const data = el as GraphObject & { row?: number; column?: number };
-      if (data.row !== undefined) rows = Math.max(rows, data.row + 1);
-      if (data.column !== undefined) cols = Math.max(cols, data.column + 1);
+      const data = el as GraphObject & {
+        row?: number;
+        column?: number;
+        rowSpan?: number;
+        columnSpan?: number;
+      };
+      if (data.row !== undefined) rows = Math.max(rows, data.row + Math.max(1, data.rowSpan ?? 1));
+      if (data.column !== undefined) {
+        cols = Math.max(cols, data.column + Math.max(1, data.columnSpan ?? 1));
+      }
     }
     this._rowCount = rows;
     this._columnCount = cols;
@@ -395,13 +402,17 @@ export class Panel extends GraphObject {
       };
       const row = data.row ?? 0;
       const col = data.column ?? 0;
+      const rowSpan = Math.max(1, data.rowSpan ?? 1);
+      const colSpan = Math.max(1, data.columnSpan ?? 1);
       const s = el.measureWithMargin();
-      // Honor explicit columnDefinitions/rowDefinitions widths/heights
-      if (col >= 0 && col < colWidths.length) {
+      // Honor explicit columnDefinitions/rowDefinitions widths/heights. A
+      // spanning element's size is satisfied by the sum across its span
+      // (computed at layout time), not by inflating a single column/row.
+      if (colSpan === 1 && col >= 0 && col < colWidths.length) {
         const def = this.columnDefinitions[col];
         colWidths[col] = Math.max(colWidths[col] ?? 0, def?.width ?? 0, s.width);
       }
-      if (row >= 0 && row < rowHeights.length) {
+      if (rowSpan === 1 && row >= 0 && row < rowHeights.length) {
         const def = this.rowDefinitions[row];
         rowHeights[row] = Math.max(rowHeights[row] ?? 0, def?.height ?? 0, s.height);
       }
@@ -632,15 +643,22 @@ export class Panel extends GraphObject {
     const rowHeights = new Array<number>(Math.max(1, this._rowCount)).fill(0);
 
     for (const el of this._elements) {
-      const data = el as GraphObject & { row?: number; column?: number };
+      const data = el as GraphObject & {
+        row?: number;
+        column?: number;
+        rowSpan?: number;
+        columnSpan?: number;
+      };
       const row = data.row ?? 0;
       const col = data.column ?? 0;
+      const rowSpan = Math.max(1, data.rowSpan ?? 1);
+      const colSpan = Math.max(1, data.columnSpan ?? 1);
       const s = el.measureWithMargin();
-      if (col >= 0 && col < colWidths.length) {
+      if (colSpan === 1 && col >= 0 && col < colWidths.length) {
         const def = this.columnDefinitions[col];
         colWidths[col] = Math.max(colWidths[col] ?? 0, def?.width ?? 0, s.width);
       }
-      if (row >= 0 && row < rowHeights.length) {
+      if (rowSpan === 1 && row >= 0 && row < rowHeights.length) {
         const def = this.rowDefinitions[row];
         rowHeights[row] = Math.max(rowHeights[row] ?? 0, def?.height ?? 0, s.height);
       }
@@ -686,13 +704,34 @@ export class Panel extends GraphObject {
       };
       const row = data.row ?? 0;
       const col = data.column ?? 0;
-      const elX = colX[col] ?? x;
-      const elY = rowY[row] ?? y;
-      const elW = colWidths[col] ?? 0;
-      const elH = rowHeights[row] ?? 0;
-      el.setPosition(elX, elY);
-      el.setActualSize(elW, elH);
-      el.draw(ctx, elX, elY, elW, elH);
+      const rowSpan = Math.max(1, data.rowSpan ?? 1);
+      const colSpan = Math.max(1, data.columnSpan ?? 1);
+
+      const cellX = colX[col] ?? x;
+      const cellY = rowY[row] ?? y;
+      let cellW = 0;
+      for (let c = col; c < Math.min(col + colSpan, colWidths.length); c++) cellW += colWidths[c] ?? 0;
+      let cellH = 0;
+      for (let r = row; r < Math.min(row + rowSpan, rowHeights.length); r++) cellH += rowHeights[r] ?? 0;
+
+      // No alignment set: stretch to fill the (possibly spanned) cell, as before.
+      // An explicit alignment spot keeps the element at its natural size,
+      // placed within the cell at that spot instead of being stretched.
+      const spot = el.alignment;
+      if (spot) {
+        const natural = el.measureWithMargin();
+        const elW = Math.min(natural.width, cellW);
+        const elH = Math.min(natural.height, cellH);
+        const elX = cellX + (cellW - elW) * spot.x;
+        const elY = cellY + (cellH - elH) * spot.y;
+        el.setPosition(elX, elY);
+        el.setActualSize(elW, elH);
+        el.draw(ctx, elX, elY, elW, elH);
+      } else {
+        el.setPosition(cellX, cellY);
+        el.setActualSize(cellW, cellH);
+        el.draw(ctx, cellX, cellY, cellW, cellH);
+      }
     }
   }
 

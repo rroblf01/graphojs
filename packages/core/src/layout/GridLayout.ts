@@ -56,6 +56,7 @@ export class GridLayout extends Layout {
   }
 
   private _wrappingWidth = Infinity;
+  private _wrappingColumn: number | undefined;
 
   /** GoJS-compatible: The maximum width of a row of cells before wrapping. */
   get wrappingWidth(): number {
@@ -66,10 +67,28 @@ export class GridLayout extends Layout {
     this._wrappingWidth = value;
   }
 
+  /** GoJS-compatible: The maximum number of cells in a row before wrapping. */
+  get wrappingColumn(): number | undefined {
+    return this._wrappingColumn;
+  }
+
+  set wrappingColumn(value: number | undefined) {
+    this._wrappingColumn = value;
+  }
+
+  /** Decide how many columns a row holds: explicit columns, then wrappingColumn,
+   *  then wrappingWidth (divided by a cell's width), then a square-ish default. */
+  private computeColumns(nodeCount: number, totalCellWidth: number): number {
+    if (this.columns !== undefined) return Math.max(1, this.columns);
+    if (this._wrappingColumn !== undefined) return Math.max(1, this._wrappingColumn);
+    if (Number.isFinite(this._wrappingWidth) && totalCellWidth > 0) {
+      return Math.max(1, Math.floor(this._wrappingWidth / totalCellWidth));
+    }
+    return Math.ceil(Math.sqrt(nodeCount));
+  }
+
   override apply(nodes: Node[], _links: Link[]): void {
     if (nodes.length === 0) return;
-
-    const cols = this.columns ?? Math.ceil(Math.sqrt(nodes.length));
 
     // Calculate cell size (max node dimensions)
     let cellWidth = 0;
@@ -81,6 +100,7 @@ export class GridLayout extends Layout {
 
     const totalCellWidth = cellWidth + this.spacingX;
     const totalCellHeight = cellHeight + this.spacingY;
+    const cols = this.computeColumns(nodes.length, totalCellWidth);
 
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];

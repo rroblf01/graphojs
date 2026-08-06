@@ -115,6 +115,39 @@ describe('Adornment System', () => {
     expect(adornment.childShapes).toHaveLength(1);
   });
 
+  it('updatePosition() tracks the adorned part after it moves/resizes, instead of freezing at creation time', () => {
+    const node = new Node(1, new Rect(0, 0, 100, 50));
+    const adornment = createSelectionAdornment('a1', node);
+    const nw = adornment.findShape('corner-nw-resize')!;
+    const se = adornment.findShape('corner-se-resize')!;
+    expect(nw.bounds.x).toBe(-4); // 0 - half(4)
+    expect(se.bounds.x).toBe(96); // 100 - half(4)
+
+    // The node moves and resizes.
+    node.bounds = new Rect(200, 300, 40, 20);
+    adornment.updatePosition();
+
+    expect(adornment.bounds.x).toBe(200);
+    expect(adornment.bounds.width).toBe(40);
+    // The corner handles must have followed, not stayed at their original spot.
+    expect(nw.bounds.x).toBeCloseTo(200 - 4);
+    expect(nw.bounds.y).toBeCloseTo(300 - 4);
+    expect(se.bounds.x).toBeCloseTo(240 - 4);
+    expect(se.bounds.y).toBeCloseTo(320 - 4);
+  });
+
+  it('rotation handle updatePosition() keeps its fixed offset above the adorned part as it moves', () => {
+    const node = new Node(1, new Rect(0, 0, 100, 50));
+    const adornment = createRotationAdornment('a1', node);
+    const handle = adornment.childShapes[0]!;
+    expect(handle.bounds.center).toEqual({ x: 50, y: -20 });
+
+    node.bounds = new Rect(500, 500, 100, 50);
+    adornment.updatePosition();
+
+    expect(handle.bounds.center).toEqual({ x: 550, y: 480 }); // still 20px above the top-center
+  });
+
   it('AdornmentManager tracks adornments per part', () => {
     const manager = new AdornmentManager();
     const node = new Node(1, new Rect(0, 0, 100, 50));
@@ -175,6 +208,23 @@ describe('SpotLayout', () => {
 
     expect(nodes[0].bounds.x).toBe(0);
     expect(nodes[1].bounds.x).toBe(120);
+  });
+
+  it('alignmentSpot centers differently-sized nodes on the same point regardless of size', () => {
+    const small = new Node(1, new Rect(0, 0, 20, 20));
+    const large = new Node(2, new Rect(0, 0, 100, 100));
+    const layout = new SpotLayout({
+      spot: { x: 50, y: 50 },
+      offset: { x: 0, y: 0 }, // no per-index stacking — same target for both
+      alignmentSpot: { x: 0.5, y: 0.5 }, // center, not top-left
+      center: false,
+    });
+    layout.apply([small, large], []);
+
+    expect(small.bounds.center).toEqual({ x: 50, y: 50 });
+    expect(large.bounds.center).toEqual({ x: 50, y: 50 });
+    // Confirms it's size-independent: top-left corners differ even though centers match.
+    expect(small.bounds.x).not.toBe(large.bounds.x);
   });
 });
 

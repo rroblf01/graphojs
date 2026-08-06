@@ -297,7 +297,12 @@ export class GraphLinksModel extends Model {
     if (this.isReadOnly) {
       throw new Error('Cannot modify a read-only model');
     }
-    if (!linkData.from || !linkData.to) {
+    if (
+      linkData.from === undefined ||
+      linkData.from === null ||
+      linkData.to === undefined ||
+      linkData.to === null
+    ) {
       throw new Error('Link must have "from" and "to" properties');
     }
 

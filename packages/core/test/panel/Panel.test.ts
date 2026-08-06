@@ -190,6 +190,32 @@ describe('Panel measurement', () => {
     expect(size.width).toBe(90); // max(col0)=40 + col1=50
     expect(size.height).toBe(50); // 20 + 30
   });
+
+  it('Table panel counts columns/rows spanned by columnSpan/rowSpan', () => {
+    const p = new Panel('Table');
+    const header = new TextBlock('Header');
+    header.width = 200;
+    header.height = 20;
+    (header as TextBlock & { row: number; column: number; columnSpan: number }).row = 0;
+    (header as TextBlock & { row: number; column: number; columnSpan: number }).column = 0;
+    (header as TextBlock & { row: number; column: number; columnSpan: number }).columnSpan = 2;
+    const cellA = new TextBlock('A');
+    cellA.width = 30;
+    cellA.height = 20;
+    (cellA as TextBlock & { row: number; column: number }).row = 1;
+    (cellA as TextBlock & { row: number; column: number }).column = 0;
+    const cellB = new TextBlock('B');
+    cellB.width = 30;
+    cellB.height = 20;
+    (cellB as TextBlock & { row: number; column: number }).row = 1;
+    (cellB as TextBlock & { row: number; column: number }).column = 1;
+    p.add(header);
+    p.add(cellA);
+    p.add(cellB);
+
+    // Before the fix, columnCount only looked at `column` (0), never `columnSpan`.
+    expect(p.columnCount).toBe(2);
+  });
 });
 
 describe('Panel layout and drawing', () => {
@@ -232,6 +258,52 @@ describe('Panel layout and drawing', () => {
     const ctx = mockContext();
     p.draw(ctx, 0, 0, 100, 60);
     expect(ctx.fillRect).toHaveBeenCalled();
+  });
+
+  it('Table panel stretches a columnSpan element across the full width of its spanned columns', () => {
+    const p = new Panel('Table');
+    const header = new TextBlock('Header');
+    (header as TextBlock & { row: number; column: number; columnSpan: number }).row = 0;
+    (header as TextBlock & { row: number; column: number; columnSpan: number }).column = 0;
+    (header as TextBlock & { row: number; column: number; columnSpan: number }).columnSpan = 2;
+    const cellA = new TextBlock('A');
+    cellA.width = 40;
+    (cellA as TextBlock & { row: number; column: number }).row = 1;
+    (cellA as TextBlock & { row: number; column: number }).column = 0;
+    const cellB = new TextBlock('B');
+    cellB.width = 60;
+    (cellB as TextBlock & { row: number; column: number }).row = 1;
+    (cellB as TextBlock & { row: number; column: number }).column = 1;
+    p.add(header);
+    p.add(cellA);
+    p.add(cellB);
+
+    const ctx = mockContext();
+    p.draw(ctx, 0, 0, 100, 60);
+
+    // Column widths are 40 and 60 (driven by cellA/cellB); the spanning
+    // header must cover both, not be squeezed into column 0 alone.
+    expect(header.actualSize.width).toBe(100);
+    expect(cellB.position.x).toBe(40);
+  });
+
+  it('Table panel keeps an aligned element at its natural size instead of stretching it to fill the cell', () => {
+    const p = new Panel('Table');
+    const icon = new TextBlock('•');
+    icon.width = 10;
+    icon.height = 10;
+    icon.alignment = Spot.TopLeft;
+    (icon as TextBlock & { row: number; column: number }).row = 0;
+    (icon as TextBlock & { row: number; column: number }).column = 0;
+    p.add(icon);
+
+    const ctx = mockContext();
+    p.draw(ctx, 0, 0, 200, 100);
+
+    expect(icon.actualSize.width).toBe(10);
+    expect(icon.actualSize.height).toBe(10);
+    expect(icon.position.x).toBe(0);
+    expect(icon.position.y).toBe(0);
   });
 
   it('hitTest finds topmost element', () => {

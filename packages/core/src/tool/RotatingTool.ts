@@ -54,7 +54,7 @@ export class RotatingTool extends Tool {
     const diagram = this.diagram;
     if (!diagram) return null;
     for (const node of diagram.getSelectedParts()) {
-      if (node instanceof Node && this.isOnRotationHandle(node, point)) {
+      if (node instanceof Node && node.rotatable && this.isOnRotationHandle(node, point)) {
         return node;
       }
     }

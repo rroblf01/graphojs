@@ -103,6 +103,35 @@ describe('CommandHandler', () => {
     expect(linkData).toBeUndefined();
   });
 
+  it('leaves a non-deletable part in the selection alone', () => {
+    const diagram = createMockDiagram();
+    const model = diagram.getModel();
+    const handler = new CommandHandler(diagram);
+
+    (diagram.getPart(101) as Node).isSelected = true;
+    (diagram.getPart(101) as Node).deletable = false;
+    (diagram.getPart(102) as Node).isSelected = true;
+
+    expect(handler.canDeleteSelection()).toBe(true); // node 102 is still deletable
+    expect(handler.deleteSelection()).toBe(true);
+    expect(model.containsNode(101)).toBe(true); // untouched
+    expect(model.containsNode(102)).toBe(false);
+  });
+
+  it('canDeleteSelection/canCutSelection reflect read-only state, matching what the operations enforce', () => {
+    const diagram = createMockDiagram();
+    const handler = new CommandHandler(diagram);
+    (diagram.getPart(101) as Node).isSelected = true;
+
+    expect(handler.canDeleteSelection()).toBe(true);
+    expect(handler.canCutSelection()).toBe(true);
+
+    (diagram as unknown as { isReadOnly: boolean }).isReadOnly = true;
+    expect(handler.canDeleteSelection()).toBe(false);
+    expect(handler.canCutSelection()).toBe(false);
+    expect(handler.deleteSelection()).toBe(false);
+  });
+
   it('deletes a multi-part selection as a single undo step and fires SelectionDeleting before removal', () => {
     const diagram = createMockDiagram();
     const model = diagram.getModel();

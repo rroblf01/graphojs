@@ -30,6 +30,7 @@ export class ClickCreatingTool extends Tool {
   /** GoJS-compatible: start creating on a click on empty background with primary button. */
   override canStart(_toolName: string, e: MouseEvent): boolean {
     if (e.button !== 0) return false;
+    if (!this._archetypeNodeData) return false;
     if (!this.diagram || this.diagram.isReadOnly) return false;
     const point = this.getDiagramPoint(e);
     return this.findPartAt(point.x, point.y) === null;

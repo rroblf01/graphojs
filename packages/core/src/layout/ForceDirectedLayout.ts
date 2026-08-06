@@ -69,18 +69,33 @@ export class ForceDirectedLayout extends Layout {
     }
   }
 
+  /**
+   * Seed starting positions only for nodes that are exactly coincident with
+   * another node (typically freshly-created nodes that all default to the
+   * same spot) — nodes that already have distinct positions, whether from
+   * the user's own placement or a prior call to this same layout, are left
+   * where they are so a repeated doLayout() refines rather than resets them.
+   */
   private initializePositions(nodes: Node[]): void {
-    const n = nodes.length;
-    const gridSize = Math.ceil(Math.sqrt(n));
+    const groups = new Map<string, Node[]>();
+    for (const node of nodes) {
+      const posKey = `${node.bounds.x},${node.bounds.y}`;
+      const group = groups.get(posKey);
+      if (group) group.push(node);
+      else groups.set(posKey, [node]);
+    }
 
-    for (let i = 0; i < n; i++) {
-      const row = Math.floor(i / gridSize);
-      const col = i % gridSize;
-      const node = nodes[i];
-      if (node) {
+    const gridSize = Math.ceil(Math.sqrt(nodes.length));
+    let gridIndex = 0;
+    for (const group of groups.values()) {
+      if (group.length < 2) continue; // already at a distinct position
+      for (const node of group) {
+        const row = Math.floor(gridIndex / gridSize);
+        const col = gridIndex % gridSize;
         const targetX = col * this.defaultNodeSeparation;
         const targetY = row * this.defaultNodeSeparation;
         node.bounds = node.bounds.offset(targetX - node.bounds.x, targetY - node.bounds.y);
+        gridIndex++;
       }
     }
   }
@@ -103,8 +118,16 @@ export class ForceDirectedLayout extends Layout {
 
         const aCenter = a.bounds.center;
         const bCenter = b.bounds.center;
-        const dx = bCenter.x - aCenter.x;
-        const dy = bCenter.y - aCenter.y;
+        let dx = bCenter.x - aCenter.x;
+        let dy = bCenter.y - aCenter.y;
+        if (dx === 0 && dy === 0) {
+          // Perfectly coincident: the repulsion magnitude below is nonzero,
+          // but with no direction to push along it would never separate them.
+          // Give each pair a distinct fallback direction (golden-angle spread).
+          const angle = ((i + 1) * (j + 1) * 2.399963229728653) % (2 * Math.PI);
+          dx = Math.cos(angle) * 0.01;
+          dy = Math.sin(angle) * 0.01;
+        }
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
 
         // Coulomb's law repulsion

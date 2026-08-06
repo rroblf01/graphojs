@@ -57,7 +57,7 @@ export class CommandHandler {
   /** Delete the currently selected parts (undoable). */
   deleteSelection(): boolean {
     if (!this.canModify()) return false;
-    const selected = this.diagram.getSelectedParts();
+    const selected = this.diagram.getSelectedParts().filter((p) => p.deletable);
     if (selected.length === 0) return false;
 
     const diagram = this.diagram;
@@ -75,6 +75,21 @@ export class CommandHandler {
           linkKeys.push(part.key);
         } else {
           nodeKeys.push(part.key);
+        }
+      }
+      // Deleting a Group also deletes its (deletable) members, recursively —
+      // otherwise they're orphaned with a `group` pointing at nothing.
+      if (part instanceof Group) {
+        for (const member of part.getAllParts()) {
+          if (!member.deletable || member.key === undefined) continue;
+          const memberLinkData = model
+            .getLinkDataArray()
+            .find((l) => model.getLinkKey(l) === member.key);
+          if (memberLinkData) {
+            if (!linkKeys.includes(member.key)) linkKeys.push(member.key);
+          } else if (!nodeKeys.includes(member.key)) {
+            nodeKeys.push(member.key);
+          }
         }
       }
     }
@@ -608,7 +623,7 @@ export class CommandHandler {
 
   // GoJS-compatible capability shortcuts
   canDeleteSelection(): boolean {
-    return this.diagram.getSelectedParts().length > 0;
+    return this.canModify() && this.diagram.getSelectedParts().some((p) => p.deletable);
   }
 
   canCopySelection(): boolean {
@@ -616,7 +631,7 @@ export class CommandHandler {
   }
 
   canCutSelection(): boolean {
-    return this.diagram.getSelectedParts().length > 0;
+    return this.canModify() && this.diagram.getSelectedParts().length > 0;
   }
 
   canSelectAll(): boolean {

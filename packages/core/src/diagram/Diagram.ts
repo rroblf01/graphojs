@@ -321,7 +321,12 @@ export class Diagram {
     tm.registerTool('contextMenu', new ContextMenuTool());
     tm.registerTool('linkReshaping', new LinkReshapingTool());
 
-    // Populate per-event tool lists (GoJS mouseDownTools order)
+    // Populate per-event tool lists (GoJS mouseDownTools order). clickCreating
+    // is only ever a candidate once archetypeNodeData is set (see its
+    // canStart), so it's placed alongside dragSelecting — both compete for an
+    // empty-background click, ahead of the catch-all clickSelecting — rather
+    // than after it, where clickSelecting's unconditional canStart would
+    // always win first and clickCreating would never be reachable.
     for (const name of [
       'relinking',
       'resizing',
@@ -330,9 +335,9 @@ export class Diagram {
       'linking',
       'dragging',
       'panning',
+      'clickCreating',
       'dragSelecting',
       'clickSelecting',
-      'clickCreating',
     ]) {
       const tool = tm.getTool(name);
       if (tool) tm.addToolToList('mouseDown', tool);
@@ -830,6 +835,13 @@ export class Diagram {
         obj.contextClick(input, obj);
       }
     }
+    // GoJS-compatible: fire the diagram-level context-click event
+    if (part) {
+      this.fireDiagramEvent('ObjectContextClicked', part, { x: point.x, y: point.y });
+    } else {
+      this.fireDiagramEvent('BackgroundContextClicked', null, { x: point.x, y: point.y });
+    }
+
     // Part-level context menu template takes precedence
     if (part?.contextMenu) {
       this.showPartContextMenu(part, e);
@@ -1276,14 +1288,8 @@ export class Diagram {
           node = this.createNode(nodeData);
         }
 
-        // Add to parent group if specified
-        const groupKey = nodeData.group;
-        if (groupKey !== undefined) {
-          const parentGroup = this._groups.get(groupKey as NodeKey);
-          if (parentGroup && !parentGroup.contains(node)) {
-            parentGroup.add(node);
-          }
-        }
+        // Add to parent group if specified (removing from any previous one)
+        this.reparentToGroup(node, nodeData.group as NodeKey | undefined);
       }
     }
 
@@ -1325,13 +1331,17 @@ export class Diagram {
       const fromNode = this._nodes.get(linkData.from);
       const toNode = this._nodes.get(linkData.to);
       if (fromNode && toNode) {
-        const fromPoint = fromNode.getConnectionPoint(
+        const fromPoint = this.connectionPointFor(
+          fromNode,
           toNode.center,
           linkData.fromPort as string | undefined,
+          link.fromSpot,
         );
-        const toPoint = toNode.getConnectionPoint(
+        const toPoint = this.connectionPointFor(
+          toNode,
           fromNode.center,
           linkData.toPort as string | undefined,
+          link.toSpot,
         );
         link.fromPort = fromPoint;
         link.toPort = toPoint;
@@ -1350,14 +1360,8 @@ export class Diagram {
         link.updateBounds();
       }
 
-      // Add to parent group if specified
-      const groupKey = linkData.group;
-      if (groupKey !== undefined) {
-        const parentGroup = this._groups.get(groupKey as NodeKey);
-        if (parentGroup && !parentGroup.contains(link)) {
-          parentGroup.add(link);
-        }
-      }
+      // Add to parent group if specified (removing from any previous one)
+      this.reparentToGroup(link, linkData.group as NodeKey | undefined);
     }
 
     // Apply bindings to all parts
@@ -1492,6 +1496,23 @@ export class Diagram {
       this.layoutProbeCtx = probeCanvas.getContext('2d');
     }
     return this.layoutProbeCtx;
+  }
+
+  /**
+   * Move a node/link into the group referenced by groupKey, removing it from
+   * any previous group first — otherwise a reparented (or ungrouped) part
+   * stays listed in its old group's memberParts, so that group keeps
+   * dragging/collapsing/sizing around a part it no longer owns.
+   */
+  private reparentToGroup(part: Node | Link, groupKey: NodeKey | undefined): void {
+    const currentGroup = part.containingGroup;
+    const newGroup = groupKey !== undefined ? this._groups.get(groupKey) : undefined;
+    if (currentGroup instanceof Group && currentGroup !== newGroup) {
+      currentGroup.remove(part);
+    }
+    if (newGroup && !newGroup.contains(part)) {
+      newGroup.add(part);
+    }
   }
 
   private createNode(nodeData: NodeData): Node {
@@ -1678,14 +1699,8 @@ export class Diagram {
     node.angle = (nodeData.angle as number) ?? node.angle;
     node.zOrder = (nodeData.zOrder as number) ?? node.zOrder;
 
-    // Add to parent group if specified
-    const groupKey = nodeData.group;
-    if (groupKey !== undefined) {
-      const parentGroup = this._groups.get(groupKey as NodeKey);
-      if (parentGroup && !parentGroup.contains(node)) {
-        parentGroup.add(node);
-      }
-    }
+    // Add to parent group if specified (removing from any previous one)
+    this.reparentToGroup(node, nodeData.group as NodeKey | undefined);
 
     // Apply bindings
     if (node.bindings.length > 0 || node.panel !== null) {
@@ -1738,13 +1753,17 @@ export class Diagram {
     const fromNode = this._nodes.get(linkData.from);
     const toNode = this._nodes.get(linkData.to);
     if (fromNode && toNode) {
-      const fromPoint = fromNode.getConnectionPoint(
+      const fromPoint = this.connectionPointFor(
+        fromNode,
         toNode.center,
         linkData.fromPort as string | undefined,
+        link.fromSpot,
       );
-      const toPoint = toNode.getConnectionPoint(
+      const toPoint = this.connectionPointFor(
+        toNode,
         fromNode.center,
         linkData.toPort as string | undefined,
+        link.toSpot,
       );
       link.fromPort = fromPoint;
       link.toPort = toPoint;
@@ -1761,13 +1780,7 @@ export class Diagram {
       link.updateBounds();
     }
 
-    const groupKey = linkData.group;
-    if (groupKey !== undefined) {
-      const parentGroup = this._groups.get(groupKey as NodeKey);
-      if (parentGroup && !parentGroup.contains(link)) {
-        parentGroup.add(link);
-      }
-    }
+    this.reparentToGroup(link, linkData.group as NodeKey | undefined);
 
     this.hitIndex?.insertWithBounds(link.bounds, link);
   }
@@ -2064,6 +2077,7 @@ export class Diagram {
   /** GoJS-compatible: Deselect a part. */
   deselect(part: Part): void {
     if (!this.selectedParts.has(part)) return;
+    this.fireDiagramEvent('ChangingSelection', part);
     part.isSelected = false;
     this.selectedParts.delete(part);
     this.invalidate();
@@ -2975,8 +2989,26 @@ export class Diagram {
     const fromNode = this._nodes.get(link.fromKey);
     const toNode = this._nodes.get(link.toKey);
     if (!fromNode || !toNode) return;
-    link.fromPort = fromNode.getConnectionPoint(toNode.center, link.fromPortName);
-    link.toPort = toNode.getConnectionPoint(fromNode.center, link.toPortName);
+    link.fromPort = this.connectionPointFor(fromNode, toNode.center, link.fromPortName, link.fromSpot);
+    link.toPort = this.connectionPointFor(toNode, fromNode.center, link.toPortName, link.toSpot);
+  }
+
+  /**
+   * Compute a link endpoint's connection point on a node. An explicit
+   * fromSpot/toSpot on the link forces attachment at that fixed fractional
+   * spot on the node, overriding the port-name/nearest-edge computation.
+   */
+  private connectionPointFor(
+    node: Node,
+    target: { x: number; y: number },
+    portName: string | undefined,
+    overrideSpot: Spot | null,
+  ): { x: number; y: number } {
+    if (overrideSpot) {
+      const b = node.bounds;
+      return overrideSpot.computePoint(b.x, b.y, b.width, b.height);
+    }
+    return node.getConnectionPoint(target, portName);
   }
 
   /** Zoom to fit all content. */

@@ -1164,6 +1164,39 @@ describe('F4: Tools GoJS API surface', () => {
     expect(d.getModel().getNodeCount()).toBe(0);
   });
 
+  it('ClickCreatingTool is actually reachable via a real mousedown->mouseup gesture, not preempted by ClickSelectingTool', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel();
+    const clickCreating = d.getToolManager().getTool('clickCreating') as ClickCreatingTool;
+    clickCreating.archetypeNodeData = { label: 'new' };
+    const canvas = d.getRenderer().getCanvas();
+
+    canvas.dispatchEvent(
+      new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 100, bubbles: true }),
+    );
+    canvas.dispatchEvent(
+      new MouseEvent('mouseup', { button: 0, clientX: 100, clientY: 100, bubbles: true }),
+    );
+
+    expect(d.getModel().getNodeCount()).toBe(1);
+    expect(d.getModel().getNodeDataArray()[0]?.label).toBe('new');
+  });
+
+  it('ClickCreatingTool with no archetypeNodeData set leaves ordinary click-to-select working', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 90, y: 90, width: 50, height: 50 }] });
+    const canvas = d.getRenderer().getCanvas();
+
+    canvas.dispatchEvent(
+      new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 100, bubbles: true }),
+    );
+    canvas.dispatchEvent(
+      new MouseEvent('mouseup', { button: 0, clientX: 100, clientY: 100, bubbles: true }),
+    );
+
+    expect(d.getModel().getNodeCount()).toBe(1); // no node was click-created
+  });
+
   it('dropping a Palette node onto a diagram is undoable', async () => {
     const { Palette } = await import('../src/export/Palette.ts');
     const { basicShapes } = await import('../src/template/TemplateCollection.ts');
@@ -1993,6 +2026,29 @@ describe('J12: critical GoJS API gaps (Part surface, model data methods, layout,
     expect(group.bounds.containsRect(member.bounds)).toBe(true);
   });
 
+  it('dragging a multi-selection leaves a non-draggable part in place', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 30 },
+        { key: 2, x: 100, y: 0, width: 50, height: 30 },
+      ],
+    });
+    const node1 = d.findNodeForKey(1) as Node;
+    const node2 = d.findNodeForKey(2) as Node;
+    node2.draggable = false;
+    d.select(node1);
+    d.select(node2, true);
+
+    const tool = new DraggingTool();
+    tool.diagram = d;
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 25, clientY: 15 }));
+    tool.doMouseMove(new MouseEvent('mousemove', { button: 0, clientX: 225, clientY: 15 }));
+
+    expect(node1.bounds.x).toBe(200); // moved by +200
+    expect(node2.bounds.x).toBe(100); // unchanged, draggable=false
+  });
+
   it('drag keeps Rect prototype (bounds.right/center intact)', () => {
     const { DraggingTool } = require('../src/tool/DraggingTool.ts') as {
       DraggingTool: new () => {
@@ -2010,5 +2066,198 @@ describe('J12: critical GoJS API gaps (Part surface, model data methods, layout,
     tool.diagram = d;
     expect(node.bounds.right).toBe(50);
     expect(node.bounds.center).toEqual({ x: 25, y: 15 });
+  });
+});
+
+describe('K13: model integrity — group delete cascade, group membership cleanup', () => {
+  it('deleting a Group also deletes its members instead of orphaning them', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, isGroup: true, x: 0, y: 0 },
+        { key: 2, x: 10, y: 10, width: 30, height: 20, group: 1 },
+        { key: 3, x: 200, y: 200 }, // unrelated node, must survive
+      ],
+    });
+    const group = d.getPart(1) as Group;
+    d.select(group);
+    const handler = d.getCommandHandler();
+
+    expect(handler.deleteSelection()).toBe(true);
+    expect(d.getModel().containsNode(1)).toBe(false);
+    expect(d.getModel().containsNode(2)).toBe(false); // member removed too
+    expect(d.getModel().containsNode(3)).toBe(true); // unrelated node untouched
+  });
+
+  it('reparenting a node to a different group removes it from the old group\'s memberParts', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, isGroup: true, x: 0, y: 0 },
+        { key: 2, isGroup: true, x: 500, y: 0 },
+        { key: 3, x: 10, y: 10, width: 30, height: 20, group: 1 },
+      ],
+    });
+    d.model = m;
+    const groupA = d.findGroupForKey(1) as Group;
+    const groupB = d.findGroupForKey(2) as Group;
+    const member = d.findNodeForKey(3) as Node;
+    expect(groupA.contains(member)).toBe(true);
+
+    const nodeData = m.getNodeData(3)!;
+    m.setDataProperty(nodeData, 'group', 2);
+
+    expect(groupA.contains(member)).toBe(false);
+    expect(groupB.contains(member)).toBe(true);
+    expect(member.containingGroup).toBe(groupB);
+  });
+
+  it('clearing a node\'s group property removes it from its group\'s memberParts', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, isGroup: true, x: 0, y: 0 },
+        { key: 2, x: 10, y: 10, width: 30, height: 20, group: 1 },
+      ],
+    });
+    d.model = m;
+    const group = d.findGroupForKey(1) as Group;
+    const member = d.findNodeForKey(2) as Node;
+    expect(group.contains(member)).toBe(true);
+
+    m.setDataProperty(m.getNodeData(2)!, 'group', undefined);
+
+    expect(group.contains(member)).toBe(false);
+    expect(member.containingGroup).toBeNull();
+  });
+});
+
+describe('L14: TextEditingTool — one-way bindings and Escape-cancel', () => {
+  it('does not write back to the model when the bound TextBlock is one-way', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(
+      Node,
+      $(TextBlock, { editable: true }, new Binding('text', 'label')), // one-way (default)
+    );
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, label: 'Original' }] });
+    const node = d.findNodeForKey(1) as Node;
+
+    const tool = new TextEditingTool();
+    tool.diagram = d;
+    tool.editNode(node);
+    expect(tool.isEditing).toBe(true);
+    (tool as unknown as { input: HTMLInputElement }).input.value = 'Edited';
+    tool.stopEditing(true);
+
+    // The TextBlock updates visually, but the one-way-bound model data must not.
+    expect(d.getModel().getNodeData(1)?.label).toBe('Original');
+  });
+
+  it('writes back to the model when the bound TextBlock is explicitly two-way', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(
+      Node,
+      $(TextBlock, { editable: true }, new Binding('text', 'label').makeTwoWay()),
+    );
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, label: 'Original' }] });
+    const node = d.findNodeForKey(1) as Node;
+
+    const tool = new TextEditingTool();
+    tool.diagram = d;
+    tool.editNode(node);
+    (tool as unknown as { input: HTMLInputElement }).input.value = 'Edited';
+    tool.stopEditing(true);
+
+    expect(d.getModel().getNodeData(1)?.label).toBe('Edited');
+  });
+
+  it('Escape cancels an edit without committing it, even though blur fires synchronously on removal', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, label: 'Original' }] });
+    const node = d.findNodeForKey(1) as Node;
+
+    const tool = new TextEditingTool();
+    tool.diagram = d;
+    tool.editNode(node);
+    (tool as unknown as { input: HTMLInputElement }).input.value = 'Should not stick';
+    tool.cancelEditing();
+
+    expect(d.getModel().getNodeData(1)?.label).toBe('Original');
+  });
+});
+
+describe('M15: previously-missing diagram events and InputEvent modifiers', () => {
+  it('deselect fires ChangingSelection before ChangedSelection', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const node = d.findNodeForKey(1) as Node;
+    d.select(node);
+
+    const events: string[] = [];
+    d.addDiagramListener('ChangingSelection', () => events.push('ChangingSelection'));
+    d.addDiagramListener('ChangedSelection', () => events.push('ChangedSelection'));
+
+    d.deselect(node);
+    expect(events).toEqual(['ChangingSelection', 'ChangedSelection']);
+  });
+
+  it('fires ObjectContextClicked for a right-click on a part and BackgroundContextClicked otherwise', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0, width: 50, height: 30 }] });
+
+    const events: string[] = [];
+    d.addDiagramListener('ObjectContextClicked', () => events.push('ObjectContextClicked'));
+    d.addDiagramListener('BackgroundContextClicked', () => events.push('BackgroundContextClicked'));
+
+    const onPart = new MouseEvent('contextmenu', { clientX: 10, clientY: 10 });
+    d.getRenderer().getCanvas().dispatchEvent(onPart);
+    const onBackground = new MouseEvent('contextmenu', { clientX: 900, clientY: 900 });
+    d.getRenderer().getCanvas().dispatchEvent(onBackground);
+
+    expect(events).toEqual(['ObjectContextClicked', 'BackgroundContextClicked']);
+  });
+
+  it('InputEvent exposes control/shift/alt/meta/button/left/right', () => {
+    const down = new MouseEvent('mousedown', {
+      button: 2,
+      ctrlKey: true,
+      shiftKey: true,
+      altKey: true,
+      metaKey: true,
+    });
+    const input = new InputEvent(down);
+    expect(input.control).toBe(true);
+    expect(input.shift).toBe(true);
+    expect(input.alt).toBe(true);
+    expect(input.meta).toBe(true);
+    expect(input.button).toBe(2);
+    expect(input.right).toBe(true);
+    expect(input.left).toBe(false);
+  });
+});
+
+describe('N16: Link.fromSpot/toSpot force a fixed attachment point', () => {
+  it('anchors the link at the given spot instead of the nearest-edge/port default', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 300, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const link = [...d.links.values()][0] as Link;
+
+    // Default (no spot override): nearest-edge heuristic anchors on node 1's right edge.
+    expect(link.fromPort.x).toBeCloseTo(100);
+    expect(link.fromPort.y).toBeCloseTo(25);
+
+    link.fromSpot = Spot.Top; // force attachment to the top-center instead
+    d.invalidateLinksForNode(1);
+
+    expect(link.fromPort.x).toBeCloseTo(50); // node1 center x
+    expect(link.fromPort.y).toBeCloseTo(0); // node1 top edge, not the right edge
   });
 });

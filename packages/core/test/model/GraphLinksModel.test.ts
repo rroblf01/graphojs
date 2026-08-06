@@ -102,6 +102,14 @@ describe('GraphLinksModel', () => {
       );
     });
 
+    it('accepts a link whose endpoint key is 0 (a legitimate falsy key, not "missing")', () => {
+      const model = new GraphLinksModel();
+      model.addNode({ key: 0, label: 'A' });
+      model.addNode({ key: 1, label: 'B' });
+      expect(() => model.addLink({ from: 0, to: 1 })).not.toThrow();
+      expect(model.getLinkDataArray()).toHaveLength(1);
+    });
+
     it('removes a link', () => {
       const model = new GraphLinksModel();
       model.addNode({ key: 'n1', label: 'A' });

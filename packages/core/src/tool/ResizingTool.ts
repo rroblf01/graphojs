@@ -151,7 +151,12 @@ export class ResizingTool extends Tool {
       return false;
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);
-    return part instanceof Node && part.isSelected && this.getHandleAt(part, point) !== null;
+    return (
+      part instanceof Node &&
+      part.isSelected &&
+      part.resizable &&
+      this.getHandleAt(part, point) !== null
+    );
   }
 
   override doMouseDown(e: MouseEvent): void {
@@ -167,7 +172,7 @@ export class ResizingTool extends Tool {
     const point = this.getDiagramPoint(e);
     const part = this.findPartAt(point.x, point.y);
 
-    if (part instanceof Node && part.isSelected) {
+    if (part instanceof Node && part.isSelected && part.resizable) {
       const handle = this.getHandleAt(part, point);
       if (handle) {
         this._isResizing = true;

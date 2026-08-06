@@ -104,10 +104,19 @@ export class Adornment extends Part {
     return this._childShapes.find((s) => s.name === name);
   }
 
-  /** Update the adornment's position based on the adorned part. */
+  /**
+   * Update the adornment's position (and any child shapes created with a
+   * relative spot, e.g. resize/rotation handles) based on the adorned
+   * part's current bounds. Call this whenever the adorned part moves,
+   * resizes, or rotates, to keep the adornment from going stale.
+   */
   updatePosition(): void {
     if (!this._adornedPart) return;
-    this.bounds = this._adornedPart.bounds.clone();
+    const partBounds = this._adornedPart.bounds;
+    this.bounds = partBounds.clone();
+    for (const shape of this._childShapes) {
+      shape.repositionRelativeTo(partBounds);
+    }
   }
 
   /** Check if a point is inside any child shape. */
@@ -130,6 +139,10 @@ export class AdornmentShape {
   private _strokeWidth: number;
   private _cursor: string;
   private _visible: boolean;
+  /** Fractional point within the adorned part's bounds this shape tracks (e.g. {0,0}=top-left, {1,1}=bottom-right), or null to stay fixed. */
+  private _relativeSpot: { x: number; y: number } | null;
+  /** Fixed pixel offset applied after the relative spot (e.g. for a rotation handle sitting above the part). */
+  private _relativeOffset: { x: number; y: number };
 
   constructor(options: {
     name: string;
@@ -139,6 +152,8 @@ export class AdornmentShape {
     strokeWidth?: number;
     cursor?: string;
     visible?: boolean;
+    relativeSpot?: { x: number; y: number };
+    relativeOffset?: { x: number; y: number };
   }) {
     this._name = options.name;
     this._bounds = options.bounds;
@@ -147,6 +162,22 @@ export class AdornmentShape {
     this._strokeWidth = options.strokeWidth ?? 1;
     this._cursor = options.cursor ?? 'default';
     this._visible = options.visible ?? true;
+    this._relativeSpot = options.relativeSpot ?? null;
+    this._relativeOffset = options.relativeOffset ?? { x: 0, y: 0 };
+  }
+
+  /**
+   * Move this shape so its center sits at its stored relative spot (plus any
+   * fixed offset) within the given (current) part bounds. A shape created
+   * without a relativeSpot is left untouched.
+   */
+  repositionRelativeTo(partBounds: Rect): void {
+    if (!this._relativeSpot) return;
+    const w = this._bounds.width;
+    const h = this._bounds.height;
+    const cx = partBounds.x + this._relativeSpot.x * partBounds.width + this._relativeOffset.x;
+    const cy = partBounds.y + this._relativeSpot.y * partBounds.height + this._relativeOffset.y;
+    this._bounds = new RectClass(cx - w / 2, cy - h / 2, w, h);
   }
 
   get name(): string {
@@ -220,37 +251,39 @@ export function createSelectionAdornment(key: NodeKey, adornedPart: Part): Adorn
   const half = handleSize / 2;
 
   // Corner handles
-  const corners: Array<[number, number, string]> = [
-    [x, y, 'nw-resize'],
-    [x + width, y, 'ne-resize'],
-    [x, y + height, 'sw-resize'],
-    [x + width, y + height, 'se-resize'],
+  const corners: Array<[number, number, string, { x: number; y: number }]> = [
+    [x, y, 'nw-resize', { x: 0, y: 0 }],
+    [x + width, y, 'ne-resize', { x: 1, y: 0 }],
+    [x, y + height, 'sw-resize', { x: 0, y: 1 }],
+    [x + width, y + height, 'se-resize', { x: 1, y: 1 }],
   ];
 
-  for (const [hx, hy, cursor] of corners) {
+  for (const [hx, hy, cursor, relativeSpot] of corners) {
     adornment.addShape(
       new AdornmentShape({
         name: `corner-${cursor}`,
         bounds: new RectClass(hx - half, hy - half, handleSize, handleSize),
         cursor,
+        relativeSpot,
       }),
     );
   }
 
   // Edge handles
-  const edges: Array<[number, number, string]> = [
-    [x + width / 2, y, 'n-resize'],
-    [x + width / 2, y + height, 's-resize'],
-    [x, y + height / 2, 'w-resize'],
-    [x + width, y + height / 2, 'e-resize'],
+  const edges: Array<[number, number, string, { x: number; y: number }]> = [
+    [x + width / 2, y, 'n-resize', { x: 0.5, y: 0 }],
+    [x + width / 2, y + height, 's-resize', { x: 0.5, y: 1 }],
+    [x, y + height / 2, 'w-resize', { x: 0, y: 0.5 }],
+    [x + width, y + height / 2, 'e-resize', { x: 1, y: 0.5 }],
   ];
 
-  for (const [hx, hy, cursor] of edges) {
+  for (const [hx, hy, cursor, relativeSpot] of edges) {
     adornment.addShape(
       new AdornmentShape({
         name: `edge-${cursor}`,
         bounds: new RectClass(hx - half, hy - half, handleSize, handleSize),
         cursor,
+        relativeSpot,
       }),
     );
   }
@@ -282,6 +315,8 @@ export function createRotationAdornment(key: NodeKey, adornedPart: Part): Adornm
       fill: '#ffffff',
       stroke: '#2196f3',
       cursor: 'crosshair',
+      relativeSpot: { x: 0.5, y: 0 },
+      relativeOffset: { x: 0, y: -20 },
     }),
   );
 

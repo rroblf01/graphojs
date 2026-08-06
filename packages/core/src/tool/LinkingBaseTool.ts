@@ -104,8 +104,8 @@ export class LinkingBaseTool extends Tool {
       return false;
     }
 
-    // Don't create self-links
-    if (source.key === target.key) {
+    // Self-links are governed by the model's allowsSelfLoops setting
+    if (source.key === target.key && !model.allowsSelfLoops) {
       return false;
     }
 

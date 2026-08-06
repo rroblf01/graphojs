@@ -12,6 +12,15 @@ export interface SpotLayoutOptions extends LayoutOptions {
   offset?: { x: number; y: number };
   /** Maximum nodes per row before wrapping. 0 = no wrap. Default: 0 */
   wrap?: number;
+  /**
+   * GoJS-compatible: the fractional point on each node (0,0 = top-left,
+   * 0.5,0.5 = center, 1,1 = bottom-right) that aligns to the target spot,
+   * independent of that node's own size — e.g. with alignmentSpot centered
+   * and a single target spot (no offset), differently-sized nodes all end
+   * up centered on the same point rather than aligned by their top-left
+   * corners. Default: { x: 0, y: 0 } (top-left), matching plain positioning.
+   */
+  alignmentSpot?: { x: number; y: number };
 }
 
 /**
@@ -22,12 +31,14 @@ export class SpotLayout extends Layout {
   private spot: { x: number; y: number };
   private offset: { x: number; y: number };
   private wrap: number;
+  private alignmentSpot: { x: number; y: number };
 
   constructor(options: SpotLayoutOptions = {}) {
     super(options);
     this.spot = options.spot ?? { x: 0, y: 0 };
     this.offset = options.offset ?? { x: 120, y: 0 };
     this.wrap = options.wrap ?? 0;
+    this.alignmentSpot = options.alignmentSpot ?? { x: 0, y: 0 };
   }
 
   override apply(nodes: Node[], _links: Link[]): void {
@@ -50,8 +61,11 @@ export class SpotLayout extends Layout {
         targetY += i * this.offset.y;
       }
 
-      const dx = targetX - node.bounds.x;
-      const dy = targetY - node.bounds.y;
+      // Align the configured fractional spot of the node (not necessarily
+      // its top-left corner) to the target point, so nodes of different
+      // sizes can share a common anchor (e.g. all centered on it).
+      const dx = targetX - node.bounds.x - this.alignmentSpot.x * node.bounds.width;
+      const dy = targetY - node.bounds.y - this.alignmentSpot.y * node.bounds.height;
       node.bounds = node.bounds.offset(dx, dy);
     }
 

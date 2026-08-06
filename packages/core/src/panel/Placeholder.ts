@@ -1,5 +1,6 @@
 import type { Size } from '../geometry/Size.ts';
 import { Size as SizeClass } from '../geometry/Size.ts';
+import { Group } from '../parts/Group.ts';
 import { GraphObject } from './GraphObject.ts';
 
 /**
@@ -20,7 +21,24 @@ export class Placeholder extends GraphObject {
   }
 
   override measure(): Size {
-    return new SizeClass(100, 60);
+    const owner = this.part;
+    if (owner instanceof Group) {
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      for (const member of owner.memberParts) {
+        if (!member.visible) continue;
+        minX = Math.min(minX, member.bounds.x);
+        minY = Math.min(minY, member.bounds.y);
+        maxX = Math.max(maxX, member.bounds.right);
+        maxY = Math.max(maxY, member.bounds.bottom);
+      }
+      if (minX < maxX && minY < maxY) {
+        return new SizeClass(maxX - minX + this._padding * 2, maxY - minY + this._padding * 2);
+      }
+    }
+    return new SizeClass(this._padding * 2, this._padding * 2);
   }
 
   override draw(): void {

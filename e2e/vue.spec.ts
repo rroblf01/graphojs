@@ -30,4 +30,20 @@ test('@graphojs/vue mounts Diagram/Palette/Overview in a real browser', async ({
   await page.waitForTimeout(300);
   const selections = await page.evaluate(() => window.__selectionCount());
   expect(selections).toBeGreaterThan(0);
+
+  // Reactivity: swapping the model prop updates the diagram to the new model
+  const firstKey = await page.evaluate(
+    () => window.__diagram!.getModel().getNodeDataArray()[0].key,
+  );
+  await page.locator('#swap-model').click();
+  await page.waitForTimeout(300);
+  const swappedKey = await page.evaluate(
+    () => window.__diagram!.getModel().getNodeDataArray()[0].key,
+  );
+  expect(firstKey).toBe(1);
+  expect(swappedKey).toBe(10);
+  const nodeCountAfterSwap = await page.evaluate(
+    () => window.__diagram?.getModel().getNodeCount() ?? -1,
+  );
+  expect(nodeCountAfterSwap).toBe(2);
 });

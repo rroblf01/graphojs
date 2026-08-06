@@ -38,6 +38,8 @@ export const Diagram = defineComponent({
       type: Function as unknown as () => ((d: GoDiagram) => void) | null,
       default: null,
     },
+    className: { type: String, default: null },
+    style: { type: Object as () => Record<string, string> | null, default: null },
   },
   emits: ['diagram-init', 'model-change', 'diagram-event', 'selection-changed'],
   setup(props, { emit }) {
@@ -56,24 +58,24 @@ export const Diagram = defineComponent({
 
       if (props.onModelChange) {
         const l = (e: ChangedEvent) => {
-          props.onModelChange?.(e);
-          emit('model-change', e);
+          if (props.onModelChange) props.onModelChange(e);
+          else emit('model-change', e);
         };
         diagram.addModelChangedListener(l);
         listeners.push(() => diagram?.removeModelChangedListener(l));
       }
       if (props.onDiagramEvent) {
         const l = (e: DiagramEvent) => {
-          props.onDiagramEvent?.(e.type, e);
-          emit('diagram-event', e);
+          if (props.onDiagramEvent) props.onDiagramEvent(e.type, e);
+          else emit('diagram-event', e);
         };
         diagram.addAnyDiagramListener(l);
         listeners.push(() => diagram?.removeAnyDiagramListener(l));
       }
       if (props.onSelectionChanged) {
         const l = () => {
-          props.onSelectionChanged?.(diagram as GoDiagram);
-          emit('selection-changed', diagram);
+          if (props.onSelectionChanged) props.onSelectionChanged(diagram as GoDiagram);
+          else emit('selection-changed', diagram);
         };
         diagram.addDiagramListener('SelectionChanged', l);
         listeners.push(() => diagram?.removeDiagramListener('SelectionChanged', l));
@@ -118,7 +120,8 @@ export const Diagram = defineComponent({
     return () =>
       h('div', {
         ref: container,
-        style: { width: '100%', height: '100%' },
+        class: props.className ?? undefined,
+        style: { width: '100%', height: '100%', ...(props.style ?? {}) },
       });
   },
 });
@@ -130,6 +133,8 @@ export const Palette = defineComponent({
     templates: { type: Array as () => Template[], default: () => [] },
     nodeTemplate: { type: Object as () => Panel | null, default: null },
     linkTemplate: { type: Object as () => Panel | null, default: null },
+    className: { type: String, default: null },
+    style: { type: Object as () => Record<string, string> | null, default: null },
   },
   setup(props) {
     const container = ref<HTMLElement | null>(null);
@@ -160,7 +165,12 @@ export const Palette = defineComponent({
       },
     );
 
-    return () => h('div', { ref: container, style: { width: '100%', height: '100%' } });
+    return () =>
+      h('div', {
+        ref: container,
+        class: props.className ?? undefined,
+        style: { width: '100%', height: '100%', ...(props.style ?? {}) },
+      });
   },
 });
 
@@ -169,6 +179,8 @@ export const Overview = defineComponent({
   name: 'GraphoJSOverview',
   props: {
     observed: { type: Object as () => GoDiagram, required: true },
+    className: { type: String, default: null },
+    style: { type: Object as () => Record<string, string> | null, default: null },
   },
   setup(props) {
     const container = ref<HTMLElement | null>(null);
@@ -189,7 +201,12 @@ export const Overview = defineComponent({
       },
     );
 
-    return () => h('div', { ref: container, style: { width: '100%', height: '100%' } });
+    return () =>
+      h('div', {
+        ref: container,
+        class: props.className ?? undefined,
+        style: { width: '100%', height: '100%', ...(props.style ?? {}) },
+      });
   },
 });
 

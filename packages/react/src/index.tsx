@@ -55,12 +55,6 @@ export const Diagram: React.FC<DiagramProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const diagramRef = useRef<GoDiagram | null>(null);
   const modelRef = useRef(model);
-  const onModelChangeRef = useRef(onModelChange);
-  const onDiagramEventRef = useRef(onDiagramEvent);
-  const onSelectionChangedRef = useRef(onSelectionChanged);
-  onModelChangeRef.current = onModelChange;
-  onDiagramEventRef.current = onDiagramEvent;
-  onSelectionChangedRef.current = onSelectionChanged;
 
   // Create / destroy the diagram
   // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect
@@ -72,28 +66,9 @@ export const Diagram: React.FC<DiagramProps> = ({
     initDiagram?.(diagram);
     onDiagramInit?.(diagram);
 
-    const modelListener = (event: ChangedEvent) => onModelChangeRef.current?.(event);
-    const eventListener = (event: DiagramEvent) => onDiagramEventRef.current?.(event.type, event);
-    const selectionListener = () => onSelectionChangedRef.current?.(diagram);
-
     if (modelRef.current) diagram.model = modelRef.current;
-    if (onModelChangeRef.current) {
-      diagram.addModelChangedListener(modelListener);
-      diagram.addDiagramListener('ModelChanged', () => {});
-    }
-    if (onDiagramEventRef.current) {
-      diagram.addAnyDiagramListener(eventListener);
-    }
-    if (onSelectionChangedRef.current) {
-      diagram.addDiagramListener('SelectionChanged', selectionListener);
-    }
 
     return () => {
-      if (onModelChangeRef.current) diagram.removeModelChangedListener(modelListener);
-      if (onDiagramEventRef.current) diagram.removeAnyDiagramListener(eventListener);
-      if (onSelectionChangedRef.current) {
-        diagram.removeDiagramListener('SelectionChanged', selectionListener);
-      }
       diagram.destroy();
       diagramRef.current = null;
     };
@@ -116,6 +91,30 @@ export const Diagram: React.FC<DiagramProps> = ({
     diagram.addModelChangedListener(listener);
     return () => diagram.removeModelChangedListener(listener);
   }, [onModelChange]);
+
+  // Re-subscribe any-event listener when the callback changes
+  useEffect(() => {
+    const diagram = diagramRef.current;
+    if (!diagram) return;
+    if (!onDiagramEvent) return;
+    const listener = (event: DiagramEvent) => onDiagramEvent?.(event.type, event);
+    diagram.addAnyDiagramListener(listener);
+    return () => {
+      diagram.removeAnyDiagramListener(listener);
+    };
+  }, [onDiagramEvent]);
+
+  // Re-subscribe selection listener when the callback changes
+  useEffect(() => {
+    const diagram = diagramRef.current;
+    if (!diagram) return;
+    if (!onSelectionChanged) return;
+    const listener = () => onSelectionChanged?.(diagram);
+    diagram.addDiagramListener('SelectionChanged', listener);
+    return () => {
+      diagram.removeDiagramListener('SelectionChanged', listener);
+    };
+  }, [onSelectionChanged]);
 
   useEffect(() => {
     if (diagramRef.current) diagramRef.current.nodeTemplate = nodeTemplate ?? null;

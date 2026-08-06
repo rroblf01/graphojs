@@ -20,7 +20,7 @@ const nodeTemplate = $(
   $(TextBlock, 'label', { margin: 6 }),
 );
 
-const model = new GraphLinksModel({
+const modelA = new GraphLinksModel({
   nodeDataArray: [
     { key: 1, label: 'Alpha', x: 0, y: 0 },
     { key: 2, label: 'Beta', x: 150, y: 0 },
@@ -28,15 +28,24 @@ const model = new GraphLinksModel({
   linkDataArray: [{ from: 1, to: 2 }],
 });
 
+const modelB = new GraphLinksModel({
+  nodeDataArray: [
+    { key: 10, label: 'Gamma', x: 0, y: 0 },
+    { key: 20, label: 'Delta', x: 150, y: 0 },
+  ],
+  linkDataArray: [{ from: 10, to: 20 }],
+});
+
 const container = document.getElementById('root');
 if (container) {
   const app = createApp({
     setup() {
       const diagram = ref<GoDiagram | null>(null);
+      const useModelB = ref(false);
       return () =>
         h('div', {}, [
           h(Diagram, {
-            model,
+            model: useModelB.value ? modelB : modelA,
             nodeTemplate,
             initDiagram: (d: GoDiagram) => {
               diagram.value = d;
@@ -53,6 +62,12 @@ if (container) {
             nodeTemplate,
           }),
           diagram.value ? h(Overview, { observed: diagram.value }) : null,
+          h('button', {
+            id: 'swap-model',
+            onClick: () => {
+              useModelB.value = !useModelB.value;
+            },
+          }, 'Swap model'),
         ]);
     },
   });

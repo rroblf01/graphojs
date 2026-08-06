@@ -3,7 +3,14 @@ import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest
 import React, { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { Diagram, Palette, Overview, version } from '../src/index.tsx';
-import { GraphLinksModel, Diagram as GoDiagram, GraphObject, Shape, Panel } from 'graphojs';
+import {
+  GraphLinksModel,
+  Diagram as GoDiagram,
+  GraphObject,
+  Shape,
+  Panel,
+  type Template,
+} from 'graphojs';
 
 const roots: Root[] = [];
 
@@ -74,13 +81,30 @@ afterAll(() => {
   vi.restoreAllMocks();
 });
 
-function renderApp(node: React.ReactElement): HTMLElement {
+function renderApp(node: React.ReactElement): { host: HTMLElement; unmount: () => void } {
   const host = document.createElement('div');
   document.body.appendChild(host);
   const root = createRoot(host);
   roots.push(root);
   root.render(node);
-  return host;
+  return { host, unmount: () => root.unmount() };
+}
+
+/**
+ * Renders a stateful component that lets tests swap props on the same root,
+ * exercising React's prop-update path.
+ */
+function renderStateful<P>(
+  Component: React.FC<P>,
+  getProps: () => P,
+): { rerender: () => void; host: HTMLElement; unmount: () => void } {
+  const host = document.createElement('div');
+  document.body.appendChild(host);
+  const root = createRoot(host);
+  roots.push(root);
+  const rerender = () => root.render(React.createElement(Component, getProps()));
+  rerender();
+  return { rerender, host, unmount: () => root.unmount() };
 }
 
 describe('@graphojs/react', () => {
@@ -120,7 +144,7 @@ describe('@graphojs/react', () => {
     expect(document.body.querySelectorAll('div').length).toBeGreaterThan(0);
   });
 
-  it('onModelChange fires when the model mutates', async () => {
+  it('onModelChange fires once per model mutation', async () => {
     const changes: string[] = [];
     const model = new GraphLinksModel({ nodeDataArray: [{ key: 1 }] });
     renderApp(
@@ -131,9 +155,174 @@ describe('@graphojs/react', () => {
     );
     await act(async () => {});
     model.addNode({ key: 2 });
+    model.addLink({ key: 1, from: 1, to: 2 });
     await act(async () => {});
-    expect(changes.length).toBeGreaterThan(0);
-    expect(changes).toContain('node Added');
+    expect(changes.filter((c) => c === 'node Added').length).toBe(1);
+    expect(changes).toContain('link Added');
+  });
+
+  it('re-subscribes onModelChange when the callback identity changes', async () => {
+    const model = new GraphLinksModel({ nodeDataArray: [{ key: 1 }] });
+    const first = vi.fn();
+    const second = vi.fn();
+    let cb: (e: { type: string }) => void = first;
+    renderApp(
+      React.createElement(Diagram, {
+        model,
+        onModelChange: (e) => cb(e),
+      }),
+    );
+    await act(async () => {});
+    model.addNode({ key: 2 });
+    await act(async () => {});
+    expect(first).toHaveBeenCalledTimes(1);
+
+    cb = second;
+    await act(async () => {});
+    model.addNode({ key: 3 });
+    await act(async () => {});
+    expect(second).toHaveBeenCalledTimes(1);
+    expect(first).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates the model reactively when the model prop changes', async () => {
+    const $ = GraphObject.make;
+    const modelA = new GraphLinksModel({ nodeDataArray: [{ key: 1 }] });
+    const modelB = new GraphLinksModel({ nodeDataArray: [{ key: 9 }] });
+    let created: GoDiagram | null = null;
+    let model: GraphLinksModel = modelA;
+    const nodeTemplate = $(Panel, 'Auto', $(Shape, 'Rectangle'));
+
+    const { rerender } = renderStateful(
+      (props: { model: GraphLinksModel }) => (
+        <Diagram
+          model={props.model}
+          nodeTemplate={nodeTemplate}
+          initDiagram={(d) => {
+            created = d;
+          }}
+        />
+      ),
+      () => ({ model }),
+    );
+    await act(async () => {});
+    expect(created!.model).toBe(modelA);
+
+    model = modelB;
+    rerender();
+    await act(async () => {});
+    expect(created!.model).toBe(modelB);
+  });
+
+  it('applies nodeTemplate/linkTemplate/groupTemplate reactively', async () => {
+    const $ = GraphObject.make;
+    let created: GoDiagram | null = null;
+    const templateA = $(Panel, 'Auto', $(Shape, 'Rectangle'));
+    const templateB = $(Panel, 'Auto', $(Shape, 'Ellipse'));
+    let nodeTemplate: Panel = templateA;
+
+    const { rerender } = renderStateful(
+      (props: { template: Panel }) => (
+        <Diagram
+          nodeTemplate={props.template}
+          initDiagram={(d) => {
+            created = d;
+          }}
+        />
+      ),
+      () => ({ template: nodeTemplate }),
+    );
+    await act(async () => {});
+    expect(created!.nodeTemplate).toBe(templateA);
+
+    nodeTemplate = templateB;
+    rerender();
+    await act(async () => {});
+    expect(created!.nodeTemplate).toBe(templateB);
+  });
+
+  it('onDiagramInit is called after initDiagram', async () => {
+    const order: string[] = [];
+    renderApp(
+      React.createElement(Diagram, {
+        initDiagram: () => order.push('init'),
+        onDiagramInit: () => order.push('init-done'),
+      }),
+    );
+    await act(async () => {});
+    expect(order).toEqual(['init', 'init-done']);
+  });
+
+  it('fires onDiagramEvent synchronously on node add', async () => {
+    const events: string[] = [];
+    const model = new GraphLinksModel({ nodeDataArray: [] });
+    renderApp(
+      React.createElement(Diagram, {
+        model,
+        onDiagramEvent: (type) => events.push(type),
+      }),
+    );
+    await act(async () => {});
+    model.addNode({ key: 1 });
+    await act(async () => {});
+    expect(events).toContain('PartAdded');
+  });
+
+  it('cleans up and destroys the diagram on unmount', async () => {
+    let created: GoDiagram | null = null;
+    const { unmount } = renderApp(
+      React.createElement(Diagram, {
+        initDiagram: (d) => {
+          created = d;
+        },
+      }),
+    );
+    await act(async () => {});
+    const destroySpy = vi.spyOn(created!, 'destroy');
+    await act(async () => {
+      unmount();
+    });
+    expect(destroySpy).toHaveBeenCalled();
+    destroySpy.mockRestore();
+  });
+
+  it('Palette re-renders when templates change', async () => {
+    let templates: Template[] = [
+      { id: 'a', name: 'A', category: 'c', shape: 'rect', width: 10, height: 10 },
+    ];
+    const { rerender } = renderStateful(
+      (props: { templates: Template[] }) => <Palette templates={props.templates} />,
+      () => ({ templates }),
+    );
+    await act(async () => {});
+    expect(document.body.querySelectorAll('[data-template-id]').length).toBe(1);
+
+    templates = [
+      { id: 'a', name: 'A', category: 'c', shape: 'rect', width: 10, height: 10 },
+      { id: 'b', name: 'B', category: 'c', shape: 'ellipse', width: 10, height: 10 },
+    ];
+    rerender();
+    await act(async () => {});
+    expect(document.body.querySelectorAll('[data-template-id]').length).toBe(2);
+  });
+
+  it('Diagram and Palette forward className/style', async () => {
+    renderApp(
+      React.createElement(Diagram, { className: 'my-diagram', style: { width: '50px' } }),
+    );
+    await act(async () => {});
+    const el = document.body.querySelector('.my-diagram');
+    expect(el).not.toBeNull();
+    expect((el as HTMLElement).style.width).toBe('50px');
+  });
+
+  it('Overview forwards className/style', async () => {
+    const diagram = new GoDiagram({ div: document.createElement('div') });
+    renderApp(
+      React.createElement(Overview, { observed: diagram, className: 'my-overview' }),
+    );
+    await act(async () => {});
+    expect(document.body.querySelector('.my-overview')).not.toBeNull();
   });
 
   it('onSelectionChanged fires when selection changes', async () => {

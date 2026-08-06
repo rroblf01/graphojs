@@ -21,7 +21,7 @@ const nodeTemplate = $(
   $(TextBlock, 'label', { margin: 6 }),
 );
 
-const model = new GraphLinksModel({
+const modelA = new GraphLinksModel({
   nodeDataArray: [
     { key: 1, label: 'Alpha', x: 0, y: 0 },
     { key: 2, label: 'Beta', x: 150, y: 0 },
@@ -29,8 +29,17 @@ const model = new GraphLinksModel({
   linkDataArray: [{ from: 1, to: 2 }],
 });
 
+const modelB = new GraphLinksModel({
+  nodeDataArray: [
+    { key: 10, label: 'Gamma', x: 0, y: 0 },
+    { key: 20, label: 'Delta', x: 150, y: 0 },
+  ],
+  linkDataArray: [{ from: 10, to: 20 }],
+});
+
 function App() {
   const [diagram, setDiagram] = useState<GoDiagram | null>(null);
+  const [model, setModel] = useState(modelA);
   return (
     <>
       <Diagram
@@ -51,6 +60,9 @@ function App() {
         nodeTemplate={nodeTemplate}
       />
       {diagram && <Overview observed={diagram} />}
+      <button id="swap-model" onClick={() => setModel(model === modelA ? modelB : modelA)}>
+        Swap model
+      </button>
     </>
   );
 }

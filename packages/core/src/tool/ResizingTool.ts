@@ -73,9 +73,30 @@ export class ResizingTool extends Tool {
   }
 
   /**
+   * Map a diagram-space point into a node's unrotated local frame — the
+   * inverse of the rotation the renderer applies around the node's center
+   * when drawing it (and its handles). Handles are always positioned/tested
+   * against unrotated bounds, so hit-testing must undo the node's rotation
+   * first or a rotated node's handles become unclickable at their visible
+   * (rotated) screen position.
+   */
+  private toUnrotated(node: Node, point: { x: number; y: number }): { x: number; y: number } {
+    if (node.angle === 0) return point;
+    const cx = node.bounds.x + node.bounds.width / 2;
+    const cy = node.bounds.y + node.bounds.height / 2;
+    const rad = (-node.angle * Math.PI) / 180;
+    const dx = point.x - cx;
+    const dy = point.y - cy;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+    return { x: cx + dx * cos - dy * sin, y: cy + dx * sin + dy * cos };
+  }
+
+  /**
    * Find which resize handle (if any) is under a point for a selected node.
    */
-  getHandleAt(node: Node, point: { x: number; y: number }): ResizeHandle | null {
+  getHandleAt(node: Node, rawPoint: { x: number; y: number }): ResizeHandle | null {
+    const point = this.toUnrotated(node, rawPoint);
     const { x, y, width, height } = node.bounds;
     const handleSize = 8;
     const half = handleSize / 2;
@@ -203,6 +224,7 @@ export class ResizingTool extends Tool {
     this._node.bounds.y = y;
     this._node.bounds.width = width;
     this._node.bounds.height = height;
+    this.diagram?.invalidateLinksForNode(this._node.key);
     this.diagram?.invalidate();
   }
 

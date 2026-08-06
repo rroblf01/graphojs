@@ -16,3 +16,4 @@ e2e/fixtures/*.js
 packages/docs/.astro/
 packages/docs/dist/
 packages/docs/public/vendor/
+errors/

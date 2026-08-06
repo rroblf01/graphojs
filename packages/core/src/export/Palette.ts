@@ -159,7 +159,7 @@ export class Palette {
     const key = model.generateKey();
     const nodeData = templateToNodeData(template, key, diagramX, diagramY);
 
-    model.addNode(nodeData);
+    this.diagram.commit((d) => d.getModel().addNode(nodeData), 'Drop palette node');
     return nodeData;
   }
 }

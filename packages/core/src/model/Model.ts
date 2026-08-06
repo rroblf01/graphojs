@@ -128,10 +128,15 @@ export abstract class Model {
         data[this.nodeKeyProperty] = this.generateKey();
       }
       this._nodeDataArray.push(data);
-      // Only emit 'node Added' for genuinely new keys, so undo of a full
-      // array reassignment does not remove nodes that existed before
+      // Only emit 'node Added'/record a rollback for genuinely new keys, so
+      // undo of a full array reassignment does not remove nodes that existed
+      // before, but a rollback mid-transaction still removes what it added.
       const key = data[this.nodeKeyProperty] as NodeKey;
       if (key !== undefined && !oldKeys.has(key)) {
+        this.recordRollback(() => {
+          const idx = this._nodeDataArray.findIndex((d) => this.getNodeKey(d) === key);
+          if (idx !== -1) this._nodeDataArray.splice(idx, 1);
+        });
         this.emit({ type: 'node Added', model: this, node: data });
       }
     }

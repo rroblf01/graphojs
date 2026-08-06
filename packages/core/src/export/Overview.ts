@@ -116,15 +116,35 @@ export class Overview {
     });
   }
 
+  /**
+   * The scale/offset mapping content bounds onto the overview canvas — the
+   * same letterboxed, aspect-ratio-preserving transform used by render(), so
+   * that clicking a point in the overview and where it's actually drawn
+   * always agree.
+   */
+  private getTransform(bounds: { x: number; y: number; width: number; height: number }): {
+    scale: number;
+    offsetX: number;
+    offsetY: number;
+  } {
+    const scaleX = this.width / bounds.width;
+    const scaleY = this.height / bounds.height;
+    const scale = Math.min(scaleX, scaleY);
+    const offsetX = (this.width - bounds.width * scale) / 2 - bounds.x * scale;
+    const offsetY = (this.height - bounds.height * scale) / 2 - bounds.y * scale;
+    return { scale, offsetX, offsetY };
+  }
+
   /** Handle panning the main diagram to the clicked position. */
   private handlePan(e: MouseEvent): void {
     const rect = this.canvas.getBoundingClientRect();
-    const nx = (e.clientX - rect.left) / this.width;
-    const ny = (e.clientY - rect.top) / this.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
 
     const bounds = this.getContentBounds();
-    const centerX = bounds.x + nx * bounds.width;
-    const centerY = bounds.y + ny * bounds.height;
+    const { scale, offsetX, offsetY } = this.getTransform(bounds);
+    const centerX = (mouseX - offsetX) / scale;
+    const centerY = (mouseY - offsetY) / scale;
 
     const viewport = this.diagram.getViewport();
     const newX = centerX - viewport.width / 2;
@@ -158,11 +178,7 @@ export class Overview {
   /** Render the overview. */
   render(): void {
     const bounds = this.getContentBounds();
-    const scaleX = this.width / bounds.width;
-    const scaleY = this.height / bounds.height;
-    const scale = Math.min(scaleX, scaleY);
-    const offsetX = (this.width - bounds.width * scale) / 2 - bounds.x * scale;
-    const offsetY = (this.height - bounds.height * scale) / 2 - bounds.y * scale;
+    const { scale, offsetX, offsetY } = this.getTransform(bounds);
 
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.width, this.height);

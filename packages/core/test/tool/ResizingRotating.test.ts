@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
+import { Node } from '../../src/parts/Node.ts';
 import { ResizingTool } from '../../src/tool/ResizingTool.ts';
 import { RotatingTool } from '../../src/tool/RotatingTool.ts';
-import { Node } from '../../src/parts/Node.ts';
-import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
 import { UndoManager } from '../../src/undo/UndoManager.ts';
-import type { Diagram } from '../../src/diagram/Diagram.ts';
 
 function createMockDiagram(node: Node): Diagram {
   const model = new GraphLinksModel();
@@ -24,6 +24,7 @@ function createMockDiagram(node: Node): Diagram {
     findPartAt: (x: number, y: number) => (node.containsPoint({ x, y }) ? node : null),
     getPart: () => node,
     invalidate: vi.fn(),
+    invalidateLinksForNode: vi.fn(),
     fireDiagramEvent: vi.fn(),
   } as unknown as Diagram;
 }
@@ -62,6 +63,17 @@ describe('ResizingTool', () => {
     const tool = new ResizingTool();
     const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
     expect(tool.getHandleAt(node, { x: 50, y: 25 })).toBeNull();
+  });
+
+  it('should detect handles at their visually rotated position, not the unrotated one', () => {
+    const tool = new ResizingTool();
+    const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
+    node.angle = 90;
+    // The 'se' corner (100,50) rotated 90° around the center (50,25) now
+    // renders at (25,75) — that's where a click must land to grab it.
+    expect(tool.getHandleAt(node, { x: 25, y: 75 })).toBe('se');
+    // The old, unrotated corner position is no longer where anything is drawn.
+    expect(tool.getHandleAt(node, { x: 100, y: 50 })).toBeNull();
   });
 
   it('should start resizing on selected node handle', () => {
@@ -158,6 +170,18 @@ describe('RotatingTool', () => {
     const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
     expect(tool.isOnRotationHandle(node, { x: 50, y: -20 })).toBe(true);
     expect(tool.isOnRotationHandle(node, { x: 50, y: 25 })).toBe(false);
+  });
+
+  it('should compute and detect the rotation handle at its visually rotated position', () => {
+    const tool = new RotatingTool();
+    const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
+    node.angle = 90;
+    const handle = tool.getRotationHandlePoint(node);
+    expect(handle.x).toBeCloseTo(95);
+    expect(handle.y).toBeCloseTo(25);
+    expect(tool.isOnRotationHandle(node, { x: 95, y: 25 })).toBe(true);
+    // The old, unrotated handle position is no longer where anything is drawn.
+    expect(tool.isOnRotationHandle(node, { x: 50, y: -20 })).toBe(false);
   });
 
   it('should rotate a node', () => {

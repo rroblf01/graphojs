@@ -3,6 +3,9 @@ import { Rect } from '../geometry/Rect.ts';
 interface QuadTreeItem<T> {
   x: number;
   y: number;
+  /** Full extent of the item, when known (set by insertWithBounds). Point-only
+   *  items inserted via insert() have no bounds and keep exact point semantics. */
+  bounds?: Rect;
   data: T;
 }
 
@@ -41,38 +44,61 @@ export class QuadTree<T> {
     if (!this.bounds.containsPoint({ x, y })) {
       return;
     }
-
     this._itemCount++;
+    this.insertItem({ x, y, data });
+  }
 
+  /**
+   * Insert an item described by a bounding rectangle. The item is indexed by
+   * its full extent (not just its center) so a viewport/region query finds
+   * it whenever the rectangle overlaps, even if its center point doesn't.
+   */
+  insertWithBounds(bounds: Rect, data: T): void {
+    const x = bounds.x + bounds.width / 2;
+    const y = bounds.y + bounds.height / 2;
+    if (!this.bounds.containsPoint({ x, y })) {
+      return;
+    }
+    this._itemCount++;
+    this.insertItem({ x, y, bounds, data });
+  }
+
+  private insertItem(item: QuadTreeItem<T>): void {
     if (this.children.length > 0) {
-      this.insertIntoChildren(x, y, data);
+      this.insertIntoChildren(item);
       return;
     }
 
-    this.items.push({ x, y, data });
+    this.items.push(item);
 
     if (this.items.length > this.maxItems && this.depth < this.maxDepth) {
       this.subdivide();
-      for (const item of this.items) {
-        this.insertIntoChildren(item.x, item.y, item.data);
-      }
+      const pending = this.items;
       this.items = [];
+      for (const pendingItem of pending) {
+        this.insertIntoChildren(pendingItem);
+      }
     }
   }
 
-  /** Insert an item described by a bounding rectangle (uses center point). */
-  insertWithBounds(bounds: Rect, data: T): void {
-    this.insert(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2, data);
-  }
-
-  /** Insert into child nodes. */
-  private insertIntoChildren(x: number, y: number, data: T): void {
+  /**
+   * Insert into whichever child's partition fully contains the item. A
+   * bounded item that straddles two children's partition boundary is kept at
+   * this (larger) node instead of being pushed into just one of them — that
+   * prevents a query that only overlaps the *other* child from missing an
+   * item whose center happens to fall on this side of the boundary.
+   */
+  private insertIntoChildren(item: QuadTreeItem<T>): void {
     for (const child of this.children) {
-      if (child.bounds.containsPoint({ x, y })) {
-        child.insert(x, y, data);
+      const fits = item.bounds
+        ? child.bounds.containsRect(item.bounds)
+        : child.bounds.containsPoint({ x: item.x, y: item.y });
+      if (fits) {
+        child.insertItem(item);
         return;
       }
     }
+    this.items.push(item);
   }
 
   /** Split this node into four children. */
@@ -121,7 +147,7 @@ export class QuadTree<T> {
     }
 
     for (const item of this.items) {
-      if (bounds.containsPoint({ x: item.x, y: item.y })) {
+      if (this.itemMatchesRegion(item, bounds)) {
         result.push(item.data);
       }
     }
@@ -129,6 +155,15 @@ export class QuadTree<T> {
     for (const child of this.children) {
       child.queryRegionInto(bounds, result);
     }
+  }
+
+  /** An item with known bounds matches a region query if its rectangle
+   *  overlaps it; a point-only item matches only if the point itself falls
+   *  inside the region. */
+  private itemMatchesRegion(item: QuadTreeItem<T>, bounds: Rect): boolean {
+    return item.bounds
+      ? item.bounds.intersects(bounds)
+      : bounds.containsPoint({ x: item.x, y: item.y });
   }
 
   /**
@@ -150,7 +185,7 @@ export class QuadTree<T> {
     }
 
     for (const item of this.items) {
-      if (bounds.containsPoint({ x: item.x, y: item.y })) {
+      if (this.itemMatchesRegion(item, bounds)) {
         result.push({ x: item.x, y: item.y, data: item.data });
       }
     }

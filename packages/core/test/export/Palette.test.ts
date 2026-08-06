@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from 'vitest';
-import { Palette, createDefaultPalette } from '../../src/export/Palette.ts';
-import { basicShapes } from '../../src/template/TemplateCollection.ts';
+import { describe, expect, it } from 'vitest';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { createDefaultPalette, Palette } from '../../src/export/Palette.ts';
+import { basicShapes } from '../../src/template/TemplateCollection.ts';
 
 function createMockDiagram(): Diagram {
   const nodeDataArray: Array<Record<string, unknown>> = [];
@@ -14,13 +14,15 @@ function createMockDiagram(): Diagram {
     },
     getNodeDataArray: () => nodeDataArray,
   };
-  return {
+  const diagram = {
     getModel: () => model,
     getRenderer: () => ({
       getCanvas: () => ({ getBoundingClientRect: () => ({ left: 0, top: 0 }) }),
     }),
     getViewport: () => ({ x: 0, y: 0, scale: 1 }),
-  } as unknown as Diagram;
+    commit: (fn: (d: Diagram) => void) => fn(diagram as unknown as Diagram),
+  };
+  return diagram as unknown as Diagram;
 }
 
 describe('Palette', () => {

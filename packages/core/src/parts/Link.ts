@@ -1,9 +1,9 @@
+import type { Diagram } from '../diagram/Diagram.ts';
 import { Rect } from '../geometry/Rect.ts';
 import type { Spot } from '../geometry/Spot.ts';
 import type { NodeKey } from '../model/Model.ts';
-import { Part } from './Part.ts';
 import type { Node } from './Node.ts';
-import type { Diagram } from '../diagram/Diagram.ts';
+import { Part } from './Part.ts';
 
 export type LinkRouting = 'straight' | 'orthogonal' | 'curved';
 export type ArrowheadStyle = 'triangle' | 'openArrow' | 'diamond' | 'circle' | 'none';
@@ -35,6 +35,7 @@ export class Link extends Part {
   private _fromSpot: Spot | null = null;
   private _toSpot: Spot | null = null;
   private _pathPoints: Array<{ x: number; y: number }> = [];
+  private _hasManualReshape = false;
   private _arrowhead: ArrowheadStyle = 'triangle';
   private _arrowheadSize = 10;
   private _label = '';
@@ -234,6 +235,21 @@ export class Link extends Part {
   /** Set the computed path points. */
   setPathPoints(points: Array<{ x: number; y: number }>): void {
     this._pathPoints = points;
+  }
+
+  /**
+   * Whether pathPoints were set by the user reshaping this link (via
+   * LinkReshapingTool) rather than computed by the router. While true, model
+   * syncs that don't touch this link's own endpoints leave pathPoints alone
+   * instead of overwriting the manual shape; moving either endpoint node
+   * clears it (see Diagram.invalidateLinksForNode), reverting to auto-routing.
+   */
+  get hasManualReshape(): boolean {
+    return this._hasManualReshape;
+  }
+
+  set hasManualReshape(value: boolean) {
+    this._hasManualReshape = value;
   }
 
   /** The arrowhead style at the target end. */
@@ -456,6 +472,7 @@ export class Link extends Part {
     cloned._fromSpot = this._fromSpot;
     cloned._toSpot = this._toSpot;
     cloned._pathPoints = this._pathPoints.map((p) => ({ ...p }));
+    cloned._hasManualReshape = this._hasManualReshape;
     cloned._arrowhead = this._arrowhead;
     cloned._arrowheadSize = this._arrowheadSize;
     cloned._label = this._label;

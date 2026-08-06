@@ -28,6 +28,7 @@ export type DiagramEventType =
   | 'TextEdited'
   | 'LinkDrawn'
   | 'LinkRelinked'
+  | 'LinkReshaped'
   | 'SelectionMoved'
   | 'SelectionCopied'
   | 'SelectionDeleting'
@@ -164,6 +165,7 @@ const ALL_EVENT_TYPES: DiagramEventType[] = [
   'TextEdited',
   'LinkDrawn',
   'LinkRelinked',
+  'LinkReshaped',
   'SelectionMoved',
   'SelectionCopied',
   'SelectionDeleting',

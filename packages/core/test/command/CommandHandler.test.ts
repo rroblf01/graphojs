@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { CommandHandler, createCommandHandler } from '../../src/command/CommandHandler.ts';
-import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
-import { UndoManager } from '../../src/undo/UndoManager.ts';
-import { Node } from '../../src/parts/Node.ts';
-import type { Link } from '../../src/parts/Link.ts';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
+import type { Link } from '../../src/parts/Link.ts';
+import { Node } from '../../src/parts/Node.ts';
+import { UndoManager } from '../../src/undo/UndoManager.ts';
 
 function createMockDiagram(): Diagram {
   const model = new GraphLinksModel();
@@ -101,6 +101,35 @@ describe('CommandHandler', () => {
     // Link should be removed too (connected to deleted node)
     const linkData = model.getLinkDataArray().find((l) => model.getLinkKey(l) === 100);
     expect(linkData).toBeUndefined();
+  });
+
+  it('deletes a multi-part selection as a single undo step and fires SelectionDeleting before removal', () => {
+    const diagram = createMockDiagram();
+    const model = diagram.getModel();
+    model.addLink({ key: 100, from: 101, to: 102 });
+
+    const events: string[] = [];
+    (diagram as unknown as { fireDiagramEvent: (t: string) => void }).fireDiagramEvent = (
+      t: string,
+    ) => events.push(t);
+
+    (diagram.getPart(101) as Node).isSelected = true;
+    (diagram.getPart(102) as Node).isSelected = true;
+
+    const handler = new CommandHandler(diagram);
+    const undoStackSizeBefore = diagram.getUndoManager().getUndoStack().length;
+    expect(handler.deleteSelection()).toBe(true);
+
+    // Two nodes + the link between them removed, but as ONE undo step.
+    expect(diagram.getUndoManager().getUndoStack().length).toBe(undoStackSizeBefore + 1);
+    expect(events).toContain('SelectionDeleting');
+    expect(events).toContain('SelectionDeleted');
+    expect(events.indexOf('SelectionDeleting')).toBeLessThan(events.indexOf('SelectionDeleted'));
+
+    expect(handler.undo()).toBe(true);
+    expect(model.containsNode(101)).toBe(true);
+    expect(model.containsNode(102)).toBe(true);
+    expect(model.getLinkDataArray().find((l) => model.getLinkKey(l) === 100)).toBeDefined();
   });
 
   it('should copy and paste selection', () => {

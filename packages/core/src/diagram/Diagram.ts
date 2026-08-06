@@ -171,6 +171,7 @@ export class Diagram {
   private _contextMenuEl: HTMLElement | null = null;
   private backBuffer: HTMLCanvasElement | null = null;
   private backBufferEnabled = false;
+  private layoutProbeCtx: CanvasRenderingContext2D | null = null;
   private hitIndex: QuadTree<Part> | null = null;
   private hitIndexDirty = true;
   private lodLabelThreshold = 0.3;
@@ -989,13 +990,33 @@ export class Diagram {
     }
   }
 
-  /** Handle touch start (supports single-finger pan and two-finger pinch-zoom). */
+  /**
+   * Handle touch start. A single finger touching a draggable node/group starts
+   * the dragging tool directly (mirroring a left mouse-button press on it);
+   * otherwise it falls back to panning the empty canvas exactly as before.
+   * Two fingers always pinch-zoom.
+   */
   private handleTouchStart(e: TouchEvent): void {
     e.preventDefault();
     const touches = e.touches;
 
     if (touches.length === 1) {
       const t = touches[0]!;
+      const synthetic = new MouseEvent('mousedown', {
+        clientX: t.clientX,
+        clientY: t.clientY,
+        button: 0,
+        buttons: 1,
+      });
+      const dragging = this._toolManager.getTool('dragging');
+      if (dragging?.canStart('dragging', synthetic)) {
+        this._toolManager.activateTool('dragging');
+        dragging.doStart(synthetic);
+        dragging.doMouseDown(synthetic);
+        this.touchState = null;
+        return;
+      }
+
       this.touchState = {
         active: true,
         startDistance: 0,
@@ -1027,10 +1048,25 @@ export class Diagram {
     }
   }
 
-  /** Handle touch move (pan or pinch-zoom). */
+  /** Handle touch move (drags a node if one was grabbed on touch start; otherwise pan or pinch-zoom). */
   private handleTouchMove(e: TouchEvent): void {
     e.preventDefault();
     const touches = e.touches;
+
+    const dragging = this._toolManager.getTool('dragging');
+    if (touches.length === 1 && dragging?.isActive) {
+      const t = touches[0]!;
+      dragging.doMouseMove(
+        new MouseEvent('mousemove', {
+          clientX: t.clientX,
+          clientY: t.clientY,
+          button: 0,
+          buttons: 1,
+        }),
+      );
+      return;
+    }
+
     if (!this.touchState) return;
 
     if (touches.length === 1) {
@@ -1067,6 +1103,11 @@ export class Diagram {
   /** Handle touch end. */
   private handleTouchEnd(e: TouchEvent): void {
     e.preventDefault();
+    const dragging = this._toolManager.getTool('dragging');
+    if (dragging?.isActive) {
+      dragging.doMouseUp(new MouseEvent('mouseup', { button: 0, buttons: 0 }));
+      this._toolManager.deactivateTool();
+    }
     if (e.touches.length === 0) {
       this.touchState = null;
     }
@@ -1295,13 +1336,16 @@ export class Diagram {
         link.fromPort = fromPoint;
         link.toPort = toPoint;
 
-        // Compute path points based on routing
-        if (link.routing === 'orthogonal') {
-          link.setPathPoints(computeOrthogonalPath(fromPoint, toPoint));
-        } else if (link.routing === 'curved') {
-          link.setPathPoints(computeCurvedPath(fromPoint, toPoint));
-        } else {
-          link.setPathPoints([fromPoint, toPoint]);
+        // Compute path points based on routing, unless the user manually
+        // reshaped this link and neither endpoint has moved since.
+        if (!link.hasManualReshape) {
+          if (link.routing === 'orthogonal') {
+            link.setPathPoints(computeOrthogonalPath(fromPoint, toPoint));
+          } else if (link.routing === 'curved') {
+            link.setPathPoints(computeCurvedPath(fromPoint, toPoint));
+          } else {
+            link.setPathPoints([fromPoint, toPoint]);
+          }
         }
         link.updateBounds();
       }
@@ -1381,7 +1425,11 @@ export class Diagram {
         break;
       }
       case 'property Changed': {
-        if (event.node) this.syncNodeFromModel(event.node);
+        if (event.node) {
+          this.syncNodeFromModel(event.node);
+          // A node's own bounds/ports may have changed; keep its links anchored.
+          this.invalidateLinksForNode(this._model.getNodeKey(event.node));
+        }
         if (event.link) this.syncLinkFromModel(event.link);
         break;
       }
@@ -1433,6 +1481,19 @@ export class Diagram {
     this.updateLinkFromData(link, linkData);
   }
 
+  /**
+   * A dedicated, off-screen canvas context used only to run a panel's
+   * layout (measure/arrange) logic once outside the real render loop —
+   * never rendered anywhere, so it can't leak state onto the visible canvas.
+   */
+  private getLayoutProbeContext(): CanvasRenderingContext2D | null {
+    if (!this.layoutProbeCtx) {
+      const probeCanvas = document.createElement('canvas');
+      this.layoutProbeCtx = probeCanvas.getContext('2d');
+    }
+    return this.layoutProbeCtx;
+  }
+
   private createNode(nodeData: NodeData): Node {
     const key = this._model.getNodeKey(nodeData);
     const x = (nodeData.x as number) ?? 0;
@@ -1452,6 +1513,22 @@ export class Diagram {
       node.panel = cloned;
       // Apply template properties to the part
       this.applyTemplateProperties(node, cloned.templateProperties);
+      // Run one throwaway layout pass so element positions (and therefore
+      // declarative port spots) are already correct before anything — e.g. a
+      // link connecting to a named port in this same model load — reads them.
+      // Without this, ports resolve to (0,0) until the node is first painted.
+      const probeCtx = this.getLayoutProbeContext();
+      if (probeCtx) {
+        try {
+          cloned.setPosition(0, 0);
+          cloned.setActualSize(width, height);
+          cloned.draw(probeCtx, x, y, width, height);
+        } catch {
+          // Incomplete Canvas 2D implementation (e.g. some headless/test
+          // environments) — fall back silently; ports will still resolve
+          // correctly on the node's first real render via updatePortSpots().
+        }
+      }
       // Collect declarative ports (GraphObjects with portId)
       node.collectPortsFromPanel();
     }
@@ -1628,8 +1705,14 @@ export class Diagram {
   private updateLinkFromData(link: Link, linkData: LinkData): void {
     this.hitIndex?.remove(link);
     // Keep fromKey/toKey in sync with the model (fixes stale endpoints after relink)
-    if (linkData.from !== link.fromKey) link.fromKey = linkData.from;
-    if (linkData.to !== link.toKey) link.toKey = linkData.to;
+    if (linkData.from !== link.fromKey) {
+      link.fromKey = linkData.from;
+      link.hasManualReshape = false;
+    }
+    if (linkData.to !== link.toKey) {
+      link.toKey = linkData.to;
+      link.hasManualReshape = false;
+    }
     const routing = linkData.routing;
     if (routing === 'orthogonal' || routing === 'curved') {
       link.routing = routing;
@@ -1666,12 +1749,14 @@ export class Diagram {
       link.fromPort = fromPoint;
       link.toPort = toPoint;
 
-      if (link.routing === 'orthogonal') {
-        link.setPathPoints(computeOrthogonalPath(fromPoint, toPoint));
-      } else if (link.routing === 'curved') {
-        link.setPathPoints(computeCurvedPath(fromPoint, toPoint));
-      } else {
-        link.setPathPoints([fromPoint, toPoint]);
+      if (!link.hasManualReshape) {
+        if (link.routing === 'orthogonal') {
+          link.setPathPoints(computeOrthogonalPath(fromPoint, toPoint));
+        } else if (link.routing === 'curved') {
+          link.setPathPoints(computeCurvedPath(fromPoint, toPoint));
+        } else {
+          link.setPathPoints([fromPoint, toPoint]);
+        }
       }
       link.updateBounds();
     }
@@ -2865,18 +2950,33 @@ export class Diagram {
   }
 
   /**
-   * Clear the cached path of links connected to a node so the renderer
-   * recomputes them (keeps links following nodes during drags).
+   * Recompute the connection points of links attached to a node from its
+   * current bounds, and clear their cached path so the renderer recomputes
+   * the route (keeps links following nodes during drags/resizes and after
+   * any programmatic bounds change).
    */
   invalidateLinksForNode(nodeKey: NodeKey): void {
     for (const [, link] of this._links) {
       if (link.fromKey === nodeKey || link.toKey === nodeKey) {
+        this.recomputeLinkEndpoints(link);
         link.setPathPoints([]);
+        // The node it's attached to moved — a manually-reshaped route no
+        // longer reflects reality, so fall back to auto-routing.
+        link.hasManualReshape = false;
       }
     }
     if (this.renderer instanceof Canvas2DRenderer) {
       this.renderer.invalidateLinkPaths();
     }
+  }
+
+  /** Recompute a link's from/to connection points from its endpoints' current bounds. */
+  private recomputeLinkEndpoints(link: Link): void {
+    const fromNode = this._nodes.get(link.fromKey);
+    const toNode = this._nodes.get(link.toKey);
+    if (!fromNode || !toNode) return;
+    link.fromPort = fromNode.getConnectionPoint(toNode.center, link.fromPortName);
+    link.toPort = toNode.getConnectionPoint(fromNode.center, link.toPortName);
   }
 
   /** Zoom to fit all content. */

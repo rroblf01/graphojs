@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { Group } from '../../src/parts/Group.ts';
-import { Node } from '../../src/parts/Node.ts';
-import { Link } from '../../src/parts/Link.ts';
+import { describe, expect, it } from 'vitest';
+import { Point } from '../../src/geometry/Point.ts';
 import { Rect } from '../../src/geometry/Rect.ts';
 import { TreeLayout } from '../../src/layout/TreeLayout.ts';
+import { Group } from '../../src/parts/Group.ts';
+import { Link } from '../../src/parts/Link.ts';
+import { Node } from '../../src/parts/Node.ts';
 
 describe('Group', () => {
   it('should create with default values', () => {
@@ -106,6 +107,37 @@ describe('Group', () => {
     group.expand();
     expect(group.isSubGraphExpanded).toBe(true);
     expect(node.visible).toBe(true);
+  });
+
+  it('should shrink bounds when collapsed and restore them when expanded', () => {
+    const group = new Group(1);
+    const node1 = Node.fromPosAndSize(2, 0, 0, 100, 50);
+    const node2 = Node.fromPosAndSize(3, 200, 100, 100, 50);
+    group.add(node1);
+    group.add(node2);
+
+    const expandedWidth = group.bounds.width;
+    const expandedHeight = group.bounds.height;
+    expect(expandedWidth).toBeGreaterThan(50);
+
+    group.collapse();
+    expect(group.bounds.width).toBeLessThan(expandedWidth);
+    expect(group.bounds.height).toBeLessThan(expandedHeight);
+
+    group.expand();
+    expect(group.bounds.width).toBe(expandedWidth);
+    expect(group.bounds.height).toBe(expandedHeight);
+  });
+
+  it('should derive location from bounds like any other Part', () => {
+    const group = new Group(1, new Rect(100, 200, 60, 40));
+    // Default locationSpot is the center (0.5, 0.5), same as Node/Link.
+    expect(group.location.x).toBe(130);
+    expect(group.location.y).toBe(220);
+
+    group.location = new Point(0, 0);
+    expect(group.bounds.x).toBe(-30);
+    expect(group.bounds.y).toBe(-20);
   });
 
   it('should update bounds from members', () => {

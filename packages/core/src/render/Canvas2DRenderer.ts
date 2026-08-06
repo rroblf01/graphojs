@@ -1,20 +1,20 @@
 import type { Rect } from '../geometry/Rect.ts';
 import { Rect as RectClass } from '../geometry/Rect.ts';
+import type { Panel } from '../panel/Panel.ts';
 import type { Group } from '../parts/Group.ts';
 import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
-import type { Renderer } from './Renderer.ts';
-import type { Panel } from '../panel/Panel.ts';
-import { PathCache, TextMeasureCache } from './RenderCache.ts';
-import { LinkPathCache } from './PerformanceCache.ts';
 import {
-  routeOrthogonal,
-  routeCurved,
-  routeStraight,
   computeLabelPosition,
-  routeOrthogonalAvoidingObstacles,
   type RoutingObstacle,
+  routeCurved,
+  routeOrthogonal,
+  routeOrthogonalAvoidingObstacles,
+  routeStraight,
 } from './LinkRouter.ts';
+import { LinkPathCache } from './PerformanceCache.ts';
+import { PathCache, TextMeasureCache } from './RenderCache.ts';
+import type { Renderer } from './Renderer.ts';
 
 /**
  * Canvas 2D renderer for diagram parts.
@@ -617,8 +617,8 @@ export class Canvas2DRenderer implements Renderer {
     this.scale = scale;
 
     this.ctx.setTransform(this.devicePixelRatio, 0, 0, this.devicePixelRatio, 0, 0);
-    this.ctx.translate(-x, -y);
     this.ctx.scale(scale, scale);
+    this.ctx.translate(-x, -y);
   }
 
   getScale(): number {

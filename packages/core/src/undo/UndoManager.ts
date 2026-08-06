@@ -90,11 +90,13 @@ export class UndoManager {
   execute(command: Command): void {
     if (this.isExecuting) return;
 
-    // If inside a transaction, add to the current transaction
+    // If inside a transaction, add to the current transaction — only once
+    // execute() actually succeeds, so a command that throws never leaves a
+    // phantom entry in the transaction's history.
     const currentTransaction = this.transactionStack[this.transactionStack.length - 1];
     if (currentTransaction) {
-      currentTransaction.add(command);
       command.execute();
+      currentTransaction.add(command);
       return;
     }
 

@@ -22,13 +22,22 @@ export class RotatingTool extends Tool {
   }
 
   /**
-   * Find the rotation handle position for a node (above the top-center).
+   * Find the rotation handle's actual screen (diagram-space) position for a
+   * node — above its top-center, then rotated around the node's center by
+   * its current angle, matching how the renderer draws the handle.
    */
   getRotationHandlePoint(node: Node): { x: number; y: number } {
-    return {
-      x: node.bounds.x + node.bounds.width / 2,
-      y: node.bounds.y - 20,
-    };
+    const cx = node.bounds.x + node.bounds.width / 2;
+    const cy = node.bounds.y + node.bounds.height / 2;
+    const localX = cx;
+    const localY = node.bounds.y - 20;
+    if (node.angle === 0) return { x: localX, y: localY };
+    const rad = (node.angle * Math.PI) / 180;
+    const dx = localX - cx;
+    const dy = localY - cy;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+    return { x: cx + dx * cos - dy * sin, y: cy + dx * sin + dy * cos };
   }
 
   /**

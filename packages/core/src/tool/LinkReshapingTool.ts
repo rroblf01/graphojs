@@ -1,4 +1,5 @@
 import { Link } from '../parts/Link.ts';
+import { ReshapeLinkCommand } from '../undo/commands.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -9,6 +10,8 @@ export class LinkReshapingTool extends Tool {
   private _link: Link | null = null;
   private _segmentIndex = 0;
   private _isReshaping = false;
+  private _originalPoints: Array<{ x: number; y: number }> = [];
+  private _originalHasManualReshape = false;
 
   /** GoJS-compatible: The link being reshaped. */
   get currentLink(): Link | null {
@@ -42,6 +45,8 @@ export class LinkReshapingTool extends Tool {
     this._link = part;
     this._segmentIndex = this.findNearestSegment(part, point);
     this._isReshaping = true;
+    this._originalPoints = part.pathPoints.map((p) => ({ ...p }));
+    this._originalHasManualReshape = part.hasManualReshape;
   }
 
   override doMouseMove(e: MouseEvent): void {
@@ -55,13 +60,44 @@ export class LinkReshapingTool extends Tool {
     const idx = Math.min(Math.max(this._segmentIndex, 1), points.length - 2);
     points[idx] = { ...point };
     this._link.setPathPoints(points);
+    this._link.hasManualReshape = true;
     this._link.updateBounds();
     this.diagram.invalidate();
   }
 
   override doMouseUp(_e: MouseEvent): void {
+    if (!this._isReshaping || !this._link) {
+      this._isReshaping = false;
+      this._link = null;
+      return;
+    }
+
+    const link = this._link;
+    const diagram = this.diagram;
+    const changed =
+      link.pathPoints.length !== this._originalPoints.length ||
+      link.pathPoints.some((p, i) => {
+        const o = this._originalPoints[i];
+        return !o || p.x !== o.x || p.y !== o.y;
+      });
+
+    if (changed && diagram) {
+      diagram
+        .getUndoManager()
+        .execute(
+          new ReshapeLinkCommand(
+            link,
+            link.pathPoints,
+            this._originalPoints,
+            this._originalHasManualReshape,
+          ),
+        );
+      diagram.fireDiagramEvent('LinkReshaped', link);
+    }
+
     this._isReshaping = false;
     this._link = null;
+    this._originalPoints = [];
   }
 
   /** Find the segment index whose endpoint is nearest to the given point. */

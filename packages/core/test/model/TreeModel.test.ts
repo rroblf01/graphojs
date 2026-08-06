@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { TreeModel } from '../../src/model/TreeModel.ts';
 
 describe('TreeModel', () => {
@@ -145,5 +145,59 @@ describe('TreeModel', () => {
   it('should get parent key for missing node', () => {
     const model = new TreeModel();
     expect(model.getParentKeyForNode(99)).toBeUndefined();
+  });
+
+  it('should reject mutations when read-only', () => {
+    const model = new TreeModel();
+    model.addNode({ key: 1 });
+    model.isReadOnly = true;
+
+    expect(() => model.addNode({ key: 2 })).toThrow('Cannot modify a read-only model');
+    expect(() => model.removeNode(1)).toThrow('Cannot modify a read-only model');
+    expect(() => model.setParent(1, undefined)).toThrow('Cannot modify a read-only model');
+    expect(model.getNodeCount()).toBe(1);
+  });
+
+  it('should roll back addNode/removeNode/setParent within a transaction', () => {
+    const model = new TreeModel();
+    model.addNode({ key: 1 });
+    model.addNode({ key: 2, parent: 1 });
+
+    model.startTransaction();
+    model.addNode({ key: 3 });
+    expect(model.rollbackTransaction()).toBe(true);
+    expect(model.containsNode(3)).toBe(false);
+
+    model.startTransaction();
+    model.removeNode(2);
+    expect(model.rollbackTransaction()).toBe(true);
+    expect(model.containsNode(2)).toBe(true);
+    expect(model.getParentKeyForNode(2)).toBe(1);
+
+    model.startTransaction();
+    model.setParent(2, undefined);
+    expect(model.isRoot(2)).toBe(true);
+    expect(model.rollbackTransaction()).toBe(true);
+    expect(model.getParentKeyForNode(2)).toBe(1);
+  });
+
+  it('should report the correct oldValue when a property Changed event fires from setParent', () => {
+    const model = new TreeModel();
+    model.addNode({ key: 1 });
+    model.addNode({ key: 2, parent: 1 });
+    model.addNode({ key: 3 });
+
+    let seenOldValue: unknown;
+    let seenNewValue: unknown;
+    model.addChangedListener((event) => {
+      if (event.type === 'property Changed') {
+        seenOldValue = event.oldValue;
+        seenNewValue = event.newValue;
+      }
+    });
+
+    model.setParent(2, 3);
+    expect(seenOldValue).toBe(1);
+    expect(seenNewValue).toBe(3);
   });
 });

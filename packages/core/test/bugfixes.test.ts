@@ -23,7 +23,10 @@ import {
   Spot,
   TextBlock,
   TextEditingTool,
+  UndoManager,
 } from '../src/index.ts';
+import { DraggingTool } from '../src/tool/DraggingTool.ts';
+import type { Command } from '../src/undo/Command.ts';
 
 function mockContext() {
   return {
@@ -466,6 +469,42 @@ describe('C20: declarative ports resolve after layout', () => {
     const p = port?.computePoint(0, 0, 100, 50);
     expect(p.x).toBeCloseTo(88, 0);
     expect(p.x).toBeGreaterThan(0);
+  });
+
+  it('a declarative named port already resolves to its real position before any render, so a link created in the same load anchors correctly', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(
+      Node,
+      'Spot',
+      $(Shape, 'Rectangle'),
+      $(Shape, 'Circle', { portId: 'right', width: 10, height: 10, alignment: Spot.Right }),
+    );
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 300, y: 0, width: 50, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2, fromPort: 'right' }],
+    });
+    d.model = m; // no render() has happened yet
+
+    const node = d.findNodeForKey(1) as Node;
+    const port = node.findPort('right');
+    expect(port).toBeDefined();
+
+    // Before the fix, the port stayed at spot (0,0) (top-left of the node)
+    // until the node's first real render; it should already reflect its
+    // real, right-edge-aligned layout position right away — the 10-wide
+    // port element's own top-left sits at x=90 when flush against the
+    // right edge of a 100-wide node (matching how collectPortsFromPanel
+    // derives a port's spot from the element's top-left position).
+    const p = port!.computePoint(0, 0, 100, 50);
+    expect(p.x).toBeCloseTo(90, 0);
+    expect(p.x).toBeGreaterThan(50);
+
+    const link = [...d.links.values()][0] as Link;
+    expect(link.fromPort.x).toBeGreaterThan(50);
   });
 });
 
@@ -1118,6 +1157,65 @@ describe('F4: Tools GoJS API surface', () => {
     const data = d.getModel().getNodeDataArray()[0];
     expect(data?.label).toBe('new');
     expect(data && Math.round(data.x as number)).toBe(100);
+
+    // The created node must be undoable in a single step.
+    expect(d.getUndoManager().canUndo()).toBe(true);
+    d.undo();
+    expect(d.getModel().getNodeCount()).toBe(0);
+  });
+
+  it('dropping a Palette node onto a diagram is undoable', async () => {
+    const { Palette } = await import('../src/export/Palette.ts');
+    const { basicShapes } = await import('../src/template/TemplateCollection.ts');
+    const d = createDiagram();
+    d.model = new GraphLinksModel();
+    const container = document.createElement('div');
+    const palette = new Palette(container, d, basicShapes);
+
+    const template = basicShapes[0]!;
+    expect(palette.handleDropOnDiagram(template.id, 50, 60)).not.toBeNull();
+    expect(d.getModel().getNodeCount()).toBe(1);
+
+    expect(d.getUndoManager().canUndo()).toBe(true);
+    d.undo();
+    expect(d.getModel().getNodeCount()).toBe(0);
+  });
+
+  it('groupSelection and ungroupSelection are each a single undoable step', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 30 },
+        { key: 2, x: 100, y: 0, width: 50, height: 30 },
+      ],
+    });
+    const node1 = d.findNodeForKey(1) as Node;
+    const node2 = d.findNodeForKey(2) as Node;
+    d.select(node1);
+    d.select(node2, true);
+
+    const handler = d.getCommandHandler();
+    expect(handler.groupSelection()).toBe(true);
+    expect(d.getModel().getNodeCount()).toBe(3); // 2 nodes + 1 new group
+
+    expect(d.getUndoManager().canUndo()).toBe(true);
+    d.undo();
+    expect(d.getModel().getNodeCount()).toBe(2);
+
+    // Redo to get the group back, then verify ungroup is also one step.
+    d.redo();
+    const groupData = d
+      .getModel()
+      .getNodeDataArray()
+      .find((n) => n.isGroup === true)!;
+    const group = d.findGroupForKey(groupData.key as number)!;
+    d.select(group);
+    expect(handler.ungroupSelection()).toBe(true);
+    expect(d.getModel().getNodeCount()).toBe(2);
+
+    expect(d.getUndoManager().canUndo()).toBe(true);
+    d.undo();
+    expect(d.getModel().getNodeCount()).toBe(3);
   });
 
   it('ContextMenuTool and LinkReshapingTool exist and wire up', () => {
@@ -1155,6 +1253,80 @@ describe('F4: Tools GoJS API surface', () => {
     tool.doMouseMove(move);
     tool.doMouseUp(move);
     expect(link.pathPoints[1]).toEqual({ x: 130, y: 60 });
+  });
+
+  it('a manual link reshape is undoable and survives an unrelated model change, but not a move of its own endpoint', () => {
+    const d = createDiagram();
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 40, height: 40 },
+        { key: 2, x: 200, y: 0, width: 40, height: 40 },
+        { key: 3, x: 400, y: 400 }, // unrelated node
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    d.model = m;
+    const link = d.findLinkForKey(1) as Link;
+    link.reshapable = true;
+    link.setPathPoints([
+      { x: 20, y: 20 },
+      { x: 110, y: 40 },
+      { x: 220, y: 20 },
+    ]);
+
+    const tool = new LinkReshapingTool();
+    tool.diagram = d;
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 110, clientY: 40 }));
+    tool.doMouseMove(new MouseEvent('mousemove', { button: 0, clientX: 130, clientY: 60 }));
+    tool.doMouseUp(new MouseEvent('mouseup', { button: 0, clientX: 130, clientY: 60 }));
+    expect(link.pathPoints[1]).toEqual({ x: 130, y: 60 });
+    expect(link.hasManualReshape).toBe(true);
+
+    // Undoable in one step.
+    expect(d.getUndoManager().canUndo()).toBe(true);
+
+    // An unrelated node's property change must not wipe the manual reshape.
+    const node3Data = d
+      .getModel()
+      .getNodeDataArray()
+      .find((n) => n.key === 3)!;
+    d.getModel().setDataProperty(node3Data, 'x', 500);
+    expect(link.pathPoints[1]).toEqual({ x: 130, y: 60 });
+
+    // Undo reverts to the pre-reshape path.
+    d.undo();
+    expect(link.pathPoints[1]).toEqual({ x: 110, y: 40 });
+    expect(link.hasManualReshape).toBe(false);
+
+    // Moving the link's OWN endpoint node does legitimately discard the
+    // (already-undone, so re-apply first) manual reshape.
+    d.redo();
+    expect(link.hasManualReshape).toBe(true);
+    const node1Data = d
+      .getModel()
+      .getNodeDataArray()
+      .find((n) => n.key === 1)!;
+    d.getModel().setDataProperty(node1Data, 'x', 50);
+    expect(link.hasManualReshape).toBe(false);
+  });
+
+  it('rolling back a transaction undoes nodes/links added via a bulk setNodeDataArray/setLinkDataArray reassignment', () => {
+    const model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1 }, { key: 2 }],
+      linkDataArray: [{ key: 100, from: 1, to: 2 }],
+    });
+
+    model.startTransaction();
+    model.setNodeDataArray([...model.getNodeDataArray(), { key: 3 }]);
+    expect(model.rollbackTransaction()).toBe(true);
+    expect(model.containsNode(3)).toBe(false);
+    expect(model.getNodeCount()).toBe(2); // existing nodes untouched
+
+    model.startTransaction();
+    model.setLinkDataArray([...model.getLinkDataArray(), { key: 101, from: 2, to: 1 }]);
+    expect(model.rollbackTransaction()).toBe(true);
+    expect(model.getLinkDataArray().some((l) => model.getLinkKey(l) === 101)).toBe(false);
+    expect(model.getLinkCount()).toBe(1); // existing link untouched
   });
 });
 
@@ -1732,6 +1904,93 @@ describe('J12: critical GoJS API gaps (Part surface, model data methods, layout,
     input.clickCount = 2;
     expect(input.clickCount).toBe(2);
     expect(input.handled).toBe(false);
+  });
+
+  it('link endpoints follow node bounds during drag, resize, and programmatic model moves', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 30 },
+        { key: 2, x: 200, y: 0, width: 50, height: 30 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const node1 = d.findNodeForKey(1) as Node;
+    const link = [...d.links.values()][0] as Link;
+    const beforeDrag = { ...link.fromPort };
+
+    // Interactive drag (mirrors what DraggingTool does each mousemove)
+    node1.bounds.x = 300;
+    node1.bounds.y = 300;
+    d.invalidateLinksForNode(1);
+    expect(link.fromPort).not.toEqual(beforeDrag);
+    expect(link.fromPort.x).toBeGreaterThan(290);
+
+    // Interactive resize (mirrors what ResizingTool does each mousemove)
+    const beforeResize = { ...link.fromPort };
+    node1.bounds.width = 400;
+    d.invalidateLinksForNode(1);
+    expect(link.fromPort).not.toEqual(beforeResize);
+
+    // Programmatic model move via setDataProperty (no interactive tool involved)
+    const node2Data = d
+      .getModel()
+      .getNodeDataArray()
+      .find((n) => n.key === 2)!;
+    const beforeModelMove = { ...link.toPort };
+    d.getModel().setDataProperty(node2Data, 'x', 900);
+    expect(link.toPort).not.toEqual(beforeModelMove);
+    expect(link.toPort.x).toBeGreaterThan(890);
+  });
+
+  it('a command that throws inside a transaction is not recorded, and its undo() is never later called', () => {
+    const undoManager = new UndoManager();
+    const goodCommand: Command = {
+      execute: vi.fn(),
+      undo: vi.fn(),
+      describe: () => 'good',
+    };
+    const throwingCommand: Command = {
+      execute: () => {
+        throw new Error('boom');
+      },
+      undo: vi.fn(),
+      describe: () => 'throwing',
+    };
+
+    undoManager.beginTransaction('t');
+    undoManager.execute(goodCommand);
+    expect(() => undoManager.execute(throwingCommand)).toThrow('boom');
+    const transaction = undoManager.commitTransaction();
+
+    // Only the command that actually executed successfully was recorded.
+    expect(transaction?.size).toBe(1);
+
+    undoManager.undo();
+    expect(goodCommand.undo).toHaveBeenCalledTimes(1);
+    expect(throwingCommand.undo).not.toHaveBeenCalled();
+  });
+
+  it('a group not itself being dragged resizes to keep following a dragged member', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, isGroup: true, x: 0, y: 0 },
+        { key: 2, x: 10, y: 10, width: 30, height: 20, group: 1 },
+      ],
+    });
+    const group = d.getPart(1) as Group;
+    const member = d.findNodeForKey(2) as Node;
+    expect(group.contains(member)).toBe(true);
+    const boundsBefore = { x: group.bounds.x, y: group.bounds.y };
+
+    const tool = new DraggingTool();
+    tool.diagram = d;
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 15, clientY: 15 }));
+    tool.doMouseMove(new MouseEvent('mousemove', { button: 0, clientX: 415, clientY: 415 }));
+
+    expect(group.bounds.x).not.toBe(boundsBefore.x);
+    expect(group.bounds.containsRect(member.bounds)).toBe(true);
   });
 
   it('drag keeps Rect prototype (bounds.right/center intact)', () => {

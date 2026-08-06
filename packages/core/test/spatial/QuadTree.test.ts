@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { QuadTree } from '../../src/spatial/QuadTree.ts';
+import { describe, expect, it } from 'vitest';
 import { Rect } from '../../src/geometry/Rect.ts';
+import { QuadTree } from '../../src/spatial/QuadTree.ts';
 
 describe('QuadTree', () => {
   it('should insert and query items', () => {
@@ -103,6 +103,30 @@ describe('QuadTree', () => {
 
     const result = tree.queryRegion(new Rect(0, 0, 300, 300));
     expect(result).toContain('centered');
+  });
+
+  it('should find a large item whose center is outside the query region but whose edge overlaps it', () => {
+    const tree = new QuadTree<string>(new Rect(0, 0, 1000, 1000));
+    // Spans x:250-550 — its center (400,50) sits outside the 0..300 query
+    // region, but the rectangle itself overlaps it on x:250-300.
+    tree.insertWithBounds(new Rect(250, 0, 300, 100), 'wide-node');
+
+    const result = tree.queryRegion(new Rect(0, 0, 300, 300));
+    expect(result).toContain('wide-node');
+  });
+
+  it('should still find a bounded item after the tree subdivides past its partition boundary', () => {
+    const tree = new QuadTree<string>(new Rect(0, 0, 1000, 1000), { maxItems: 2 });
+    // Force a subdivision by inserting enough small, unrelated point items.
+    for (let i = 0; i < 20; i++) {
+      tree.insert(900 + (i % 10), 900 + (i % 10), `filler-${i}`);
+    }
+    expect(tree.isLeaf()).toBe(false);
+    // A wide item straddling the left/right child partition boundary at x=500.
+    tree.insertWithBounds(new Rect(450, 0, 100, 50), 'straddling');
+
+    expect(tree.queryRegion(new Rect(0, 0, 460, 100))).toContain('straddling');
+    expect(tree.queryRegion(new Rect(540, 0, 460, 100))).toContain('straddling');
   });
 
   it('should query region with points', () => {

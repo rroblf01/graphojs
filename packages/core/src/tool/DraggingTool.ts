@@ -119,6 +119,21 @@ export class DraggingTool extends Tool {
       diagram.invalidateLinksForNode(key);
     }
 
+    // A group not itself being dragged must resize to keep containing a
+    // member that's being dragged within/out of it (a group that IS being
+    // dragged already moves in lockstep with its members via the loop above).
+    const groupsToResize = new Set<Group>();
+    for (const [key] of this.nodeOrigin) {
+      const node = this.getNodeByKey(key);
+      const group = node?.containingGroup;
+      if (group instanceof Group && !this.nodeOrigin.has(group.key)) {
+        groupsToResize.add(group);
+      }
+    }
+    for (const group of groupsToResize) {
+      group.updateBoundsFromMembers();
+    }
+
     diagram.invalidate();
   }
 

@@ -21,3 +21,4 @@ test-results
 
 # Docs generated vendor
 packages/docs/public/vendor
+errors/

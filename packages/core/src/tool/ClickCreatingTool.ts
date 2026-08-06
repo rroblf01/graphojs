@@ -58,7 +58,7 @@ export class ClickCreatingTool extends Tool {
       x,
       y,
     };
-    diagram.getModel().addNode(nodeData);
+    diagram.commit((d) => d.getModel().addNode(nodeData), 'Click-create node');
     diagram.invalidate();
   }
 }

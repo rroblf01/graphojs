@@ -1,5 +1,6 @@
 import type { GraphLinksModel } from '../model/GraphLinksModel.ts';
 import type { LinkData, NodeData, NodeKey } from '../model/Model.ts';
+import type { Link } from '../parts/Link.ts';
 import type { Command } from './Command.ts';
 
 /**
@@ -344,5 +345,45 @@ export class SetZOrderCommand implements Command {
 
   describe(): string {
     return `Set z-order of ${String(this.key)} to ${this.newZOrder}`;
+  }
+}
+
+/**
+ * Command to persist a manual link reshape (from LinkReshapingTool). There is
+ * no model-data field for a link's path points, so this operates directly on
+ * the visual Link's pathPoints/hasManualReshape rather than through the model.
+ */
+export class ReshapeLinkCommand implements Command {
+  private link: Link;
+  private newPoints: Array<{ x: number; y: number }>;
+  private oldPoints: Array<{ x: number; y: number }>;
+  private oldHasManualReshape: boolean;
+
+  constructor(
+    link: Link,
+    newPoints: Array<{ x: number; y: number }>,
+    oldPoints: Array<{ x: number; y: number }>,
+    oldHasManualReshape: boolean,
+  ) {
+    this.link = link;
+    this.newPoints = newPoints.map((p) => ({ ...p }));
+    this.oldPoints = oldPoints.map((p) => ({ ...p }));
+    this.oldHasManualReshape = oldHasManualReshape;
+  }
+
+  execute(): void {
+    this.link.setPathPoints(this.newPoints.map((p) => ({ ...p })));
+    this.link.hasManualReshape = true;
+    this.link.updateBounds();
+  }
+
+  undo(): void {
+    this.link.setPathPoints(this.oldPoints.map((p) => ({ ...p })));
+    this.link.hasManualReshape = this.oldHasManualReshape;
+    this.link.updateBounds();
+  }
+
+  describe(): string {
+    return `Reshape link ${String(this.link.key)}`;
   }
 }

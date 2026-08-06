@@ -213,8 +213,15 @@ export class GraphLinksModel extends Model {
         data[this.linkKeyProperty] = this.generateLinkKey();
       }
       this._linkDataArray.push(data);
+      // Only emit 'link Added'/record a rollback for genuinely new keys, so
+      // undo of a full array reassignment does not remove links that existed
+      // before, but a rollback mid-transaction still removes what it added.
       const key = data[this.linkKeyProperty] as NodeKey;
       if (key !== undefined && !oldKeys.has(key)) {
+        this.recordRollback(() => {
+          const idx = this._linkDataArray.findIndex((l) => this.getLinkKey(l) === key);
+          if (idx !== -1) this._linkDataArray.splice(idx, 1);
+        });
         this.emit({ type: 'link Added', model: this, link: data });
       }
     }

@@ -1,7 +1,5 @@
 export const version = '0.1.0';
 
-// Events
-export { InputEvent } from './events/InputEvent.ts';
 export type { AnimationOptions } from './animation/Animation.ts';
 // Animations
 export { Animation } from './animation/Animation.ts';
@@ -40,6 +38,8 @@ export type {
   DiagramEventType,
 } from './diagram/DiagramEvents.ts';
 export { createDiagramEvents, DiagramEvents } from './diagram/DiagramEvents.ts';
+// Events
+export { InputEvent } from './events/InputEvent.ts';
 export type { ContextMenuItem, ContextMenuOptions } from './export/ContextMenu.ts';
 export { ContextMenu, createDefaultContextMenu } from './export/ContextMenu.ts';
 export { createOverview, Overview } from './export/Overview.ts';
@@ -185,6 +185,7 @@ export {
   MoveNodeCommand,
   RemoveLinkCommand,
   RemoveNodeCommand,
+  ReshapeLinkCommand,
   ResizeNodeCommand,
   SetLinkPropertyCommand,
   SetNodePropertyCommand,

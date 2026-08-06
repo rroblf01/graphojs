@@ -1,4 +1,3 @@
-import { Point } from '../geometry/Point.ts';
 import { Rect } from '../geometry/Rect.ts';
 import type { Layout } from '../layout/Layout.ts';
 import type { NodeKey } from '../model/Model.ts';
@@ -16,7 +15,6 @@ export class Group extends Part {
   private _isGroup = true;
   private _layout: Layout | null = null;
   private _placeholderPadding = 10;
-  private _location = { x: 0, y: 0 };
 
   constructor(key: NodeKey, bounds?: Rect) {
     super(key, bounds ?? Rect.zero());
@@ -76,16 +74,6 @@ export class Group extends Part {
   /** Set the placeholder padding. */
   set placeholderPadding(value: number) {
     this._placeholderPadding = value;
-  }
-
-  /** Get the location of the group. */
-  override get location(): Point {
-    return new Point(this._location.x, this._location.y);
-  }
-
-  /** Set the location of the group. */
-  override set location(value: Point) {
-    this._location = { x: value.x, y: value.y };
   }
 
   /** Add a part to this group. */
@@ -154,14 +142,25 @@ export class Group extends Part {
         maxX - minX + this._placeholderPadding * 2,
         maxY - minY + this._placeholderPadding * 2,
       );
+    } else {
+      // No visible members (e.g. the subgraph is collapsed) — shrink to a
+      // minimal placeholder-sized box anchored at the group's current
+      // position instead of leaving stale, oversized bounds behind.
+      this.bounds = new Rect(
+        this.bounds.x,
+        this.bounds.y,
+        this._placeholderPadding * 2,
+        this._placeholderPadding * 2,
+      );
     }
   }
 
-  /** Update member visibility based on expansion state. */
+  /** Update member visibility based on expansion state, and resize to match. */
   private updateMemberVisibility(): void {
     for (const part of this._memberParts) {
       part.visible = this._isSubGraphExpanded;
     }
+    this.updateBoundsFromMembers();
   }
 
   /** Collapse the group (hide members). */

@@ -1,5 +1,5 @@
-import { Model } from './Model.ts';
 import type { ModelJSON, NodeData, NodeKey } from './Model.ts';
+import { Model } from './Model.ts';
 
 export interface TreeModelJSON extends ModelJSON {
   parentKeyProperty: string;
@@ -134,6 +134,9 @@ export class TreeModel extends Model {
 
   /** Add a node. Returns the generated key if none provided. */
   override addNode(nodeData: NodeData): NodeKey {
+    if (this.isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     if (!this.validateNode(nodeData)) {
       throw new Error('Node validation failed');
     }
@@ -154,6 +157,11 @@ export class TreeModel extends Model {
     }
 
     this._nodeDataArray.push(nodeData);
+    this.recordRollback(() => {
+      const idx = this._nodeDataArray.findIndex((d) => this.getNodeKey(d) === key);
+      if (idx !== -1) this._nodeDataArray.splice(idx, 1);
+    });
+    this.markModified();
     this.emit({
       type: 'node Added',
       model: this,
@@ -164,6 +172,9 @@ export class TreeModel extends Model {
 
   /** Remove a node and all its descendants. */
   override removeNode(key: NodeKey): boolean {
+    if (this.isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     const data = this.getNodeData(key);
     if (!data) return false;
     if (!this.validateNodeRemoval(data)) {
@@ -174,6 +185,11 @@ export class TreeModel extends Model {
     const descendants = this.getDescendants(key);
     for (const descendant of descendants) {
       this._nodeDataArray.splice(this._nodeDataArray.indexOf(descendant), 1);
+      this.recordRollback(() => {
+        if (!this.containsNode(this.getNodeKey(descendant))) {
+          this._nodeDataArray.push(descendant);
+        }
+      });
       this.emit({
         type: 'node Removed',
         model: this,
@@ -182,6 +198,12 @@ export class TreeModel extends Model {
     }
 
     this._nodeDataArray.splice(this._nodeDataArray.indexOf(data), 1);
+    this.recordRollback(() => {
+      if (!this.containsNode(this.getNodeKey(data))) {
+        this._nodeDataArray.push(data);
+      }
+    });
+    this.markModified();
     this.emit({
       type: 'node Removed',
       model: this,
@@ -192,6 +214,9 @@ export class TreeModel extends Model {
 
   /** Set the parent of a node. */
   setParent(key: NodeKey, newParentKey: NodeKey | undefined): void {
+    if (this.isReadOnly) {
+      throw new Error('Cannot modify a read-only model');
+    }
     const data = this.getNodeData(key);
     if (!data) throw new Error(`Node with key ${String(key)} not found`);
     if (newParentKey !== undefined && !this.containsNode(newParentKey)) {
@@ -207,12 +232,17 @@ export class TreeModel extends Model {
         throw new Error('Cannot create a cycle in the tree');
       }
     }
+    const oldParentKey = this.getParentKey(data);
     this.setParentKey(data, newParentKey);
+    this.recordRollback(() => {
+      this.setParentKey(data, oldParentKey);
+    });
+    this.markModified();
     this.emit({
       type: 'property Changed',
       model: this,
       propertyName: this.parentKeyProperty,
-      oldValue: data[this.parentKeyProperty],
+      oldValue: oldParentKey,
       newValue: newParentKey,
       node: data,
     });

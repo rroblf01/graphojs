@@ -91,12 +91,24 @@ export class CommandHandler {
       }
     }
 
-    // Remove links first, then nodes (reverse dependency)
-    for (const linkKey of linkKeys) {
-      undoManager.execute(new RemoveLinkCommand(model, linkKey));
-    }
-    for (const nodeKey of nodeKeys) {
-      undoManager.execute(new RemoveNodeCommand(model, nodeKey));
+    // GoJS-compatible: fire SelectionDeleting before the actual removal
+    diagram.fireDiagramEvent('SelectionDeleting', null, {
+      nodeCount: nodeKeys.length,
+      linkCount: linkKeys.length,
+    });
+
+    // Remove links first, then nodes (reverse dependency), as a single
+    // undoable step regardless of how many parts were selected.
+    undoManager.beginTransaction('Delete');
+    try {
+      for (const linkKey of linkKeys) {
+        undoManager.execute(new RemoveLinkCommand(model, linkKey));
+      }
+      for (const nodeKey of nodeKeys) {
+        undoManager.execute(new RemoveNodeCommand(model, nodeKey));
+      }
+    } finally {
+      undoManager.commitTransaction();
     }
 
     diagram.clearSelection();
@@ -659,6 +671,7 @@ export class CommandHandler {
       height: maxY - minY + padding * 2,
     };
 
+    diagram.startTransaction('Group');
     model.addNode(groupData);
 
     // Assign the selected nodes to the group
@@ -668,6 +681,7 @@ export class CommandHandler {
         model.setDataProperty(nodeData, 'group', groupKey);
       }
     }
+    diagram.commitTransaction('Group');
 
     diagram.clearSelection();
     const group = diagram.findGroupForKey(groupKey);
@@ -689,6 +703,7 @@ export class CommandHandler {
     if (groups.length === 0) return false;
 
     const model = this.diagram.getModel();
+    this.diagram.startTransaction('Ungroup');
     for (const group of groups) {
       // Release members from the group
       for (const member of group.memberParts) {
@@ -703,6 +718,7 @@ export class CommandHandler {
         model.removeNode(key);
       }
     }
+    this.diagram.commitTransaction('Ungroup');
     this.diagram.fireDiagramEvent('SelectionUngrouped');
     this.diagram.invalidate();
     return true;

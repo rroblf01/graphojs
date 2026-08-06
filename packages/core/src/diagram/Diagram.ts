@@ -2277,6 +2277,7 @@ export class Diagram {
     const nodes = Array.from(this._nodes.values());
     const links = Array.from(this._links.values());
     layout.apply(nodes, links);
+    this.recomputeAllLinkEndpoints();
     this.invalidate();
   }
 
@@ -2287,6 +2288,7 @@ export class Diagram {
     const nodes = Array.from(this._nodes.values());
     const links = Array.from(this._links.values());
     target.apply(nodes, links);
+    this.recomputeAllLinkEndpoints();
     this.invalidate();
     this.fireDiagramEvent('LayoutCompleted', null, { layout: target });
   }
@@ -2298,6 +2300,7 @@ export class Diagram {
     const nodes = parts.filter((p): p is Node => p instanceof Node);
     const links = parts.filter((p): p is Link => p instanceof Link);
     target.apply(nodes, links);
+    this.recomputeAllLinkEndpoints();
     this.invalidate();
   }
 
@@ -3010,6 +3013,22 @@ export class Diagram {
     }
   }
 
+  /**
+   * Recompute every auto-routed link's endpoints and cached path after a
+   * layout pass has moved nodes. Layouts reposition nodes but never touch
+   * links, so without this each link would keep its stale from/to ports.
+   */
+  private recomputeAllLinkEndpoints(): void {
+    for (const [, link] of this._links) {
+      if (link.hasManualReshape) continue;
+      this.recomputeLinkEndpoints(link);
+      link.setPathPoints([]);
+    }
+    if (this.renderer instanceof Canvas2DRenderer) {
+      this.renderer.invalidateLinkPaths();
+    }
+  }
+
   /** Recompute a link's from/to connection points from its endpoints' current bounds. */
   private recomputeLinkEndpoints(link: Link): void {
     const fromNode = this._nodes.get(link.fromKey);
@@ -3066,8 +3085,8 @@ export class Diagram {
     const scaleY = rect.height / contentHeight;
     this._scale = Math.max(this._minScale, Math.min(this._maxScale, Math.min(scaleX, scaleY)));
 
-    this.offsetX = minX - padding + (rect.width / this._scale - contentWidth) / 2;
-    this.offsetY = minY - padding + (rect.height / this._scale - contentHeight) / 2;
+    this.offsetX = minX - padding - (rect.width / this._scale - contentWidth) / 2;
+    this.offsetY = minY - padding - (rect.height / this._scale - contentHeight) / 2;
 
     this.invalidate();
   }
@@ -3081,8 +3100,8 @@ export class Diagram {
     const scaleX = view.width / contentWidth;
     const scaleY = view.height / contentHeight;
     this._scale = Math.max(this._minScale, Math.min(this._maxScale, Math.min(scaleX, scaleY)));
-    this.offsetX = rect.x - padding + (view.width / this._scale - contentWidth) / 2;
-    this.offsetY = rect.y - padding + (view.height / this._scale - contentHeight) / 2;
+    this.offsetX = rect.x - padding - (view.width / this._scale - contentWidth) / 2;
+    this.offsetY = rect.y - padding - (view.height / this._scale - contentHeight) / 2;
     this.invalidate();
     this.fireDiagramEvent('ViewportChanged', null, { scale: this._scale });
   }

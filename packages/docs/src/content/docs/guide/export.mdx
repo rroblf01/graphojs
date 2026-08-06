@@ -1,14 +1,15 @@
 ---
 title: Export
-description: PNG, SVG y print del diagrama.
+description: PNG, SVG, print e importar/exportar el modelo en JSON.
 ---
 
 import Playground from '../../../components/Playground.astro';
 import exportExample from '../../../examples/export.js?raw';
 
-Puedes exportar el diagrama a imagen PNG, SVG o imprimirlo.
+Puedes exportar el diagrama a imagen PNG, SVG o imprimirlo, y también guardar o
+restaurar el **modelo completo en JSON**.
 
-<Playground code={exportExample} height={460} />
+<Playground code={exportExample} height={560} />
 
 ## API de export
 
@@ -17,5 +18,23 @@ Puedes exportar el diagrama a imagen PNG, SVG o imprimirlo.
 - `diagram.makeSvg()` → `SVGElement`
 - `diagram.print()` → imprime el diagrama
 
-El playground de arriba expone `__exportImage`, `__exportSvg` y `__print`
-para probarlos desde la consola del navegador.
+## Importar/exportar el modelo (JSON)
+
+El espacio `go.Serializer` serializa el diagrama completo — nodos, enlaces y
+viewport — a JSON, y lo restaura:
+
+- `go.Serializer.serializeToString(diagram)` → `string`
+- `go.Serializer.deserializeFromString(json, diagram)` → restaura el modelo
+- `go.Serializer.exportToFile(diagram, 'diagrama.json')` → descarga el `.json`
+- `go.Serializer.importFromFile(diagram)` → abre un selector de archivo y lo
+  carga
+
+```js
+const json = go.Serializer.serializeToString(diagram);
+go.Serializer.exportToFile(diagram, 'diagrama.json');
+
+go.Serializer.importFromFile(diagram).then(() => diagram.zoomToFit());
+```
+
+El ejemplo de arriba muestra el JSON serializado en tiempo real y permite
+exportarlo a un archivo o volver a importarlo.

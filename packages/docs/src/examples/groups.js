@@ -48,12 +48,12 @@ diagram.groupTemplate = $(
 
 diagram.model = new go.GraphLinksModel({
   nodeDataArray: [
-    { key: 1, header: 'Servidor' },
-    { key: 2, group: 1, label: 'API' },
-    { key: 3, group: 1, label: 'Auth' },
-    { key: 4, header: 'Base de datos' },
-    { key: 5, group: 4, label: 'Postgres' },
-    { key: 6, group: 4, label: 'Redis' },
+    { key: 1, header: 'Servidor', x: 40, y: 40 },
+    { key: 2, group: 1, label: 'API', x: 70, y: 80 },
+    { key: 3, group: 1, label: 'Auth', x: 70, y: 170 },
+    { key: 4, header: 'Base de datos', x: 400, y: 40 },
+    { key: 5, group: 4, label: 'Postgres', x: 430, y: 80 },
+    { key: 6, group: 4, label: 'Redis', x: 430, y: 170 },
   ],
   linkDataArray: [
     { from: 2, to: 3 },

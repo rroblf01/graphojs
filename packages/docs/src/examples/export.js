@@ -1,9 +1,17 @@
-// GraphoJS export: PNG, SVG y print con botones.
+// GraphoJS export: PNG, SVG, print e importar/exportar el modelo en JSON.
 import * as go from 'graphojs/go';
 
 const $ = go.GraphObject.make;
 
-const diagram = new go.Diagram('graphojs-root');
+const root = document.getElementById('graphojs-root');
+root.style.display = 'flex';
+root.style.flexDirection = 'column';
+
+const diagramHost = document.createElement('div');
+diagramHost.style.cssText = 'flex:1 1 auto;min-height:0;position:relative;';
+root.appendChild(diagramHost);
+
+const diagram = new go.Diagram(diagramHost);
 diagram.background = '#fafbfc';
 
 diagram.nodeTemplate = $(
@@ -30,9 +38,9 @@ diagram.linkTemplate = $(
 
 diagram.model = new go.GraphLinksModel({
   nodeDataArray: [
-    { key: 1, label: 'PNG' },
-    { key: 2, label: 'SVG' },
-    { key: 3, label: 'Print' },
+    { key: 1, label: 'PNG', x: 40, y: 40 },
+    { key: 2, label: 'SVG', x: 320, y: 40 },
+    { key: 3, label: 'Print', x: 600, y: 40 },
   ],
   linkDataArray: [
     { from: 1, to: 2 },
@@ -41,7 +49,7 @@ diagram.model = new go.GraphLinksModel({
 });
 diagram.zoomToFit();
 
-// Botones de exportación
+// Botones de exportación e importación
 const bar = document.createElement('div');
 bar.style.cssText = 'display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;';
 const mk = (label, css, fn) => {
@@ -71,6 +79,38 @@ mk('⬇ SVG', 'border:1px solid #90caf9;background:#e3f2fd;color:#0d47a1;', () =
 mk('🖨 Imprimir', 'border:1px solid #ce93d8;background:#f3e5f5;color:#6a1b9a;', () =>
   diagram.print(),
 );
-document.getElementById('graphojs-root').appendChild(bar);
+
+// Exportar el modelo a un archivo .json
+mk('⬇ Exportar JSON', 'border:1px solid #90a4ae;background:#eceff1;color:#37474f;', () =>
+  go.Serializer.exportToFile(diagram, 'graphojs.json'),
+);
+
+// Importar un .json (restaura nodos, enlaces y viewport)
+mk('⬆ Importar JSON', 'border:1px solid #b0bec5;background:#eceff1;color:#37474f;', () =>
+  go.Serializer.importFromFile(diagram).then(() => diagram.zoomToFit()),
+);
+
+root.appendChild(bar);
+
+// Vista previa del JSON serializado (solo lectura)
+const pre = document.createElement('pre');
+pre.style.cssText =
+  'flex:0 0 auto;max-height:140px;overflow:auto;margin:0 8px 8px;padding:8px;' +
+  'font:11px/1.4 ui-monospace,monospace;color:#455a64;background:#fafafa;' +
+  'border:1px solid #e0e3e7;border-radius:6px;';
+pre.textContent = go.Serializer.serializeToString(diagram);
+
+const refresh = document.createElement('button');
+refresh.textContent = '↻ Refrescar JSON';
+refresh.style.cssText =
+  'margin-left:8px;padding:4px 10px;font:600 12px system-ui, sans-serif;border-radius:6px;' +
+  'border:1px solid #cfd8dc;background:#fff;color:#455a64;cursor:pointer;';
+refresh.addEventListener('click', () => {
+  pre.textContent = go.Serializer.serializeToString(diagram);
+});
+bar.appendChild(refresh);
+
+root.appendChild(pre);
 
 window.__diagram = diagram;
+window.go = go;

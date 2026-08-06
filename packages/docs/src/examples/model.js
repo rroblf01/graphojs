@@ -29,15 +29,15 @@ diagram.linkTemplate = $(
 
 const model = new go.GraphLinksModel({
   nodeDataArray: [
-    { key: 1, label: 'Cliente' },
-    { key: 2, label: 'Servidor' },
+    { key: 1, label: 'Cliente', x: 40, y: 40 },
+    { key: 2, label: 'Servidor', x: 320, y: 40 },
   ],
   linkDataArray: [{ from: 1, to: 2 }],
 });
 diagram.model = model;
 
 // API GoJS de mutación
-model.addNodeData({ key: 3, label: 'Base de datos' });
+model.addNodeData({ key: 3, label: 'Base de datos', x: 40, y: 180 });
 model.addLinkData({ from: 2, to: 3 });
 
 // Actualizar datos reactivamente (la etiqueta cambia al instante)
@@ -45,7 +45,7 @@ model.setDataProperty(model.getNodeDataArray()[0], 'label', 'Cliente web');
 
 // Añadir y eliminar en un bucle para demostrar la reactividad
 setTimeout(() => {
-  const node4 = { key: 4, label: 'Cache' };
+  const node4 = { key: 4, label: 'Cache', x: 320, y: 180 };
   model.addNodeData(node4);
   model.addLinkData({ from: 2, to: 4 });
   diagram.zoomToFit();

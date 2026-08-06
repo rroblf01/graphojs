@@ -48,9 +48,9 @@ diagram.linkTemplate = $(
 
 diagram.model = new go.GraphLinksModel({
   nodeDataArray: [
-    { key: 1, name: 'Alpha' },
-    { key: 2, name: 'Beta' },
-    { key: 3, name: 'Gamma' },
+    { key: 1, name: 'Alpha', x: 40, y: 40 },
+    { key: 2, name: 'Beta', x: 320, y: 40 },
+    { key: 3, name: 'Gamma', x: 600, y: 40 },
   ],
   linkDataArray: [
     { from: 1, to: 2, label: 'usa' },

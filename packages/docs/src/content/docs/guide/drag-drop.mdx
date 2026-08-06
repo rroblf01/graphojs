@@ -6,11 +6,29 @@ description: Añade nodos dinámicamente y arrástralos por el lienzo.
 import Playground from '../../../components/Playground.astro';
 import dragDropExample from '../../../examples/drag-drop.js?raw';
 
-Puedes añadir nodos al diagrama dinámicamente y luego moverlos arrastrando.
+Hay dos formas de añadir nodos al diagrama: **arrastrarlos desde una palette**
+o usar el botón. En ambos casos, una vez en el lienzo, los nodos se mueven con
+el ratón.
 
-<Playground code={dragDropExample} height={500} />
+<Playground code={dragDropExample} height={520} />
 
-## Añadir nodos
+## Arrastrar desde una palette
+
+La barra superior es una `Palette`: cada elemento es un **template**
+arrastrable. Suéltalo sobre el lienzo y se creará un nodo en el punto de
+soltado, con los datos del template (forma, color y etiqueta).
+
+```js
+import { getAllTemplates } from 'graphojs/templates';
+
+new go.Palette(paletteEl, diagram, getAllTemplates(), { showCategories: false });
+```
+
+Internamente el núcleo usa HTML5 drag & drop nativo: el elemento arrastrado
+escribe `application/x-graphojs-template` en el `dataTransfer` y el diagrama lo
+escucha en su manejador `drop`, creando el nodo donde sueltas.
+
+## Añadir nodos con el botón
 
 El panel bajo el diagrama tiene un botón **+ Añadir nodo**. Cada clic crea un
 nodo con una **key única** y lo coloca en una posición de grid (sin
@@ -29,13 +47,7 @@ const keys = model.getNodeDataArray().map((d) => d.key ?? 0);
 const next = Math.max(0, ...keys) + 1;
 ```
 
-## Arrastrar
+## Arrastrar nodos en el lienzo
 
 Una vez añadidos, los nodos se mueven con el ratón (DraggingTool) y la
 posición se guarda en el modelo de forma **undoable** (Ctrl/Cmd+Z lo deshace).
-
-## Drag real desde una palette
-
-Para arrastrar desde una `Palette` al diagrama, consulta
-`e2e/fixtures/palette.html` — el patrón es el mismo, pero el nodo se crea con
-los datos del template soltado.

@@ -1,22 +1,39 @@
-// GraphoJS: añade nodos al diagrama (simula un drag & drop desde una palette).
+// GraphoJS drag & drop: añade nodos desde una palette arrastrando al lienzo,
+// o con el botón "+ Añadir nodo". Los nodos se mueven arrastrando con el ratón.
 import * as go from 'graphojs/go';
+import { getAllTemplates } from 'graphojs/templates';
 
 const $ = go.GraphObject.make;
 
-const diagram = new go.Diagram('graphojs-root');
+const root = document.getElementById('graphojs-root');
+
+// Layout en columnas: palette arriba, lienzo en medio, controles abajo.
+root.style.display = 'flex';
+root.style.flexDirection = 'column';
+
+const paletteEl = document.createElement('div');
+paletteEl.style.cssText =
+  'flex:0 0 auto;max-height:150px;overflow-y:auto;border-bottom:1px solid #e0e3e7;';
+root.appendChild(paletteEl);
+
+const diagramHost = document.createElement('div');
+diagramHost.style.cssText = 'flex:1 1 auto;min-height:0;position:relative;';
+root.appendChild(diagramHost);
+
+const diagram = new go.Diagram(diagramHost);
 diagram.background = '#fafbfc';
 
+// Template basado en los datos del template soltado (shape/fill/stroke/label)
 diagram.nodeTemplate = $(
   go.Node,
   'Auto',
-  $(go.Shape, 'RoundedRectangle', {
-    fill: 'white',
-    stroke: '#1976d2',
-    strokeWidth: 2,
-    minSize: { width: 110, height: 46 },
-    shadowColor: 'rgba(0,0,0,0.15)',
-    shadowBlur: 6,
-  }),
+  $(
+    go.Shape,
+    { strokeWidth: 2, minSize: { width: 110, height: 46 } },
+    new go.Binding('figure', 'shape'),
+    new go.Binding('fill', 'fill'),
+    new go.Binding('stroke', 'stroke'),
+  ),
   $(
     go.TextBlock,
     'label',
@@ -25,18 +42,21 @@ diagram.nodeTemplate = $(
   ),
 );
 
+// Palette con los templates de flujo de datos: arrástralos al lienzo.
+new go.Palette(paletteEl, diagram, getAllTemplates(), { showCategories: false });
+
 diagram.model = new go.GraphLinksModel({
   nodeDataArray: [{ key: 1, label: 'Nodo inicial' }],
   linkDataArray: [],
 });
 diagram.zoomToFit();
 
-// Layout del panel de controles debajo del diagrama
+// Panel de controles debajo del diagrama
 const panel = document.createElement('div');
 panel.style.cssText =
-  'display:flex;gap:8px;align-items:center;margin-top:8px;padding:8px 10px;' +
-  'background:#f1f3f5;border-radius:8px;border:1px solid #e0e3e7;flex-wrap:wrap;';
-panel.textContent = 'Añade nodos con el botón, arrástralos en el lienzo:';
+  'flex:0 0 auto;display:flex;gap:8px;align-items:center;padding:8px 10px;' +
+  'background:#f1f3f5;border-top:1px solid #e0e3e7;flex-wrap:wrap;';
+panel.textContent = 'Arrastra un elemento de la palette al lienzo, o añade con el botón:';
 
 const addBtn = document.createElement('button');
 addBtn.textContent = '+ Añadir nodo';
@@ -73,6 +93,6 @@ function addNode() {
 addBtn.addEventListener('click', addNode);
 panel.appendChild(addBtn);
 panel.appendChild(status);
-document.getElementById('graphojs-root').appendChild(panel);
+root.appendChild(panel);
 
 window.__diagram = diagram;

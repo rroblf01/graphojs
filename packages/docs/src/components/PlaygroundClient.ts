@@ -77,8 +77,9 @@ function buildFrameHtml(code: string): string {
     <meta charset="utf-8" />
     <style>
       html, body { margin: 0; height: 100%; }
-      #graphojs-root { width: 100%; height: 100%; }
-      #graphojs-root > div { width: 100%; height: 100%; }
+      #graphojs-root { width: 100%; height: 100%; display: flex; flex-direction: column; }
+      #graphojs-root > canvas { flex: 1 1 auto; width: 100% !important; height: auto !important; display: block; }
+      #graphojs-root > div { width: 100%; }
     </style>
   </head>
   <body>

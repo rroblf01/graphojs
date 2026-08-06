@@ -24,11 +24,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm test
-      - name: Publish to npm via trusted publishing (OIDC)
+      - name: Publish to npm
         run: |
           pnpm -C packages/core publish --no-git-checks
           pnpm -C packages/react publish --no-git-checks
           pnpm -C packages/vue publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:

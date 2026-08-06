@@ -160,15 +160,12 @@ describe('@graphojs/vue', () => {
     const modelB = new GraphLinksModel({ nodeDataArray: [{ key: 9 }] });
     let created: GoDiagram | null = null;
     let model: GraphLinksModel = modelA;
-    const { update, unmount } = mountReactive(
-      Diagram,
-      () => ({
-        model,
-        initDiagram: (d: GoDiagram) => {
-          created = d;
-        },
-      }),
-    );
+    const { update, unmount } = mountReactive(Diagram, () => ({
+      model,
+      initDiagram: (d: GoDiagram) => {
+        created = d;
+      },
+    }));
     await nextTick();
     expect(created!.model).toStrictEqual(modelA);
 
@@ -185,15 +182,12 @@ describe('@graphojs/vue', () => {
     const templateB = $(Panel, 'Auto', $(Shape, 'Ellipse'));
     let created: GoDiagram | null = null;
     let nodeTemplate: unknown = templateA;
-    const { update, unmount } = mountReactive(
-      Diagram,
-      () => ({
-        nodeTemplate,
-        initDiagram: (d: GoDiagram) => {
-          created = d;
-        },
-      }),
-    );
+    const { update, unmount } = mountReactive(Diagram, () => ({
+      nodeTemplate,
+      initDiagram: (d: GoDiagram) => {
+        created = d;
+      },
+    }));
     await nextTick();
     expect(created!.nodeTemplate).toStrictEqual(templateA);
 
@@ -249,13 +243,15 @@ describe('@graphojs/vue', () => {
   });
 
   it('Palette re-renders when templates change', async () => {
-    let templates: Array<{ id: string; name: string; category: string; shape: string; width: number; height: number }> = [
-      { id: 'a', name: 'A', category: 'c', shape: 'rect', width: 10, height: 10 },
-    ];
-    const { update, unmount } = mountReactive(
-      Palette,
-      () => ({ templates }),
-    );
+    let templates: Array<{
+      id: string;
+      name: string;
+      category: string;
+      shape: string;
+      width: number;
+      height: number;
+    }> = [{ id: 'a', name: 'A', category: 'c', shape: 'rect', width: 10, height: 10 }];
+    const { update, unmount } = mountReactive(Palette, () => ({ templates }));
     await nextTick();
     expect(document.body.querySelectorAll('[data-template-id]').length).toBe(1);
 

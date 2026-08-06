@@ -307,9 +307,7 @@ describe('@graphojs/react', () => {
   });
 
   it('Diagram and Palette forward className/style', async () => {
-    renderApp(
-      React.createElement(Diagram, { className: 'my-diagram', style: { width: '50px' } }),
-    );
+    renderApp(React.createElement(Diagram, { className: 'my-diagram', style: { width: '50px' } }));
     await act(async () => {});
     const el = document.body.querySelector('.my-diagram');
     expect(el).not.toBeNull();
@@ -318,9 +316,7 @@ describe('@graphojs/react', () => {
 
   it('Overview forwards className/style', async () => {
     const diagram = new GoDiagram({ div: document.createElement('div') });
-    renderApp(
-      React.createElement(Overview, { observed: diagram, className: 'my-overview' }),
-    );
+    renderApp(React.createElement(Overview, { observed: diagram, className: 'my-overview' }));
     await act(async () => {});
     expect(document.body.querySelector('.my-overview')).not.toBeNull();
   });

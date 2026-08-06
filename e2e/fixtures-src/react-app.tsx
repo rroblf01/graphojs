@@ -60,7 +60,11 @@ function App() {
         nodeTemplate={nodeTemplate}
       />
       {diagram && <Overview observed={diagram} />}
-      <button id="swap-model" onClick={() => setModel(model === modelA ? modelB : modelA)}>
+      <button
+        type="button"
+        id="swap-model"
+        onClick={() => setModel(model === modelA ? modelB : modelA)}
+      >
         Swap model
       </button>
     </>

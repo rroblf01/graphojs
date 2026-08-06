@@ -62,12 +62,16 @@ if (container) {
             nodeTemplate,
           }),
           diagram.value ? h(Overview, { observed: diagram.value }) : null,
-          h('button', {
-            id: 'swap-model',
-            onClick: () => {
-              useModelB.value = !useModelB.value;
+          h(
+            'button',
+            {
+              id: 'swap-model',
+              onClick: () => {
+                useModelB.value = !useModelB.value;
+              },
             },
-          }, 'Swap model'),
+            'Swap model',
+          ),
         ]);
     },
   });

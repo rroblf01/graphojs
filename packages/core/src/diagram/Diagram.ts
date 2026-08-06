@@ -1419,6 +1419,8 @@ export class Diagram {
     switch (event.type) {
       case 'node Added': {
         if (event.node) this.syncNodeFromModel(event.node);
+        // A new node changes the obstacle set for links routing around it.
+        this.invalidateAllLinkPaths();
         break;
       }
       case 'node Removed': {
@@ -1426,6 +1428,8 @@ export class Diagram {
           const key = this._model.getNodeKey(event.node);
           this.removePartByKey(key, 'node');
         }
+        // A removed node changes the obstacle set for links that routed around it.
+        this.invalidateAllLinkPaths();
         break;
       }
       case 'property Changed': {
@@ -2965,9 +2969,11 @@ export class Diagram {
 
   /**
    * Recompute the connection points of links attached to a node from its
-   * current bounds, and clear their cached path so the renderer recomputes
-   * the route (keeps links following nodes during drags/resizes and after
-   * any programmatic bounds change).
+   * current bounds, and clear the cached paths so the renderer re-routes:
+   * adjacent links keep following the node during drags/resizes and after
+   * programmatic bounds changes, while non-adjacent auto-routed links re-route
+   * around the moved node (it may be an obstacle for them). Manually-reshaped
+   * routes are only discarded for links attached to the moved node.
    */
   invalidateLinksForNode(nodeKey: NodeKey): void {
     for (const [, link] of this._links) {
@@ -2977,6 +2983,26 @@ export class Diagram {
         // The node it's attached to moved — a manually-reshaped route no
         // longer reflects reality, so fall back to auto-routing.
         link.hasManualReshape = false;
+      } else if (!link.hasManualReshape) {
+        // The moved node may be an obstacle for this link; clear its cached
+        // path so the renderer re-routes it around the new obstacle layout.
+        link.setPathPoints([]);
+      }
+    }
+    if (this.renderer instanceof Canvas2DRenderer) {
+      this.renderer.invalidateLinkPaths();
+    }
+  }
+
+  /**
+   * Clear every auto-routed link's cached path so the renderer re-routes them.
+   * Used when the obstacle set changes (a node is added/removed) so links
+   * routing around obstacles are recomputed. Manually-reshaped routes survive.
+   */
+  private invalidateAllLinkPaths(): void {
+    for (const [, link] of this._links) {
+      if (!link.hasManualReshape) {
+        link.setPathPoints([]);
       }
     }
     if (this.renderer instanceof Canvas2DRenderer) {
@@ -2989,7 +3015,12 @@ export class Diagram {
     const fromNode = this._nodes.get(link.fromKey);
     const toNode = this._nodes.get(link.toKey);
     if (!fromNode || !toNode) return;
-    link.fromPort = this.connectionPointFor(fromNode, toNode.center, link.fromPortName, link.fromSpot);
+    link.fromPort = this.connectionPointFor(
+      fromNode,
+      toNode.center,
+      link.fromPortName,
+      link.fromSpot,
+    );
     link.toPort = this.connectionPointFor(toNode, fromNode.center, link.toPortName, link.toSpot);
   }
 

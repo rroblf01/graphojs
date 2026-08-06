@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest';
 import { Canvas2DRenderer } from '../../src/render/Canvas2DRenderer.ts';
 
 function mockContext() {
@@ -114,5 +114,33 @@ describe('Canvas2DRenderer dirty rects', () => {
     renderer.clear();
     const ctx = (renderer as unknown as { ctx: ReturnType<typeof mockContext> }).ctx;
     expect(ctx.clearRect).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Canvas2DRenderer devicePixelRatio on resize', () => {
+  function createRenderer(): Canvas2DRenderer {
+    const canvas = document.createElement('canvas');
+    return new Canvas2DRenderer(canvas);
+  }
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('re-reads devicePixelRatio on resize', () => {
+    vi.stubGlobal('devicePixelRatio', 1);
+    const renderer = createRenderer();
+    const canvas = renderer.getCanvas();
+    const ctx = (renderer as unknown as { ctx: ReturnType<typeof mockContext> }).ctx;
+
+    expect(canvas.width).toBe(800);
+    expect(canvas.height).toBe(600);
+
+    vi.stubGlobal('devicePixelRatio', 2);
+    renderer.resize();
+
+    expect(canvas.width).toBe(1600);
+    expect(canvas.height).toBe(1200);
+    expect(ctx.setTransform).toHaveBeenLastCalledWith(2, 0, 0, 2, 0, 0);
   });
 });

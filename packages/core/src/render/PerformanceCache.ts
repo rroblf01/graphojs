@@ -7,7 +7,9 @@ export class LinkPathCache {
   private version = 0;
 
   /**
-   * Generate a cache key from link properties.
+   * Generate a cache key from link properties. When `avoidObstacles` is set,
+   * the routing result depends on every obstacle's position, so the obstacles
+   * are serialized into the key to avoid reusing stale paths.
    */
   private static getKey(
     fromKey: string | number,
@@ -18,8 +20,13 @@ export class LinkPathCache {
     toPort: { x: number; y: number },
     avoidObstacles = false,
     jumpOver = false,
+    obstacles: Array<{ x: number; y: number; width: number; height: number }> = [],
   ): string {
-    return `${fromKey}-${toKey}-${routing}-${corner}-${avoidObstacles}-${jumpOver}-${fromPort.x},${fromPort.y}-${toPort.x},${toPort.y}`;
+    let obstacleSignature = '';
+    if (avoidObstacles && obstacles.length > 0) {
+      obstacleSignature = obstacles.map((o) => `${o.x},${o.y},${o.width},${o.height}`).join(';');
+    }
+    return `${fromKey}-${toKey}-${routing}-${corner}-${avoidObstacles}-${jumpOver}-${fromPort.x},${fromPort.y}-${toPort.x},${toPort.y}-${obstacleSignature}`;
   }
 
   /**
@@ -34,6 +41,7 @@ export class LinkPathCache {
     toPort: { x: number; y: number },
     avoidObstacles = false,
     jumpOver = false,
+    obstacles: Array<{ x: number; y: number; width: number; height: number }> = [],
   ): Array<{ x: number; y: number }> | null {
     const key = LinkPathCache.getKey(
       fromKey,
@@ -44,6 +52,7 @@ export class LinkPathCache {
       toPort,
       avoidObstacles,
       jumpOver,
+      obstacles,
     );
     return this.cache.get(key) ?? null;
   }
@@ -61,6 +70,7 @@ export class LinkPathCache {
     points: Array<{ x: number; y: number }>,
     avoidObstacles = false,
     jumpOver = false,
+    obstacles: Array<{ x: number; y: number; width: number; height: number }> = [],
   ): void {
     const key = LinkPathCache.getKey(
       fromKey,
@@ -71,6 +81,7 @@ export class LinkPathCache {
       toPort,
       avoidObstacles,
       jumpOver,
+      obstacles,
     );
     this.cache.set(key, points);
     this.version++;

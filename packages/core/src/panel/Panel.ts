@@ -710,9 +710,11 @@ export class Panel extends GraphObject {
       const cellX = colX[col] ?? x;
       const cellY = rowY[row] ?? y;
       let cellW = 0;
-      for (let c = col; c < Math.min(col + colSpan, colWidths.length); c++) cellW += colWidths[c] ?? 0;
+      for (let c = col; c < Math.min(col + colSpan, colWidths.length); c++)
+        cellW += colWidths[c] ?? 0;
       let cellH = 0;
-      for (let r = row; r < Math.min(row + rowSpan, rowHeights.length); r++) cellH += rowHeights[r] ?? 0;
+      for (let r = row; r < Math.min(row + rowSpan, rowHeights.length); r++)
+        cellH += rowHeights[r] ?? 0;
 
       // No alignment set: stretch to fill the (possibly spanned) cell, as before.
       // An explicit alignment spot keeps the element at its natural size,

@@ -90,7 +90,8 @@ describe('ForceDirectedLayout', () => {
     expect(distinct2.bounds.y).toBe(400);
     // The genuinely-coincident pair must have been separated onto distinct cells.
     expect(
-      coincidentA.bounds.x === coincidentB.bounds.x && coincidentA.bounds.y === coincidentB.bounds.y,
+      coincidentA.bounds.x === coincidentB.bounds.x &&
+        coincidentA.bounds.y === coincidentB.bounds.y,
     ).toBe(false);
   });
 });
@@ -295,7 +296,10 @@ describe('CircularLayout', () => {
     for (let i = 0; i < nodes.length; i++) {
       const a = nodes[i]!;
       const b = nodes[(i + 1) % nodes.length]!;
-      const dist = Math.hypot(a.bounds.center.x - b.bounds.center.x, a.bounds.center.y - b.bounds.center.y);
+      const dist = Math.hypot(
+        a.bounds.center.x - b.bounds.center.x,
+        a.bounds.center.y - b.bounds.center.y,
+      );
       expect(dist).toBeGreaterThanOrEqual(Math.max(a.bounds.width, a.bounds.height) * 0.9);
     }
   });

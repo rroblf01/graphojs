@@ -121,9 +121,7 @@ export class TreeLayout extends Layout {
     visited.add(rootKey);
 
     const childNodes = this.getChildren(rootKey, links, nodeMap);
-    const children = childNodes.map((child) =>
-      this.buildTree(child.key, links, nodeMap, visited),
-    );
+    const children = childNodes.map((child) => this.buildTree(child.key, links, nodeMap, visited));
 
     return { node, children, crossExtent: 0, mainExtent: 0 };
   }

@@ -75,10 +75,12 @@ export class Canvas2DRenderer implements Renderer {
 
   /** Set up HiDPI rendering. */
   private setupHiDPI(): void {
+    // Re-read the DPR on every setup (resize/zoom/monitor changes can alter it).
+    this.devicePixelRatio = globalThis.devicePixelRatio || 1;
     const rect = this.canvas.getBoundingClientRect();
-    this.canvas.width = rect.width * this.devicePixelRatio;
-    this.canvas.height = rect.height * this.devicePixelRatio;
-    this.ctx.scale(this.devicePixelRatio, this.devicePixelRatio);
+    this.canvas.width = Math.max(1, Math.round(rect.width * this.devicePixelRatio));
+    this.canvas.height = Math.max(1, Math.round(rect.height * this.devicePixelRatio));
+    this.ctx.setTransform(this.devicePixelRatio, 0, 0, this.devicePixelRatio, 0, 0);
   }
 
   /** Resize the canvas to fit its container. */
@@ -326,6 +328,16 @@ export class Canvas2DRenderer implements Renderer {
     // Check cache first
     let points = link.pathPoints;
     if (points.length === 0) {
+      // Get all node bounds as obstacles (for avoidObstacles routing)
+      let obstacles: RoutingObstacle[] = [];
+      if (link.avoidObstacles && link.routing === 'orthogonal') {
+        for (const [key, bounds] of this.nodeBoundsMap) {
+          if (key !== link.fromKey && key !== link.toKey) {
+            obstacles.push(bounds);
+          }
+        }
+      }
+
       // Try cache
       const cached = this.linkPathCache.get(
         link.fromKey,
@@ -336,6 +348,7 @@ export class Canvas2DRenderer implements Renderer {
         link.toPort,
         link.avoidObstacles,
         link.jumpOver,
+        obstacles,
       );
 
       if (cached) {
@@ -346,13 +359,6 @@ export class Canvas2DRenderer implements Renderer {
         const toNode = this.getNodeBounds(link.toKey);
 
         if (link.avoidObstacles && link.routing === 'orthogonal') {
-          // Get all node bounds as obstacles
-          const obstacles: RoutingObstacle[] = [];
-          for (const [key, bounds] of this.nodeBoundsMap) {
-            if (key !== link.fromKey && key !== link.toKey) {
-              obstacles.push(bounds);
-            }
-          }
           points = routeOrthogonalAvoidingObstacles(
             link.fromPort,
             link.toPort,
@@ -385,6 +391,7 @@ export class Canvas2DRenderer implements Renderer {
           points,
           link.avoidObstacles,
           link.jumpOver,
+          obstacles,
         );
       }
       link.setPathPoints(points);

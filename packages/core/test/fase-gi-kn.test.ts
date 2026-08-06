@@ -288,6 +288,41 @@ describe('Performance Caches', () => {
     expect(cache.size).toBe(0);
   });
 
+  it('LinkPathCache key includes obstacle positions when avoidObstacles is set', () => {
+    const cache = new LinkPathCache();
+    const path = [
+      { x: 0, y: 0 },
+      { x: 100, y: 100 },
+    ];
+    const obstacleA = { x: 50, y: 50, width: 10, height: 10 };
+    const obstacleB = { x: 90, y: 90, width: 10, height: 10 };
+
+    cache.set(1, 2, 'orthogonal', 0, { x: 0, y: 0 }, { x: 100, y: 100 }, path, true, false, [
+      obstacleA,
+    ]);
+    expect(
+      cache.get(1, 2, 'orthogonal', 0, { x: 0, y: 0 }, { x: 100, y: 100 }, true, false, [
+        obstacleA,
+      ]),
+    ).toEqual(path);
+
+    // Same link, different obstacle position → different key → no cache hit
+    expect(
+      cache.get(1, 2, 'orthogonal', 0, { x: 0, y: 0 }, { x: 100, y: 100 }, true, false, [
+        obstacleB,
+      ]),
+    ).toBeNull();
+
+    // No obstacles vs with obstacles → distinct keys
+    cache.invalidate();
+    cache.set(1, 2, 'orthogonal', 0, { x: 0, y: 0 }, { x: 100, y: 100 }, path, true, false, []);
+    expect(
+      cache.get(1, 2, 'orthogonal', 0, { x: 0, y: 0 }, { x: 100, y: 100 }, true, false, [
+        obstacleA,
+      ]),
+    ).toBeNull();
+  });
+
   it('CanvasPool acquires and releases canvases', () => {
     const pool = new CanvasPool(2);
     expect(pool.available).toBe(2);

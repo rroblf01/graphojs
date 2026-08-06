@@ -1184,7 +1184,9 @@ describe('F4: Tools GoJS API surface', () => {
 
   it('ClickCreatingTool with no archetypeNodeData set leaves ordinary click-to-select working', () => {
     const d = createDiagram();
-    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 90, y: 90, width: 50, height: 50 }] });
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 90, y: 90, width: 50, height: 50 }],
+    });
     const canvas = d.getRenderer().getCanvas();
 
     canvas.dispatchEvent(
@@ -2089,7 +2091,7 @@ describe('K13: model integrity — group delete cascade, group membership cleanu
     expect(d.getModel().containsNode(3)).toBe(true); // unrelated node untouched
   });
 
-  it('reparenting a node to a different group removes it from the old group\'s memberParts', () => {
+  it("reparenting a node to a different group removes it from the old group's memberParts", () => {
     const d = createDiagram();
     const m = new GraphLinksModel({
       nodeDataArray: [
@@ -2112,7 +2114,7 @@ describe('K13: model integrity — group delete cascade, group membership cleanu
     expect(member.containingGroup).toBe(groupB);
   });
 
-  it('clearing a node\'s group property removes it from its group\'s memberParts', () => {
+  it("clearing a node's group property removes it from its group's memberParts", () => {
     const d = createDiagram();
     const m = new GraphLinksModel({
       nodeDataArray: [
@@ -2205,7 +2207,9 @@ describe('M15: previously-missing diagram events and InputEvent modifiers', () =
 
   it('fires ObjectContextClicked for a right-click on a part and BackgroundContextClicked otherwise', () => {
     const d = createDiagram();
-    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0, width: 50, height: 30 }] });
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 50, height: 30 }],
+    });
 
     const events: string[] = [];
     d.addDiagramListener('ObjectContextClicked', () => events.push('ObjectContextClicked'));
@@ -2259,5 +2263,42 @@ describe('N16: Link.fromSpot/toSpot force a fixed attachment point', () => {
 
     expect(link.fromPort.x).toBeCloseTo(50); // node1 center x
     expect(link.fromPort.y).toBeCloseTo(0); // node1 top edge, not the right edge
+  });
+});
+
+describe('G1: moving an obstacle node re-routes non-adjacent links', () => {
+  it('invalidateLinksForNode clears pathPoints of links not attached to the moved node', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 300, y: 0, width: 100, height: 50 },
+        { key: 3, x: 600, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [
+        { from: 1, to: 2 },
+        { from: 2, to: 3 },
+      ],
+    });
+
+    const attached = [...d.links.values()].find((l) => l.fromKey === 1 || l.toKey === 1) as Link;
+    const unrelated = [...d.links.values()].find((l) => l.fromKey !== 1 && l.toKey !== 1) as Link;
+
+    attached.setPathPoints([
+      { x: 100, y: 25 },
+      { x: 300, y: 25 },
+    ]);
+    unrelated.setPathPoints([
+      { x: 400, y: 25 },
+      { x: 600, y: 25 },
+    ]);
+    expect(attached.pathPoints.length).toBeGreaterThan(0);
+    expect(unrelated.pathPoints.length).toBeGreaterThan(0);
+
+    // Node 1 moves: it is an obstacle for the 2→3 link, so both paths reset.
+    d.invalidateLinksForNode(1);
+
+    expect(attached.pathPoints.length).toBe(0);
+    expect(unrelated.pathPoints.length).toBe(0);
   });
 });

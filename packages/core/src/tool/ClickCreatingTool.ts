@@ -68,7 +68,9 @@ export class ClickCreatingTool extends Tool {
     if (key !== undefined) {
       const node = diagram.getPart(key);
       if (node) {
-        diagram.announce(diagram.accessibilityMessages.partAdded(diagram.accessibilityMessages.describePart(node)));
+        diagram.announce(
+          diagram.accessibilityMessages.partAdded(diagram.accessibilityMessages.describePart(node)),
+        );
       }
     }
   }

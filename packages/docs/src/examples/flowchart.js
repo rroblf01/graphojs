@@ -36,7 +36,11 @@ diagram.nodeTemplateMap.set(
     go.Node,
     'Auto',
     $(go.Shape, 'Ellipse', { fill: '#e8f5e9', stroke: '#43a047', strokeWidth: 2 }),
-    $(go.TextBlock, { margin: 6, font: '600 12px system-ui, sans-serif' }, new go.Binding('text', 'label')),
+    $(
+      go.TextBlock,
+      { margin: 6, font: '600 12px system-ui, sans-serif' },
+      new go.Binding('text', 'label'),
+    ),
   ),
 );
 diagram.nodeTemplateMap.set(
@@ -45,7 +49,11 @@ diagram.nodeTemplateMap.set(
     go.Node,
     'Auto',
     $(go.Shape, 'RoundedRectangle', { fill: '#e3f2fd', stroke: '#1976d2', strokeWidth: 2 }),
-    $(go.TextBlock, { margin: 6, font: '600 12px system-ui, sans-serif' }, new go.Binding('text', 'label')),
+    $(
+      go.TextBlock,
+      { margin: 6, font: '600 12px system-ui, sans-serif' },
+      new go.Binding('text', 'label'),
+    ),
   ),
 );
 diagram.nodeTemplateMap.set(
@@ -64,7 +72,12 @@ diagram.nodeTemplateMap.set(
 
 diagram.linkTemplate = $(
   go.Link,
-  { routing: 'orthogonal', corner: 6, labelFont: '600 11px system-ui, sans-serif', labelColor: '#546e7a' },
+  {
+    routing: 'orthogonal',
+    corner: 6,
+    labelFont: '600 11px system-ui, sans-serif',
+    labelColor: '#546e7a',
+  },
   $(go.Shape, { stroke: '#90a4ae', strokeWidth: 2 }),
   $(go.Shape, { toArrow: 'Triangle', fill: '#90a4ae', stroke: null }),
 );
@@ -72,18 +85,52 @@ diagram.linkTemplate = $(
 diagram.model = new go.GraphLinksModel({
   nodeDataArray: [
     // Carril "Ventas" (y: 0-170)
-    { key: 'lane1-label', category: 'laneLabel', x: 0, y: 0, width: 110, height: 170, fill: '#1565c0', label: 'Ventas' },
+    {
+      key: 'lane1-label',
+      category: 'laneLabel',
+      x: 0,
+      y: 0,
+      width: 110,
+      height: 170,
+      fill: '#1565c0',
+      label: 'Ventas',
+    },
     { key: 'lane1-body', category: 'laneBody', x: 110, y: 0, width: 790, height: 170 },
     // Carril "Almacén" (y: 200-370)
-    { key: 'lane2-label', category: 'laneLabel', x: 0, y: 200, width: 110, height: 170, fill: '#00695c', label: 'Almacén' },
+    {
+      key: 'lane2-label',
+      category: 'laneLabel',
+      x: 0,
+      y: 200,
+      width: 110,
+      height: 170,
+      fill: '#00695c',
+      label: 'Almacén',
+    },
     { key: 'lane2-body', category: 'laneBody', x: 110, y: 200, width: 790, height: 170 },
 
     // Flujo
     { key: 1, category: 'terminator', x: 140, y: 55, width: 100, height: 60, label: 'Inicio' },
     { key: 2, category: 'process', x: 290, y: 50, width: 150, height: 70, label: 'Validar pedido' },
     { key: 3, category: 'decision', x: 490, y: 40, width: 90, height: 90, label: '¿Stock?' },
-    { key: 4, category: 'process', x: 640, y: 50, width: 170, height: 70, label: 'Notificar cliente' },
-    { key: 5, category: 'process', x: 490, y: 245, width: 170, height: 70, label: 'Preparar envío' },
+    {
+      key: 4,
+      category: 'process',
+      x: 640,
+      y: 50,
+      width: 170,
+      height: 70,
+      label: 'Notificar cliente',
+    },
+    {
+      key: 5,
+      category: 'process',
+      x: 490,
+      y: 245,
+      width: 170,
+      height: 70,
+      label: 'Preparar envío',
+    },
     { key: 6, category: 'terminator', x: 720, y: 245, width: 100, height: 60, label: 'Fin' },
   ],
   linkDataArray: [

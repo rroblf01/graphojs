@@ -180,7 +180,10 @@ describe('Diagram GoJS-compatible templates', () => {
 
     const $ = GraphObject.make;
     diagram.groupTemplate = $(Panel, 'Auto', $(Shape, 'rect', { fill: 'default-group' }));
-    diagram.addGroupTemplate('special', $(Panel, 'Auto', $(Shape, 'diamond', { fill: 'special-group' })));
+    diagram.addGroupTemplate(
+      'special',
+      $(Panel, 'Auto', $(Shape, 'diamond', { fill: 'special-group' })),
+    );
 
     const model = new GraphLinksModel();
     model.nodeDataArray = [
@@ -191,8 +194,8 @@ describe('Diagram GoJS-compatible templates', () => {
 
     const group1 = diagram.findGroupForKey(1)!;
     const group2 = diagram.findGroupForKey(2)!;
-    expect((group1.panel?.elements[0] as Shape).fill).toBe('default-group');
-    expect((group2.panel?.elements[0] as Shape).fill).toBe('special-group');
+    expect((group1.panel!.elements[0] as Shape).fill).toBe('default-group');
+    expect((group2.panel!.elements[0] as Shape).fill).toBe('special-group');
   });
 
   it('removeGroupTemplate removes a category template from groupTemplateMap', () => {

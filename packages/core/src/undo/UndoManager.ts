@@ -62,13 +62,12 @@ export class UndoManager {
     this._clearsHistory = value;
   }
 
-  private separateTransaction: Transaction | null = null;
-
-  /** GoJS-compatible: Mark the current transaction as separate from history. */
-  setTransactionIsSeparateFromHistory(): void {
-    const current = this.transactionStack[this.transactionStack.length - 1];
-    if (current) this.separateTransaction = current;
-  }
+  /**
+   * GoJS-compatible: Mark the current transaction as separate from history.
+   * No-op: GraphoJS doesn't yet distinguish "separate from history"
+   * transactions from regular ones.
+   */
+  setTransactionIsSeparateFromHistory(): void {}
 
   /** GoJS-compatible: Whether commands should skip undo recording. */
   private _skipUndoManager = false;

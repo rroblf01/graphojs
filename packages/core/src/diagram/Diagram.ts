@@ -3689,7 +3689,9 @@ export class Diagram {
     this.setTreeChildrenVisible(node, false);
     this.invalidate();
     this.fireDiagramEvent('TreeCollapsed', node);
-    this.announce(this.accessibilityMessages.treeCollapsed(this.accessibilityMessages.describePart(node)));
+    this.announce(
+      this.accessibilityMessages.treeCollapsed(this.accessibilityMessages.describePart(node)),
+    );
   }
 
   /**
@@ -3701,7 +3703,9 @@ export class Diagram {
     this.setTreeChildrenVisible(node, true);
     this.invalidate();
     this.fireDiagramEvent('TreeExpanded', node);
-    this.announce(this.accessibilityMessages.treeExpanded(this.accessibilityMessages.describePart(node)));
+    this.announce(
+      this.accessibilityMessages.treeExpanded(this.accessibilityMessages.describePart(node)),
+    );
   }
 
   private setTreeChildrenVisible(node: Node, visible: boolean): void {

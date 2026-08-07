@@ -16,7 +16,11 @@ diagram.nodeTemplateMap.set(
     go.Node,
     'Auto',
     { selectable: false, draggable: false, deletable: false },
-    $(go.TextBlock, { font: '11px system-ui, sans-serif', stroke: '#78909c' }, new go.Binding('text', 'label')),
+    $(
+      go.TextBlock,
+      { font: '11px system-ui, sans-serif', stroke: '#78909c' },
+      new go.Binding('text', 'label'),
+    ),
   ),
 );
 diagram.nodeTemplateMap.set(
@@ -42,7 +46,11 @@ diagram.nodeTemplateMap.set(
     go.Node,
     'Auto',
     { selectable: false, draggable: false, deletable: false },
-    $(go.TextBlock, { font: '600 11px system-ui, sans-serif', stroke: '#e65100' }, new go.Binding('text', 'label')),
+    $(
+      go.TextBlock,
+      { font: '600 11px system-ui, sans-serif', stroke: '#e65100' },
+      new go.Binding('text', 'label'),
+    ),
   ),
 );
 
@@ -64,7 +72,15 @@ const tasks = [
 const nodeDataArray = [
   { key: 'tick0', category: 'tick', x: 2, y: 6, width: 40, height: 18, label: 'Día 0' },
   { key: 'tick5', category: 'tick', x: 2 + 5 * DAY, y: 6, width: 40, height: 18, label: 'Día 5' },
-  { key: 'tick10', category: 'tick', x: 2 + 10 * DAY, y: 6, width: 40, height: 18, label: 'Día 10' },
+  {
+    key: 'tick10',
+    category: 'tick',
+    x: 2 + 10 * DAY,
+    y: 6,
+    width: 40,
+    height: 18,
+    label: 'Día 10',
+  },
 ];
 
 const linkDataArray = [];

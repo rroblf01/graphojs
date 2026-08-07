@@ -32,7 +32,11 @@ diagram.nodeTemplate = $(
       ),
       $(
         go.TextBlock,
-        { font: '11px system-ui, sans-serif', stroke: '#1565c0', margin: new go.Margin(2, 0, 0, 0) },
+        {
+          font: '11px system-ui, sans-serif',
+          stroke: '#1565c0',
+          margin: new go.Margin(2, 0, 0, 0),
+        },
         new go.Binding('text', 'title'),
       ),
     ),

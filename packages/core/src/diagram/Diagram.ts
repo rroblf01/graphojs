@@ -3299,6 +3299,57 @@ export class Diagram {
     return parent === null || parent === undefined ? undefined : (parent as NodeKey);
   }
 
+  /**
+   * GoJS-compatible: collapse a node's tree — hide every descendant reachable
+   * via findTreeChildrenNodes (and any Link visually connecting them), used by
+   * TreeExpanderButton. Independent of Group.isSubGraphExpanded/collapseGroup.
+   */
+  collapseTree(node: Node): void {
+    node.isTreeExpanded = false;
+    this.setTreeChildrenVisible(node, false);
+    this.invalidate();
+    this.fireDiagramEvent('TreeCollapsed', node);
+  }
+
+  /**
+   * GoJS-compatible: expand a node's tree, showing its direct tree-children.
+   * A child that is itself collapsed keeps its own descendants hidden.
+   */
+  expandTree(node: Node): void {
+    node.isTreeExpanded = true;
+    this.setTreeChildrenVisible(node, true);
+    this.invalidate();
+    this.fireDiagramEvent('TreeExpanded', node);
+  }
+
+  private setTreeChildrenVisible(node: Node, visible: boolean): void {
+    for (const child of node.findTreeChildrenNodes()) {
+      const link = this.findLinkBetweenNodes(node, child);
+      if (link) link.visible = visible;
+      child.visible = visible;
+      // Collapsing hides the whole subtree unconditionally; expanding only
+      // cascades into a child's own children if that child isn't itself collapsed.
+      if (visible) {
+        if (child.isTreeExpanded) this.setTreeChildrenVisible(child, true);
+      } else {
+        this.setTreeChildrenVisible(child, false);
+      }
+    }
+  }
+
+  /** Find a visual Link part directly connecting two nodes, in either direction. */
+  private findLinkBetweenNodes(a: Node, b: Node): Link | null {
+    for (const [, link] of this._links) {
+      if (
+        (link.fromKey === a.key && link.toKey === b.key) ||
+        (link.fromKey === b.key && link.toKey === a.key)
+      ) {
+        return link;
+      }
+    }
+    return null;
+  }
+
   /** Destroy the diagram and clean up resources. */
   destroy(): void {
     if (this._isDestroyed) return;

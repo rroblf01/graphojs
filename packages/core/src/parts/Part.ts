@@ -43,6 +43,7 @@ export abstract class Part {
   private _dragAlpha = 1;
   private _isInDocumentBounds = true;
   private _deletable = true;
+  private _isTreeExpanded = true;
   private _copyable = true;
   private _isHighlighted = false;
   private _diagram: Diagram | null = null;
@@ -70,6 +71,19 @@ export abstract class Part {
 
   set deletable(value: boolean) {
     this._deletable = value;
+  }
+
+  /**
+   * GoJS-compatible: Whether this part's tree-children (per findTreeChildrenNodes)
+   * are shown. Distinct from Group.isSubGraphExpanded — this applies to any Part
+   * and is what TreeExpanderButton toggles via Diagram.collapseTree/expandTree.
+   */
+  get isTreeExpanded(): boolean {
+    return this._isTreeExpanded;
+  }
+
+  set isTreeExpanded(value: boolean) {
+    this._isTreeExpanded = value;
   }
 
   /** GoJS-compatible: Whether this part can be copied. */

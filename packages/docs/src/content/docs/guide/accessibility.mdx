@@ -1,0 +1,59 @@
+---
+title: Accesibilidad
+description: Navegación por teclado, anuncios de lector de pantalla, alto contraste y reducir movimiento.
+---
+
+import Playground from '../../../components/Playground.astro';
+import accessibilityExample from '../../../examples/accessibility.js?raw';
+
+GraphoJS añade accesibilidad al canvas sin configuración adicional — este
+playground hace visible lo que normalmente es invisible a propósito (los
+anuncios `aria-live` están ocultos para usuarios que ven, pero aquí los
+espejamos en un log para poder verlos).
+
+<Playground code={accessibilityExample} height={560} />
+
+## Navegación por teclado
+
+1. Haz clic en el diagrama o pulsa <kbd>Tab</kbd> para enfocarlo.
+2. Con nada seleccionado, las flechas mueven un *cursor de foco* (recuadro
+   discontinuo) entre nodos y enlaces.
+3. <kbd>Intro</kbd> o <kbd>Espacio</kbd> seleccionan el elemento con el foco.
+4. Con algo seleccionado, las flechas vuelven a mover los nodos
+   seleccionados — <kbd>Esc</kbd> limpia la selección y el foco.
+
+## `prefers-reduced-motion`
+
+```js
+diagram.animationManager.isEnabled = false;
+```
+
+Si el sistema operativo tiene activado "reducir movimiento", esto ya es el
+valor por defecto — cualquier animación salta directamente a su valor final
+en vez de interpolar frame a frame. El botón del playground lo alterna a
+mano para comparar.
+
+## Alto contraste
+
+```js
+diagram.selectionStyle = go.highContrastSelectionStyle;
+```
+
+Igual que con el movimiento: si el SO pide `prefers-contrast: more` o
+`forced-colors: active`, GraphoJS ya usa esta paleta (negro/rojo/amarillo,
+pensada para que selección y foco sigan siendo distinguibles entre sí) sin
+que tengas que hacer nada.
+
+## Anuncios personalizados
+
+```js
+diagram.accessibilityMessages = {
+  ...diagram.accessibilityMessages,
+  selectionCleared: () => 'Selección vacía',
+};
+```
+
+Cualquier tool o integración propia puede anunciar algo con
+`diagram.announce('mensaje')` — es el mismo mecanismo que usa GraphoJS
+internamente para selección, deshacer/rehacer, borrado y colapsar/expandir
+árboles.

@@ -49,7 +49,12 @@ export function mountPlayground(root: HTMLElement, opts: PlaygroundOptions): voi
     if (!frameHost) return;
     frameHost.innerHTML = '';
     const iframe = document.createElement('iframe');
-    iframe.sandbox = 'allow-scripts allow-same-origin';
+    // allow-downloads: PNG/SVG/JSON export buttons use <a download>.click().
+    // allow-popups(-to-escape-sandbox): diagram.print() opens a new window
+    // and calls .print() on it — without escaping, that popup would itself
+    // be sandboxed and print() would silently no-op too.
+    iframe.sandbox =
+      'allow-scripts allow-same-origin allow-downloads allow-popups allow-popups-to-escape-sandbox';
     iframe.srcdoc = buildFrameHtml(code);
     frameHost.append(iframe);
   }
@@ -76,6 +81,11 @@ function buildFrameHtml(code: string): string {
   <head>
     <meta charset="utf-8" />
     <style>
+      /* Without this, an example's own div { width:100%; padding:8px; }
+         (a common pattern for status/log bars below the diagram) overflows
+         its container by exactly the padding amount — clipping text at the
+         right edge instead of wrapping it. */
+      *, *::before, *::after { box-sizing: border-box; }
       html, body { margin: 0; height: 100%; }
       #graphojs-root { width: 100%; height: 100%; display: flex; flex-direction: column; }
       #graphojs-root > canvas { flex: 1 1 auto; width: 100% !important; height: auto !important; display: block; }

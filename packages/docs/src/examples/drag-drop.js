@@ -51,7 +51,6 @@ diagram.model = new go.GraphLinksModel({
   ],
   linkDataArray: [],
 });
-diagram.zoomToFit();
 
 // Panel de controles debajo del diagrama
 const panel = document.createElement('div');
@@ -99,5 +98,6 @@ addBtn.addEventListener('click', addNode);
 panel.appendChild(addBtn);
 panel.appendChild(status);
 root.appendChild(panel);
+diagram.zoomToFit();
 
 window.__diagram = diagram;

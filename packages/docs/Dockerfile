@@ -1,5 +1,5 @@
 # Stage 1: Build the GraphoJS documentation site
-FROM ghcr.io/pnpm/pnpm:11 AS builder
+FROM ghcr.io/pnpm/pnpm:11.20.0 AS builder
 
 # The pnpm image has no node in PATH by default; add Node 22 for the build
 # (esbuild postinstall and tsc need it).

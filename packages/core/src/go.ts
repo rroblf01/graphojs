@@ -38,9 +38,9 @@ export {
   Position,
   ScrollBehavior,
 } from './constants.ts';
-export type { DiagramOptions } from './diagram/Diagram.ts';
+export type { AccessibilityMessages, DiagramOptions } from './diagram/Diagram.ts';
 // Diagram
-export { Diagram } from './diagram/Diagram.ts';
+export { Diagram, defaultAccessibilityMessages } from './diagram/Diagram.ts';
 export type {
   DiagramEvent,
   DiagramEventHandler,
@@ -180,6 +180,8 @@ export { createSVGExporter, exportToSVG, SVGExporter } from './export/SVGExporte
 export type { TooltipOptions } from './export/TooltipManager.ts';
 export { createTooltipManager, TooltipManager } from './export/TooltipManager.ts';
 export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';
+export type { SelectionStyle } from './render/SelectionStyle.ts';
+export { defaultSelectionStyle, highContrastSelectionStyle } from './render/SelectionStyle.ts';
 // Rendering Optimizations
 export { createLayerCache, LayerCache } from './render/LayerCache.ts';
 export { CanvasPool, debounce, LinkPathCache, throttle } from './render/PerformanceCache.ts';

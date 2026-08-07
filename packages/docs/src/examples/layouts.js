@@ -3,7 +3,15 @@ import * as go from 'graphojs/go';
 
 const $ = go.GraphObject.make;
 
-const diagram = new go.Diagram('graphojs-root');
+const root = document.getElementById('graphojs-root');
+root.style.display = 'flex';
+root.style.flexDirection = 'column';
+
+const diagramHost = document.createElement('div');
+diagramHost.style.cssText = 'flex:1 1 auto;min-height:0;position:relative;';
+root.appendChild(diagramHost);
+
+const diagram = new go.Diagram(diagramHost);
 diagram.background = '#fafbfc';
 
 diagram.nodeTemplate = $(
@@ -61,7 +69,7 @@ for (const [name, key] of [
   });
   bar.appendChild(b);
 }
-document.getElementById('graphojs-root').appendChild(bar);
+root.appendChild(bar);
 
 diagram.layout = new go.TreeLayout();
 diagram.layoutDiagram();

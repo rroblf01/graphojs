@@ -1,0 +1,33 @@
+---
+title: Deshacer y rehacer
+description: Undo/redo con estado de botones y descripción de la acción.
+---
+
+import Playground from '../../../components/Playground.astro';
+import undoRedoExample from '../../../examples/undo-redo.js?raw';
+
+Cada `diagram.commit(...)` (o cualquier `CommandHandler`/tool interactivo) es
+un paso de deshacer. `diagram.undo()` / `diagram.redo()` navegan el
+historial.
+
+<Playground code={undoRedoExample} height={480} />
+
+## API
+
+```js
+diagram.commit((d) => d.getModel().addNode({ key, label: 'Nodo' }), 'Añadir nodo');
+
+diagram.undo();
+diagram.redo();
+
+const um = diagram.getUndoManager();
+um.canUndo(); // boolean
+um.canRedo(); // boolean
+um.getUndoDescription(); // nombre de la próxima acción a deshacer, o null
+um.getRedoDescription(); // nombre de la próxima acción a rehacer, o null
+```
+
+El segundo argumento de `commit()` es el nombre de la transacción — aparece
+en `getUndoDescription()`/`getRedoDescription()` y en los anuncios del
+lector de pantalla (`Undone: ...` / `Redone: ...`, ver
+[Accesibilidad](/guide/accessibility/)).

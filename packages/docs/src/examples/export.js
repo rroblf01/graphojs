@@ -47,7 +47,6 @@ diagram.model = new go.GraphLinksModel({
     { from: 2, to: 3 },
   ],
 });
-diagram.zoomToFit();
 
 // Botones de exportación e importación
 const bar = document.createElement('div');
@@ -111,6 +110,7 @@ refresh.addEventListener('click', () => {
 bar.appendChild(refresh);
 
 root.appendChild(pre);
+diagram.zoomToFit();
 
 window.__diagram = diagram;
 window.go = go;

@@ -3,7 +3,15 @@ import * as go from 'graphojs/go';
 
 const $ = go.GraphObject.make;
 
-const diagram = new go.Diagram('graphojs-root');
+const root = document.getElementById('graphojs-root');
+root.style.display = 'flex';
+root.style.flexDirection = 'column';
+
+const diagramHost = document.createElement('div');
+diagramHost.style.cssText = 'flex:1 1 auto;min-height:0;position:relative;';
+root.appendChild(diagramHost);
+
+const diagram = new go.Diagram(diagramHost);
 diagram.background = '#fafbfc';
 
 diagram.nodeTemplate = $(
@@ -48,14 +56,13 @@ diagram.model = new go.GraphLinksModel({
   ],
 });
 
-diagram.zoomToFit();
-
 // Log de selección bajo el diagrama
 const log = document.createElement('div');
 log.id = 'log';
 log.style.cssText =
   'font: 600 12px system-ui, monospace;margin: 8px;color:#0d47a1;min-height:18px;';
-document.getElementById('graphojs-root').appendChild(log);
+root.appendChild(log);
+diagram.zoomToFit();
 
 diagram.addDiagramListener('SelectionChanged', () => {
   const names = diagram.selection.map((p) => p.data?.label ?? p.key).join(', ');

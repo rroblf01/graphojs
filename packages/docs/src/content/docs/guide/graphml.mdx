@@ -1,0 +1,33 @@
+---
+title: Import/export GraphML
+description: Guarda o restaura el modelo como GraphML, un formato estándar de grafos.
+---
+
+import Playground from '../../../components/Playground.astro';
+import graphmlExample from '../../../examples/graphml.js?raw';
+
+[GraphML](http://graphml.graphdrawing.org/) es un formato XML estándar para
+grafos, soportado por herramientas como Gephi, yEd o NetworkX — útil para
+intercambiar datos con ellas, a diferencia del JSON propio de GraphoJS (ver
+[Export](/guide/export/)).
+
+<Playground code={graphmlExample} height={560} />
+
+## API
+
+```js
+go.Serializer.serializeToGraphML(diagram); // -> string (XML)
+go.Serializer.deserializeFromGraphML(xml, diagram);
+
+go.Serializer.exportToGraphMLFile(diagram, 'graphojs.graphml'); // descarga un .graphml
+go.Serializer.importFromGraphMLFile(diagram); // abre un selector de archivo
+```
+
+Cada nodo se exporta como `<node>` con sus propiedades como `<data>`, y cada
+enlace como `<edge source="..." target="...">`.
+
+:::note
+Es una superficie experimental — las heurísticas de tipo/coerción de claves
+numéricas podrían refinarse antes de la 1.x. Ver
+[Compatibilidad](/reference/compatibility/#superficie-experimental).
+:::

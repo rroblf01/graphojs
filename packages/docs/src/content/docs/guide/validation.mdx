@@ -1,0 +1,28 @@
+---
+title: Validación
+description: Rechaza nodos o enlaces que no cumplan tus reglas con isValidNode / isValidLink.
+---
+
+import Playground from '../../../components/Playground.astro';
+import validationExample from '../../../examples/validation.js?raw';
+
+<Playground code={validationExample} height={480} />
+
+## API
+
+```js
+model.isValidNode = (nodeData) => boolean;
+model.isValidLink = (linkData) => boolean; // linkData tiene { from, to, ... }
+```
+
+Ambos se comprueban en **dos sitios**:
+
+- **Interactivo**: `LinkingTool` (arrastrar para crear un enlace) descarta
+  el intento en silencio si `isValidLink` devuelve `false` — no se crea el
+  enlace, no hay error visible.
+- **Programático**: `model.addNode(...)` / `model.addLink(...)` lanzan una
+  excepción si la validación falla, así que envuélvelos en un
+  `diagram.commit(...)` o `try/catch` si esperas que puedan rechazarse.
+
+También existen `isValidNodeRemoval` / `isValidLinkRemoval` con la misma
+forma, para impedir borrados en vez de altas.

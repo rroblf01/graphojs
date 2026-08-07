@@ -130,6 +130,20 @@ full history of what led here.
   header `TextBlock` pinned to `Spot.Top`) instead of always centering them
   — needed for a group's header to sit above its members instead of
   overlapping them.
+- The docs Playground's export/print buttons (PNG, SVG, print, JSON) were
+  silently broken: the run iframe's `sandbox` attribute was missing
+  `allow-downloads` (needed by the `<a download>.click()` pattern the PNG/SVG/
+  JSON buttons use) and `allow-popups`/`allow-popups-to-escape-sandbox`
+  (needed by `diagram.print()`'s `window.open()` + `.print()`) — clicking any
+  of the four buttons produced no error and no visible effect.
+- Several docs examples called `diagram.zoomToFit()` before finishing their
+  page layout (appending sibling buttons/log elements, or filling a
+  status/preview element's text) — since `zoomToFit()` measures the canvas's
+  current, synchronous `getBoundingClientRect()`, calling it too early
+  captured a temporarily larger box, and the later layout shift (once
+  siblings/content settled) left the diagram visibly off-center or with
+  content clipped outside the canvas. Fixed by moving `zoomToFit()` to run
+  after all page setup completes, in each affected example.
 
 ### Performance
 

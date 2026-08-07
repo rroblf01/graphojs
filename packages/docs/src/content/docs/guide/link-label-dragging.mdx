@@ -1,0 +1,33 @@
+---
+title: Arrastrar la etiqueta de un enlace
+description: Reposiciona la etiqueta de un Link a lo largo de su ruta con LinkLabelDraggingTool.
+---
+
+import Playground from '../../../components/Playground.astro';
+import linkLabelDraggingExample from '../../../examples/link-label-dragging.js?raw';
+
+`LinkLabelDraggingTool` está registrado por defecto — cualquier enlace con
+una etiqueta visible (un `TextBlock` en el `linkTemplate`) ya se puede
+arrastrar, sin configuración adicional.
+
+<Playground code={linkLabelDraggingExample} height={480} />
+
+## Cómo funciona
+
+```js
+diagram.linkTemplate = $(
+  go.Link,
+  $(go.Shape, { stroke: '#4dd0e1', strokeWidth: 2 }),
+  $(go.Shape, { toArrow: 'Triangle' }),
+  $(go.TextBlock, 'label', new go.Binding('text', 'label')),
+);
+```
+
+Arrastrar la etiqueta actualiza dos propiedades del `Link`:
+
+- `link.labelSegmentFraction` — posición a lo largo del segmento de la ruta
+  (0 a 1).
+- `link.labelOffset` — desplazamiento perpendicular a la ruta.
+
+El movimiento es undoable (`SetLinkLabelPositionCommand`) — deshacer/rehacer
+funciona igual que con cualquier otra edición.

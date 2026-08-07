@@ -1,0 +1,25 @@
+---
+title: Guías de alineación
+description: Snapping automático a bordes/centros de otros nodos al arrastrar.
+---
+
+import Playground from '../../../components/Playground.astro';
+import guidedDraggingExample from '../../../examples/guided-dragging.js?raw';
+
+<Playground code={guidedDraggingExample} height={480} />
+
+## Activarlo
+
+```js
+diagram.toolManager.draggingTool.isGuidedDraggingEnabled = true;
+diagram.toolManager.draggingTool.guidelineSnapDistance = 8; // px, opcional
+```
+
+Al arrastrar un nodo, si algún borde o centro queda a menos de
+`guidelineSnapDistance` píxeles del borde/centro de otro nodo, el nodo
+arrastrado se ajusta (*snap*) exactamente a esa posición y se dibuja una
+línea guía para indicarlo.
+
+No es compatible con `diagram.isSnapToGridEnabled()` a la vez — si el ajuste
+a rejilla está activo, las guías de alineación se desactivan automáticamente
+durante ese arrastre.

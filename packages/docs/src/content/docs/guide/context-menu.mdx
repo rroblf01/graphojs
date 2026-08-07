@@ -1,0 +1,42 @@
+---
+title: Menú contextual y tooltips
+description: Clic derecho para un menú de acciones, y tooltips al pasar el ratón.
+---
+
+import Playground from '../../../components/Playground.astro';
+import contextMenuExample from '../../../examples/context-menu.js?raw';
+
+<Playground code={contextMenuExample} height={520} />
+
+## Tooltips
+
+```js
+diagram.nodeTemplate = $(
+  go.Node, 'Auto',
+  new go.Binding('tooltip', 'tooltip'),
+  // ...
+);
+diagram.enableTooltips({ delay: 300 });
+```
+
+`part.tooltip` es el texto que se muestra al pasar el ratón — enlázalo desde
+la data del nodo/enlace y activa `diagram.enableTooltips()` una vez.
+
+## Menú contextual
+
+```js
+diagram.setContextMenu(
+  go.createDefaultContextMenu(diagram, {
+    partItems: [{ label: '🗑 Eliminar', action: (d, part) => d.getModel().removeNode(part.key) }],
+    backgroundItems: [{ label: '➕ Añadir nodo', action: (d) => { /* ... */ } }],
+  }),
+);
+```
+
+- `partItems` se muestran al hacer clic derecho sobre un nodo o enlace.
+- `backgroundItems` se muestran al hacer clic derecho sobre el fondo vacío.
+- `action(diagram, part, event)` recibe el diagrama, la parte clicada
+  (`null` para el fondo) y el evento de ratón original.
+
+Por defecto también se añaden "Zoom In" / "Zoom Out" / "Zoom to Fit" — pasa
+`showDefaults: false` para quitarlos.

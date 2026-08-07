@@ -54,6 +54,8 @@ export type { ImageExportOptions } from './export/PNGExporter.ts';
 export { createPNGExporter, exportToPNG, PNGExporter } from './export/PNGExporter.ts';
 export type { PrintOptions } from './export/PrintExporter.ts';
 export { printDiagram } from './export/PrintExporter.ts';
+export type { ServerCanvasLike, ServerRenderOptions } from './export/ServerRenderer.ts';
+export { measureDiagramContent, renderDiagramToCanvas } from './export/ServerRenderer.ts';
 // Export
 export { createSVGExporter, exportToSVG, SVGExporter } from './export/SVGExporter.ts';
 export type { TooltipOptions } from './export/TooltipManager.ts';

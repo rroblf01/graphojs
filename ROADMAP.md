@@ -230,11 +230,43 @@ shipped in [Unreleased] of the CHANGELOG. For 1.0.0:
   heard Spanish. Defaults are now English, with every string overridable
   per-part via `diagram.accessibilityMessages` /
   `DiagramOptions.accessibilityMessages` (see the Interaction guide).
-- [ ] Respect `prefers-reduced-motion` in `AnimationManager`.
-- [ ] Add high-contrast-friendly focus/selection styling (current colors are
-  fixed hex values, not theme-aware).
-- [ ] Announce more than selection changes via the live region: undo/redo,
-  add/delete, and collapse/expand at minimum.
+- [x] Respect `prefers-reduced-motion` in `AnimationManager`. Added a real
+  GoJS-compatible `AnimationManager.isEnabled` flag (GoJS has this too: when
+  `false`, animations jump straight to their final values instead of
+  tweening) and `Animation.finishImmediately()` to implement it. `Diagram`'s
+  constructor now defaults `isEnabled` to `false` when
+  `matchMedia('(prefers-reduced-motion: reduce)').matches` — an explicit
+  assignment afterward always overrides that default. Guarded behind
+  `typeof window.matchMedia === 'function'` since jsdom (used by the whole
+  test suite) doesn't implement `matchMedia` at all; added a default
+  polyfill to `vitest.setup.ts` so this stays testable.
+- [x] Added high-contrast-friendly focus/selection styling. Selection
+  outlines, resize handles, the rubber-band select rectangle, and the
+  keyboard focus cursor were all fixed hex colors (`#2196f3`, `#6200ea`)
+  scattered across `Canvas2DRenderer.ts` and `Diagram.ts`. Centralized them
+  into `render/SelectionStyle.ts` (`SelectionStyle` interface,
+  `defaultSelectionStyle`, `highContrastSelectionStyle`), wired through a
+  new `Diagram.selectionStyle` getter/setter (propagates to the renderer)
+  and `DiagramOptions.selectionStyle`. Defaults to the high-contrast palette
+  when `prefers-contrast: more` or `forced-colors: active` matches — same
+  override-always-wins pattern as `prefers-reduced-motion` above. Chose 3
+  colors that stay distinguishable from each other under high contrast
+  (black selection, red focus, yellow handles), not just from the
+  background.
+- [x] Announce more than selection changes via the live region. Added
+  `partAdded`/`partsDeleted`/`undoPerformed`/`redoPerformed`/
+  `treeCollapsed`/`treeExpanded` to `AccessibilityMessages` (matching the
+  `@experimental` note already on that interface anticipating this), and
+  made `Diagram.announce()` public so `CommandHandler`/tools can use it.
+  Wired into `Diagram.undo()`/`redo()` (naming the affected command via the
+  existing `UndoManager.getUndoDescription()`/`getRedoDescription()`),
+  `CommandHandler.deleteSelection()`, `Diagram.collapseTree()`/
+  `expandTree()`, and `ClickCreatingTool`. **Deliberately did not** hook the
+  generic `PartAdded`/`PartRemoved` diagram events directly — those also
+  fire once per node during a full bulk `diagram.model = ...` load (e.g.
+  1,000 times for 1,000 nodes), which would spam a screen reader on every
+  page load. Hooked the specific user-initiated-single-action call sites
+  instead.
 
 ## Phase 6 — Cross-browser and real-device validation
 

@@ -54,6 +54,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `graphojs/templates`, `graphojs/react`, `graphojs/vue`) directly from
   source via TypeDoc — replaces a hand-written page that covered only a
   fraction of the actual public exports.
+- `AnimationManager.isEnabled` (GoJS-compatible) and
+  `Animation.finishImmediately()` — animations jump straight to their final
+  values instead of tweening. Defaults to `false` when the OS requests
+  `prefers-reduced-motion: reduce`.
+- `Diagram.selectionStyle` / `DiagramOptions.selectionStyle` — colors for
+  selection highlights, resize handles, and the keyboard focus cursor.
+  Defaults to a higher-contrast palette (`highContrastSelectionStyle`) when
+  the OS requests `prefers-contrast: more` or `forced-colors: active`.
+- The live region now also announces undo/redo, deletions, and tree
+  collapse/expand — not just selection/focus changes. `diagram.announce()`
+  is now public, for tools/integrations that want to announce their own
+  actions.
 
 ### Fixed
 

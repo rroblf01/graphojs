@@ -1,4 +1,4 @@
-import type { NodeData } from '../model/Model.ts';
+import type { NodeData, NodeKey } from '../model/Model.ts';
 import { Tool } from './Tool.ts';
 
 /**
@@ -59,7 +59,17 @@ export class ClickCreatingTool extends Tool {
       x,
       y,
     };
-    diagram.commit((d) => d.getModel().addNode(nodeData), 'Click-create node');
+    let key: NodeKey | undefined;
+    diagram.commit((d) => {
+      key = d.getModel().addNode(nodeData);
+    }, 'Click-create node');
     diagram.invalidate();
+
+    if (key !== undefined) {
+      const node = diagram.getPart(key);
+      if (node) {
+        diagram.announce(diagram.accessibilityMessages.partAdded(diagram.accessibilityMessages.describePart(node)));
+      }
+    }
   }
 }

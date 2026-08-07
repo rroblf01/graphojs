@@ -55,6 +55,15 @@ if (typeof globalThis.requestAnimationFrame === 'undefined') {
     clearTimeout(id)) as unknown as typeof cancelAnimationFrame;
 }
 
+if (typeof globalThis.matchMedia === 'undefined' && typeof window !== 'undefined') {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })) as unknown as typeof window.matchMedia;
+}
+
 if (typeof globalThis.ResizeObserver === 'undefined') {
   globalThis.ResizeObserver = class {
     observe() {}

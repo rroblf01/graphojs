@@ -130,6 +130,9 @@ export class CommandHandler {
       nodeCount: nodeKeys.length,
       linkCount: linkKeys.length,
     });
+    // Accessibility: announce after clearSelection's own announcement so
+    // this is the message a screen reader actually reads.
+    diagram.announce(diagram.accessibilityMessages.partsDeleted(nodeKeys.length + linkKeys.length));
     return true;
   }
 

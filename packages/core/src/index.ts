@@ -136,6 +136,8 @@ export { Part } from './parts/Part.ts';
 export type { PortAlignment } from './parts/Port.ts';
 export { Port, Ports } from './parts/Port.ts';
 export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';
+export type { SelectionStyle } from './render/SelectionStyle.ts';
+export { defaultSelectionStyle, highContrastSelectionStyle } from './render/SelectionStyle.ts';
 // Rendering Optimizations
 export { createLayerCache, LayerCache } from './render/LayerCache.ts';
 export { CanvasPool, debounce, LinkPathCache, throttle } from './render/PerformanceCache.ts';

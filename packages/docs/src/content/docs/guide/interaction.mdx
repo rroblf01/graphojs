@@ -51,9 +51,12 @@ para que el propio canvas sea un widget accesible:
   `aria-roledescription="diagram"`; su `aria-label` se recalcula solo con el
   número de nodos/grupos/enlaces y cuántos hay seleccionados.
 - Una región `aria-live="polite"` (oculta visualmente, junto al canvas)
-  anuncia los cambios de selección — por defecto en inglés: `Node "X"
-  selected`, `3 items selected`, `Selection cleared` — sin que tengas que
-  cablear nada tú mismo.
+  anuncia cambios de estado — por defecto en inglés: cambios de selección
+  (`Node "X" selected`, `3 items selected`, `Selection cleared`), deshacer/
+  rehacer (`Undone: ...`, `Redone: ...`), borrado (`3 items deleted`), y
+  colapsar/expandir un árbol (`Node "X" collapsed`/`expanded`) — sin que
+  tengas que cablear nada tú mismo. `diagram.announce(mensaje)` es público
+  si una tool o integración propia quiere anunciar algo más.
 - **Con el canvas enfocado y sin nada seleccionado**, las flechas mueven un
   *cursor de foco* (un recuadro discontinuo) entre nodos, grupos y enlaces —
   <kbd>Intro</kbd>/<kbd>Espacio</kbd> seleccionan el elemento con el foco, y
@@ -81,6 +84,30 @@ diagram.accessibilityMessages = {
 O pásalo directamente al constructor con `new go.Diagram(div, {
 accessibilityMessages: { ... } })`. Solo hace falta definir los campos que
 quieras cambiar — el resto sigue usando el valor por defecto en inglés.
+
+### `prefers-reduced-motion`
+
+Si el sistema operativo del usuario tiene activado "reducir movimiento",
+GraphoJS desactiva las animaciones por defecto —
+`diagram.animationManager.isEnabled` empieza en `false` y cualquier
+animación (`animate()`, `tween()`, ...) salta directamente a sus valores
+finales en vez de interpolar frame a frame. Esto es solo el valor
+**inicial**: asignar `diagram.animationManager.isEnabled = true` después de
+construir el diagrama siempre lo sobrescribe, tanto si el usuario quiere
+forzar animaciones como si quiere desactivarlas explícitamente.
+
+### Alto contraste (`selectionStyle`)
+
+De forma similar, si el sistema pide más contraste (`prefers-contrast:
+more` o el modo de alto contraste de Windows, `forced-colors: active`),
+los colores de selección/foco cambian automáticamente a una paleta de
+mayor contraste (`highContrastSelectionStyle`, exportado también por si
+quieres reutilizarla) en vez del azul/púrpura por defecto
+(`defaultSelectionStyle`). Se puede sobrescribir con `diagram.selectionStyle
+= { ...diagram.selectionStyle, selectionColor: '#ff0000' }` o vía
+`DiagramOptions.selectionStyle` al construir el diagrama — igual que
+`accessibilityMessages`, cualquier campo que no toques mantiene su valor
+detectado automáticamente.
 
 Esto cubre la navegación básica sin ratón y el anuncio de estado a un lector
 de pantalla; no pretende ser una edición completamente no visual del

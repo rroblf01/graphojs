@@ -6,11 +6,14 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   Binding,
+  Canvas2DRenderer,
   ClickCreatingTool,
+  defaultSelectionStyle,
   Diagram,
   GraphLinksModel,
   GraphObject,
   type Group,
+  highContrastSelectionStyle,
   InputEvent,
   type Link,
   LinkReshapingTool,
@@ -2951,5 +2954,233 @@ describe('O23: selectPartsInRect(rect, partialInclusion=false) with a plain rect
 
     expect(a.isSelected).toBe(true);
     expect(b.isSelected).toBe(false);
+  });
+});
+
+describe('O24: prefers-reduced-motion defaults AnimationManager.isEnabled to false', () => {
+  it('disables animations when the OS reports prefers-reduced-motion: reduce', () => {
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: query === '(prefers-reduced-motion: reduce)',
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+
+    try {
+      const d = createDiagram();
+      expect(d.animationManager.isEnabled).toBe(false);
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
+  it('leaves animations enabled when the OS has no motion preference', () => {
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: false,
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+
+    try {
+      const d = createDiagram();
+      expect(d.animationManager.isEnabled).toBe(true);
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
+  it('an explicit isEnabled assignment after construction always wins', () => {
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: query === '(prefers-reduced-motion: reduce)',
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+
+    try {
+      const d = createDiagram();
+      expect(d.animationManager.isEnabled).toBe(false);
+      d.animationManager.isEnabled = true;
+      expect(d.animationManager.isEnabled).toBe(true);
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+});
+
+describe('O25: high-contrast selection/focus styling', () => {
+  function withMatchMedia(matches: (query: string) => boolean, run: () => void): void {
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: matches(query),
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+    try {
+      run();
+    } finally {
+      window.matchMedia = original;
+    }
+  }
+
+  it('defaults to the standard palette when the OS has no contrast preference', () => {
+    withMatchMedia(
+      () => false,
+      () => {
+        const d = createDiagram();
+        expect(d.selectionStyle).toEqual(defaultSelectionStyle);
+      },
+    );
+  });
+
+  it('defaults to the high-contrast palette when prefers-contrast: more matches', () => {
+    withMatchMedia(
+      (query) => query === '(prefers-contrast: more)',
+      () => {
+        const d = createDiagram();
+        expect(d.selectionStyle).toEqual(highContrastSelectionStyle);
+      },
+    );
+  });
+
+  it('defaults to the high-contrast palette when forced-colors: active matches', () => {
+    withMatchMedia(
+      (query) => query === '(forced-colors: active)',
+      () => {
+        const d = createDiagram();
+        expect(d.selectionStyle).toEqual(highContrastSelectionStyle);
+      },
+    );
+  });
+
+  it('DiagramOptions.selectionStyle overrides the auto-detected high-contrast default', () => {
+    withMatchMedia(
+      () => true,
+      () => {
+        const div = document.createElement('div');
+        const d = new Diagram({ div, selectionStyle: { selectionColor: '#123456' } });
+        diagrams.push(d);
+        expect(d.selectionStyle.selectionColor).toBe('#123456');
+        // Non-overridden fields still come from the high-contrast palette, not the plain default.
+        expect(d.selectionStyle.focusColor).toBe(highContrastSelectionStyle.focusColor);
+      },
+    );
+  });
+
+  it('assigning selectionStyle after construction propagates to the Canvas2DRenderer', () => {
+    const d = createDiagram();
+    const renderer = d.getRenderer();
+    expect(renderer).toBeInstanceOf(Canvas2DRenderer);
+    const spy = vi.spyOn(renderer as Canvas2DRenderer, 'setSelectionStyle');
+
+    d.selectionStyle = highContrastSelectionStyle;
+
+    expect(spy).toHaveBeenCalledWith(highContrastSelectionStyle);
+    expect(d.selectionStyle).toBe(highContrastSelectionStyle);
+  });
+
+  it('a selected node renders without throwing under the high-contrast palette', () => {
+    const d = createDiagram();
+    d.selectionStyle = highContrastSelectionStyle;
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 20, height: 20 }],
+    });
+    d.select(d.findNodeForKey(1)!);
+
+    expect(() => (d as unknown as { render(): void }).render()).not.toThrow();
+  });
+});
+
+describe('O26: live-region announcements beyond selection/focus (undo/redo, add/delete, collapse/expand)', () => {
+  function getLiveRegion(d: Diagram): HTMLElement {
+    const canvas = d.getRenderer().getCanvas();
+    return canvas.parentElement!.querySelector('[aria-live]') as HTMLElement;
+  }
+
+  it('announces on undo and redo, naming the affected command', () => {
+    const d = createDiagram();
+    const live = getLiveRegion(d);
+    d.model = new GraphLinksModel();
+    d.executeCommand({
+      execute: () => d.getModel().addNode({ key: 1, x: 0, y: 0 }),
+      undo: () => d.getModel().removeNode(1),
+      describe: () => 'Add node 1',
+    });
+
+    d.undo();
+    expect(live.textContent).toBe('Undone: Add node 1');
+
+    d.redo();
+    expect(live.textContent).toBe('Redone: Add node 1');
+  });
+
+  it('does not announce when undo/redo has nothing to do', () => {
+    const d = createDiagram();
+    const live = getLiveRegion(d);
+
+    d.undo();
+    d.redo();
+
+    expect(live.textContent).toBe('');
+  });
+
+  it('announces the number of parts deleted via CommandHandler.deleteSelection', () => {
+    const d = createDiagram();
+    const live = getLiveRegion(d);
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 20, height: 20 },
+        { key: 2, x: 40, y: 0, width: 20, height: 20 },
+      ],
+      linkDataArray: [{ key: 10, from: 1, to: 2 }],
+    });
+    d.select(d.findNodeForKey(1)!);
+    d.select(d.findNodeForKey(2)!, true);
+
+    d.commandHandler.deleteSelection();
+
+    // Node 1, node 2, and the link between them (auto-deleted with its endpoint).
+    expect(live.textContent).toBe('3 items deleted');
+  });
+
+  it('announces tree collapse and expand, describing the node', () => {
+    const d = createDiagram();
+    const live = getLiveRegion(d);
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, label: 'Root' },
+        { key: 2, x: 0, y: 100, label: 'Child', parent: 1 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const root = d.findNodeForKey(1)!;
+
+    d.collapseTree(root);
+    expect(live.textContent).toBe('Node "Root" collapsed');
+
+    d.expandTree(root);
+    expect(live.textContent).toBe('Node "Root" expanded');
+  });
+
+  it('announces a node added via ClickCreatingTool', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel();
+    const live = getLiveRegion(d);
+    const tool = new ClickCreatingTool();
+    tool.diagram = d;
+    tool.archetypeNodeData = { label: 'Alpha' };
+
+    tool.doMouseUp({
+      button: 0,
+      clientX: 50,
+      clientY: 50,
+    } as unknown as MouseEvent);
+
+    expect(live.textContent).toBe('Node "Alpha" added');
   });
 });

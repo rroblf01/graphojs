@@ -146,6 +146,34 @@ describe('Animation', () => {
     expect(values).toEqual([0, 25, 100]);
   });
 
+  it('should jump to final values on finishImmediately, without needing update() calls', () => {
+    const values: Array<Record<string, number>> = [];
+    let done = false;
+    const animation = new Animation({ a: 0, b: 10 }, { a: 100, b: 20 }, (v) => values.push(v), {
+      duration: 1000,
+    }).onDone(() => {
+      done = true;
+    });
+
+    animation.finishImmediately();
+
+    expect(values).toEqual([{ a: 100, b: 20 }]);
+    expect(animation.isFinished).toBe(true);
+    expect(done).toBe(true);
+  });
+
+  it('finishImmediately should be a no-op if already finished', () => {
+    const values: Array<Record<string, number>> = [];
+    const animation = new Animation({ a: 0 }, { a: 1 }, (v) => values.push(v), { duration: 100 });
+    animation.update(0);
+    animation.update(200);
+    values.length = 0;
+
+    animation.finishImmediately();
+
+    expect(values).toEqual([]);
+  });
+
   it('should pause and resume', () => {
     const values: number[] = [];
     const animation = new Animation(
@@ -216,5 +244,34 @@ describe('AnimationManager', () => {
     animation.update(0);
     animation.update(50);
     expect(values[values.length - 1]).toBe(5);
+  });
+
+  it('should default isEnabled to true', () => {
+    const manager = new AnimationManager();
+    expect(manager.isEnabled).toBe(true);
+  });
+
+  it('when isEnabled is false, added animations jump straight to their final values', () => {
+    const manager = new AnimationManager();
+    manager.isEnabled = false;
+    const values: number[] = [];
+    manager.animate({ value: 0 }, { value: 10 }, (v) => values.push(v.value ?? 0), {
+      duration: 1000,
+    });
+
+    expect(values).toEqual([10]);
+    expect(manager.isAnimating).toBe(false);
+    expect(manager.count).toBe(0);
+  });
+
+  it('when isEnabled is false, still fires AnimationStarting/AnimationFinished', () => {
+    const manager = new AnimationManager();
+    manager.isEnabled = false;
+    const events: string[] = [];
+    manager.diagram = { fireDiagramEvent: (type) => events.push(type) };
+
+    manager.animate({ value: 0 }, { value: 10 }, () => {}, { duration: 1000 });
+
+    expect(events).toEqual(['AnimationStarting', 'AnimationFinished']);
   });
 });

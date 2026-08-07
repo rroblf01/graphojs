@@ -15,6 +15,14 @@ export class AnimationManager {
   private _isAnimating = false;
   private _diagram: DiagramEventsSink | null = null;
 
+  /**
+   * GoJS-compatible: whether animations actually animate, or jump straight to
+   * their final values. Default: true. GraphoJS defaults this to false when
+   * the OS-level `prefers-reduced-motion: reduce` setting is on (see
+   * `Diagram`'s constructor) — set it explicitly to override that default.
+   */
+  isEnabled = true;
+
   /** GoJS-compatible: The diagram this manager reports events to. */
   get diagram(): DiagramEventsSink | null {
     return this._diagram;
@@ -51,6 +59,13 @@ export class AnimationManager {
 
   /** Add an animation to the manager. */
   add(animation: Animation): void {
+    if (!this.isEnabled) {
+      this._diagram?.fireDiagramEvent('AnimationStarting');
+      animation.finishImmediately();
+      this._diagram?.fireDiagramEvent('AnimationFinished');
+      return;
+    }
+
     const wasRunning = this._isAnimating;
     this.animations.push(animation);
     animation.start();

@@ -31,6 +31,12 @@ import type { Part } from '../parts/Part.ts';
 import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
 import { LayerCache } from '../render/LayerCache.ts';
 import type { Renderer } from '../render/Renderer.ts';
+import {
+  defaultSelectionStyle,
+  hexToRgba,
+  highContrastSelectionStyle,
+  type SelectionStyle,
+} from '../render/SelectionStyle.ts';
 import { type DiagramJSON, Serializer } from '../serialization/Serializer.ts';
 import { PartPool } from '../spatial/PartPool.ts';
 import { QuadTree } from '../spatial/QuadTree.ts';
@@ -102,6 +108,13 @@ export interface DiagramOptions {
    * {@link AccessibilityMessages}.
    */
   accessibilityMessages?: Partial<AccessibilityMessages>;
+  /**
+   * Colors used for selection highlights and the keyboard focus cursor.
+   * Defaults to a high-contrast palette when the OS requests
+   * `prefers-contrast: more` or `forced-colors: active`, otherwise to
+   * {@link defaultSelectionStyle}. Override any subset to customize.
+   */
+  selectionStyle?: Partial<SelectionStyle>;
 }
 
 /**
@@ -111,9 +124,8 @@ export interface DiagramOptions {
  * override any subset via `DiagramOptions.accessibilityMessages` or
  * `diagram.accessibilityMessages = {...}` to localize.
  *
- * @experimental This interface is likely to grow more hooks (e.g. announcing
- * undo/redo or add/delete, not just selection/focus) before 1.0.0 — expect
- * additive changes, not removals.
+ * @experimental Still growing before 1.0.0 — expect additive changes, not
+ * removals.
  */
 export interface AccessibilityMessages {
   /** Short description of a part, e.g. `Node "Alpha"` — used by the other messages below. */
@@ -128,6 +140,18 @@ export interface AccessibilityMessages {
   multipleSelected(count: number): string;
   /** Announcement when the keyboard focus cursor moves (`description` from `describePart`). */
   focusMoved(description: string): string;
+  /** Announcement when a single part is added (e.g. via `ClickCreatingTool`). */
+  partAdded(description: string): string;
+  /** Announcement when one or more parts are deleted (e.g. via `CommandHandler.deleteSelection`). */
+  partsDeleted(count: number): string;
+  /** Announcement after an undo (`description` from the undone command's `describe()`). */
+  undoPerformed(description: string): string;
+  /** Announcement after a redo (`description` from the redone command's `describe()`). */
+  redoPerformed(description: string): string;
+  /** Announcement when a node's tree is collapsed (`description` from `describePart`). */
+  treeCollapsed(description: string): string;
+  /** Announcement when a node's tree is expanded (`description` from `describePart`). */
+  treeExpanded(description: string): string;
 }
 
 /** Default English {@link AccessibilityMessages}. */
@@ -157,6 +181,24 @@ export const defaultAccessibilityMessages: AccessibilityMessages = {
   },
   focusMoved(description: string): string {
     return `Focus on ${description}`;
+  },
+  partAdded(description: string): string {
+    return `${description} added`;
+  },
+  partsDeleted(count: number): string {
+    return `${count} item${count === 1 ? '' : 's'} deleted`;
+  },
+  undoPerformed(description: string): string {
+    return `Undone: ${description}`;
+  },
+  redoPerformed(description: string): string {
+    return `Redone: ${description}`;
+  },
+  treeCollapsed(description: string): string {
+    return `${description} collapsed`;
+  },
+  treeExpanded(description: string): string {
+    return `${description} expanded`;
   },
 };
 
@@ -216,6 +258,7 @@ export class Diagram {
   private liveRegion: HTMLElement | null = null;
   /** Accessibility: message formatters for the aria-label and live-region announcements (default: English). */
   accessibilityMessages: AccessibilityMessages;
+  private _selectionStyle: SelectionStyle = defaultSelectionStyle;
   private events: DiagramEvents = new DiagramEvents();
   private layerCache: LayerCache | null = null;
   private layerCacheEnabled = false;
@@ -395,6 +438,28 @@ export class Diagram {
 
     // Wire the animation manager to report AnimationStarting/Finished events
     this._animationManager.diagram = this;
+
+    // Accessibility: default to no animation when the OS requests reduced
+    // motion. Only sets the initial default — explicitly setting
+    // `animationManager.isEnabled` afterward always wins.
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        this._animationManager.isEnabled = false;
+      }
+    }
+
+    // Accessibility: use a higher-contrast selection/focus palette when the
+    // OS requests it. `resolvedOptions.selectionStyle` (if given) always
+    // wins over this auto-detected default.
+    const prefersHighContrast =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      (window.matchMedia('(prefers-contrast: more)').matches ||
+        window.matchMedia('(forced-colors: active)').matches);
+    this.selectionStyle = {
+      ...(prefersHighContrast ? highContrastSelectionStyle : defaultSelectionStyle),
+      ...resolvedOptions.selectionStyle,
+    };
 
     // Create command handler
     this._commandHandler = new CommandHandler(this);
@@ -699,12 +764,24 @@ export class Diagram {
 
   /** Undo the last command. */
   undo(): boolean {
-    return this._undoManager.undo();
+    const result = this._undoManager.undo();
+    if (result) {
+      this.announce(
+        this.accessibilityMessages.undoPerformed(this._undoManager.getRedoDescription() ?? ''),
+      );
+    }
+    return result;
   }
 
   /** Redo the last undone command. */
   redo(): boolean {
-    return this._undoManager.redo();
+    const result = this._undoManager.redo();
+    if (result) {
+      this.announce(
+        this.accessibilityMessages.redoPerformed(this._undoManager.getUndoDescription() ?? ''),
+      );
+    }
+    return result;
   }
 
   /** GoJS-compatible: Begin a transaction. Commands are grouped into one undo unit. */
@@ -2242,8 +2319,13 @@ export class Diagram {
     };
   }
 
-  /** Accessibility: push a message to the off-screen live region. */
-  private announce(message: string): void {
+  /**
+   * Accessibility: push a message to the off-screen live region, announced
+   * to screen readers. Public so tools/command handlers can announce their
+   * own user-initiated actions (see `CommandHandler.deleteSelection` and
+   * `ClickCreatingTool` for examples).
+   */
+  announce(message: string): void {
     if (this.liveRegion) this.liveRegion.textContent = message;
   }
 
@@ -2524,6 +2606,22 @@ export class Diagram {
     this._layout = value;
     if (value) value.diagram = this;
     this.applyDiagramLayout();
+  }
+
+  /**
+   * Colors used for selection highlights and the keyboard focus cursor.
+   * Defaults to a high-contrast palette when the OS requests more contrast
+   * (see the constructor); assigning here always overrides that default.
+   */
+  get selectionStyle(): SelectionStyle {
+    return this._selectionStyle;
+  }
+
+  set selectionStyle(value: SelectionStyle) {
+    this._selectionStyle = value;
+    if (this.renderer instanceof Canvas2DRenderer) {
+      this.renderer.setSelectionStyle(value);
+    }
   }
 
   /** Apply the diagram layout to the current nodes and links. */
@@ -3019,8 +3117,8 @@ export class Diagram {
     if (this.selectionRect) {
       const r = this.selectionRect;
       ctx.save();
-      ctx.fillStyle = 'rgba(33, 150, 243, 0.1)';
-      ctx.strokeStyle = '#2196f3';
+      ctx.fillStyle = hexToRgba(this.selectionStyle.selectionColor, 0.1);
+      ctx.strokeStyle = this.selectionStyle.selectionColor;
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 4]);
       ctx.fillRect(r.x, r.y, r.width, r.height);
@@ -3049,7 +3147,7 @@ export class Diagram {
     if (this.focusedPart?.visible) {
       const b = this.focusedPart.bounds;
       ctx.save();
-      ctx.strokeStyle = '#6200ea';
+      ctx.strokeStyle = this.selectionStyle.focusColor;
       ctx.lineWidth = 2;
       ctx.setLineDash([2, 2]);
       ctx.strokeRect(b.x - 4, b.y - 4, b.width + 8, b.height + 8);
@@ -3591,6 +3689,7 @@ export class Diagram {
     this.setTreeChildrenVisible(node, false);
     this.invalidate();
     this.fireDiagramEvent('TreeCollapsed', node);
+    this.announce(this.accessibilityMessages.treeCollapsed(this.accessibilityMessages.describePart(node)));
   }
 
   /**
@@ -3602,6 +3701,7 @@ export class Diagram {
     this.setTreeChildrenVisible(node, true);
     this.invalidate();
     this.fireDiagramEvent('TreeExpanded', node);
+    this.announce(this.accessibilityMessages.treeExpanded(this.accessibilityMessages.describePart(node)));
   }
 
   private setTreeChildrenVisible(node: Node, visible: boolean): void {

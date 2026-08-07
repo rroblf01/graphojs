@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CommandHandler, createCommandHandler } from '../../src/command/CommandHandler.ts';
-import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { defaultAccessibilityMessages, type Diagram } from '../../src/diagram/Diagram.ts';
 import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
 import type { Link } from '../../src/parts/Link.ts';
 import { Node } from '../../src/parts/Node.ts';
@@ -48,6 +48,8 @@ function createMockDiagram(): Diagram {
     undo: () => undoManager.undo(),
     redo: () => undoManager.redo(),
     fireDiagramEvent: () => {},
+    accessibilityMessages: defaultAccessibilityMessages,
+    announce: () => {},
   } as unknown as Diagram;
 }
 

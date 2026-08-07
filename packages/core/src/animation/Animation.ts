@@ -84,6 +84,14 @@ export class Animation {
     this.onCancel?.();
   }
 
+  /** Jump directly to the final values and finish, without animating any frames. */
+  finishImmediately(): void {
+    if (this._finished) return;
+    this._finished = true;
+    this.callback(this._to);
+    this.onComplete?.();
+  }
+
   /** Start the animation. The start time is initialized on the first update call. */
   start(): void {
     // Start time is lazily initialized in update()

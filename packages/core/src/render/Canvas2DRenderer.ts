@@ -15,6 +15,7 @@ import {
 import { LinkPathCache } from './PerformanceCache.ts';
 import { PathCache, TextMeasureCache } from './RenderCache.ts';
 import type { Renderer } from './Renderer.ts';
+import { defaultSelectionStyle, type SelectionStyle } from './SelectionStyle.ts';
 
 /**
  * Canvas 2D renderer for diagram parts.
@@ -38,6 +39,7 @@ export class Canvas2DRenderer implements Renderer {
   }
   private labelsVisible = true;
   private nodeBoundsMap = new Map<string | number, RectClass>();
+  private selectionStyle: SelectionStyle = defaultSelectionStyle;
 
   /** Set whether node labels should be rendered (used for LOD). */
   setLabelsVisible(value: boolean): void {
@@ -47,6 +49,11 @@ export class Canvas2DRenderer implements Renderer {
   /** Check whether labels are currently visible. */
   getLabelsVisible(): boolean {
     return this.labelsVisible;
+  }
+
+  /** Set the colors used for selection highlights and resize handles. */
+  setSelectionStyle(style: SelectionStyle): void {
+    this.selectionStyle = style;
   }
 
   /** Register a node's bounds for link routing computation. */
@@ -223,7 +230,7 @@ export class Canvas2DRenderer implements Renderer {
 
     // Selection highlight
     if (node.isSelected) {
-      this.ctx.strokeStyle = '#2196f3';
+      this.ctx.strokeStyle = this.selectionStyle.selectionColor;
       this.ctx.lineWidth = 2;
       this.ctx.setLineDash([4, 4]);
       this.ctx.strokeRect(x - 2, y - 2, width + 4, height + 4);
@@ -239,8 +246,8 @@ export class Canvas2DRenderer implements Renderer {
     const size = 8;
     const half = size / 2;
 
-    this.ctx.fillStyle = '#ffffff';
-    this.ctx.strokeStyle = '#2196f3';
+    this.ctx.fillStyle = this.selectionStyle.handleFill;
+    this.ctx.strokeStyle = this.selectionStyle.selectionColor;
     this.ctx.lineWidth = 1;
 
     const corners: Array<[number, number]> = [
@@ -406,7 +413,7 @@ export class Canvas2DRenderer implements Renderer {
 
     // Selection highlight
     if (link.isSelected) {
-      this.ctx.strokeStyle = '#2196f3';
+      this.ctx.strokeStyle = this.selectionStyle.selectionColor;
       this.ctx.lineWidth = link.strokeWidth + 2;
       this.ctx.setLineDash([4, 4]);
       this.strokePath(points);
@@ -562,7 +569,7 @@ export class Canvas2DRenderer implements Renderer {
 
     // Selection highlight
     if (group.isSelected) {
-      this.ctx.strokeStyle = '#2196f3';
+      this.ctx.strokeStyle = this.selectionStyle.selectionColor;
       this.ctx.lineWidth = 2;
       this.ctx.setLineDash([4, 4]);
       this.ctx.strokeRect(x - 2, y - 2, width + 4, height + 4);
@@ -574,7 +581,7 @@ export class Canvas2DRenderer implements Renderer {
 
   renderSelectionRect(rect: Rect): void {
     this.ctx.save();
-    this.ctx.strokeStyle = '#2196f3';
+    this.ctx.strokeStyle = this.selectionStyle.selectionColor;
     this.ctx.fillStyle = 'rgba(33, 150, 243, 0.1)';
     this.ctx.lineWidth = 1;
     this.ctx.setLineDash([4, 4]);

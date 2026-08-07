@@ -743,6 +743,75 @@ describe('F2: GoJS API gaps', () => {
     expect(Number.isFinite(lastX)).toBe(true);
     expect(lastX).toBeGreaterThan(8); // arc endpoint near (10,0)
   });
+
+  it('geometryString handles implicit command repetition (e.g. "L10,0 20,10 30,0") instead of dropping the extra points', () => {
+    const { drawGeometryString } = require('../src/panel/GeometryString.ts') as {
+      drawGeometryString: (
+        ctx: Record<string, unknown>,
+        path: string,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+      ) => void;
+    };
+    const lineTos: Array<[number, number]> = [];
+    const ctx = {
+      beginPath: () => {},
+      moveTo: () => {},
+      lineTo: (x: number, y: number) => lineTos.push([x, y]),
+    };
+    // One 'L' followed by two more implicit coordinate pairs — three lineTos total.
+    drawGeometryString(ctx as never, 'M0,0 L10,0 20,10 30,0', 0, 0, 30, 10);
+    expect(lineTos).toHaveLength(3);
+  });
+
+  it('geometryString parses elliptical-arc flags that are concatenated without a separator (e.g. "0,11,")', () => {
+    const { drawGeometryString } = require('../src/panel/GeometryString.ts') as {
+      drawGeometryString: (
+        ctx: Record<string, unknown>,
+        path: string,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+      ) => void;
+    };
+    const lines: Array<[number, number]> = [];
+    const ctx = {
+      beginPath: () => {},
+      moveTo: () => {},
+      lineTo: (x: number, y: number) => lines.push([x, y]),
+    };
+    // "11" here is large-arc-flag=1 followed by sweep-flag=1, not the number 11.
+    drawGeometryString(ctx as never, 'M0,0 A5,5,0,11,10,0', 0, 0, 10, 10);
+    expect(lines.length).toBeGreaterThan(2); // sampled as a real arc
+    const lastX = lines[lines.length - 1]?.[0];
+    expect(lastX).toBeGreaterThan(8); // still reaches the endpoint near (10,0)
+  });
+
+  it("geometryString treats a moveto's repeated coordinate pairs as linetos, per the SVG spec", () => {
+    const { drawGeometryString } = require('../src/panel/GeometryString.ts') as {
+      drawGeometryString: (
+        ctx: Record<string, unknown>,
+        path: string,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+      ) => void;
+    };
+    const moveTos: Array<[number, number]> = [];
+    const lineTos: Array<[number, number]> = [];
+    const ctx = {
+      beginPath: () => {},
+      moveTo: (x: number, y: number) => moveTos.push([x, y]),
+      lineTo: (x: number, y: number) => lineTos.push([x, y]),
+    };
+    drawGeometryString(ctx as never, 'M0,0 10,10 20,0', 0, 0, 20, 10);
+    expect(moveTos).toHaveLength(1); // only the first pair is a real moveto
+    expect(lineTos).toHaveLength(2); // every pair after it becomes a lineto
+  });
 });
 
 describe('F3: ZoomingTool and two-way binding coverage', () => {

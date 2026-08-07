@@ -9,19 +9,152 @@ interface Cmd {
   args: number[];
 }
 
+/** Number of numeric parameters each command consumes per repetition. */
+const ARITY: Record<string, number> = {
+  M: 2,
+  L: 2,
+  H: 1,
+  V: 1,
+  C: 6,
+  S: 4,
+  Q: 4,
+  T: 2,
+  A: 7,
+  Z: 0,
+};
+
+const COMMAND_CHARS = new Set('MLHVCSQTAZ');
+
+/**
+ * Tokenize an SVG-style path string into one Cmd per drawing operation.
+ *
+ * Handles two real-world SVG features a flat number/letter regex misses:
+ *  - Implicit command repetition: "L10,0 20,10 30,0" means three separate
+ *    lineTos, not one lineTo with leftover coordinates silently dropped
+ *    (per the SVG spec, an M's extra repeated pairs become lineTos too).
+ *  - Elliptical arc flags without a separator: the large-arc/sweep flags in
+ *    "A25,25,0,11,50,25" are two single-digit flags ("1","1"), not the
+ *    number 11 — they're parsed as exactly one character each.
+ */
 function tokenizePath(d: string): Cmd[] {
   const commands: Cmd[] = [];
-  const re = /([MmLlHhVvCcSsQqTtAaZz])|(-?\d*\.?\d+(?:e[-+]?\d+)?)/gi;
-  let current: Cmd | null = null;
-  let match: RegExpExecArray | null = re.exec(d);
-  while (match !== null) {
-    if (match[1]) {
-      current = { op: match[1], args: [] };
-      commands.push(current);
-    } else if (current) {
-      current.args.push(Number(match[0]));
+  const len = d.length;
+  let i = 0;
+
+  const skipSeparators = (): void => {
+    while (i < len && /[\s,]/.test(d[i]!)) i++;
+  };
+
+  const readNumber = (): number | null => {
+    skipSeparators();
+    const start = i;
+    if (i < len && (d[i] === '+' || d[i] === '-')) i++;
+    let sawDigits = false;
+    while (i < len && /[0-9]/.test(d[i]!)) {
+      i++;
+      sawDigits = true;
     }
-    match = re.exec(d);
+    if (i < len && d[i] === '.') {
+      i++;
+      while (i < len && /[0-9]/.test(d[i]!)) {
+        i++;
+        sawDigits = true;
+      }
+    }
+    if (!sawDigits) {
+      i = start;
+      return null;
+    }
+    if (i < len && (d[i] === 'e' || d[i] === 'E')) {
+      const save = i;
+      i++;
+      if (i < len && (d[i] === '+' || d[i] === '-')) i++;
+      if (i < len && /[0-9]/.test(d[i]!)) {
+        while (i < len && /[0-9]/.test(d[i]!)) i++;
+      } else {
+        i = save;
+      }
+    }
+    return Number(d.slice(start, i));
+  };
+
+  /** Elliptical-arc flags are exactly one character ('0' or '1'), possibly
+   *  with no separator before the next number. */
+  const readFlag = (): number | null => {
+    skipSeparators();
+    if (i < len && (d[i] === '0' || d[i] === '1')) {
+      const v = Number(d[i]);
+      i++;
+      return v;
+    }
+    return null;
+  };
+
+  while (i < len) {
+    skipSeparators();
+    if (i >= len) break;
+    const ch = d[i]!;
+    const upper = ch.toUpperCase();
+    if (!COMMAND_CHARS.has(upper)) break; // malformed input; stop parsing
+    i++;
+
+    if (upper === 'Z') {
+      commands.push({ op: ch, args: [] });
+      continue;
+    }
+
+    // Read as many repetitions of this command's parameter group as are
+    // available before the next command letter (implicit repetition).
+    let repetition = 0;
+    while (true) {
+      skipSeparators();
+      if (i >= len || COMMAND_CHARS.has(d[i]!.toUpperCase())) break;
+
+      const args: number[] = [];
+      if (upper === 'A') {
+        const rx = readNumber();
+        const ry = readNumber();
+        const rot = readNumber();
+        const large = readFlag();
+        const sweep = readFlag();
+        const x = readNumber();
+        const y = readNumber();
+        if (
+          rx === null ||
+          ry === null ||
+          rot === null ||
+          large === null ||
+          sweep === null ||
+          x === null ||
+          y === null
+        ) {
+          break;
+        }
+        args.push(rx, ry, rot, large, sweep, x, y);
+      } else {
+        const arity = ARITY[upper] ?? 0;
+        for (let k = 0; k < arity; k++) {
+          const n = readNumber();
+          if (n === null) {
+            args.push(...new Array(arity - args.length).fill(0));
+            break;
+          }
+          args.push(n);
+        }
+        if (args.length < arity) break;
+      }
+
+      // Per the SVG spec, a moveto's *repeated* coordinate pairs are lineTos.
+      const op = upper === 'M' && repetition > 0 ? (ch === 'm' ? 'l' : 'L') : ch;
+      commands.push({ op, args });
+      repetition++;
+    }
+
+    // A command letter with no following numbers at all (rare, but keeps
+    // e.g. a lone "Z"-less no-op letter from being silently dropped).
+    if (repetition === 0 && upper !== 'Z') {
+      commands.push({ op: ch, args: [] });
+    }
   }
   return commands;
 }

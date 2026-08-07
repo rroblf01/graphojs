@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
 import { ContextMenu } from '../../src/export/ContextMenu.ts';
 import { AddNodeCommand } from '../../src/undo/commands.ts';
@@ -76,7 +76,8 @@ describe('Diagram destroy / memory management', () => {
   it('should remove canvas from container on destroy', () => {
     const div = document.createElement('div');
     const diagram = new Diagram({ div });
-    expect(div.children).toHaveLength(1);
+    // The canvas plus the accessibility live region.
+    expect(div.children).toHaveLength(2);
 
     diagram.destroy();
     expect(div.children).toHaveLength(0);

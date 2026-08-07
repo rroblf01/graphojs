@@ -139,6 +139,11 @@ export class Diagram {
   private keyDownListener: ((event: KeyboardEvent) => void) | null = null;
   private tempLink: { from: { x: number; y: number }; to: { x: number; y: number } } | null = null;
   private selectionRect: { x: number; y: number; width: number; height: number } | null = null;
+  private alignmentGuidelines: Array<{ x1: number; y1: number; x2: number; y2: number }> = [];
+  /** Accessibility: the part with the keyboard focus cursor (Arrow keys, when nothing is selected). */
+  private focusedPart: Part | null = null;
+  /** Accessibility: off-screen `aria-live` region announcing selection/focus changes. */
+  private liveRegion: HTMLElement | null = null;
   private events: DiagramEvents = new DiagramEvents();
   private layerCache: LayerCache | null = null;
   private layerCacheEnabled = false;
@@ -271,7 +276,28 @@ export class Diagram {
     this.canvas.style.width = '100%';
     this.canvas.style.height = '100%';
     this.canvas.style.display = 'block';
+    // Accessibility: keyboard-focusable, with a role/label describing an
+    // interactive widget (updated as content/selection change) rather than a
+    // static image.
+    this.canvas.tabIndex = 0;
+    this.canvas.setAttribute('role', 'application');
+    this.canvas.setAttribute('aria-roledescription', 'diagram');
     this.container.appendChild(this.canvas);
+
+    // Accessibility: visually-hidden live region announcing selection and
+    // keyboard-focus-cursor changes to screen readers.
+    this.liveRegion = document.createElement('div');
+    this.liveRegion.setAttribute('aria-live', 'polite');
+    this.liveRegion.setAttribute('role', 'status');
+    Object.assign(this.liveRegion.style, {
+      position: 'absolute',
+      width: '1px',
+      height: '1px',
+      overflow: 'hidden',
+      clip: 'rect(0 0 0 0)',
+      whiteSpace: 'nowrap',
+    });
+    this.container.appendChild(this.liveRegion);
 
     // Create renderer
     this.renderer = new Canvas2DRenderer(this.canvas);
@@ -523,6 +549,9 @@ export class Diagram {
     data?: Record<string, unknown>,
   ): void {
     this.events.fire(this, type, part, data);
+    if (type === 'SelectionChanged') {
+      this.announceSelectionChange();
+    }
   }
 
   /** Enable virtualization (viewport culling) with a world bounds. */
@@ -1012,9 +1041,31 @@ export class Diagram {
       e.key === 'ArrowRight'
     ) {
       e.preventDefault();
-      const dx = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0;
-      const dy = e.key === 'ArrowUp' ? -1 : e.key === 'ArrowDown' ? 1 : 0;
-      this._commandHandler.nudgeSelection(dx, dy, this._scale);
+      // Accessibility: with nothing selected and the diagram focused, arrow
+      // keys move a keyboard focus cursor between parts instead of nudging
+      // (there is nothing to nudge); this never changes the existing
+      // nudge-a-selection behavior below.
+      if (this.selectedParts.size === 0 && document.activeElement === this.canvas) {
+        const direction = e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1;
+        this.moveFocusCursor(direction);
+      } else {
+        const dx = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0;
+        const dy = e.key === 'ArrowUp' ? -1 : e.key === 'ArrowDown' ? 1 : 0;
+        this._commandHandler.nudgeSelection(dx, dy, this._scale);
+      }
+    } else if (
+      (e.key === 'Enter' || e.key === ' ') &&
+      this.focusedPart &&
+      document.activeElement === this.canvas
+    ) {
+      e.preventDefault();
+      this.select(this.focusedPart);
+    } else if (e.key === 'Escape' && document.activeElement === this.canvas) {
+      if (this.focusedPart) {
+        this.focusedPart = null;
+        this.invalidate();
+      }
+      this.clearSelection();
     }
   }
 
@@ -1391,6 +1442,7 @@ export class Diagram {
     }
 
     this.markHitIndexDirty();
+    this.updateCanvasAriaLabel();
   }
 
   /** Get the model data object for a part (node data or link data). */
@@ -1832,6 +1884,8 @@ export class Diagram {
     }
     if (!part) return;
 
+    if (this.focusedPart === part) this.focusedPart = null;
+
     // Detach from its layer so it is no longer rendered
     if (part.layer) {
       part.layer.remove(part);
@@ -2031,6 +2085,29 @@ export class Diagram {
     return this.selectionRect;
   }
 
+  /**
+   * GoJS-compatible ("GuidedDraggingTool" extension style): show temporary
+   * alignment guideline segments while dragging, snapped to the edges/centers
+   * of nearby parts.
+   */
+  showAlignmentGuidelines(lines: Array<{ x1: number; y1: number; x2: number; y2: number }>): void {
+    this.alignmentGuidelines = lines;
+    this.invalidate();
+  }
+
+  /** Hide any alignment guidelines currently shown. */
+  hideAlignmentGuidelines(): void {
+    if (this.alignmentGuidelines.length > 0) {
+      this.alignmentGuidelines = [];
+      this.invalidate();
+    }
+  }
+
+  /** Get the alignment guideline segments currently shown. */
+  getAlignmentGuidelines(): Array<{ x1: number; y1: number; x2: number; y2: number }> {
+    return this.alignmentGuidelines;
+  }
+
   /** Select all parts intersecting a rectangle. */
   selectPartsInRect(
     rect: { x: number; y: number; width: number; height: number },
@@ -2065,6 +2142,69 @@ export class Diagram {
       x: mouseX / this._scale + this.offsetX,
       y: mouseY / this._scale + this.offsetY,
     };
+  }
+
+  /** Accessibility: a short human-readable description of a part, for announcements. */
+  private describePart(part: Part): string {
+    const label = (part as { label?: string }).label;
+    if (part instanceof Group) return `Grupo "${label || String(part.key)}"`;
+    if (part instanceof Link) return `Enlace de ${String(part.fromKey)} a ${String(part.toKey)}`;
+    if (part instanceof Node) return `Nodo "${label || String(part.key)}"`;
+    return `Elemento ${String(part.key)}`;
+  }
+
+  /** Accessibility: push a message to the off-screen live region. */
+  private announce(message: string): void {
+    if (this.liveRegion) this.liveRegion.textContent = message;
+  }
+
+  /** Accessibility: refresh the canvas's aria-label to reflect content/selection counts. */
+  private updateCanvasAriaLabel(): void {
+    const nodeCount = this._nodes.size;
+    const groupCount = this._groups.size;
+    const linkCount = this._links.size;
+    const selectedCount = this.selectedParts.size;
+    let label = `Diagrama con ${nodeCount} nodo${nodeCount === 1 ? '' : 's'}`;
+    if (groupCount > 0) label += `, ${groupCount} grupo${groupCount === 1 ? '' : 's'}`;
+    label += ` y ${linkCount} enlace${linkCount === 1 ? '' : 's'}`;
+    if (selectedCount > 0) {
+      label += `. ${selectedCount} seleccionado${selectedCount === 1 ? '' : 's'}`;
+    }
+    this.canvas.setAttribute('aria-label', label);
+  }
+
+  /** Accessibility: announce the current selection and refresh the aria-label. */
+  private announceSelectionChange(): void {
+    const parts = this.getSelectedParts();
+    if (parts.length === 0) {
+      this.announce('Selección vacía');
+    } else if (parts.length === 1) {
+      this.announce(`${this.describePart(parts[0]!)} seleccionado`);
+    } else {
+      this.announce(`${parts.length} elementos seleccionados`);
+    }
+    this.updateCanvasAriaLabel();
+  }
+
+  /**
+   * Accessibility: move the keyboard focus cursor to the next/previous part
+   * (Arrow keys, only while nothing is selected — see `handleKeyDown`) and
+   * announce it. The cursor wraps and is drawn as a dashed outline in `render()`.
+   */
+  private moveFocusCursor(direction: 1 | -1): void {
+    const allParts: Part[] = [
+      ...this._nodes.values(),
+      ...this._groups.values(),
+      ...this._links.values(),
+    ];
+    if (allParts.length === 0) return;
+    const currentIndex = this.focusedPart ? allParts.indexOf(this.focusedPart) : -1;
+    const nextIndex = (currentIndex + direction + allParts.length) % allParts.length;
+    this.focusedPart = allParts[nextIndex] ?? null;
+    this.invalidate();
+    if (this.focusedPart) {
+      this.announce(`Foco en ${this.describePart(this.focusedPart)}`);
+    }
   }
 
   /** Clear all selections. */
@@ -2776,6 +2916,34 @@ export class Diagram {
       ctx.restore();
     }
 
+    // Render alignment guidelines (GuidedDraggingTool-style)
+    if (this.alignmentGuidelines.length > 0) {
+      ctx.save();
+      ctx.strokeStyle = '#e91e63';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      for (const line of this.alignmentGuidelines) {
+        ctx.beginPath();
+        ctx.moveTo(line.x1, line.y1);
+        ctx.lineTo(line.x2, line.y2);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
+    // Render the keyboard focus cursor (accessibility)
+    if (this.focusedPart?.visible) {
+      const b = this.focusedPart.bounds;
+      ctx.save();
+      ctx.strokeStyle = '#6200ea';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([2, 2]);
+      ctx.strokeRect(b.x - 4, b.y - 4, b.width + 8, b.height + 8);
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
     target.restore();
   }
 
@@ -3407,12 +3575,17 @@ export class Diagram {
     this._groups.clear();
     this._links.clear();
     this.selectedParts.clear();
+    this.focusedPart = null;
     this.virtualization?.clear();
     this.partPool.clear();
     this.layerCache = null;
 
-    // Remove canvas from DOM
+    // Remove canvas and accessibility live region from DOM
     this.container.removeChild(this.canvas);
+    if (this.liveRegion) {
+      this.liveRegion.remove();
+      this.liveRegion = null;
+    }
   }
 
   /** Check whether the diagram has been destroyed. */

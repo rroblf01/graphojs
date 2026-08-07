@@ -1,4 +1,5 @@
 import type { Diagram } from '../diagram/Diagram.ts';
+import type { DraggingTool } from './DraggingTool.ts';
 import type { Tool } from './Tool.ts';
 
 /**
@@ -66,6 +67,11 @@ export class ToolManager {
   /** GoJS-compatible: The currently active tool (or null). */
   get currentTool(): Tool | null {
     return this.activeTool;
+  }
+
+  /** GoJS-compatible: The registered dragging tool, for configuring guided dragging. */
+  get draggingTool(): DraggingTool | undefined {
+    return this.getTool('dragging') as DraggingTool | undefined;
   }
 
   /** GoJS-compatible: The tool list consulted on mouse-down events. */

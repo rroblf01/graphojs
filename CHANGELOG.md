@@ -49,6 +49,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   a build artifact).
 - `ForceDirectedLayout.theta` — tunes the new Barnes-Hut repulsion
   approximation's accuracy/speed trade-off (see Performance below).
+- A real, generated API reference (`/reference/api/` on the docs site),
+  covering all 5 public subpaths (`graphojs`, `graphojs/go`,
+  `graphojs/templates`, `graphojs/react`, `graphojs/vue`) directly from
+  source via TypeDoc — replaces a hand-written page that covered only a
+  fraction of the actual public exports.
 
 ### Fixed
 

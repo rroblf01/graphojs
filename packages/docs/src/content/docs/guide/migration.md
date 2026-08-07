@@ -21,12 +21,7 @@ Migrar una aplicación GoJS a GraphoJS es en la mayoría de los casos cambiar
 
 ## Diferencias conocidas
 
-| GoJS | GraphoJS |
-|------|----------|
-| Cientos de figuras Shape | ~70 figuras + símbolos de flowchart |
-| `Part` IS a `GraphObject` | `Part` tiene un `panel` |
-| Templates de palette en `go.*` | En el subpath `graphojs/templates` |
-| Licensed | MIT |
+Ver la tabla completa en [Compatibilidad](/reference/compatibility/#diferencias-conocidas).
 
 ## Si usabas los templates de palette
 

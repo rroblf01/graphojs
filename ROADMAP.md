@@ -176,13 +176,48 @@ between minor releases, per [semver](https://semver.org/#spec-item-4).
 
 ## Phase 4 — Documentation completeness
 
-- [ ] Confirm the generated API reference (`reference/api` in the docs site)
-  covers 100% of the public exports, not just what's been hand-documented in
-  guides.
-- [ ] Add a troubleshooting/FAQ page collecting real "this worked one way in
-  GoJS, here it's different" cases as they come up.
-- [ ] Keep `compatibility.md`'s "known differences" table current — it should
-  always reflect the actual gap, not a historical snapshot.
+- [x] The generated API reference didn't exist — `reference/api.md` was a
+  36-line hand-written list covering a fraction of the 100+ real public
+  exports across `graphojs`'s 5 subpaths. Replaced it with a real generated
+  reference: `starlight-typedoc` + `typedoc` + `typedoc-plugin-markdown`
+  now build `reference/api/` directly from source at `astro build` time
+  (gitignored — regenerated every build, never committed), with one entry
+  point per public subpath (`graphojs`, `graphojs/go` as `graphojs-go`,
+  `graphojs/templates`, `graphojs/react`, `graphojs/vue`; tagged via
+  `@module` JSDoc comments so the generated module names match the actual
+  import paths). This now tracks every future export automatically instead
+  of needing manual upkeep.
+  - **Found and worked around a real gap in the toolchain**: naming the
+    `go.ts` entry point `graphojs/go` (with a slash) made TypeDoc nest it as
+    a *subdirectory* of the main `graphojs` module instead of a sibling —
+    and since `go.ts` re-exports ~183 of the same classes `graphojs` already
+    documents, those re-exports silently vanished from the docs entirely
+    (typedoc-plugin-markdown doesn't render "Reference" reflections or emit
+    a per-module overview page listing them). Verified via raw `typedoc
+    --json` output (183 of 188 children were `Reference`-kind, not actually
+    missing from TypeDoc's model — just dropped by the markdown renderer).
+    Fixed by naming modules without shared `/`-prefixes (`graphojs-go`
+    etc.) so each stays a top-level sibling, and added a note in
+    `compatibility.md` explaining that `graphojs/go`'s reference page only
+    shows what's *exclusive* to that subpath (e.g. `ModelTransactionCommand`)
+    — the ~183 shared classes (`go.Diagram`, `go.Node`, ...) are the exact
+    same declarations documented once under the main `graphojs` page.
+    `graphojs/templates`, `/react`, `/vue` aren't affected — they only
+    contain genuinely new declarations, nothing re-exported.
+- [x] Deferred, deliberately: a troubleshooting/FAQ page. The ROADMAP's own
+  framing is "collect real cases as they come up" — there isn't yet a real
+  backlog of reported GoJS-migration friction beyond what's already in
+  `compatibility.md`'s differences table, and fabricating hypothetical
+  entries would be worse than not having the page. Revisit once real
+  reports exist (e.g. from GitHub issues).
+- [x] Fixed a concrete staleness/drift problem while auditing the "known
+  differences" table: it was **duplicated** almost verbatim between
+  `compatibility.md` and `guide/migration.md`, with the two copies already
+  showing different (both stale) shape-figure counts — a live example of
+  exactly the drift this checklist item warns about. `migration.md` now
+  links to `compatibility.md`'s table instead of maintaining its own copy;
+  the count itself is corrected to the real current number (75, via
+  `ShapeTypes.ts`).
 
 ## Phase 5 — Accessibility, round 2
 

@@ -4,7 +4,15 @@ description: Superficie de compatibilidad de GraphoJS con GoJS.
 ---
 
 GraphoJS implementa la superficie de compatibilidad de GoJS. A continuación el
-resumen de lo que está soportado.
+resumen de lo que está soportado. Para el detalle completo de cada clase,
+método y propiedad, consulta la [referencia de API](/reference/api/), generada
+directamente desde el código fuente. Cubre los 5 subpaths públicos
+(`graphojs`, `graphojs/go`, `graphojs/templates`, `graphojs/react`,
+`graphojs/vue`) — nota que `graphojs/go` reexporta prácticamente las mismas
+clases que `graphojs` bajo el namespace `go.*`, así que su página en la
+referencia solo muestra lo que es exclusivo de ese subpath (p. ej.
+`ModelTransactionCommand`); para el resto de clases (`go.Diagram`,
+`go.Node`, ...) consulta directamente la página de `graphojs`.
 
 ## Superficie implementada
 
@@ -78,7 +86,7 @@ tampoco hay garantía de estabilidad total todavía. Están marcadas con
 
 | GoJS | GraphoJS |
 |------|----------|
-| Cientos de figuras Shape | ~70 figuras comunes + símbolos de flowchart |
+| Cientos de figuras Shape | 75 figuras comunes + símbolos de flowchart/BPMN/UML |
 | `Shape.geometryString` completo | Soporta M/L/H/V/C/S/Q/T/A/Z |
 | Licensed (proprietary) | MIT |
 | `Part` IS a `GraphObject` | `Part` tiene un `panel` (árbol visual) |

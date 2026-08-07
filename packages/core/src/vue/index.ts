@@ -1,3 +1,9 @@
+/**
+ * Vue wrapper components for GraphoJS.
+ *
+ * @module graphojs-vue
+ */
+
 import {
   Diagram as GoDiagram,
   Overview as GoOverview,

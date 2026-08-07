@@ -1,3 +1,9 @@
+/**
+ * React wrapper components for GraphoJS.
+ *
+ * @module graphojs-react
+ */
+
 import type React from 'react';
 import { useEffect, useRef } from 'react';
 import {

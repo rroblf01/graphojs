@@ -5,6 +5,8 @@
  *   import * as go from 'graphojs/go';
  *   const $ = go.GraphObject.make;
  *   const myDiagram = $(go.Diagram, "myDiagramDiv", { ... });
+ *
+ * @module graphojs-go
  */
 
 export type { AnimationOptions } from './animation/Animation.ts';

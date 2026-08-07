@@ -46,7 +46,9 @@ diagram.nodeTemplate = $(
 new go.Palette(paletteEl, diagram, getAllTemplates(), { showCategories: false });
 
 diagram.model = new go.GraphLinksModel({
-  nodeDataArray: [{ key: 1, label: 'Nodo inicial' }],
+  nodeDataArray: [
+    { key: 1, label: 'Nodo inicial', shape: 'roundedRect', fill: '#e3f2fd', stroke: '#1976d2' },
+  ],
   linkDataArray: [],
 });
 diagram.zoomToFit();
@@ -83,6 +85,9 @@ function addNode() {
   diagram.getModel().addNodeData({
     key,
     label: `Nodo ${key}`,
+    shape: 'roundedRect',
+    fill: '#e3f2fd',
+    stroke: '#1976d2',
     x: 40 + col * 130,
     y: 40 + row * 70,
   });

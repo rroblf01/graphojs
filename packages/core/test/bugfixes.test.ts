@@ -15,10 +15,11 @@ import {
   type Group,
   highContrastSelectionStyle,
   InputEvent,
-  type Link,
+  Link,
   LinkReshapingTool,
   Node,
   Panel,
+  Picture,
   Point,
   Rect as RectClass,
   Shape,
@@ -3182,5 +3183,109 @@ describe('O26: live-region announcements beyond selection/focus (undo/redo, add/
     } as unknown as MouseEvent);
 
     expect(live.textContent).toBe('Node "Alpha" added');
+  });
+});
+
+describe('O27: link template path/arrowhead Shapes no longer double-render as a floating panel', () => {
+  it('a plain path+arrowhead linkTemplate does not give the link an extra visual tree', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.linkTemplate = $(
+      Link,
+      { routing: 'orthogonal' },
+      $(Shape, { stroke: '#90a4ae', strokeWidth: 2 }),
+      $(Shape, { toArrow: 'Triangle', fill: '#546e7a', stroke: null }),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const link = d.findLinkForKey(d.getModel().getLinkKey(d.getModel().getLinkDataArray()[0]!)!)!;
+
+    // This used to be set to a clone of the template, causing renderLink to
+    // draw the same path/arrowhead Shapes a second time as a floating panel
+    // box centered on the link's midpoint (visible as a large solid
+    // rectangle in real orthogonal-routed diagrams).
+    expect(link.panel).toBeNull();
+    expect(() => (d as unknown as { render(): void }).render()).not.toThrow();
+  });
+
+  it('a linkTemplate with only a path, arrowhead, and label extracts all three onto the link and has no leftover visual tree', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.linkTemplate = $(
+      Link,
+      $(Shape, { stroke: '#90a4ae', strokeWidth: 2 }),
+      $(Shape, { toArrow: 'Triangle' }),
+      $(TextBlock, 'label', { font: '600 11px sans-serif', stroke: '#616161' }),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2, label: 'edge' }],
+    });
+    const link = d.findLinkForKey(d.getModel().getLinkKey(d.getModel().getLinkDataArray()[0]!)!)!;
+
+    // The label's styling is extracted onto the link's own fields — and
+    // rendered once via that (renderLink's `link.label` handling), not a
+    // second time as a floating panel drawn on top of it.
+    expect(link.labelFont).toBe('600 11px sans-serif');
+    expect(link.labelColor).toBe('#616161');
+    expect(link.panel).toBeNull();
+    expect(() => (d as unknown as { render(): void }).render()).not.toThrow();
+  });
+
+  it('a linkTemplate with genuinely unrecognized content (not a Shape/TextBlock) keeps its visual tree', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.linkTemplate = $(
+      Link,
+      $(Shape, { stroke: '#90a4ae', strokeWidth: 2 }),
+      $(Shape, { toArrow: 'Triangle' }),
+      $(Picture, { source: 'data:image/png;base64,', width: 16, height: 16 }),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const link = d.findLinkForKey(d.getModel().getLinkKey(d.getModel().getLinkDataArray()[0]!)!)!;
+
+    expect(link.panel).not.toBeNull();
+    expect(link.panel?.elements).toHaveLength(1);
+  });
+
+  it('reads the arrowhead style from whichever Shape has toArrow, regardless of order', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    // Arrowhead Shape listed first, path Shape second — the old code only
+    // ever inspected the first Shape it found (via an early `break`), so it
+    // would have missed toArrow entirely when the arrowhead comes first.
+    d.linkTemplate = $(
+      Link,
+      $(Shape, { toArrow: 'OpenTriangle', fill: null, stroke: null }),
+      $(Shape, { stroke: '#123456', strokeWidth: 5 }),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const link = d.findLinkForKey(d.getModel().getLinkKey(d.getModel().getLinkDataArray()[0]!)!)!;
+
+    expect(link.arrowhead).toBe('openArrow');
+    // The arrowhead Shape's implicit default strokeWidth (1) must not
+    // clobber the path Shape's explicit strokeWidth (5).
+    expect(link.strokeWidth).toBe(5);
+    expect(link.stroke).toBe('#123456');
   });
 });

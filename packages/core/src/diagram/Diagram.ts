@@ -24,6 +24,7 @@ import type {
 import type { GraphObject } from '../panel/GraphObject.ts';
 import type { Panel } from '../panel/Panel.ts';
 import { Shape } from '../panel/Shape.ts';
+import { TextBlock } from '../panel/TextBlock.ts';
 import { Group } from '../parts/Group.ts';
 import { type ArrowheadStyle, Link } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
@@ -1882,9 +1883,15 @@ export class Diagram {
       this._linkTemplate;
     if (template) {
       const cloned = template.clone();
-      link.panel = cloned;
       this.applyTemplateProperties(link, cloned.templateProperties);
+      // Extracts path/arrowhead Shapes onto the link's own stroke/
+      // strokeWidth/arrowhead fields and removes them from `cloned` —
+      // whatever's left (e.g. a label TextBlock) is genuine extra content.
+      // Only keep a visual tree to render when something remains, otherwise
+      // those same Shapes would also get drawn a second time as a floating
+      // panel box centered on the link's midpoint.
       this.applyLinkTemplateAppearance(link, cloned);
+      if (cloned.elements.length > 0) link.panel = cloned;
     }
 
     const layerName = (linkData.layer as string) ?? LayerNames.Default;
@@ -1900,23 +1907,39 @@ export class Diagram {
   }
 
   /**
-   * Extract link path appearance from a link template:
-   * the first Shape's stroke/strokeWidth become the link path style,
-   * and a Shape with toArrow/fromArrow sets the arrowhead.
+   * Extract link path appearance from a link template — a Shape's
+   * stroke/strokeWidth become the link path style, a Shape with toArrow
+   * sets the arrowhead, and a TextBlock's font/stroke become the label
+   * style — and remove those elements from `panel`. They're fully
+   * represented by the link's own fields at this point, drawn by the
+   * dedicated path/arrowhead/label rendering (`renderLink`'s `link.label`
+   * via `link.labelColor`/`labelFont`); leaving them in the panel would draw
+   * them a second time as a floating box (see `createLink`).
    */
   private applyLinkTemplateAppearance(link: Link, panel: Panel): void {
+    const consumed: GraphObject[] = [];
     for (const el of panel.elements) {
-      if (el instanceof Shape) {
-        if (link.strokeWidth === 2 || el.strokeWidth > 0) {
-          if (el.strokeWidth > 0) link.strokeWidth = el.strokeWidth;
-          if (el.stroke && el.stroke !== '#333333') link.stroke = el.stroke;
-        }
-        if (el.toArrow) {
-          link.arrowhead = this.mapArrowhead(el.toArrow);
-        }
-        break;
+      if (el instanceof TextBlock) {
+        link.labelFont = el.font;
+        link.labelColor = el.stroke;
+        consumed.push(el);
+        continue;
       }
+      if (!(el instanceof Shape)) continue;
+      // A Shape with toArrow is the arrowhead — it contributes only the
+      // arrowhead style, never the path's stroke/strokeWidth (it typically
+      // has no explicit strokeWidth of its own, which would otherwise
+      // incorrectly overwrite the path shape's width with Shape's default).
+      if (el.toArrow) {
+        link.arrowhead = this.mapArrowhead(el.toArrow);
+        consumed.push(el);
+        continue;
+      }
+      if (el.strokeWidth > 0) link.strokeWidth = el.strokeWidth;
+      if (el.stroke && el.stroke !== '#333333') link.stroke = el.stroke;
+      consumed.push(el);
     }
+    for (const el of consumed) panel.remove(el);
   }
 
   /** Map a GoJS arrowhead figure name to our ArrowheadStyle. */

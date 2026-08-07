@@ -31,18 +31,22 @@ diagram.linkTemplate = $(
   $(go.Shape, { toArrow: 'Triangle', fill: '#ef6c00', stroke: null }),
 );
 
-diagram.model = new go.GraphLinksModel({
-  nodeDataArray: [
-    { key: 1, label: 'Raíz' },
-    { key: 2, parent: 1, label: 'Nivel 2a' },
-    { key: 3, parent: 1, label: 'Nivel 2b' },
-    { key: 4, parent: 2, label: 'Nivel 3a' },
-    { key: 5, parent: 2, label: 'Nivel 3b' },
-    { key: 6, parent: 3, label: 'Nivel 3c' },
-    { key: 7, parent: 4, label: 'Hoja' },
-  ],
-  linkDataArray: [],
-});
+const nodeDataArray = [
+  { key: 1, label: 'Raíz' },
+  { key: 2, parent: 1, label: 'Nivel 2a' },
+  { key: 3, parent: 1, label: 'Nivel 2b' },
+  { key: 4, parent: 2, label: 'Nivel 3a' },
+  { key: 5, parent: 2, label: 'Nivel 3b' },
+  { key: 6, parent: 3, label: 'Nivel 3c' },
+  { key: 7, parent: 4, label: 'Hoja' },
+];
+// TreeLayout builds the hierarchy from actual links, not from `parent` data
+// properties directly — derive one link per parent/child pair.
+const linkDataArray = nodeDataArray
+  .filter((d) => d.parent !== undefined)
+  .map((d) => ({ from: d.parent, to: d.key }));
+
+diagram.model = new go.GraphLinksModel({ nodeDataArray, linkDataArray });
 
 diagram.layout = new go.TreeLayout({ nodeSpacing: 40 });
 diagram.layoutDiagram();

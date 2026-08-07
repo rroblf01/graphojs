@@ -50,19 +50,23 @@ diagram.linkTemplate = $(
   $(go.Shape, { stroke: '#64b5f6', strokeWidth: 2 }),
 );
 
-diagram.model = new go.GraphLinksModel({
-  nodeDataArray: [
-    { key: 1, name: 'Ana Ortiz', title: 'CEO' },
-    { key: 2, parent: 1, name: 'Marta Ruiz', title: 'CTO' },
-    { key: 3, parent: 1, name: 'Luis Vega', title: 'CFO' },
-    { key: 4, parent: 2, name: 'Sara Gómez', title: 'Eng. Manager' },
-    { key: 5, parent: 2, name: 'Iván Torres', title: 'Eng. Manager' },
-    { key: 6, parent: 4, name: 'Clara Iglesias', title: 'Frontend' },
-    { key: 7, parent: 4, name: 'Diego Prado', title: 'Backend' },
-    { key: 8, parent: 3, name: 'Nuria Salas', title: 'Contabilidad' },
-  ],
-  linkDataArray: [],
-});
+const nodeDataArray = [
+  { key: 1, name: 'Ana Ortiz', title: 'CEO' },
+  { key: 2, parent: 1, name: 'Marta Ruiz', title: 'CTO' },
+  { key: 3, parent: 1, name: 'Luis Vega', title: 'CFO' },
+  { key: 4, parent: 2, name: 'Sara Gómez', title: 'Eng. Manager' },
+  { key: 5, parent: 2, name: 'Iván Torres', title: 'Eng. Manager' },
+  { key: 6, parent: 4, name: 'Clara Iglesias', title: 'Frontend' },
+  { key: 7, parent: 4, name: 'Diego Prado', title: 'Backend' },
+  { key: 8, parent: 3, name: 'Nuria Salas', title: 'Contabilidad' },
+];
+// TreeLayout builds the hierarchy from actual links, not from `parent` data
+// properties directly — derive one link per parent/child pair.
+const linkDataArray = nodeDataArray
+  .filter((d) => d.parent !== undefined)
+  .map((d) => ({ from: d.parent, to: d.key }));
+
+diagram.model = new go.GraphLinksModel({ nodeDataArray, linkDataArray });
 
 diagram.layout = new go.TreeLayout({ nodeSpacing: 30, layerSpacing: 50 });
 diagram.layoutDiagram();

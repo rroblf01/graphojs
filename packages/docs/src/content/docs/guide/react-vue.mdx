@@ -49,3 +49,11 @@ import { Diagram } from 'graphojs/vue';
 
 Ambos wrappers exponen `initDiagram`, `onModelChange`, `onDiagramEvent` y
 `onSelectionChanged` (y en Vue los emits equivalentes).
+
+## Svelte / Angular
+
+Fuera de alcance para la 1.0.0 — decisión explícita, no un olvido. GraphoJS
+es agnóstico de framework en su núcleo (el `Diagram` real es una clase
+normal sobre un `<canvas>`), así que un wrapper de Svelte o Angular seguiría
+el mismo patrón fino que `graphojs/react`/`graphojs/vue` si se decide
+añadirlo más adelante — pero no antes de 1.0.0.

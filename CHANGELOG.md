@@ -102,11 +102,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   cleaned up its own canvas/listeners but never destroyed the diagram it
   owned. Both now track diagram ownership and destroy it when they own it,
   fixing a render-loop leak for any `Palette`/`Overview` created this way.
+- `"sideEffects": false` in `package.json` was incorrect: `Overview`,
+  `Palette`, and `Diagram` each register themselves with `GraphObject.make`
+  at module scope, a real side effect. A bundler trusting the old blanket
+  `false` could have silently dropped that registration. Replaced with an
+  explicit array naming just those 3 files.
 
 ### Performance
 
 - Minified core bundle ≈ 74 KB gzip (~297 KB raw) — grew from the additions
   above; still smaller than GoJS (~130 KB gzip).
+- The package now ships unbundled (`tsup`'s `bundle: false`, mirroring
+  `src/`'s module structure in `dist/` instead of one flattened file per
+  subpath) so a consumer's own bundler has a real module graph to
+  tree-shake against — importing only `Diagram` now costs ~63.9 KB gzip,
+  down from ~76.5 KB (no better than importing everything) before this
+  change. Full tree-shaking down to individual leaf classes is still
+  blocked by the size of the `graphojs`/`graphojs/go` re-export barrels (a
+  known bundler limitation, not fixable by more build config — see
+  ROADMAP.md Phase 7); `graphojs/templates` isn't affected by this and
+  tree-shakes cleanly (confirmed ~0.8 KB gzip for a single template
+  helper).
 - `ForceDirectedLayout`'s repulsion pass is now approximated with a
   Barnes-Hut quadtree (O(n log n) instead of O(n²) per iteration), and its
   attraction pass now iterates links directly instead of scanning every

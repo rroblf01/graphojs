@@ -78,9 +78,14 @@ tampoco hay garantía de estabilidad total todavía. Están marcadas con
   `exportToGraphMLFile` / `importFromGraphMLFile` — formato de intercambio
   propio de GraphoJS (GraphML no tiene equivalente en la API de GoJS), las
   heurísticas de tipo/coerción de claves numéricas podrían refinarse.
-- `AccessibilityMessages` / `diagram.accessibilityMessages` — previsiblemente
-  crecerá con más ganchos (anunciar deshacer/rehacer, añadir/borrar, no solo
-  selección/foco) antes de 1.0.0; los cambios serán aditivos, no rupturas.
+- `AccessibilityMessages` / `diagram.accessibilityMessages` — ya cubre
+  selección/foco, deshacer/rehacer, añadir/borrar y colapsar/expandir árbol;
+  podría seguir creciendo antes de 1.0.0, pero los cambios serán aditivos,
+  no rupturas.
+- `Diagram.selectionStyle` / `DiagramOptions.selectionStyle` — colores de
+  selección/foco, con detección automática de `prefers-contrast: more` /
+  `forced-colors: active`; la forma concreta podría afinarse antes de
+  1.0.0.
 
 ## Diferencias conocidas
 

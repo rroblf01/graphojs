@@ -10,7 +10,14 @@
     "url": "https://github.com/rroblf01/graphojs"
   },
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/export/Overview.js",
+    "./dist/export/Overview.cjs",
+    "./dist/export/Palette.js",
+    "./dist/export/Palette.cjs",
+    "./dist/diagram/Diagram.js",
+    "./dist/diagram/Diagram.cjs"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -35,13 +42,13 @@
     },
     "./react": {
       "types": "./dist/react/index.d.ts",
-      "import": "./dist/react.js",
-      "require": "./dist/react.cjs"
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/index.cjs"
     },
     "./vue": {
       "types": "./dist/vue/index.d.ts",
-      "import": "./dist/vue.js",
-      "require": "./dist/vue.cjs"
+      "import": "./dist/vue/index.js",
+      "require": "./dist/vue/index.cjs"
     }
   },
   "peerDependencies": {
@@ -73,7 +80,7 @@
     "graphojs"
   ],
   "scripts": {
-    "build": "tsup && tsc --emitDeclarationOnly --declaration --declarationDir dist --noEmit false",
+    "build": "tsup && node scripts/fix-dist-extensions.mjs && tsc --emitDeclarationOnly --declaration --declarationDir dist --noEmit false",
     "prepublishOnly": "pnpm build",
     "types": "tsc --emitDeclarationOnly --declaration --declarationDir dist --noEmit false",
     "typecheck": "tsc --noEmit",

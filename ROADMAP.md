@@ -270,21 +270,96 @@ shipped in [Unreleased] of the CHANGELOG. For 1.0.0:
 
 ## Phase 6 — Cross-browser and real-device validation
 
-- [ ] e2e currently runs only against Firefox (see `playwright.config.ts`).
-  Add Chromium and WebKit projects before 1.0.0 — Safari/iOS in particular,
-  since touch/pinch-zoom bugs (like the pinch-centering bug fixed this
-  session) tend to surface there first.
-- [ ] Manually verify touch interaction on at least one real iOS and one real
-  Android device, not just Playwright's touch emulation.
+- [x] e2e ran only against Firefox. Decision (per project owner): local dev
+  stays Firefox-only (fast, matches daily workflow); CI additionally runs
+  Chromium and WebKit. `playwright.config.ts` now adds those two projects
+  only when `process.env.CI` is set — `pnpm test:e2e` locally is unchanged
+  (10 tests, Firefox), CI runs 26 (Firefox's 10 + Chromium's 8 + WebKit's 8).
+  Both new projects skip `visual.spec.ts`: its snapshots were captured
+  against Firefox's renderer, and per-engine font/anti-aliasing differences
+  would need their own baselines — visual regression stays deliberately
+  single-browser rather than becoming a 3-way baseline-maintenance burden.
+  `ci.yml`'s `e2e` job now installs all three browsers
+  (`playwright install --with-deps firefox chromium webkit`).
+  - Verified for real, not just config plumbing: installed Chromium locally
+    (no `--with-deps`, since this sandbox has no root) and ran the full
+    8-test cross-browser subset against it — all 8 passed. WebKit couldn't
+    be verified locally (`playwright install webkit` needs `libicu74`/
+    `libxml2`/`libflite1` via `apt`, requiring root this sandbox doesn't
+    have) — CI's `ubuntu-latest` runner has root and `--with-deps`, so this
+    is a local-sandbox limitation, not a config gap.
+- [ ] **Not done — needs the project owner, not something automatable from
+  here.** Manually verify touch interaction on at least one real iOS and one
+  real Android device. Playwright's touch emulation (already exercised by
+  `e2e/interaction.spec.ts` and the pinch-zoom fix earlier this session) is
+  not a substitute for a real touchscreen — flag this explicitly rather than
+  mark it done by proxy.
 
 ## Phase 7 — Ecosystem decisions
 
-- [ ] Decide whether Svelte/Angular wrappers are in scope for 1.0.0 or
-  explicitly out of scope (React and Vue wrappers already ship as
-  `graphojs/react` / `graphojs/vue`).
-- [ ] Revisit bundle size (~74 KB gzip as of this writing) after all the
-  above — confirm tree-shaking still works for consumers who only import a
-  subset of the API.
+- [x] Decided (per project owner): Svelte/Angular wrappers are explicitly
+  **out of scope for 1.0.0** — not an oversight, a deliberate deferral.
+  Documented in the React/Vue guide (`guide/react-vue.mdx`) so it reads as
+  a decision, not a gap someone needs to file an issue about.
+- [x] Attempted the full fix (per project owner) for the broken tree-shaking
+  found while checking this item. Real, measured improvement shipped, plus
+  an honest account of the fundamental limit that remains:
+  - **Fixed**: `tsup.config.ts` now ships each entry point unbundled
+    (`bundle: false`, `entry: ['src/**/*.{ts,tsx}']`) instead of one
+    pre-flattened, pre-minified file per subpath — the published `dist/`
+    now mirrors `src/`'s ~150-file module graph, giving a downstream
+    bundler something real to shake. This surfaced a real gap in tsup's
+    unbundled mode: it doesn't rewrite `.ts`/`.tsx` import specifiers to
+    the actual output extension, so `dist/index.js` literally contained
+    `from './diagram/Diagram.ts'` — broken at runtime in every environment
+    (Node, browsers) that doesn't have a `.ts` loader. Added
+    `scripts/fix-dist-extensions.mjs` (runs after `tsup`, before the `.d.ts`
+    step) to rewrite these to `.js` in ESM output and `.cjs` in CJS output;
+    verified by actually executing the built output (`node --input-type
+    =module -e "import ... from './dist/index.js'"` and the CJS
+    equivalent), not just building without errors. `package.json`'s
+    `./react`/`./vue` export paths updated to match the now-nested
+    `dist/react/index.js` / `dist/vue/index.js` (their `types` entries were
+    already nested; only `import`/`require` needed the fix).
+    `e2e/build-fixtures.mjs` had the same stale flattened paths hardcoded
+    — fixed, and the full e2e suite (Firefox + Chromium) re-verified
+    against the new dist layout.
+  - **Fixed**: `"sideEffects": false` replaced with an explicit array
+    listing exactly the 3 files with real module-scope side effects
+    (`export/Overview.{js,cjs}`, `export/Palette.{js,cjs}`,
+    `diagram/Diagram.{js,cjs}` — each calls `registerDomComponent(...)`
+    unconditionally). Previously this was an incorrect blanket claim that
+    could have let a bundler silently drop one of these registrations.
+  - **Also verified**: the generated `.d.ts` files reference `.ts`
+    extensions too (e.g. `from './diagram/Diagram.ts'`), which looked like
+    the same bug at first — but this is TypeScript's own documented
+    declaration-resolution behavior, not a defect. Confirmed a real
+    consumer's `tsc` resolves it correctly under both `moduleResolution:
+    "bundler"` and the much stricter `"nodenext"` (tested against the
+    actual built `.d.ts` output via a `node_modules` symlink, not a
+    theoretical check) — left `.d.ts` untouched.
+  - **Measured improvement**: importing only `Diagram` now costs ~63.9 KB
+    gzip, down from ~76.5 KB before (a real ~16% cut for that common case)
+    — out of a ~78 KB gzip full-bundle baseline.
+  - **The remaining gap is real and not fixable by more build-config
+    tuning.** Importing only `Point` — a leaf class with zero internal
+    imports, confirmed to tree-shake to 682 B gzip in complete isolation
+    (bypassing the package's `exports` map entirely to import its compiled
+    file directly) — still costs ~63.9 KB through the package's public
+    `graphojs` entry point, i.e. no better than importing `Diagram`.
+    Root cause: `index.ts` re-exports ~150 names from one barrel file, and
+    esbuild (confirmed the same limitation holds for the class of bundlers
+    it represents) cannot cleanly shake through a re-export barrel that
+    large to prove entire sibling modules are unreachable — a documented,
+    known bundler limitation with large barrel files, not something
+    `sideEffects`/`splitting`/`minify` tuning resolves. A full fix would
+    mean exposing many fine-grained subpath exports (e.g. `graphojs/Point`,
+    `graphojs/Diagram`, one per class) instead of one broad barrel — a
+    breaking change to the public API shape, out of scope here. Since GoJS
+    has the same one-big-bundle limitation, the "~74 KB gzip, smaller than
+    GoJS" comparison in the CHANGELOG/README remains valid — it's a
+    full-bundle-to-full-bundle comparison either way, which is what most
+    real consumers (using most of the API surface) actually experience.
 
 ## Signal to actually cut 1.0.0
 

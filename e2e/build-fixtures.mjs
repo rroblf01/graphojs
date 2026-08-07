@@ -10,8 +10,8 @@ const outDir = join(root, 'e2e', 'fixtures');
 
 const alias = {
   graphojs: resolve(root, 'packages/core/dist/index.js'),
-  'graphojs/react': resolve(root, 'packages/core/dist/react.js'),
-  'graphojs/vue': resolve(root, 'packages/core/dist/vue.js'),
+  'graphojs/react': resolve(root, 'packages/core/dist/react/index.js'),
+  'graphojs/vue': resolve(root, 'packages/core/dist/vue/index.js'),
 };
 
 const targets = [

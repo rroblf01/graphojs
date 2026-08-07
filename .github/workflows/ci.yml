@@ -102,5 +102,5 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm exec playwright install --with-deps firefox
+      - run: pnpm exec playwright install --with-deps firefox chromium webkit
       - run: pnpm test:e2e

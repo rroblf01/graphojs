@@ -76,6 +76,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `r.containsRect is not a function` when called with a plain
   `{x,y,width,height}` object — exactly what `DragSelectingTool` always
   passes when `isPartialInclusion` is set to `false`.
+- `PanningTool` never actually read `Diagram.allowHorizontalScroll` /
+  `allowVerticalScroll` — both flags existed but nothing gated panning on
+  them, so setting either to `false` had no effect.
+- `Palette` and `Overview` create their own internal `Diagram` (with its own
+  render loop) when constructed without one, but never destroyed it:
+  `Palette` had no `destroy()` method at all, and `Overview.destroy()`
+  cleaned up its own canvas/listeners but never destroyed the diagram it
+  owned. Both now track diagram ownership and destroy it when they own it,
+  fixing a render-loop leak for any `Palette`/`Overview` created this way.
 
 ### Performance
 

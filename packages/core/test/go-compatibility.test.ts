@@ -226,6 +226,7 @@ describe('GoJS Compatibility', () => {
       expect(link?.toNode?.key).toBe(2);
       expect(link?.fromKey).toBe(1);
       expect(link?.toKey).toBe(2);
+      d.destroy();
     });
 
     it('fromNode/toNode setters accept Node objects or keys', () => {

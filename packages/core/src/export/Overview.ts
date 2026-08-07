@@ -18,6 +18,7 @@ export class Overview {
   private isDragging = false;
   private refreshListener: () => void = () => {};
   private _destroyed = false;
+  private ownsDiagram: boolean;
 
   constructor(
     container: HTMLElement,
@@ -26,9 +27,11 @@ export class Overview {
   ) {
     if (diagram) {
       this.diagram = diagram;
+      this.ownsDiagram = false;
     } else {
       // GoJS-compatible: create an internal diagram when none is observed yet
       this.diagram = new Diagram({ div: container as HTMLDivElement });
+      this.ownsDiagram = true;
     }
     this.width = options?.width ?? 200;
     this.height = options?.height ?? 150;
@@ -78,6 +81,7 @@ export class Overview {
       d.removeDiagramListener('ModelChanged', this.refreshListener);
     }
     this.diagram = value;
+    this.ownsDiagram = false;
     this.attachRefresh();
     this.render();
   }
@@ -266,6 +270,9 @@ export class Overview {
       d.removeDiagramListener('SelectionChanged', this.refreshListener);
     }
     this.canvas.remove();
+    if (this.ownsDiagram) {
+      this.diagram.destroy();
+    }
   }
 }
 

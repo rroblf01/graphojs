@@ -782,6 +782,9 @@ describe('GoJS Getting Started tutorial migration', () => {
     // Command handler shortcuts
     diagram.select(diagram.findNodeForKey(1) as never);
     expect(diagram.commandHandler.canDeleteSelection()).toBe(true);
+
+    palette.destroy();
+    overview.destroy();
   });
 
   it('supports getDiagramDiv, layoutDiagram, zoomToRect, toJson, Overview.observed', () => {

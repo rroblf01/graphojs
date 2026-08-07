@@ -12,6 +12,7 @@ export class Palette {
   private diagram: Diagram;
   private templates: Template[];
   private showCategories: boolean;
+  private ownsDiagram: boolean;
 
   constructor(
     container: HTMLElement,
@@ -22,12 +23,14 @@ export class Palette {
     // GoJS-compatible: a Palette creates its own internal diagram when none given
     if (diagram) {
       this.diagram = diagram;
+      this.ownsDiagram = false;
     } else {
       const internalDiv = document.createElement('div');
       internalDiv.style.width = '100%';
       internalDiv.style.height = '100%';
       container.appendChild(internalDiv);
       this.diagram = new Diagram({ div: internalDiv });
+      this.ownsDiagram = true;
     }
     this.templates = templates ?? [];
     this.showCategories = options?.showCategories ?? true;
@@ -161,6 +164,14 @@ export class Palette {
 
     this.diagram.commit((d) => d.getModel().addNode(nodeData), 'Drop palette node');
     return nodeData;
+  }
+
+  /** Destroy the palette and clean up. */
+  destroy(): void {
+    this.element.remove();
+    if (this.ownsDiagram) {
+      this.diagram.destroy();
+    }
   }
 }
 

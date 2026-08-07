@@ -62,7 +62,11 @@ export class PanningTool extends Tool {
     const dx = ((e.clientX - this.panStartX) / viewport.scale) * this._panSpeed;
     const dy = ((e.clientY - this.panStartY) / viewport.scale) * this._panSpeed;
 
-    this.diagram.setViewport(this.panOffsetX - dx, this.panOffsetY - dy);
+    // GoJS-compatible: allowHorizontalScroll/allowVerticalScroll lock that axis.
+    const newX = this.diagram.allowHorizontalScroll ? this.panOffsetX - dx : this.panOffsetX;
+    const newY = this.diagram.allowVerticalScroll ? this.panOffsetY - dy : this.panOffsetY;
+
+    this.diagram.setViewport(newX, newY);
   }
 
   override doMouseUp(_e: MouseEvent): void {

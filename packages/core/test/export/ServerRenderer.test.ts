@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
 import {
   measureDiagramContent,
@@ -77,9 +77,18 @@ beforeAll(() => {
   } as unknown as typeof ResizeObserver;
 });
 
+const diagrams: Diagram[] = [];
+
 function createDiagram(): Diagram {
-  return new Diagram({ div: document.createElement('div') });
+  const d = new Diagram({ div: document.createElement('div') });
+  diagrams.push(d);
+  return d;
 }
+
+afterEach(() => {
+  for (const d of diagrams) d.destroy();
+  diagrams.length = 0;
+});
 
 /** A bare, non-DOM object — no HTMLCanvasElement anywhere in its chain. */
 function createFakeServerCanvas(): ServerCanvasLike & { ctx: CanvasRenderingContext2D } {

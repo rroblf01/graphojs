@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
 import { ContextMenu } from '../../src/export/ContextMenu.ts';
 import { AddNodeCommand } from '../../src/undo/commands.ts';
@@ -60,10 +60,11 @@ beforeAll(() => {
   } as unknown as typeof ResizeObserver;
 });
 
-afterAll(() => {
-  delete (globalThis as { requestAnimationFrame?: unknown }).requestAnimationFrame;
-  delete (globalThis as { cancelAnimationFrame?: unknown }).cancelAnimationFrame;
-});
+// Intentionally no afterAll deleting requestAnimationFrame/cancelAnimationFrame:
+// vitest.setup.ts installs a persistent global polyfill, and removing it here
+// can crash a still-pending render-loop callback from a Diagram this file (or
+// another file sharing the same worker) forgot to destroy() — see the
+// `requestAnimationFrame is not defined` flake this used to cause.
 
 describe('Diagram destroy / memory management', () => {
   it('should create and not be destroyed', () => {

@@ -106,11 +106,15 @@ describe('Large graph performance', () => {
     // Informational: report timing. Threshold is generous (5s) to avoid flakiness.
     console.log(`[benchmark] 2000 nodes + ${links.length} links synced in ${elapsed.toFixed(1)}ms`);
     expect(elapsed).toBeLessThan(5000);
+    diagram.destroy();
   });
 
   it('model sync stays usable at 50,000 nodes + 50,000 links', () => {
     // Informational ceiling test (see ROADMAP.md Phase 2): the largest scale
-    // GraphoJS aims to support without falling over. Generous threshold.
+    // GraphoJS aims to support without falling over. Generous threshold —
+    // measured ~35s under v8 coverage instrumentation (~9x slower than
+    // uninstrumented) vs ~3.8s normally, so this needs real headroom to
+    // avoid flaking whenever `pnpm test:coverage` runs in CI.
     const div = document.createElement('div');
     const diagram = new Diagram({ div });
     const model = new GraphLinksModel();
@@ -137,8 +141,9 @@ describe('Large graph performance', () => {
     console.log(
       `[benchmark] 50000 nodes + ${links.length} links synced in ${elapsed.toFixed(1)}ms`,
     );
-    expect(elapsed).toBeLessThan(60000);
-  }, 90000);
+    expect(elapsed).toBeLessThan(90000);
+    diagram.destroy();
+  }, 120000);
 
   it('handles rapid incremental model updates efficiently', () => {
     const div = document.createElement('div');
@@ -155,6 +160,7 @@ describe('Large graph performance', () => {
 
     console.log(`[benchmark] 500 incremental updates in ${elapsed.toFixed(1)}ms`);
     expect(elapsed).toBeLessThan(2000);
+    diagram.destroy();
   });
 
   it('renders 2000 nodes + 2000 links within a frame budget', () => {
@@ -191,6 +197,7 @@ describe('Large graph performance', () => {
       `[benchmark] avg render ${avg.toFixed(2)}ms for 2000 nodes + ${links.length} links`,
     );
     expect(avg).toBeLessThan(50);
+    diagram.destroy();
   });
 
   it('repeated renders of a static (unmoved) 20,000-node diagram skip re-rebuilding the virtualization index', () => {
@@ -217,9 +224,11 @@ describe('Large graph performance', () => {
     const avgRepeated = (performance.now() - start) / 20;
 
     console.log(`[benchmark] 20000 static nodes: avg repeated render ${avgRepeated.toFixed(2)}ms`);
-    // Generous bound: a full quadtree rebuild of 20k items every frame would
-    // regularly exceed this; skipping it when nothing moved should not.
-    expect(avgRepeated).toBeLessThan(20);
+    // Generous bound (measured ~12.6ms under coverage instrumentation vs
+    // ~7.5ms normally): a full quadtree rebuild of 20k items every frame
+    // would regularly exceed this; skipping it when nothing moved should not.
+    expect(avgRepeated).toBeLessThan(40);
+    diagram.destroy();
   });
 
   it('runs layouts on large graphs efficiently', () => {
@@ -257,13 +266,15 @@ describe('Large graph performance', () => {
     );
     expect(gridMs).toBeLessThan(2000);
     expect(treeMs).toBeLessThan(2000);
+    diagram.destroy();
   });
 
   it('runs force-directed layout on a large graph (Barnes-Hut repulsion)', () => {
     // Before the Barnes-Hut rewrite, this took ~3.2s at just 400 nodes
     // (naive O(n^2) repulsion + an accidentally O(n^2) attraction scan); at
-    // 5000 nodes the old algorithm would have taken minutes. It now
-    // completes in well under a second.
+    // 5000 nodes the old algorithm would have taken many minutes. It now
+    // completes in ~1.3s normally (~5.5s measured under v8 coverage
+    // instrumentation, hence the generous threshold below).
     const div = document.createElement('div');
     const diagram = new Diagram({ div });
     const model = new GraphLinksModel();
@@ -289,8 +300,9 @@ describe('Large graph performance', () => {
     const fdMs = performance.now() - t;
 
     console.log(`[benchmark] force-directed layout on ${n} nodes ${fdMs.toFixed(1)}ms`);
-    expect(fdMs).toBeLessThan(5000);
-  }, 30000);
+    expect(fdMs).toBeLessThan(20000);
+    diagram.destroy();
+  }, 45000);
 
   it('force-directed layout stays usable at 50,000 nodes', () => {
     // Informational ceiling test (see ROADMAP.md Phase 2): confirms the
@@ -318,6 +330,7 @@ describe('Large graph performance', () => {
       `[benchmark] force-directed layout (10 iterations) on ${n} nodes ${fdMs.toFixed(1)}ms`,
     );
     expect(fdMs).toBeLessThan(30000);
+    diagram.destroy();
   }, 60000);
 
   it('hit-testing findPartAt is not catastrophically slow with 2000 nodes', () => {
@@ -343,6 +356,7 @@ describe('Large graph performance', () => {
       `[benchmark] hit-test findPartAt avg ${perCall.toFixed(3)}ms over 2000 nodes (${elapsed.toFixed(1)}ms for 1000 calls)`,
     );
     expect(perCall).toBeLessThan(5);
+    diagram.destroy();
   });
 
   it('pan hot-path (setViewport + content bounds) stays responsive', () => {
@@ -368,5 +382,6 @@ describe('Large graph performance', () => {
       `[benchmark] pan hot-path (setViewport+bounds) avg ${perCall.toFixed(3)}ms (${elapsed.toFixed(1)}ms for 200 iterations)`,
     );
     expect(perCall).toBeLessThan(10);
+    diagram.destroy();
   });
 });

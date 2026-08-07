@@ -2811,6 +2811,15 @@ export class Diagram {
   /** Start the render loop. */
   private startRenderLoop(): void {
     const render = () => {
+      // Guards against a scheduled frame firing after destroy() — relying
+      // solely on cancelAnimationFrame(this.animationFrameId) in
+      // stopRenderLoop() is not enough in test environments where
+      // requestAnimationFrame/cancelAnimationFrame are polyfilled per test
+      // file: if a *different* file's teardown replaces or removes those
+      // globals while this frame is still pending, unconditionally
+      // rescheduling here would throw "requestAnimationFrame is not
+      // defined" instead of just quietly stopping.
+      if (this._isDestroyed) return;
       if (this.isDirty) {
         this.render();
         this.isDirty = false;

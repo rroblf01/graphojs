@@ -133,14 +133,46 @@ between minor releases, per [semver](https://semver.org/#spec-item-4).
 
 ## Phase 3 — Test quality and coverage floor
 
-- [ ] Raise coverage on the weakest modules (`ZoomingTool`, `PanningTool`,
-  `ContextMenuTool` are all under 50% branch coverage as of this writing —
-  run `pnpm test:coverage` for current numbers).
-- [ ] Add `coverage.thresholds` to `vitest.config.ts` so CI fails on
-  regressions, not just reports a number.
-- [ ] Add visual regression tests (Playwright screenshot comparisons) for
-  `Shape` figures and layouts — today everything is verified numerically
-  (bounds, positions) but never against the actual rendered pixels.
+- [x] Raised coverage on the weakest modules. `ZoomingTool`, `PanningTool`,
+  and `ContextMenuTool` went from under 50% branch coverage to 97-100%
+  (`test/tool/Tool.test.ts`); `Picture.ts` went from 0% to fully covered
+  (`test/panel/Picture.test.ts`). Along the way found and fixed a real bug:
+  `PanningTool` never actually read `Diagram.allowHorizontalScroll` /
+  `allowVerticalScroll` — both flags existed and had getters/setters, but
+  nothing gated panning on them, so setting either to `false` did nothing.
+  `PanningTool.doMouseMove` now respects both axes independently.
+- [x] Added `coverage.thresholds` to `vitest.config.ts`
+  (`statements: 74, branches: 58, functions: 76, lines: 76`, set with
+  margin below the current ~77-78/63/80/80% so normal run-to-run variance
+  doesn't flake CI) — regressions now fail the `test:coverage` CI job
+  instead of just showing up in a report nobody reads.
+- [x] Found and fixed a real, intermittent test-suite reliability bug
+  uncovered while verifying the new thresholds: `vitest run` would exit
+  with code 1 on roughly 3 of every 5 runs (all 1124 tests reporting
+  "passed", but with unhandled `ReferenceError: requestAnimationFrame is
+  not defined` errors) — a problem for `test:coverage` running in CI, since
+  a non-zero exit fails the job regardless of the printed pass count. Root
+  causes, all in test code/widgets rather than the render loop itself:
+  - `Palette` and `Overview` each create their **own internal `Diagram`**
+    (with its own render loop) when constructed without one — GoJS-
+    compatible behavior — but neither ever destroyed it: `Palette` had no
+    `destroy()` method at all, and `Overview.destroy()` cleaned up its own
+    canvas/listeners but never called `this.diagram.destroy()`. Both now
+    track whether they own their diagram and destroy it when they do;
+    `go-migration.test.ts`'s untracked `new go.Palette(...)` /
+    `new go.Overview(...)` instances are now destroyed too.
+  - Several test files (`benchmark.test.ts`, `export/ServerRenderer.test.ts`,
+    `serialization/GraphML.test.ts`, `go-compatibility.test.ts`) created
+    `Diagram` instances and simply never destroyed them, leaking their
+    `requestAnimationFrame`-scheduled render loops past the test file's own
+    lifetime. Fixed by destroying every diagram at the end of its test (or,
+    where a shared `createDiagram()` helper is used, via a tracked array +
+    `afterEach`, matching the pattern already used elsewhere in the suite).
+  - Verified via 6 consecutive full-suite runs (plain and with `--coverage`)
+    all exiting 0 with zero unhandled errors, after previously failing on
+    ~60% of runs.
+- [x] Added visual regression tests (Playwright screenshot comparisons) for
+  `Shape` figures and layouts — see `e2e/visual.spec.ts`.
 
 ## Phase 4 — Documentation completeness
 

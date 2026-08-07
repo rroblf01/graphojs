@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphoJS Visual Regression: Layouts</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .row {
+        display: flex;
+      }
+      .diagramDiv {
+        width: 360px;
+        height: 360px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <div id="gridDiv" class="diagramDiv"></div>
+      <div id="treeDiv" class="diagramDiv"></div>
+      <div id="forceDiv" class="diagramDiv"></div>
+    </div>
+    <script type="module">
+      import {
+        Diagram,
+        GraphObject,
+        GraphLinksModel,
+        Shape,
+        TextBlock,
+        Panel,
+        Binding,
+        GridLayout,
+        TreeLayout,
+        ForceDirectedLayout,
+      } from '../../packages/core/dist/index.js';
+
+      const $ = GraphObject.make;
+
+      const nodeTemplate = $(
+        Panel,
+        'Auto',
+        $(Shape, 'roundedRect', { fill: '#dbeafe', stroke: '#1d4ed8', strokeWidth: 2 }),
+        $(TextBlock, { margin: 4, fontSize: 10 }, new Binding('text', 'label')),
+      );
+
+      const N = 15;
+      const nodeDataArray = [];
+      for (let i = 0; i < N; i++) {
+        nodeDataArray.push({ key: i, label: `N${i}`, x: 0, y: 0, width: 50, height: 30 });
+      }
+      const linkDataArray = [];
+      for (let i = 1; i < N; i++) {
+        linkDataArray.push({ from: Math.floor((i - 1) / 2), to: i });
+      }
+
+      function build(div, layout) {
+        const diagram = new Diagram({ div });
+        diagram.nodeTemplate = nodeTemplate;
+        diagram.model = new GraphLinksModel({
+          nodeDataArray: nodeDataArray.map((d) => ({ ...d })),
+          linkDataArray: linkDataArray.map((d) => ({ ...d })),
+        });
+        diagram.layout = layout;
+        diagram.zoomToFit();
+        return diagram;
+      }
+
+      build(document.getElementById('gridDiv'), new GridLayout({ spacingX: 20, spacingY: 20 }));
+      build(document.getElementById('treeDiv'), new TreeLayout({ nodeSpacing: 15 }));
+      build(
+        document.getElementById('forceDiv'),
+        new ForceDirectedLayout({ maxIterations: 100 }),
+      );
+
+      window.__ready = true;
+    </script>
+  </body>
+</html>

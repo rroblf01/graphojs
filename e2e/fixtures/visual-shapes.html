@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphoJS Visual Regression: Shapes</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #diagramDiv {
+        width: 900px;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="diagramDiv"></div>
+    <script type="module">
+      import {
+        Diagram,
+        GraphObject,
+        GraphLinksModel,
+        Shape,
+        TextBlock,
+        Panel,
+        Binding,
+      } from '../../packages/core/dist/index.js';
+
+      const $ = GraphObject.make;
+
+      const FIGURES = [
+        'rect',
+        'roundedRect',
+        'ellipse',
+        'diamond',
+        'hexagon',
+        'octagon',
+        'star',
+        'triangle',
+        'cross',
+        'cloud',
+        'parallelogram',
+        'trapezoid',
+        'pentagon',
+        'heart',
+        'cylinder',
+        'process',
+        'document',
+        'decision',
+        'card',
+        'file',
+        'folder',
+        'database',
+        'shield',
+        'bolt',
+      ];
+
+      const diagram = new Diagram({ div: document.getElementById('diagramDiv') });
+      diagram.nodeTemplate = $(
+        Panel,
+        'Auto',
+        $(
+          Shape,
+          { fill: '#dbeafe', stroke: '#1d4ed8', strokeWidth: 2 },
+          new Binding('figure', 'figure'),
+        ),
+        $(TextBlock, { margin: 4, fontSize: 10 }, new Binding('text', 'label')),
+      );
+
+      const cols = 6;
+      const nodeDataArray = FIGURES.map((figure, i) => ({
+        key: i,
+        figure,
+        label: figure,
+        x: (i % cols) * 140,
+        y: Math.floor(i / cols) * 110,
+        width: 120,
+        height: 80,
+      }));
+
+      diagram.model = new GraphLinksModel({ nodeDataArray });
+      diagram.zoomToFit();
+
+      window.__ready = true;
+    </script>
+  </body>
+</html>

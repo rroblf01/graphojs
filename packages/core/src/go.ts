@@ -39,13 +39,13 @@ export {
 export type { DiagramOptions } from './diagram/Diagram.ts';
 // Diagram
 export { Diagram } from './diagram/Diagram.ts';
-export { InputEvent } from './events/InputEvent.ts';
 export type {
   DiagramEvent,
   DiagramEventHandler,
   DiagramEventType,
 } from './diagram/DiagramEvents.ts';
 export { createDiagramEvents, DiagramEvents } from './diagram/DiagramEvents.ts';
+export { InputEvent } from './events/InputEvent.ts';
 export { Margin } from './geometry/Margin.ts';
 // Geometry
 export { Point } from './geometry/Point.ts';

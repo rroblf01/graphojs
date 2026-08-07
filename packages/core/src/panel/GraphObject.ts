@@ -1,20 +1,21 @@
 import type { Binding } from '../binding/Binding.ts';
 import { Binding as BindingClass } from '../binding/Binding.ts';
+import type { InputEvent } from '../events/InputEvent.ts';
 import type { Margin } from '../geometry/Margin.ts';
+import { Margin as MarginClass } from '../geometry/Margin.ts';
 import type { Rect } from '../geometry/Rect.ts';
 import type { Size } from '../geometry/Size.ts';
 import { Size as SizeClass } from '../geometry/Size.ts';
 import type { Spot } from '../geometry/Spot.ts';
 import type { NodeData } from '../model/Model.ts';
+import type { Group } from '../parts/Group.ts';
+import type { Link } from '../parts/Link.ts';
+import type { Node } from '../parts/Node.ts';
+import type { Part } from '../parts/Part.ts';
 import { isDomComponent } from './ComponentRegistry.ts';
+import type { Panel } from './Panel.ts';
 import { getPanelFactory } from './PanelRegistry.ts';
 import { isPartCtor } from './PartRegistry.ts';
-import type { Part } from '../parts/Part.ts';
-import type { Node } from '../parts/Node.ts';
-import type { Link } from '../parts/Link.ts';
-import type { Group } from '../parts/Group.ts';
-import type { Panel } from './Panel.ts';
-import type { InputEvent } from '../events/InputEvent.ts';
 
 /**
  * Base class for all visual elements that can appear in a Panel.
@@ -401,8 +402,9 @@ export abstract class GraphObject {
     return this._margin;
   }
 
-  set margin(value: Margin | null) {
-    this._margin = value;
+  /** GoJS-compatible: a plain number sets a uniform margin on all four sides. */
+  set margin(value: Margin | number | null) {
+    this._margin = typeof value === 'number' ? MarginClass.uniform(value) : value;
   }
 
   private _row = 0;

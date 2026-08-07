@@ -1165,7 +1165,12 @@ export class Diagram {
         this.touchState.startOffsetY - dy / this._scale,
       );
     } else if (touches.length === 2 && this.touchState.startDistance > 0) {
-      // Two-finger pinch-zoom + pan
+      // Two-finger pinch-zoom + pan. Keep the diagram point that was under
+      // the gesture's starting midpoint pinned under the *current* midpoint:
+      // anchor the diagram point using the OLD scale, then re-project it to
+      // the new midpoint using the NEW scale (same pattern as
+      // ZoomingTool.doMouseWheel's cursor-anchored zoom, generalized to a
+      // moving anchor).
       const t0 = touches[0]!;
       const t1 = touches[1]!;
       const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
@@ -1174,13 +1179,16 @@ export class Diagram {
         this._minScale,
         Math.min(this._maxScale, this.touchState.startScale * ratio),
       );
-      const midX = (t0.clientX + t1.clientX) / 2;
-      const midY = (t0.clientY + t1.clientY) / 2;
-      const dx = midX - this.touchState.startTouchX;
-      const dy = midY - this.touchState.startTouchY;
+      const rect = this.canvas.getBoundingClientRect();
+      const anchorX = this.touchState.startTouchX - rect.left;
+      const anchorY = this.touchState.startTouchY - rect.top;
+      const diagramAnchorX = anchorX / this.touchState.startScale + this.touchState.startOffsetX;
+      const diagramAnchorY = anchorY / this.touchState.startScale + this.touchState.startOffsetY;
+      const midX = (t0.clientX + t1.clientX) / 2 - rect.left;
+      const midY = (t0.clientY + t1.clientY) / 2 - rect.top;
       this.setViewport(
-        this.touchState.startOffsetX - dx / newScale,
-        this.touchState.startOffsetY - dy / newScale,
+        diagramAnchorX - midX / newScale,
+        diagramAnchorY - midY / newScale,
         newScale,
       );
     }
@@ -1347,6 +1355,7 @@ export class Diagram {
         if (!group) {
           group = this.createGroup(nodeData);
         }
+        this.updateGroupFromData(group, nodeData);
 
         // Sync members: add nodes/links whose groupKey matches this group
         for (const [memberKey, node] of this._nodes) {
@@ -1361,9 +1370,8 @@ export class Diagram {
         if (!node) {
           node = this.createNode(nodeData);
         }
-
-        // Add to parent group if specified (removing from any previous one)
-        this.reparentToGroup(node, nodeData.group as NodeKey | undefined);
+        // Applies label/fill/stroke/angle/zOrder and reparents to nodeData.group.
+        this.updateNodeFromData(node, nodeData);
       }
     }
 

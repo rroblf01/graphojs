@@ -791,7 +791,9 @@ export class Panel extends GraphObject {
     // Clone static elements (generated items are recreated below)
     for (const el of this._elements) {
       if (this._generatedItems.includes(el)) continue;
-      cloned._elements.push(el.clone());
+      const clonedEl = el.clone();
+      clonedEl.parentPanel = cloned;
+      cloned._elements.push(clonedEl);
     }
     cloned._rowCount = this._rowCount;
     cloned._columnCount = this._columnCount;

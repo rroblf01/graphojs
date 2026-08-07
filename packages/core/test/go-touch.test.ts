@@ -143,7 +143,7 @@ describe('Diagram GoJS-compatible touch and keyboard', () => {
     expect(viewport.y).toBe(-20);
   });
 
-  it('should zoom on two-finger pinch', () => {
+  it('should zoom on two-finger pinch, anchored on the pinch midpoint (not the origin)', () => {
     const diagram = createDiagram();
     const canvas = diagram.getRenderer().getCanvas();
 
@@ -153,6 +153,7 @@ describe('Diagram GoJS-compatible touch and keyboard', () => {
     ]);
     canvas.dispatchEvent(start);
 
+    // dist 100 -> 200 (scale x2); midpoint moves from 150 to 200.
     const move = createTouch('touchmove', [
       { x: 100, y: 100 },
       { x: 300, y: 100 },
@@ -160,7 +161,37 @@ describe('Diagram GoJS-compatible touch and keyboard', () => {
     canvas.dispatchEvent(move);
 
     const viewport = diagram.getViewport();
-    expect(viewport.scale).toBeGreaterThan(1);
+    expect(viewport.scale).toBe(2);
+    // diagramAnchor = 150/1 + 0 = 150; newOffset = 150 - 200/2 = 50.
+    expect(viewport.x).toBe(50);
+    expect(viewport.y).toBe(50);
+  });
+
+  it('pinching with a perfectly still center keeps that center point visually fixed', () => {
+    const diagram = createDiagram();
+    const canvas = diagram.getRenderer().getCanvas();
+
+    // Midpoint is 150 in both events — only the finger spread changes.
+    const start = createTouch('touchstart', [
+      { x: 100, y: 100 },
+      { x: 200, y: 100 },
+    ]);
+    canvas.dispatchEvent(start);
+
+    const move = createTouch('touchmove', [
+      { x: 50, y: 100 },
+      { x: 250, y: 100 },
+    ]);
+    canvas.dispatchEvent(move);
+
+    const viewport = diagram.getViewport();
+    expect(viewport.scale).toBe(2);
+    // The pre-bugfix formula left the offset completely unchanged (0, 0)
+    // here, which visually anchors the zoom at the canvas origin instead of
+    // the pinch center. Correct: diagramAnchor = 150/1 + 0 = 150;
+    // newOffset = 150 - 150/2 = 75.
+    expect(viewport.x).toBe(75);
+    expect(viewport.y).toBe(50);
   });
 
   it('should clear touch state on touchend', () => {

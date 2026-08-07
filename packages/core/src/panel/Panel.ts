@@ -560,15 +560,17 @@ export class Panel extends GraphObject {
     main.setActualSize(width, height);
     main.draw(ctx, x, y, width, height);
 
-    // Remaining elements are centered
+    // Remaining elements are positioned at their alignment spot (default:
+    // centered), at their natural size — same convention as Spot/Table cells.
     for (let i = 1; i < this._elements.length; i++) {
       const el = this._elements[i];
       if (!el) continue;
+      const spot = el.alignment ?? Spot.Center;
       const s = el.measureWithMargin();
       const elW = Math.min(s.width, width);
       const elH = Math.min(s.height, height);
-      const elX = x + (width - elW) / 2;
-      const elY = y + (height - elH) / 2;
+      const elX = x + (width - elW) * spot.x;
+      const elY = y + (height - elH) * spot.y;
       el.setPosition(elX, elY);
       el.setActualSize(elW, elH);
       el.draw(ctx, elX, elY, elW, elH);

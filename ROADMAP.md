@@ -1,5 +1,10 @@
 # Roadmap to v1.0.0
 
+**Status: shipped.** 1.0.0 was released on 2026-08-07 — see the
+[CHANGELOG](./CHANGELOG.md#100---2026-08-07) for the full release notes.
+This document is kept as the historical record of what led there; new work
+after 1.0.0 belongs in issues/a new roadmap, not here.
+
 GraphoJS has reached feature parity with the core GoJS programming model
 (templates, bindings, tools, layouts, undo/redo, groups, export, and a growing
 set of extension-style widgets). This document tracks what's left before
@@ -361,12 +366,50 @@ shipped in [Unreleased] of the CHANGELOG. For 1.0.0:
     full-bundle-to-full-bundle comparison either way, which is what most
     real consumers (using most of the API surface) actually experience.
 
+## Late finding — group templates weren't rendered at all
+
+Found while visually reviewing the docs examples for crowding/color issues
+(not originally a checklist item), and fixed before cutting 1.0.0 per an
+explicit project-owner decision to not ship a stable-API release with a
+known break in a standard GoJS feature:
+
+- **The bug**: `Canvas2DRenderer.renderGroup()` only ever drew a flat,
+  default-colored rectangle from `group.fill`/`stroke` — it never looked at
+  `group.panel` at all. Every `groupTemplate` (custom `Shape` figure, header
+  `TextBlock`, any nested content) was silently ignored for every group in
+  every diagram. `renderNode()` already had the correct "draw the template
+  panel if one exists, else fall back to a flat shape" pattern; `renderGroup`
+  just never got the equivalent.
+- **The fix**: `renderGroup()` now mirrors `renderNode()` — draws
+  `group.panel` (sized to the group's auto-fit-to-members bounds) when
+  present, falling back to the flat rect only when no `groupTemplate` is set.
+- **A second bug found while verifying the fix**: with the panel now
+  actually drawing, a `groupTemplate` using `'Auto'` (background `Shape` +
+  header `TextBlock`, the same idiom node templates use everywhere) rendered
+  the header dead-centered — overlapping the members it should sit above.
+  `Panel`'s `'Auto'` layout centered every non-background element
+  unconditionally; it now respects an explicit `alignment` spot (e.g.
+  `Spot.Top`) the same way `'Spot'`/`'Table'` cells already did, falling
+  back to centered when unset (no behavior change for existing templates
+  that never set `alignment`).
+- Both fixes have regression tests (`Canvas2DRenderer.test.ts`,
+  `Panel.test.ts`) — this whole area had zero coverage before, which is
+  exactly how it went unnoticed.
+
 ## Signal to actually cut 1.0.0
 
 Beyond the checklist above, the strongest signal that GraphoJS is ready for
 1.0.0 is **real usage**: at least one non-trivial application (ideally
 external, not just this project's own docs site) built on top of it, with any
 friction points folded back into the phases above before the API is frozen.
+
+**This signal was not met before shipping 1.0.0** — no external application
+had adopted GraphoJS as of this release. Per an explicit project-owner
+decision, 1.0.0 shipped anyway once every other checklist item (including
+the late group-template finding above) was resolved or consciously deferred
+with reasoning. Real-usage friction, if and when it surfaces, becomes 1.0.x
+patch releases or documented known-differences, not a reason 1.0.0 itself
+was premature.
 
 ---
 

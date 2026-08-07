@@ -235,6 +235,37 @@ describe('Panel layout and drawing', () => {
     expect(bg.actualSize.height).toBe(60);
   });
 
+  it('Auto panel centers a non-main element without an explicit alignment', () => {
+    const p = new Panel('Auto');
+    p.add(shape('rect'));
+    const text = new TextBlock('Hi');
+    text.width = 20;
+    text.height = 10;
+    p.add(text);
+
+    const ctx = mockContext();
+    p.draw(ctx, 0, 0, 100, 60);
+
+    expect(text.position.x).toBe(40); // (100 - 20) / 2
+    expect(text.position.y).toBe(25); // (60 - 10) / 2
+  });
+
+  it('Auto panel positions a non-main element at an explicit alignment spot instead of centering it', () => {
+    const p = new Panel('Auto');
+    p.add(shape('rect'));
+    const text = new TextBlock('Hi');
+    text.width = 20;
+    text.height = 10;
+    text.alignment = Spot.Top;
+    p.add(text);
+
+    const ctx = mockContext();
+    p.draw(ctx, 0, 0, 100, 60);
+
+    expect(text.position.x).toBe(40); // still centered horizontally
+    expect(text.position.y).toBe(0); // pinned to the top instead of (60-10)/2
+  });
+
   it('Spot panel positions element at its spot', () => {
     const p = new Panel('Spot');
     const a = new TextBlock('A');

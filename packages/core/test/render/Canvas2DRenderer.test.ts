@@ -1,5 +1,8 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest';
+import { Rect } from '../../src/geometry/Rect.ts';
+import { Panel, shape } from '../../src/panel/Panel.ts';
+import { Group } from '../../src/parts/Group.ts';
 import { Canvas2DRenderer } from '../../src/render/Canvas2DRenderer.ts';
 
 function mockContext() {
@@ -142,5 +145,40 @@ describe('Canvas2DRenderer devicePixelRatio on resize', () => {
     expect(canvas.width).toBe(1600);
     expect(canvas.height).toBe(1200);
     expect(ctx.setTransform).toHaveBeenLastCalledWith(2, 0, 0, 2, 0, 0);
+  });
+});
+
+describe('Canvas2DRenderer renderGroup', () => {
+  function createRenderer(): Canvas2DRenderer {
+    const canvas = document.createElement('canvas');
+    return new Canvas2DRenderer(canvas);
+  }
+
+  it('renders the group panel (groupTemplate) instead of the flat fallback when set', () => {
+    const renderer = createRenderer();
+    const ctx = (renderer as unknown as { ctx: ReturnType<typeof mockContext> }).ctx;
+    const group = new Group(1, new Rect(0, 0, 100, 60));
+    group.fill = '#000000'; // flat-fallback color — must not be what gets drawn
+    const bg = shape('roundedRect');
+    bg.fill = '#e0f2f1'; // groupTemplate's own color — this should get drawn
+    const templatePanel = new Panel('Auto');
+    templatePanel.add(bg);
+    group.panel = templatePanel;
+
+    renderer.renderGroup(group);
+
+    expect(ctx.fillStyle).toBe('#e0f2f1');
+  });
+
+  it('falls back to a flat fill/stroke rect when the group has no template panel', () => {
+    const renderer = createRenderer();
+    const ctx = (renderer as unknown as { ctx: ReturnType<typeof mockContext> }).ctx;
+    const group = new Group(1, new Rect(0, 0, 100, 60));
+    group.fill = '#123456';
+
+    renderer.renderGroup(group);
+
+    expect(ctx.fillStyle).toBe('#123456');
+    expect(ctx.fillRect).toHaveBeenCalledWith(0, 0, 100, 60);
   });
 });

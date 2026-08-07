@@ -239,4 +239,4 @@ export const Overview: React.FC<OverviewProps> = ({ observed, className, style }
   );
 };
 
-export const version: string = '0.2.0';
+export const version: string = '1.0.0';

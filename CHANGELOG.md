@@ -5,7 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2026-08-07
+
+The public API surface (`graphojs`, `graphojs/go`, `graphojs/templates`,
+`graphojs/react`, `graphojs/vue`) is now considered stable — breaking changes
+after this release require a major version bump. See `ROADMAP.md` for the
+full history of what led here.
 
 ### Added
 
@@ -107,6 +112,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   at module scope, a real side effect. A bundler trusting the old blanket
   `false` could have silently dropped that registration. Replaced with an
   explicit array naming just those 3 files.
+- A `linkTemplate` using the standard path-`Shape` + arrowhead-`Shape`
+  (+ optional label `TextBlock`) convention rendered its link **twice**:
+  once correctly (the dedicated path/arrowhead/label drawing), and a second
+  time as a floating panel box centered on the link's midpoint — visible as
+  a solid rectangle sitting on or near every link. Affected any diagram
+  using that convention, including several docs examples. Those elements
+  are now fully extracted onto the link's own fields and removed from the
+  leftover template panel, so nothing is left to double-render.
+- `groupTemplate` wasn't rendered at all: `Canvas2DRenderer` drew every group
+  as a flat, default-colored rectangle regardless of what its template
+  declared — no custom `Shape` figure, no header `TextBlock`, no nested
+  content. Groups now render their template panel the same way nodes
+  already did, falling back to the flat rectangle only when no
+  `groupTemplate` is set. Along the way, `Panel`'s `'Auto'` layout now
+  respects an explicit `alignment` spot on non-background elements (e.g. a
+  header `TextBlock` pinned to `Spot.Top`) instead of always centering them
+  — needed for a group's header to sit above its members instead of
+  overlapping them.
 
 ### Performance
 
@@ -232,5 +255,6 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.0.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.0.0
 [0.2.0]: https://github.com/rroblf01/graphojs/releases/tag/v0.2.0
 [0.1.0]: https://github.com/rroblf01/graphojs/releases/tag/v0.1.0

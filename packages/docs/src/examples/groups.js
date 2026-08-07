@@ -24,10 +24,12 @@ diagram.nodeTemplate = $(
   ),
 );
 
-// Template para grupos
+// Template para grupos: la Shape de fondo ocupa todo el grupo ('Auto'),
+// y la cabecera se alinea arriba para no solaparse con los miembros.
 diagram.groupTemplate = $(
   go.Group,
-  'Vertical',
+  'Auto',
+  { placeholderPadding: 32 },
   $(go.Shape, 'RoundedRectangle', {
     fill: '#e0f2f1',
     stroke: '#26a69a',
@@ -38,6 +40,7 @@ diagram.groupTemplate = $(
     go.TextBlock,
     'header',
     {
+      alignment: go.Spot.Top,
       margin: 8,
       font: '700 13px system-ui, sans-serif',
       stroke: '#004d40',

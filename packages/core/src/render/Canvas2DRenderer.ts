@@ -560,12 +560,21 @@ export class Canvas2DRenderer implements Renderer {
     this.ctx.save();
     this.ctx.globalAlpha = group.opacity;
 
-    // Fill background
-    this.ctx.fillStyle = group.fill;
-    this.ctx.strokeStyle = group.stroke;
-    this.ctx.lineWidth = group.strokeWidth;
-    this.ctx.fillRect(x, y, width, height);
-    this.ctx.strokeRect(x, y, width, height);
+    // If the group has a panel (from groupTemplate), render it instead of
+    // the flat representation — same as renderNode.
+    const panel = group.panel;
+    if (panel) {
+      panel.setPosition(0, 0);
+      panel.setActualSize(width, height);
+      panel.draw(this.ctx, x, y, width, height);
+    } else {
+      // Fill background
+      this.ctx.fillStyle = group.fill;
+      this.ctx.strokeStyle = group.stroke;
+      this.ctx.lineWidth = group.strokeWidth;
+      this.ctx.fillRect(x, y, width, height);
+      this.ctx.strokeRect(x, y, width, height);
+    }
 
     // Selection highlight
     if (group.isSelected) {

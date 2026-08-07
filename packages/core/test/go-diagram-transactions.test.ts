@@ -151,6 +151,59 @@ describe('Diagram GoJS-compatible templates', () => {
     expect((shape as Shape).shape).toBe('diamond');
   });
 
+  it('should apply category-specific template from groupTemplateMap', () => {
+    const diagram = createDiagram();
+
+    const $ = GraphObject.make;
+    const teamGroup = $(Panel, 'Auto', $(Shape, 'RoundedRectangle', { fill: 'lightblue' }));
+    diagram.addGroupTemplate('team', teamGroup);
+    expect(diagram.groupTemplateMap.get('team')).toBe(teamGroup);
+
+    const model = new GraphLinksModel();
+    model.nodeDataArray = [
+      { key: 1, isGroup: true, x: 0, y: 0, width: 200, height: 150 },
+      { key: 2, isGroup: true, x: 300, y: 0, width: 200, height: 150, category: 'team' },
+    ];
+    diagram.setModel(model);
+
+    const group1 = diagram.findGroupForKey(1)!;
+    const group2 = diagram.findGroupForKey(2)!;
+    expect(group1.panel).toBeNull(); // no default groupTemplate set, no category match
+    expect(group2.panel).not.toBeNull();
+    const shape = group2.panel?.elements[0];
+    expect(shape).toBeInstanceOf(Shape);
+    expect((shape as Shape).fill).toBe('lightblue');
+  });
+
+  it('a category-specific groupTemplateMap entry takes priority over the default groupTemplate', () => {
+    const diagram = createDiagram();
+
+    const $ = GraphObject.make;
+    diagram.groupTemplate = $(Panel, 'Auto', $(Shape, 'rect', { fill: 'default-group' }));
+    diagram.addGroupTemplate('special', $(Panel, 'Auto', $(Shape, 'diamond', { fill: 'special-group' })));
+
+    const model = new GraphLinksModel();
+    model.nodeDataArray = [
+      { key: 1, isGroup: true, x: 0, y: 0, width: 200, height: 150 },
+      { key: 2, isGroup: true, x: 300, y: 0, width: 200, height: 150, category: 'special' },
+    ];
+    diagram.setModel(model);
+
+    const group1 = diagram.findGroupForKey(1)!;
+    const group2 = diagram.findGroupForKey(2)!;
+    expect((group1.panel?.elements[0] as Shape).fill).toBe('default-group');
+    expect((group2.panel?.elements[0] as Shape).fill).toBe('special-group');
+  });
+
+  it('removeGroupTemplate removes a category template from groupTemplateMap', () => {
+    const diagram = createDiagram();
+    const $ = GraphObject.make;
+    diagram.addGroupTemplate('team', $(Panel, 'Auto', $(Shape, 'rect')));
+    expect(diagram.groupTemplateMap.has('team')).toBe(true);
+    expect(diagram.removeGroupTemplate('team')).toBe(true);
+    expect(diagram.groupTemplateMap.has('team')).toBe(false);
+  });
+
   it('should clone templates so nodes do not share the same panel instance', () => {
     const diagram = createDiagram();
 

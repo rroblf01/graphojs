@@ -224,6 +224,7 @@ export class Diagram {
   private _groupTemplate: Panel | null = null;
   private _nodeTemplateMap: Map<string, Panel> = new Map();
   private _linkTemplateMap: Map<string, Panel> = new Map();
+  private _groupTemplateMap: Map<string, Panel> = new Map();
 
   constructor(options: DiagramOptions | HTMLDivElement | string) {
     // GoJS-compatible: accept an element, a string div id, or an options object
@@ -455,6 +456,11 @@ export class Diagram {
     return this._linkTemplateMap;
   }
 
+  /** GoJS-compatible: Get the group template map. */
+  get groupTemplateMap(): Map<string, Panel> {
+    return this._groupTemplateMap;
+  }
+
   /** GoJS-compatible: Add a node template for a category. */
   addNodeTemplate(category: string, template: Panel): void {
     this._nodeTemplateMap.set(category, template);
@@ -465,6 +471,11 @@ export class Diagram {
     this._linkTemplateMap.set(category, template);
   }
 
+  /** GoJS-compatible: Add a group template for a category. */
+  addGroupTemplate(category: string, template: Panel): void {
+    this._groupTemplateMap.set(category, template);
+  }
+
   /** GoJS-compatible: Remove a node template by category. */
   removeNodeTemplate(category: string): boolean {
     return this._nodeTemplateMap.delete(category);
@@ -473,6 +484,11 @@ export class Diagram {
   /** GoJS-compatible: Remove a link template by category. */
   removeLinkTemplate(category: string): boolean {
     return this._linkTemplateMap.delete(category);
+  }
+
+  /** GoJS-compatible: Remove a group template by category. */
+  removeGroupTemplate(category: string): boolean {
+    return this._groupTemplateMap.delete(category);
   }
 
   /** Add a diagram event listener. */
@@ -1603,10 +1619,13 @@ export class Diagram {
     const group = new Group(key, new RectClass(x, y, width, height));
     group.data = nodeData;
 
-    // Apply GoJS-compatible group template if set
+    // Apply GoJS-compatible group template if set. A category-specific
+    // template (groupTemplateMap) takes priority over the single default
+    // groupTemplate, matching how node/link category templates are resolved.
     const category = nodeData.category as string | undefined;
-    const template = category !== undefined ? this._nodeTemplateMap.get(category) : undefined;
-    const groupTemplate = this._groupTemplate ?? template;
+    const groupTemplate =
+      (category !== undefined ? this._groupTemplateMap.get(category) : undefined) ??
+      this._groupTemplate;
     if (groupTemplate) {
       const cloned = groupTemplate.clone();
       group.panel = cloned;

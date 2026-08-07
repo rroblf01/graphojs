@@ -2996,8 +2996,8 @@ export class Diagram {
   }
 
   /**
-   * Print the diagram by rendering it to an image and opening the
-   * browser's print dialog.
+   * Print the diagram by opening the browser's print dialog with the
+   * diagram embedded as vector SVG (default) or a raster PNG image.
    */
   print(options?: {
     title?: string;
@@ -3005,6 +3005,7 @@ export class Diagram {
     padding?: number;
     scale?: number;
     fitToPage?: boolean;
+    format?: 'svg' | 'png';
   }): void {
     printDiagram(this, options);
   }

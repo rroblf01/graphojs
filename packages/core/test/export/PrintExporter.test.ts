@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll } from 'vitest';
-import { printDiagram } from '../../src/export/PrintExporter.ts';
-import { Node } from '../../src/parts/Node.ts';
-import { Layer, LayerNames } from '../../src/layer/Layer.ts';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { printDiagram } from '../../src/export/PrintExporter.ts';
+import { Layer, LayerNames } from '../../src/layer/Layer.ts';
+import { Node } from '../../src/parts/Node.ts';
 
 function mockContext() {
   return {
@@ -45,11 +45,16 @@ function createMockDiagram(): Diagram {
   const layer = new Layer(LayerNames.Default, 0);
   const node = Node.fromPosAndSize(1, 0, 0, 100, 50);
   layer.add(node);
-  return { getLayers: () => [layer] } as unknown as Diagram;
+  return {
+    getLayers: () => [layer],
+    getRenderer: () => ({
+      getCanvas: () => ({ style: { backgroundColor: '' } }),
+    }),
+  } as unknown as Diagram;
 }
 
 describe('printDiagram', () => {
-  it('should open a print window with diagram content', () => {
+  it('embeds a vector <svg> by default', () => {
     const diagram = createMockDiagram();
     const win = {
       document: {
@@ -69,13 +74,36 @@ describe('printDiagram', () => {
     expect(win.document.write).toHaveBeenCalled();
     const html = (win.document.write as ReturnType<typeof vi.fn>).mock.calls[0]?.[0] as string;
     expect(html).toContain('My Diagram');
-    expect(html).toContain('<img src="data:image/png;base64,');
+    expect(html).toContain('<svg ');
+    expect(html).toContain('</svg>');
+    expect(html).not.toContain('<img');
     expect(html).toContain('</html>');
 
     // Trigger onload
     if (win.onload) {
       (win.onload as () => void)();
     }
+    vi.unstubAllGlobals();
+  });
+
+  it('embeds a raster <img> with format: "png"', () => {
+    const diagram = createMockDiagram();
+    const win = {
+      document: { write: vi.fn(), close: vi.fn() },
+      onload: null,
+      print: vi.fn(),
+      close: vi.fn(),
+    };
+    vi.stubGlobal(
+      'open',
+      vi.fn(() => win),
+    );
+
+    printDiagram(diagram, { title: 'My Diagram', format: 'png' });
+
+    const html = (win.document.write as ReturnType<typeof vi.fn>).mock.calls[0]?.[0] as string;
+    expect(html).toContain('<img src="data:image/png;base64,');
+    expect(html).not.toContain('<svg ');
     vi.unstubAllGlobals();
   });
 

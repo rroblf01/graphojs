@@ -47,6 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `DiagramOptions.accessibilityMessages` for localization.
 - `vitest --coverage` script wired into CI (`pnpm test:coverage`, uploaded as
   a build artifact).
+- `ForceDirectedLayout.theta` — tunes the new Barnes-Hut repulsion
+  approximation's accuracy/speed trade-off (see Performance below).
 
 ### Fixed
 
@@ -79,6 +81,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Minified core bundle ≈ 74 KB gzip (~297 KB raw) — grew from the additions
   above; still smaller than GoJS (~130 KB gzip).
+- `ForceDirectedLayout`'s repulsion pass is now approximated with a
+  Barnes-Hut quadtree (O(n log n) instead of O(n²) per iteration), and its
+  attraction pass now iterates links directly instead of scanning every
+  node pair — together, a ~40x speedup measured at 400 nodes (3223ms →
+  79ms), and what used to be computationally infeasible at 5,000+ nodes now
+  completes in ~1.3s.
+- The virtualization (viewport-culling) spatial index was being rebuilt
+  from scratch on every single render call, even when nothing had moved
+  since the last frame. It's now only rebuilt when parts actually change —
+  roughly a 2x improvement measured on repeated static renders of a
+  20,000-node diagram (14.5ms → 7.5ms average).
 
 ## [0.2.0] - 2026-08-06
 

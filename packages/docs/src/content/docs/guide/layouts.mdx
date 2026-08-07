@@ -25,8 +25,23 @@ momento (el ejemplo de arriba lo hace con `__setLayout`).
 
 ## Nota sobre ForceDirected
 
-`ForceDirectedLayout` es O(n²); para grafos grandes conviene limitar
-`maxIterations` o usarlo con menos nodos.
+`ForceDirectedLayout` aproxima la repulsión entre nodos con un
+[árbol de Barnes-Hut](https://es.wikipedia.org/wiki/Algoritmo_de_Barnes-Hut)
+(la misma técnica que D3-force y la mayoría de simuladores de n-cuerpos):
+cada iteración es O(n log n) en vez de O(n²), lo que permite usarlo con miles
+de nodos sin que el tiempo se dispare.
+
+```js
+diagram.layout = new go.ForceDirectedLayout({
+  maxIterations: 300,
+  theta: 0.9, // por defecto — compromiso precisión/velocidad de la aproximación
+});
+```
+
+`theta` controla ese compromiso: más bajo es más preciso pero más lento
+(`theta: 0` desactiva la aproximación, calculando la repulsión exacta entre
+todos los pares); más alto es más rápido pero menos fiel al resultado exacto.
+El valor por defecto (0.9) funciona bien en la práctica.
 
 ## LayeredDigraphLayout
 

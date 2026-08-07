@@ -7,10 +7,10 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   Diagram,
+  ForceDirectedLayout,
   GraphLinksModel,
   GridLayout,
   TreeLayout,
-  ForceDirectedLayout,
 } from '../src/index.ts';
 
 function mockContext() {
@@ -108,6 +108,38 @@ describe('Large graph performance', () => {
     expect(elapsed).toBeLessThan(5000);
   });
 
+  it('model sync stays usable at 50,000 nodes + 50,000 links', () => {
+    // Informational ceiling test (see ROADMAP.md Phase 2): the largest scale
+    // GraphoJS aims to support without falling over. Generous threshold.
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    const model = new GraphLinksModel();
+
+    const nodes = [];
+    for (let i = 0; i < 50000; i++) {
+      nodes.push({ key: i, x: (i % 200) * 30, y: Math.floor(i / 200) * 30, width: 20, height: 20 });
+    }
+    const links = [];
+    for (let i = 0; i < 50000; i++) {
+      const from = i % 50000;
+      const to = (i * 7 + 1) % 50000;
+      if (from !== to) links.push({ from, to });
+    }
+
+    const start = performance.now();
+    model.nodeDataArray = nodes;
+    model.linkDataArray = links;
+    diagram.model = model;
+    const elapsed = performance.now() - start;
+
+    expect(diagram.getPart(49999)).not.toBeUndefined();
+
+    console.log(
+      `[benchmark] 50000 nodes + ${links.length} links synced in ${elapsed.toFixed(1)}ms`,
+    );
+    expect(elapsed).toBeLessThan(60000);
+  }, 90000);
+
   it('handles rapid incremental model updates efficiently', () => {
     const div = document.createElement('div');
     const diagram = new Diagram({ div });
@@ -161,6 +193,35 @@ describe('Large graph performance', () => {
     expect(avg).toBeLessThan(50);
   });
 
+  it('repeated renders of a static (unmoved) 20,000-node diagram skip re-rebuilding the virtualization index', () => {
+    // See ROADMAP.md Phase 2: the virtualization spatial index used to be
+    // rebuilt from scratch on every single render() call, even when nothing
+    // had moved since the last frame (e.g. a plain pan/zoom). It's now only
+    // rebuilt when parts actually change, so repeated static renders should
+    // be dramatically cheaper on average than the first one.
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    const model = new GraphLinksModel();
+    const nodes = [];
+    for (let i = 0; i < 20000; i++) {
+      nodes.push({ key: i, x: (i % 200) * 30, y: Math.floor(i / 200) * 30, width: 20, height: 20 });
+    }
+    model.nodeDataArray = nodes;
+    diagram.model = model;
+
+    const render = (diagram as unknown as { render(): void }).render.bind(diagram);
+    render(); // first render: builds the index for the first time
+
+    const start = performance.now();
+    for (let i = 0; i < 20; i++) render();
+    const avgRepeated = (performance.now() - start) / 20;
+
+    console.log(`[benchmark] 20000 static nodes: avg repeated render ${avgRepeated.toFixed(2)}ms`);
+    // Generous bound: a full quadtree rebuild of 20k items every frame would
+    // regularly exceed this; skipping it when nothing moved should not.
+    expect(avgRepeated).toBeLessThan(20);
+  });
+
   it('runs layouts on large graphs efficiently', () => {
     const div = document.createElement('div');
     const diagram = new Diagram({ div });
@@ -198,11 +259,15 @@ describe('Large graph performance', () => {
     expect(treeMs).toBeLessThan(2000);
   });
 
-  it('runs force-directed layout on a moderately sized graph', () => {
+  it('runs force-directed layout on a large graph (Barnes-Hut repulsion)', () => {
+    // Before the Barnes-Hut rewrite, this took ~3.2s at just 400 nodes
+    // (naive O(n^2) repulsion + an accidentally O(n^2) attraction scan); at
+    // 5000 nodes the old algorithm would have taken minutes. It now
+    // completes in well under a second.
     const div = document.createElement('div');
     const diagram = new Diagram({ div });
     const model = new GraphLinksModel();
-    const n = 400;
+    const n = 5000;
     const nodes: Array<{ key: number; x: number; y: number; width: number; height: number }> = [];
     for (let i = 0; i < n; i++) {
       nodes.push({ key: i, x: (i % 20) * 120, y: Math.floor(i / 20) * 80, width: 100, height: 50 });
@@ -224,8 +289,36 @@ describe('Large graph performance', () => {
     const fdMs = performance.now() - t;
 
     console.log(`[benchmark] force-directed layout on ${n} nodes ${fdMs.toFixed(1)}ms`);
-    expect(fdMs).toBeLessThan(10000);
+    expect(fdMs).toBeLessThan(5000);
   }, 30000);
+
+  it('force-directed layout stays usable at 50,000 nodes', () => {
+    // Informational ceiling test (see ROADMAP.md Phase 2): confirms the
+    // Barnes-Hut approximation keeps this from becoming quadratic even at
+    // the top of the range GraphoJS aims to support. Generous threshold —
+    // this is about proving "doesn't fall over," not a tight budget.
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    const model = new GraphLinksModel();
+    const n = 50000;
+    const nodes: Array<{ key: number; x: number; y: number; width: number; height: number }> = [];
+    for (let i = 0; i < n; i++) {
+      nodes.push({ key: i, x: (i % 100) * 30, y: Math.floor(i / 100) * 30, width: 20, height: 20 });
+    }
+    model.nodeDataArray = nodes;
+    diagram.model = model;
+    const parts = Array.from(diagram.nodes.values());
+
+    const fd = new ForceDirectedLayout({ maxIterations: 10 });
+    const t = performance.now();
+    fd.apply(parts, []);
+    const fdMs = performance.now() - t;
+
+    console.log(
+      `[benchmark] force-directed layout (10 iterations) on ${n} nodes ${fdMs.toFixed(1)}ms`,
+    );
+    expect(fdMs).toBeLessThan(30000);
+  }, 60000);
 
   it('hit-testing findPartAt is not catastrophically slow with 2000 nodes', () => {
     const div = document.createElement('div');

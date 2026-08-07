@@ -127,6 +127,8 @@ Benchmarks (see `packages/core/test/benchmark.test.ts` and `e2e/perf.spec.ts`):
 | Render per frame (jsdom mock) | ~10 ms for 2000 nodes + 2000 links |
 | 500 incremental updates | ~2 ms |
 | Layouts (jsdom) | grid ~2 ms / tree ~39 ms on 2000 nodes |
+| `ForceDirectedLayout` (jsdom, Barnes-Hut) | 5000 nodes ~1.3 s (100 iter.); 50000 nodes ~1.7 s (10 iter.) — was ~3.2 s at just 400 nodes before |
+| Repeated static render (jsdom, no movement) | 20000 nodes ~7.5 ms avg (virtualization index only rebuilds when parts change) |
 | Hit-test `findPartAt` | ~0.03 ms per call over 2000 nodes |
 | Pan hot-path (`setViewport` + bounds) | ~0.09 ms per step |
 | **Large graph in a real browser** (`e2e/perf.spec.ts`) | 5000 nodes + 5000 links: model sync ~170 ms, first render ~35 ms, ~105 FPS during interaction |

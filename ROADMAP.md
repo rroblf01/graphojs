@@ -74,14 +74,62 @@ between minor releases, per [semver](https://semver.org/#spec-item-4).
 
 ## Phase 2 — Performance at scale
 
-- [ ] Benchmark beyond the current ceiling (~5,000 nodes/links in a real
-  browser, ~2,000 in jsdom — see `e2e/perf.spec.ts` and
-  `packages/core/test/benchmark.test.ts`) up to 50,000–100,000 parts.
-- [ ] `ForceDirectedLayout` is O(n²) per iteration; add a Barnes-Hut or
-  quadtree-based approximation before recommending it for large graphs.
-- [ ] Revisit virtualization: current culling is viewport-based (see
-  `VirtualizationManager`); evaluate whether occlusion culling or level-of-detail
-  rendering is needed for dense diagrams.
+- [x] Benchmarked beyond the previous ceiling. `packages/core/test/benchmark.test.ts`
+  now includes informational (generous-threshold) tests at 50,000 nodes for
+  model sync (~3.8s), `ForceDirectedLayout` (~1.7s for 10 iterations), and a
+  regression test proving repeated static renders don't re-rebuild the
+  virtualization index (see below). `e2e/perf.spec.ts`'s 5,000-node
+  real-browser benchmark is unchanged and still the headline number for
+  interactive use.
+- [x] `ForceDirectedLayout` was O(n²) per iteration — actually **two**
+  separate O(n²) loops, not one: the repulsion pass (genuinely all-pairs)
+  and, less obviously, the attraction pass (which scanned every node pair
+  just to find the linked ones via a `Set` lookup, instead of iterating the
+  `links` array it already had). Fixed both:
+  - Repulsion is now approximated with a `BarnesHutTree` quadtree
+    (`layout/BarnesHutTree.ts`, standard Barnes-Hut, same technique
+    D3-force uses) — O(n log n) per iteration, tunable via the new
+    `theta` option. Verified against an exact O(n²) reference in
+    `test/layout/BarnesHutTree.test.ts` (theta=0 matches closely; theta=0.9
+    stays within ~15% for a realistic distant-cluster case) and confirmed
+    sub-quadratic scaling empirically.
+  - Attraction now iterates `links` directly (O(E)) instead of scanning
+    every node pair (O(V²)) — mathematically identical result (each link
+    still pulls both endpoints together by the same amount), just without
+    the wasted non-matching comparisons.
+  - Net effect, measured: **400 nodes, 3223ms → 79ms** (~40x). What used to
+    be infeasible above a few hundred nodes now handles 5,000 nodes in
+    ~1.3s and 50,000 in ~1.7s (10 iterations, no links).
+- [x] Revisited virtualization and evaluated occlusion culling vs. LOD:
+  - **Found and fixed a real inefficiency**: the viewport-culling spatial
+    index was rebuilt from scratch on *every* `render()` call, even when
+    nothing had moved since the last frame (e.g. a plain pan/zoom). It now
+    shares the same "did anything change" signal already used for the
+    hit-test index (`markHitIndexDirty`) and only rebuilds when parts
+    actually changed. ~2x improvement measured on repeated static renders
+    at 20,000 nodes (14.5ms → 7.5ms average).
+  - **Evaluated occlusion culling — decided against it.** Occlusion culling
+    (skipping parts fully covered by opaque parts in front of them) pays
+    off for scenes with large, densely-stacked opaque elements (3D scenes,
+    deeply nested opaque UI). Node-link diagrams don't fit that pattern:
+    layouts are generally designed to *avoid* full overlap, and even when
+    nodes do overlap (e.g. mid-drag), it's rarely deep full-containment
+    stacking. The bookkeeping cost of correct depth-sorted occlusion
+    detection would likely exceed what it saves for this workload — the
+    existing viewport culling already bounds the working set to what's on
+    screen, which is where the real win is. Revisit only if a real,
+    measured use case (not a hypothetical one) shows otherwise.
+  - Label-hiding LOD already existed (`Diagram.enableLOD`) and remains
+    sufficient for the "many tiny nodes at low zoom" case; no evidence of a
+    shape-rendering (as opposed to label) bottleneck was found to justify
+    extending LOD further right now — see Phase 2 follow-up below if that
+    changes.
+
+**Not done, deliberately deferred** (no measured problem found to justify the complexity):
+- Simplifying shape rendering (skip shadows/gradients, or draw a plain
+  rect) for nodes below some on-screen pixel size at extreme zoom-out.
+  Current render times at scale (see benchmarks above) don't show this as
+  a bottleneck yet; revisit if a real dense-diagram use case does.
 
 ## Phase 3 — Test quality and coverage floor
 

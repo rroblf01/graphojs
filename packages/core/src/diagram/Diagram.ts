@@ -251,6 +251,8 @@ export class Diagram {
   private layoutProbeCtx: CanvasRenderingContext2D | null = null;
   private hitIndex: QuadTree<Part> | null = null;
   private hitIndexDirty = true;
+  /** Tracks the same "parts changed" signal as `hitIndexDirty`, independently, for the virtualization index (see `markHitIndexDirty`). */
+  private virtualizationDirty = true;
   private lodLabelThreshold = 0.3;
   private lodEnabled = false;
   private canvasListeners: Array<
@@ -2093,9 +2095,10 @@ export class Diagram {
     this.hitIndexDirty = false;
   }
 
-  /** Mark the spatial hit index as stale (called when parts change). */
+  /** Mark the spatial hit index and virtualization index as stale (called when parts change). */
   private markHitIndexDirty(): void {
     this.hitIndexDirty = true;
+    this.virtualizationDirty = true;
   }
 
   /** Get a part by key. */
@@ -2892,6 +2895,7 @@ export class Diagram {
       const world = new RectClass(-10000, -10000, 20000, 20000);
       this.virtualization = new VirtualizationManager(world);
       this.virtualization.isEnabled = true;
+      this.virtualizationDirty = true; // a fresh index always needs its first populate
     }
 
     // Collect all visible parts for spatial index rebuild
@@ -2903,9 +2907,15 @@ export class Diagram {
       }
     }
 
-    // Rebuild spatial index with current part positions
-    const world = new RectClass(-10000, -10000, 20000, 20000);
-    this.virtualization.rebuild(allParts, world);
+    // Rebuild the spatial index only when parts actually changed since the
+    // last rebuild (same signal as the hit-test index) — a pure pan/zoom
+    // with static content shouldn't re-insert every part into a fresh
+    // quadtree on every single frame.
+    if (this.virtualizationDirty) {
+      const world = new RectClass(-10000, -10000, 20000, 20000);
+      this.virtualization.rebuild(allParts, world);
+      this.virtualizationDirty = false;
+    }
 
     // Cull parts based on viewport
     const viewportRect = VirtualizationManager.createViewport(

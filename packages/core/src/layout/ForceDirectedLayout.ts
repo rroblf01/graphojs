@@ -1,5 +1,7 @@
+import type { NodeKey } from '../model/Model.ts';
 import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
+import { BarnesHutTree } from './BarnesHutTree.ts';
 import { Layout, type LayoutOptions } from './Layout.ts';
 
 /**
@@ -14,16 +16,29 @@ export interface ForceDirectedLayoutOptions extends LayoutOptions {
   maxIterations?: number;
   /** Convergence threshold. Default: 0.01 */
   convergenceThreshold?: number;
+  /**
+   * Barnes-Hut approximation ratio for the repulsion simulation (size of a
+   * region divided by its distance to the node being pushed — below this,
+   * the whole region is treated as one aggregate point instead of recursing
+   * into it). Smaller is more accurate but slower; 0 would disable the
+   * approximation entirely (falling back to exact all-pairs repulsion).
+   * Default: 0.9
+   */
+  theta?: number;
 }
 
 /**
- * Force-directed layout using a simple spring-electric model.
+ * Force-directed layout using a simple spring-electric model. Repulsion
+ * (the O(n²) part of the naive algorithm) is approximated with a
+ * {@link BarnesHutTree}, making each iteration O(n log n) — see `theta` to
+ * tune the accuracy/speed trade-off.
  */
 export class ForceDirectedLayout extends Layout {
   private defaultNodeSeparation: number;
   private defaultLinkDistance: number;
   private maxIterations: number;
   private convergenceThreshold: number;
+  private theta: number;
 
   constructor(options: ForceDirectedLayoutOptions = {}) {
     super(options);
@@ -31,6 +46,7 @@ export class ForceDirectedLayout extends Layout {
     this.defaultLinkDistance = options.defaultLinkDistance ?? 150;
     this.maxIterations = options.maxIterations ?? 300;
     this.convergenceThreshold = options.convergenceThreshold ?? 0.01;
+    this.theta = options.theta ?? 0.9;
   }
 
   /** GoJS-compatible: The default spring length between linked nodes. */
@@ -48,16 +64,12 @@ export class ForceDirectedLayout extends Layout {
     // Initialize positions if not set
     this.initializePositions(nodes);
 
-    // Build adjacency for quick lookup
-    const linkSet = new Set<string>();
-    for (const link of links) {
-      linkSet.add(`${link.fromKey}-${link.toKey}`);
-      linkSet.add(`${link.toKey}-${link.fromKey}`);
-    }
+    const nodeByKey = new Map<NodeKey, Node>();
+    for (const node of nodes) nodeByKey.set(node.key, node);
 
     // Run simulation
     for (let i = 0; i < this.maxIterations; i++) {
-      const totalForce = this.simulateStep(nodes, links, linkSet);
+      const totalForce = this.simulateStep(nodes, links, nodeByKey);
       if (totalForce < this.convergenceThreshold) {
         break;
       }
@@ -100,7 +112,7 @@ export class ForceDirectedLayout extends Layout {
     }
   }
 
-  private simulateStep(nodes: Node[], _links: Link[], linkSet: Set<string>): number {
+  private simulateStep(nodes: Node[], links: Link[], nodeByKey: Map<NodeKey, Node>): number {
     const forces = new Map<Node, { fx: number; fy: number }>();
     let totalForce = 0;
 
@@ -109,65 +121,66 @@ export class ForceDirectedLayout extends Layout {
       forces.set(node, { fx: 0, fy: 0 });
     }
 
-    // Repulsive forces (all pairs)
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const a = nodes[i];
-        const b = nodes[j];
-        if (!a || !b) continue;
+    // Repulsive forces (all pairs) — Barnes-Hut approximated: build a
+    // quadtree of node centers once, then look up each node's aggregate
+    // repulsion in O(log n) instead of comparing every pair directly.
+    const bodies = nodes.map((node) => {
+      const center = node.bounds.center;
+      return { x: center.x, y: center.y, mass: 1, node };
+    });
+    const tree = BarnesHutTree.build(bodies);
+    const separationSq = this.defaultNodeSeparation * this.defaultNodeSeparation;
 
-        const aCenter = a.bounds.center;
-        const bCenter = b.bounds.center;
-        let dx = bCenter.x - aCenter.x;
-        let dy = bCenter.y - aCenter.y;
-        if (dx === 0 && dy === 0) {
-          // Perfectly coincident: the repulsion magnitude below is nonzero,
-          // but with no direction to push along it would never separate them.
-          // Give each pair a distinct fallback direction (golden-angle spread).
-          const angle = ((i + 1) * (j + 1) * 2.399963229728653) % (2 * Math.PI);
-          dx = Math.cos(angle) * 0.01;
-          dy = Math.sin(angle) * 0.01;
-        }
-        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    for (let i = 0; i < bodies.length; i++) {
+      const body = bodies[i];
+      if (!body) continue;
+      const out = { fx: 0, fy: 0 };
+      tree.accumulateRepulsion(body, this.theta, (dist, mass) => (separationSq * mass) / dist, out);
 
-        // Coulomb's law repulsion
-        const repulsion = (this.defaultNodeSeparation * this.defaultNodeSeparation) / dist;
-        const fx = (repulsion * dx) / dist;
-        const fy = (repulsion * dy) / dist;
+      if (out.fx === 0 && out.fy === 0) {
+        // Degenerate direction — e.g. exactly coincident with the region's
+        // center of mass. Nudge along a deterministic pseudo-random
+        // direction (golden-angle spread) so the simulation can still
+        // separate them instead of leaving them stacked forever.
+        const angle = ((i + 1) * 2.399963229728653) % (2 * Math.PI);
+        out.fx = Math.cos(angle) * 0.01;
+        out.fy = Math.sin(angle) * 0.01;
+      }
 
-        const fa = forces.get(a);
-        const fb = forces.get(b);
-        if (fa && fb) {
-          fa.fx -= fx;
-          fa.fy -= fy;
-          fb.fx += fx;
-          fb.fy += fy;
-        }
+      const force = forces.get(body.node);
+      if (force) {
+        force.fx += out.fx;
+        force.fy += out.fy;
       }
     }
 
-    // Attractive forces (connected pairs)
-    for (const node of nodes) {
-      for (const other of nodes) {
-        if (node === other) continue;
-        if (!linkSet.has(`${node.key}-${other.key}`)) continue;
+    // Attractive forces (connected pairs) — iterate links directly (O(E))
+    // instead of scanning every node pair to find the linked ones.
+    for (const link of links) {
+      const node = nodeByKey.get(link.fromKey);
+      const other = nodeByKey.get(link.toKey);
+      if (!node || !other || node === other) continue;
 
-        const nodeCenter = node.bounds.center;
-        const otherCenter = other.bounds.center;
-        const dx = otherCenter.x - nodeCenter.x;
-        const dy = otherCenter.y - nodeCenter.y;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      const nodeCenter = node.bounds.center;
+      const otherCenter = other.bounds.center;
+      const dx = otherCenter.x - nodeCenter.x;
+      const dy = otherCenter.y - nodeCenter.y;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
 
-        // Spring attraction
-        const attraction = (dist * dist) / this.defaultLinkDistance;
-        const fx = (attraction * dx) / dist;
-        const fy = (attraction * dy) / dist;
+      // Spring attraction
+      const attraction = (dist * dist) / this.defaultLinkDistance;
+      const fx = (attraction * dx) / dist;
+      const fy = (attraction * dy) / dist;
 
-        const fn = forces.get(node);
-        if (fn) {
-          fn.fx += fx;
-          fn.fy += fy;
-        }
+      const fn = forces.get(node);
+      const fo = forces.get(other);
+      if (fn) {
+        fn.fx += fx;
+        fn.fy += fy;
+      }
+      if (fo) {
+        fo.fx -= fx;
+        fo.fy -= fy;
       }
     }
 

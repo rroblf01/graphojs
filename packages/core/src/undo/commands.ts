@@ -387,3 +387,48 @@ export class ReshapeLinkCommand implements Command {
     return `Reshape link ${String(this.link.key)}`;
   }
 }
+
+/** The label-position fields moved by {@link SetLinkLabelPositionCommand}. */
+export interface LinkLabelPosition {
+  segmentIndex: number;
+  segmentFraction: number;
+  offset: number;
+  side: 'top' | 'bottom' | 'left' | 'right' | 'auto';
+}
+
+/**
+ * Command to persist a manual link-label reposition (from
+ * LinkLabelDraggingTool). There is no model-data field for a link's label
+ * position, so this operates directly on the visual Link, like
+ * {@link ReshapeLinkCommand}.
+ */
+export class SetLinkLabelPositionCommand implements Command {
+  private link: Link;
+  private newPosition: LinkLabelPosition;
+  private oldPosition: LinkLabelPosition;
+
+  constructor(link: Link, newPosition: LinkLabelPosition, oldPosition: LinkLabelPosition) {
+    this.link = link;
+    this.newPosition = { ...newPosition };
+    this.oldPosition = { ...oldPosition };
+  }
+
+  private apply(position: LinkLabelPosition): void {
+    this.link.labelSegmentIndex = position.segmentIndex;
+    this.link.labelSegmentFraction = position.segmentFraction;
+    this.link.labelOffset = position.offset;
+    this.link.labelSide = position.side;
+  }
+
+  execute(): void {
+    this.apply(this.newPosition);
+  }
+
+  undo(): void {
+    this.apply(this.oldPosition);
+  }
+
+  describe(): string {
+    return `Move label of link ${String(this.link.key)}`;
+  }
+}

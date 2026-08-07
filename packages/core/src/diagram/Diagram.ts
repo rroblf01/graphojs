@@ -34,6 +34,7 @@ import { ContextMenuTool } from '../tool/ContextMenuTool.ts';
 import { DraggingTool } from '../tool/DraggingTool.ts';
 import { DragSelectingTool } from '../tool/DragSelectingTool.ts';
 import { LinkingTool } from '../tool/LinkingTool.ts';
+import { LinkLabelDraggingTool } from '../tool/LinkLabelDraggingTool.ts';
 import { LinkReshapingTool } from '../tool/LinkReshapingTool.ts';
 import { PanningTool } from '../tool/PanningTool.ts';
 import { RelinkingTool } from '../tool/RelinkingTool.ts';
@@ -347,6 +348,7 @@ export class Diagram {
     tm.registerTool('clickCreating', new ClickCreatingTool());
     tm.registerTool('contextMenu', new ContextMenuTool());
     tm.registerTool('linkReshaping', new LinkReshapingTool());
+    tm.registerTool('linkLabelDragging', new LinkLabelDraggingTool());
 
     // Populate per-event tool lists (GoJS mouseDownTools order). clickCreating
     // is only ever a candidate once archetypeNodeData is set (see its
@@ -354,7 +356,11 @@ export class Diagram {
     // empty-background click, ahead of the catch-all clickSelecting — rather
     // than after it, where clickSelecting's unconditional canStart would
     // always win first and clickCreating would never be reachable.
+    // linkLabelDragging is first: its canStart only matches the small label
+    // hit-box, so it must win before the broader relinking/resizing/etc.
+    // hit-tests get a chance to claim the same click.
     for (const name of [
+      'linkLabelDragging',
       'relinking',
       'resizing',
       'rotating',
@@ -379,6 +385,7 @@ export class Diagram {
     const panning = tm.getTool('panning');
     if (panning) tm.addToolToList('mouseMove', panning);
     for (const name of [
+      'linkLabelDragging',
       'dragging',
       'linking',
       'relinking',

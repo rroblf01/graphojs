@@ -2,6 +2,7 @@ import type { Diagram } from '../diagram/Diagram.ts';
 import { Rect } from '../geometry/Rect.ts';
 import type { Spot } from '../geometry/Spot.ts';
 import type { NodeKey } from '../model/Model.ts';
+import { computeLabelPosition } from '../render/LinkRouter.ts';
 import type { Node } from './Node.ts';
 import { Part } from './Part.ts';
 
@@ -44,6 +45,7 @@ export class Link extends Part {
   private _corner = 0;
   private _labelOffset = 7;
   private _labelSegmentIndex = -1;
+  private _labelSegmentFraction = 0.5;
   private _labelSide: 'top' | 'bottom' | 'left' | 'right' | 'auto' = 'auto';
   private _labelAlignment: 'start' | 'middle' | 'end' = 'middle';
   private _curviness = 0;
@@ -238,6 +240,29 @@ export class Link extends Part {
   }
 
   /**
+   * Approximate screen-space bounds of the rendered label (based on the last
+   * routed `pathPoints`), or null if this link has no label. Used for
+   * label-drag hit-testing; the text width is estimated from character count
+   * since no canvas context is available here for exact measurement.
+   */
+  getLabelBounds(): Rect | null {
+    if (!this._label) return null;
+    const points = this._pathPoints.length > 0 ? this._pathPoints : [this._fromPort, this._toPort];
+    const pos = computeLabelPosition(
+      points,
+      this._labelSegmentIndex,
+      this._labelOffset,
+      this._labelSide,
+      this._labelSegmentFraction,
+    );
+    const fontSizeMatch = /(\d+(?:\.\d+)?)px/.exec(this._labelFont);
+    const fontSize = fontSizeMatch?.[1] ? Number.parseFloat(fontSizeMatch[1]) : 11;
+    const width = this._label.length * fontSize * 0.6 + 8;
+    const height = fontSize + 6;
+    return new Rect(pos.x - width / 2, pos.y - height / 2, width, height);
+  }
+
+  /**
    * Whether pathPoints were set by the user reshaping this link (via
    * LinkReshapingTool) rather than computed by the router. While true, model
    * syncs that don't touch this link's own endpoints leave pathPoints alone
@@ -322,6 +347,15 @@ export class Link extends Part {
 
   set labelSegmentIndex(value: number) {
     this._labelSegmentIndex = value;
+  }
+
+  /** GoJS-compatible ("segmentFraction"): position along the chosen segment, 0 (start) to 1 (end). Default 0.5 (midpoint). */
+  get labelSegmentFraction(): number {
+    return this._labelSegmentFraction;
+  }
+
+  set labelSegmentFraction(value: number) {
+    this._labelSegmentFraction = Math.max(0, Math.min(1, value));
   }
 
   /** Which side of the link to place the label on. */

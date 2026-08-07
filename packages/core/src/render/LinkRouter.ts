@@ -102,6 +102,7 @@ export function computeLabelPosition(
   segmentIndex: number,
   labelOffset: number,
   labelSide: 'top' | 'bottom' | 'left' | 'right' | 'auto',
+  segmentFraction = 0.5,
 ): { x: number; y: number; angle: number } {
   if (points.length < 2) {
     const p = points[0] ?? { x: 0, y: 0 };
@@ -121,9 +122,9 @@ export function computeLabelPosition(
   const b = points[segIdx + 1];
   if (!a || !b) return { x: 0, y: 0, angle: 0 };
 
-  // Midpoint of the segment
-  const mx = (a.x + b.x) / 2;
-  const my = (a.y + b.y) / 2;
+  // Point along the segment at `segmentFraction` (0 = a, 1 = b, 0.5 = midpoint)
+  const mx = a.x + (b.x - a.x) * segmentFraction;
+  const my = a.y + (b.y - a.y) * segmentFraction;
 
   // Direction of the segment
   const segDx = b.x - a.x;

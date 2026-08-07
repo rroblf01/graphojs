@@ -168,6 +168,7 @@ export { DraggingTool } from './tool/DraggingTool.ts';
 export { DragSelectingTool } from './tool/DragSelectingTool.ts';
 export { LinkingBaseTool } from './tool/LinkingBaseTool.ts';
 export { LinkingTool } from './tool/LinkingTool.ts';
+export { LinkLabelDraggingTool } from './tool/LinkLabelDraggingTool.ts';
 export { LinkReshapingTool } from './tool/LinkReshapingTool.ts';
 export { PanningTool } from './tool/PanningTool.ts';
 export { RelinkingTool } from './tool/RelinkingTool.ts';
@@ -181,6 +182,7 @@ export { ToolManager } from './tool/ToolManager.ts';
 export { ZoomingTool } from './tool/ZoomingTool.ts';
 // Undo
 export type { Command } from './undo/Command.ts';
+export type { LinkLabelPosition } from './undo/commands.ts';
 export {
   AddLinkCommand,
   AddNodeCommand,
@@ -189,6 +191,7 @@ export {
   RemoveNodeCommand,
   ReshapeLinkCommand,
   ResizeNodeCommand,
+  SetLinkLabelPositionCommand,
   SetLinkPropertyCommand,
   SetNodePropertyCommand,
   SetZOrderCommand,

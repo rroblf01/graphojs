@@ -420,6 +420,7 @@ export class Canvas2DRenderer implements Renderer {
         link.labelSegmentIndex,
         link.labelOffset,
         link.labelSide,
+        link.labelSegmentFraction,
       );
       this.renderLabel(link.label, labelPos.x, labelPos.y, link.labelColor, link.labelFont);
     }

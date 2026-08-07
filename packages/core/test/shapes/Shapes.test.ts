@@ -4,7 +4,9 @@ import {
   getShapeDefinition,
   getAllShapeTypes,
   getShapesByCategory,
+  normalizeShapeType,
 } from '../../src/shapes/ShapeTypes.ts';
+import { ShapeRenderer } from '../../src/shapes/ShapeRenderer.ts';
 import {
   getAllTemplates,
   getTemplatesByCategory,
@@ -55,6 +57,58 @@ describe('ShapeTypes', () => {
   it('should get all shapes for unknown category', () => {
     const all = getShapesByCategory('unknown');
     expect(all.length).toBe(Object.keys(SHAPES).length);
+  });
+
+  it('registers the UML/BPMN/misc figures added for GoJS parity', () => {
+    const shapeTypes = getAllShapeTypes();
+    for (const type of [
+      'component',
+      'gatewayExclusive',
+      'gatewayParallel',
+      'callout',
+      'bracket',
+      'flag',
+      'chevron',
+      'tape',
+      'shield',
+      'bolt',
+    ]) {
+      expect(shapeTypes).toContain(type);
+      const def = getShapeDefinition(type as never);
+      expect(def.defaultWidth).toBeGreaterThan(0);
+      expect(def.defaultHeight).toBeGreaterThan(0);
+    }
+  });
+
+  it('normalizeShapeType resolves the new figures case-insensitively', () => {
+    expect(normalizeShapeType('gatewayExclusive')).toBe('gatewayExclusive');
+    expect(normalizeShapeType('GatewayExclusive')).toBe('gatewayExclusive');
+    expect(normalizeShapeType('CALLOUT')).toBe('callout');
+  });
+});
+
+describe('ShapeRenderer', () => {
+  it('renders every registered shape type without throwing', () => {
+    const noop = () => {};
+    const ctx = {
+      beginPath: noop,
+      closePath: noop,
+      moveTo: noop,
+      lineTo: noop,
+      rect: noop,
+      arc: noop,
+      ellipse: noop,
+      quadraticCurveTo: noop,
+      bezierCurveTo: noop,
+      roundRect: noop,
+      fill: noop,
+      stroke: noop,
+    } as unknown as CanvasRenderingContext2D;
+    const renderer = new ShapeRenderer(ctx);
+
+    for (const type of getAllShapeTypes()) {
+      expect(() => renderer.renderShape(type, 0, 0, 100, 80)).not.toThrow();
+    }
   });
 });
 

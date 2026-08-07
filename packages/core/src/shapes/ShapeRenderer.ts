@@ -213,6 +213,36 @@ export class ShapeRenderer {
       case 'tabbedRectangle':
         this.renderTabbedRectangle(x, y, width, height);
         break;
+      case 'component':
+        this.renderComponent(x, y, width, height);
+        break;
+      case 'gatewayExclusive':
+        this.renderGatewayExclusive(x, y, width, height);
+        break;
+      case 'gatewayParallel':
+        this.renderGatewayParallel(x, y, width, height);
+        break;
+      case 'callout':
+        this.renderCallout(x, y, width, height);
+        break;
+      case 'bracket':
+        this.renderBracket(x, y, width, height);
+        break;
+      case 'flag':
+        this.renderFlag(x, y, width, height);
+        break;
+      case 'chevron':
+        this.renderChevron(x, y, width, height);
+        break;
+      case 'tape':
+        this.renderTape(x, y, width, height);
+        break;
+      case 'shield':
+        this.renderShield(x, y, width, height);
+        break;
+      case 'bolt':
+        this.renderBolt(x, y, width, height);
+        break;
     }
   }
 
@@ -757,5 +787,122 @@ export class ShapeRenderer {
     this.ctx.lineTo(cx + radius * 0.7, cy + radius * 0.7);
     this.ctx.moveTo(cx + radius * 0.7, cy - radius * 0.7);
     this.ctx.lineTo(cx - radius * 0.7, cy + radius * 0.7);
+  }
+
+  /** UML component: a body with two small connector notches on the left edge. */
+  private renderComponent(x: number, y: number, width: number, height: number): void {
+    const notchW = width * 0.18;
+    const notchH = height * 0.18;
+    this.ctx.rect(x + notchW * 0.6, y, width - notchW * 0.6, height);
+    this.ctx.rect(x, y + height * 0.15, notchW, notchH);
+    this.ctx.rect(x, y + height * 0.6, notchW, notchH);
+  }
+
+  /** BPMN exclusive gateway: a diamond with an X inside. */
+  private renderGatewayExclusive(x: number, y: number, width: number, height: number): void {
+    this.renderDiamond(x, y, width, height);
+    const cx = x + width / 2;
+    const cy = y + height / 2;
+    const r = Math.min(width, height) * 0.18;
+    this.ctx.moveTo(cx - r, cy - r);
+    this.ctx.lineTo(cx + r, cy + r);
+    this.ctx.moveTo(cx + r, cy - r);
+    this.ctx.lineTo(cx - r, cy + r);
+  }
+
+  /** BPMN parallel gateway: a diamond with a plus inside. */
+  private renderGatewayParallel(x: number, y: number, width: number, height: number): void {
+    this.renderDiamond(x, y, width, height);
+    const cx = x + width / 2;
+    const cy = y + height / 2;
+    const r = Math.min(width, height) * 0.2;
+    this.ctx.moveTo(cx, cy - r);
+    this.ctx.lineTo(cx, cy + r);
+    this.ctx.moveTo(cx - r, cy);
+    this.ctx.lineTo(cx + r, cy);
+  }
+
+  /** Speech-bubble callout: a rounded body with a pointed tail. */
+  private renderCallout(x: number, y: number, width: number, height: number): void {
+    const bodyH = height * 0.75;
+    const r = Math.min(width, bodyH) * 0.15;
+    this.ctx.roundRect(x, y, width, bodyH, r);
+    const tailBaseX = x + width * 0.22;
+    this.ctx.moveTo(tailBaseX, y + bodyH);
+    this.ctx.lineTo(tailBaseX - width * 0.08, y + height);
+    this.ctx.lineTo(tailBaseX + width * 0.18, y + bodyH);
+    this.ctx.closePath();
+  }
+
+  /** Flowchart annotation bracket, open on the left. */
+  private renderBracket(x: number, y: number, width: number, height: number): void {
+    const notch = width * 0.4;
+    this.ctx.moveTo(x + width, y);
+    this.ctx.lineTo(x + notch, y);
+    this.ctx.lineTo(x, y + height / 2);
+    this.ctx.lineTo(x + notch, y + height);
+    this.ctx.lineTo(x + width, y + height);
+  }
+
+  /** A pole with a triangular pennant, for milestones. */
+  private renderFlag(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + width, y + height * 0.22);
+    this.ctx.lineTo(x, y + height * 0.44);
+    this.ctx.closePath();
+  }
+
+  /** A single arrow-shaped ribbon (distinct from the double-notched doubleChevron). */
+  private renderChevron(x: number, y: number, width: number, height: number): void {
+    const notch = width * 0.35;
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + width - notch, y);
+    this.ctx.lineTo(x + width, y + height / 2);
+    this.ctx.lineTo(x + width - notch, y + height);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.lineTo(x + notch, y + height / 2);
+    this.ctx.closePath();
+  }
+
+  /** ANSI flowchart paper-tape symbol: a rectangle with wavy top/bottom edges. */
+  private renderTape(x: number, y: number, width: number, height: number): void {
+    const wave = height * 0.15;
+    this.ctx.moveTo(x, y + wave);
+    this.ctx.quadraticCurveTo(x + width * 0.25, y - wave, x + width * 0.5, y + wave);
+    this.ctx.quadraticCurveTo(x + width * 0.75, y + wave * 3, x + width, y + wave);
+    this.ctx.lineTo(x + width, y + height - wave);
+    this.ctx.quadraticCurveTo(
+      x + width * 0.75,
+      y + height + wave,
+      x + width * 0.5,
+      y + height - wave,
+    );
+    this.ctx.quadraticCurveTo(x + width * 0.25, y + height - wave * 3, x, y + height - wave);
+    this.ctx.closePath();
+  }
+
+  /** A security/protection shield outline: rounded top, pointed bottom. */
+  private renderShield(x: number, y: number, width: number, height: number): void {
+    const cx = x + width / 2;
+    this.ctx.moveTo(x, y + height * 0.15);
+    this.ctx.quadraticCurveTo(x, y, cx, y);
+    this.ctx.quadraticCurveTo(x + width, y, x + width, y + height * 0.15);
+    this.ctx.lineTo(x + width, y + height * 0.5);
+    this.ctx.quadraticCurveTo(x + width, y + height * 0.9, cx, y + height);
+    this.ctx.quadraticCurveTo(x, y + height * 0.9, x, y + height * 0.5);
+    this.ctx.closePath();
+  }
+
+  /** A lightning-bolt / trigger symbol. */
+  private renderBolt(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x + width * 0.6, y);
+    this.ctx.lineTo(x + width * 0.15, y + height * 0.55);
+    this.ctx.lineTo(x + width * 0.45, y + height * 0.55);
+    this.ctx.lineTo(x + width * 0.4, y + height);
+    this.ctx.lineTo(x + width * 0.85, y + height * 0.4);
+    this.ctx.lineTo(x + width * 0.55, y + height * 0.4);
+    this.ctx.closePath();
   }
 }

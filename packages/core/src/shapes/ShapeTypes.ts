@@ -66,7 +66,17 @@ export type ShapeType =
   | 'rightTriangle'
   | 'plus2'
   | 'rect2'
-  | 'tabbedRectangle';
+  | 'tabbedRectangle'
+  | 'component'
+  | 'gatewayExclusive'
+  | 'gatewayParallel'
+  | 'callout'
+  | 'bracket'
+  | 'flag'
+  | 'chevron'
+  | 'tape'
+  | 'shield'
+  | 'bolt';
 
 /**
  * Shape definition with drawing instructions.
@@ -600,6 +610,86 @@ export const SHAPES: Record<ShapeType, ShapeDefinition> = {
     name: 'Tabbed Rectangle',
     defaultWidth: 120,
     defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  component: {
+    type: 'component',
+    name: 'UML Component',
+    defaultWidth: 120,
+    defaultHeight: 80,
+    resizable: true,
+    hasPorts: true,
+  },
+  gatewayExclusive: {
+    type: 'gatewayExclusive',
+    name: 'BPMN Exclusive Gateway',
+    defaultWidth: 80,
+    defaultHeight: 80,
+    resizable: true,
+    hasPorts: true,
+  },
+  gatewayParallel: {
+    type: 'gatewayParallel',
+    name: 'BPMN Parallel Gateway',
+    defaultWidth: 80,
+    defaultHeight: 80,
+    resizable: true,
+    hasPorts: true,
+  },
+  callout: {
+    type: 'callout',
+    name: 'Callout',
+    defaultWidth: 120,
+    defaultHeight: 90,
+    resizable: true,
+    hasPorts: true,
+  },
+  bracket: {
+    type: 'bracket',
+    name: 'Annotation Bracket',
+    defaultWidth: 40,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  flag: {
+    type: 'flag',
+    name: 'Flag',
+    defaultWidth: 80,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  chevron: {
+    type: 'chevron',
+    name: 'Chevron',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  tape: {
+    type: 'tape',
+    name: 'Tape',
+    defaultWidth: 120,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  shield: {
+    type: 'shield',
+    name: 'Shield',
+    defaultWidth: 90,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  bolt: {
+    type: 'bolt',
+    name: 'Lightning Bolt',
+    defaultWidth: 60,
+    defaultHeight: 100,
     resizable: true,
     hasPorts: true,
   },

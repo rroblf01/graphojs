@@ -73,7 +73,7 @@ myDiagram.commit((d) => {
 - `go.GraphObject.make` declarative construction
 - `go.Node` / `go.Link` / `go.Group` / `go.Panel` / `go.Shape` / `go.TextBlock` templates
 - `go.Binding` at the Part and element level (with converters, TwoWay, dot-path sources)
-- `nodeTemplate` / `linkTemplate` / `groupTemplate` / `nodeTemplateMap` / `linkTemplateMap`
+- `nodeTemplate` / `linkTemplate` / `groupTemplate` / `nodeTemplateMap` / `linkTemplateMap` / `groupTemplateMap`
 - `go.Link.Orthogonal`, `go.Shape.RoundedRectangle`, `go.Panel.Auto` enum constants
 - `go.Point.parse`, `go.Rect.parse`, `go.Size.parse`, `go.Margin.parse`
 - `diagram.model` property assignment, `diagram.commit`, `startTransaction`/`commitTransaction`
@@ -101,10 +101,19 @@ myDiagram.commit((d) => {
 - `go.Palette` / `go.Overview` constructible with just a div; `overview.observed`
 - `Model.mergeChanges` / `toIncrementalJson` / `applyIncrementalJson` / change log / `toJson` / `isReadOnly`
 - `Binding.ofObject`, `UndoManager.maxHistoryLength` / `isUndoingRedoing`
+- `TreeExpanderButton` / `PanelExpanderButton` extension-style widgets, `diagram.collapseTree` / `expandTree`
+- Guided dragging (alignment snapping): `draggingTool.isGuidedDraggingEnabled` / `guidelineSnapDistance`
+- `LinkLabelDraggingTool`, `link.labelSegmentFraction` (drag a link's label anywhere along its route)
+- `diagram.print()` embeds a vector `<svg>` by default (real vector PDF via "Save as PDF"); `format: 'png'` for the previous raster behavior
+- GraphML import/export: `Serializer.serializeToGraphML` / `deserializeFromGraphML` / file helpers
+- Server-side rendering helper `renderDiagramToCanvas` — bring any Node canvas package (`node-canvas`, `@napi-rs/canvas`, `skia-canvas`); GraphoJS depends on none of them
+- Accessibility: the canvas is keyboard-focusable (`role="application"`), an `aria-live` region announces selection changes, and Arrow keys move a keyboard focus cursor between parts when nothing is selected
+- Expanded `Shape` figure set: BPMN/UML gateways, `flag`, `chevron`, `bracket`, `callout`, `tape`, `shield`, `bolt`, `component`, and more
+- `LayeredDigraphLayout` crossing reduction uses a weighted-median heuristic + transpose pass (Sugiyama-style), not just a single barycenter sweep
 
 ## Performance
 
-Minified bundle: **~67 KB gzip** (265 KB raw) — smaller than GoJS (~130 KB gzip).
+Minified bundle: **~74 KB gzip** (~297 KB raw) — smaller than GoJS (~130 KB gzip).
 Tree-shaking works for consumers; importing just `Diagram` loads only the core
 chunk. The predefined palette templates (`graphojs/templates`) are split into a
 separate lazy subpath (~1 KB gzip) that is only loaded when you create a default
@@ -154,6 +163,9 @@ pnpm test
 # Run unit tests in watch mode
 pnpm test:watch
 
+# Run unit tests with a coverage report (text + HTML + lcov in ./coverage)
+pnpm test:coverage
+
 # Run type checks
 pnpm typecheck
 
@@ -181,6 +193,12 @@ pnpm test:e2e
 - [x] React / Vue wrappers
 - [x] npm publication & documentation
 - [x] Performance benchmarks on large graphs
+- [x] Extension-style widgets (`TreeExpanderButton`/`PanelExpanderButton`), guided dragging, link-label dragging
+- [x] GraphML import/export, vector SVG print/PDF, optional server-side rendering
+- [x] Accessibility pass (ARIA roles, live region, keyboard focus navigation)
+- [x] Full sample guides with playgrounds (org chart, flowchart with swimlanes, Gantt)
+
+See [ROADMAP.md](./ROADMAP.md) for what's left before a 1.0.0 release.
 
 ## License
 

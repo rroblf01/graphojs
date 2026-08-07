@@ -25,3 +25,43 @@ Los cambios se aplican al modelo de forma transaccional.
 
 El diagrama respeta `isReadOnly`, `allowMove`, `allowCopy`, `allowDelete`,
 `allowZoom`, `allowTextEdit`, `allowLink` y `allowRelink` (igual que GoJS).
+
+## Guías de alineación al arrastrar
+
+Al estilo de la extensión `GuidedDraggingTool` de GoJS, `DraggingTool` puede
+mostrar líneas de guía discontinuas y encajar (snap) el nodo arrastrado en los
+bordes/centros de los nodos cercanos:
+
+```js
+diagram.toolManager.draggingTool.isGuidedDraggingEnabled = true;
+diagram.toolManager.draggingTool.guidelineSnapDistance = 6; // px, por defecto
+```
+
+Está desactivado por defecto (igual que en GoJS, donde es una herramienta de
+extensión aparte) y se ignora mientras `diagram.isSnapToGridEnabled()` esté
+activo — solo tiene sentido un tipo de snapping a la vez.
+
+## Accesibilidad
+
+Un `<canvas>` no tiene hijos de DOM que un lector de pantalla pueda recorrer,
+así que GraphoJS añade por defecto — sin configuración — lo mínimo necesario
+para que el propio canvas sea un widget accesible:
+
+- El canvas es enfocable (`tabindex="0"`) con `role="application"` y
+  `aria-roledescription="diagram"`; su `aria-label` se recalcula solo con el
+  número de nodos/grupos/enlaces y cuántos hay seleccionados.
+- Una región `aria-live="polite"` (oculta visualmente, junto al canvas)
+  anuncia los cambios de selección — "Nodo «X» seleccionado",
+  "3 elementos seleccionados", "Selección vacía" — sin que tengas que
+  cablear nada tú mismo.
+- **Con el canvas enfocado y sin nada seleccionado**, las flechas mueven un
+  *cursor de foco* (un recuadro discontinuo) entre nodos, grupos y enlaces —
+  <kbd>Intro</kbd>/<kbd>Espacio</kbd> seleccionan el elemento con el foco, y
+  <kbd>Esc</kbd> limpia el foco y la selección. En cuanto hay una selección,
+  las flechas vuelven a su comportamiento normal de mover los nodos
+  seleccionados (`nudgeSelection`) — nunca compiten entre sí.
+
+Esto cubre la navegación básica sin ratón y el anuncio de estado a un lector
+de pantalla; no pretende ser una edición completamente no visual del
+diagrama (GoJS tampoco ofrece nada de esto — el canvas es, por naturaleza,
+un medio visual).

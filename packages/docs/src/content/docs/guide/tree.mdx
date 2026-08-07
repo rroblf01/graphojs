@@ -30,5 +30,44 @@ Los datos usan `parent` para indicar el nodo padre:
 
 ## Expandir / colapsar
 
-Con `Group.isSubGraphExpanded` y `diagram.collapseGroup`/`expandGroup` puedes
-hacer subárboles colapsables. Prueba a cambiar `nodeSpacing` en el layout.
+Para colapsar un subárbol (ocultar todos sus descendientes) sin necesidad de
+que los nodos sean un `Group`, usa `node.isTreeExpanded` junto con
+`diagram.collapseTree`/`expandTree`:
+
+```js
+node.isTreeExpanded; // true por defecto
+diagram.collapseTree(node); // oculta todos los descendientes de node
+diagram.expandTree(node); // los vuelve a mostrar (respetando los que
+// a su vez estén colapsados en un nivel inferior)
+```
+
+Estas operaciones disparan los eventos `TreeCollapsed`/`TreeExpanded` del
+diagrama.
+
+Esto es independiente de `Group.isSubGraphExpanded` +
+`collapseGroup`/`expandGroup` (ver [Grupos](/guide/groups/)), que colapsa la
+pertenencia a un grupo en vez de la jerarquía de árbol.
+
+### TreeExpanderButton
+
+`TreeExpanderButton()` construye un botón ("−"/"+") listo para añadir al
+template de un nodo; al pulsarlo llama a `collapseTree`/`expandTree` sobre el
+nodo que lo contiene:
+
+```js
+import * as go from 'graphojs/go';
+import { TreeExpanderButton } from 'graphojs';
+
+const $ = go.GraphObject.make;
+
+diagram.nodeTemplate = $(
+  go.Panel,
+  'Horizontal',
+  $(go.Panel, 'Auto', $(go.Shape, 'RoundedRectangle'), $(go.TextBlock, new go.Binding('text', 'label'))),
+  TreeExpanderButton(), // { size, background, stroke } opcionales
+);
+```
+
+`TreeExpanderButton`/`PanelExpanderButton` no forman parte del namespace
+`go.*` (tampoco en GoJS real, donde viven en el módulo de extensiones): se
+importan directamente desde `graphojs`.

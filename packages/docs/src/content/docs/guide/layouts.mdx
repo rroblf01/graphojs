@@ -27,3 +27,25 @@ momento (el ejemplo de arriba lo hace con `__setLayout`).
 
 `ForceDirectedLayout` es O(n²); para grafos grandes conviene limitar
 `maxIterations` o usarlo con menos nodos.
+
+## LayeredDigraphLayout
+
+Organiza un grafo dirigido en capas (estilo Sugiyama): cada nodo se asigna a
+una capa según su camino más largo desde las raíces, y dentro de cada capa el
+orden se reduce a base de minimizar cruces de enlaces con
+`reduceCrossings: true` (por defecto):
+
+```js
+diagram.layout = new go.LayeredDigraphLayout({
+  direction: 'vertical', // o 'horizontal'
+  layerSpacing: 80,
+  reduceCrossings: true,
+});
+```
+
+La reducción de cruces usa la heurística de la **mediana** (Gansner et al.,
+la misma que usa Graphviz/`dot`) en pasadas alternas hacia abajo y hacia
+arriba, seguida de una pasada de *transposición* que intercambia nodos
+adyacentes dentro de una capa siempre que eso reduzca el número real de
+cruces — más robusta frente a valores atípicos, y capaz de resolver casos que
+una única pasada de baricentro no puede.

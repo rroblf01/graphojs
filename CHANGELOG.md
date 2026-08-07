@@ -5,6 +5,66 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `groupTemplateMap` / `addGroupTemplate` / `removeGroupTemplate` — category
+  templates for groups, matching `nodeTemplateMap`/`linkTemplateMap`.
+- 10 new `Shape` figures for BPMN/UML/flowchart diagrams: `component`,
+  `gatewayExclusive`, `gatewayParallel`, `callout`, `bracket`, `flag`,
+  `chevron`, `tape`, `shield`, `bolt`.
+- Full SVG path mini-language support in `geometryString` (M/L/H/V/C/S/Q/T/A/Z,
+  absolute/relative variants, implicit command repetition).
+- `TreeExpanderButton` / `PanelExpanderButton` extension-style widgets;
+  `Diagram.collapseTree`/`expandTree`, `Part.isTreeExpanded`, and the
+  `TreeCollapsed`/`TreeExpanded` events now actually fire.
+- Guided dragging (alignment snapping): `draggingTool.isGuidedDraggingEnabled`
+  / `guidelineSnapDistance`, with alignment-guideline rendering
+  (`Diagram.showAlignmentGuidelines`/`hideAlignmentGuidelines`).
+- `LinkLabelDraggingTool` for repositioning a link's label by dragging it;
+  `Link.labelSegmentFraction`, `Link.getLabelBounds()`,
+  `SetLinkLabelPositionCommand`.
+- `LayeredDigraphLayout` crossing reduction upgraded to a weighted-median
+  heuristic with alternating down/up sweeps plus a transpose pass
+  (Sugiyama-style), replacing a single-pass barycenter.
+- 3 full sample guides with playgrounds: org chart, flowchart with swimlanes,
+  and a Gantt chart.
+- `diagram.print()` now embeds vector SVG by default
+  (`format: 'svg' | 'png'`) — "Save as PDF" from the browser's print dialog
+  now produces a real vector PDF instead of an embedded raster image.
+- GraphML import/export: `Serializer.serializeToGraphML` /
+  `deserializeFromGraphML` / `exportToGraphMLFile` / `importFromGraphMLFile`.
+- Server-side rendering helper `renderDiagramToCanvas` / `measureDiagramContent`
+  — render a diagram into any Node canvas package (`node-canvas`,
+  `@napi-rs/canvas`, `skia-canvas`) without depending on any of them.
+- Accessibility pass: the canvas is keyboard-focusable
+  (`role="application"`, `aria-roledescription`), an `aria-live` region
+  announces selection/focus changes, and Arrow keys move a keyboard focus
+  cursor between parts when nothing is selected (Enter/Space selects,
+  Escape clears).
+- `vitest --coverage` script wired into CI (`pnpm test:coverage`, uploaded as
+  a build artifact).
+
+### Fixed
+
+- `Panel.clone()` didn't set `parentPanel` on cloned static child elements,
+  so `GraphObject.part`/`.diagram` couldn't be resolved from a nested cloned
+  object (e.g. a button's `click` handler inside a node template) — click
+  handlers on nested template elements now work correctly.
+- `GraphObject.margin` now accepts a plain number (GoJS shorthand for a
+  uniform margin on all four sides) instead of silently being ignored.
+- Node/group properties set directly on the model data (`label`, `fill`,
+  `stroke`, `angle`, `zOrder`) weren't applied on the initial
+  `diagram.model = ...` load or a full model resync — only on later
+  incremental single-part updates. They're now applied consistently in both
+  paths.
+
+### Performance
+
+- Minified core bundle ≈ 74 KB gzip (~297 KB raw) — grew from the additions
+  above; still smaller than GoJS (~130 KB gzip).
+
 ## [0.2.0] - 2026-08-06
 
 ### Changed

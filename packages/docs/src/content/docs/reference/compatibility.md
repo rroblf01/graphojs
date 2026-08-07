@@ -12,7 +12,7 @@ resumen de lo que está soportado.
 - `go.GraphObject.make` construcción declarativa
 - `go.Node` / `go.Link` / `go.Group` / `go.Panel` / `go.Shape` / `go.TextBlock` templates
 - `go.Binding` con converters, TwoWay y dot-paths
-- `nodeTemplate` / `linkTemplate` / `groupTemplate` / `nodeTemplateMap` / `linkTemplateMap`
+- `nodeTemplate` / `linkTemplate` / `groupTemplate` / `nodeTemplateMap` / `linkTemplateMap` / `groupTemplateMap`
 - `diagram.model` y transacciones (`startTransaction`/`commitTransaction`)
 - `model.nodeDataArray` / `linkDataArray`
 - Diagram flags: `isReadOnly`, `isEnabled`, `allowMove`, `allowCopy`, `allowDelete`,
@@ -24,6 +24,20 @@ resumen de lo que está soportado.
 - Model: `mergeChanges`, incremental JSON, validación
 - Export: PNG (`makeImage`), SVG (`makeSvg`), print
 - Navegación de grafo: `findLinksInto/OutOf`, `findNodesInto/OutOf`, tree helpers
+- Widgets de extensión al estilo GoJS: `TreeExpanderButton`, `PanelExpanderButton`
+  (se importan desde `graphojs`, no desde `graphojs/go` — igual que en GoJS)
+- Guías de alineación al arrastrar al estilo `GuidedDraggingTool`:
+  `draggingTool.isGuidedDraggingEnabled` / `guidelineSnapDistance`
+- Arrastre de etiquetas de enlace al estilo `LinkLabelDraggingTool`:
+  `link.labelSegmentIndex` / `labelSegmentFraction` / `labelOffset`
+- `diagram.print()` imprime como SVG vectorial por defecto (PDF vectorial al
+  "Guardar como PDF"); `format: 'png'` para el PNG rasterizado clásico
+- Import/export GraphML (sin equivalente directo en GoJS):
+  `go.Serializer.serializeToGraphML` / `deserializeFromGraphML`
+- Renderizado en servidor con un canvas de Node opcional (`renderDiagramToCanvas`),
+  sin equivalente en GoJS (solo DOM/navegador)
+- Accesibilidad del canvas (ARIA, región `aria-live`, cursor de foco por
+  teclado) — sin equivalente en GoJS
 
 ## Diferencias conocidas
 

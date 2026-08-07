@@ -34,3 +34,80 @@ del template se aplican **al Part** (no al Panel), igual que en GoJS.
 Un template de enlace suele tener:
 - Un `Shape` que dibuja la línea.
 - Un `Shape` con `toArrow` para la flecha.
+
+### Etiquetas de enlace
+
+`link.label` (texto), `labelColor` y `labelFont` controlan el rótulo del
+enlace. Su posición se calcula sobre el segmento elegido:
+
+- `labelSegmentIndex` — qué segmento del trazado usar (-1 = el segmento
+  central, por defecto).
+- `labelSegmentFraction` — posición a lo largo de ese segmento, de 0 (inicio)
+  a 1 (fin); 0.5 (punto medio) por defecto.
+- `labelOffset` / `labelSide` — distancia perpendicular al trazado y de qué
+  lado (`'top' | 'bottom' | 'left' | 'right' | 'auto'`).
+
+El usuario puede arrastrar la etiqueta con el ratón — al estilo de la
+extensión `LinkLabelDraggingTool` de GoJS — para reposicionarla libremente;
+`labelSegmentIndex`/`labelSegmentFraction`/`labelOffset` se actualizan en
+tiempo real (con `labelSide: 'auto'`) y el movimiento queda en el historial de
+undo/redo. Esta herramienta está registrada por defecto en todo `Diagram`, sin
+configuración adicional.
+
+## Templates por categoría
+
+Además de la plantilla por defecto (`nodeTemplate`/`linkTemplate`/
+`groupTemplate`), puedes registrar plantillas distintas por `category` usando
+los mapas correspondientes — el dato con `category: 'x'` usa la plantilla de
+`'x'` en el mapa; si no hay ninguna coincidencia, se usa la plantilla por
+defecto:
+
+```js
+diagram.nodeTemplateMap.set('decision', $(go.Node, 'Auto', $(go.Shape, 'diamond'), ...));
+diagram.addNodeTemplate('decision', decisionTemplate); // equivalente
+
+diagram.linkTemplateMap.set('dashed', $(go.Link, $(go.Shape, { strokeDashArray: [4, 4] })));
+
+diagram.groupTemplateMap.set('team', $(go.Group, 'Auto', $(go.Shape, 'RoundedRectangle', { fill: 'lightblue' })));
+
+// { key: 1, category: 'decision' } usa el template de nodo 'decision'
+// { key: 2, isGroup: true, category: 'team' } usa el template de grupo 'team'
+```
+
+`addNodeTemplate`/`addLinkTemplate`/`addGroupTemplate` son atajos equivalentes
+a `xTemplateMap.set(category, template)`; `removeNodeTemplate`/
+`removeLinkTemplate`/`removeGroupTemplate` los quitan del mapa.
+
+## Paneles expandibles
+
+`PanelExpanderButton(name)` construye un botón ("−"/"+") que alterna la
+`visible` de otro elemento del mismo template localizado por su `name`, vía
+`Part.findObject(name)` — útil para un panel de "detalles" que se muestra u
+oculta dentro del propio nodo:
+
+```js
+import * as go from 'graphojs/go';
+import { PanelExpanderButton } from 'graphojs';
+
+const $ = go.GraphObject.make;
+
+diagram.nodeTemplate = $(
+  go.Panel,
+  'Vertical',
+  $(
+    go.Panel,
+    'Horizontal',
+    $(go.TextBlock, new go.Binding('text', 'name')),
+    PanelExpanderButton('DETAILS'),
+  ),
+  $(
+    go.Panel,
+    'Auto',
+    { name: 'DETAILS', visible: false },
+    $(go.TextBlock, new go.Binding('text', 'description')),
+  ),
+);
+```
+
+Para alternar la jerarquía de árbol en vez de un elemento arbitrario, usa
+`TreeExpanderButton` — ver [Árboles](/guide/tree/#treeexpanderbutton).

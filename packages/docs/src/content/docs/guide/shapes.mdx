@@ -6,7 +6,7 @@ description: Las figuras de Shape disponibles y cómo usarlas.
 import Playground from '../../../components/Playground.astro';
 import shapesExample from '../../../examples/shapes.js?raw';
 
-GraphoJS incluye ~70 figuras de Shape. El `figure` de un `Shape` determina su
+GraphoJS incluye ~80 figuras de Shape. El `figure` de un `Shape` determina su
 forma, y puede venir del modelo con un binding.
 
 <Playground code={shapesExample} height={500} />
@@ -15,6 +15,19 @@ forma, y puede venir del modelo con un binding.
 
 `Rectangle`, `RoundedRectangle`, `Ellipse`, `Diamond`, `Triangle`, `Hexagon`,
 `Star`, `Cross`, `Cylinder`, `Document`, `Parallelogram`, y muchas más.
+
+### UML / BPMN / anotaciones
+
+- `component` — componente UML (caja con dos muescas de conector en el borde izquierdo).
+- `gatewayExclusive` — gateway exclusivo BPMN (diamante con X).
+- `gatewayParallel` — gateway paralelo BPMN (diamante con +).
+- `callout` — bocadillo de comentario con cola.
+- `bracket` — corchete de anotación de flowchart, abierto a la izquierda.
+- `flag` — bandera/banderín, útil para hitos (ver la guía de [Gantt](/guide/gantt/)).
+- `chevron` — flecha/cinta simple (distinta de `doubleChevron`).
+- `tape` — símbolo de cinta de papel ANSI (bordes ondulados).
+- `shield` — escudo de seguridad/protección.
+- `bolt` — rayo/símbolo de disparador.
 
 ## Cambiar la forma dinámicamente
 

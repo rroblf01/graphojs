@@ -16,7 +16,21 @@ restaurar el **modelo completo en JSON**.
 - `diagram.makeImage({ scale, background, padding })` → `HTMLCanvasElement`
 - `diagram.makeImageData({ scale })` → data URL de PNG
 - `diagram.makeSvg()` → `SVGElement`
-- `diagram.print()` → imprime el diagrama
+- `diagram.print({ format })` → imprime el diagrama
+
+### Imprimir como vector (PDF)
+
+`diagram.print()` incrusta el diagrama como **SVG vectorial** por defecto:
+al usar "Guardar como PDF" en el diálogo de impresión del navegador se
+obtiene un PDF vectorial (nítido a cualquier zoom), no una imagen rasterizada.
+Pasa `format: 'png'` para volver al comportamiento anterior (una imagen
+`<img>` generada con `PNGExporter`, útil si necesitas una imagen fija en vez
+de vector):
+
+```js
+diagram.print({ title: 'Mi diagrama' }); // SVG vectorial (por defecto)
+diagram.print({ title: 'Mi diagrama', format: 'png' }); // imagen rasterizada
+```
 
 ## Importar/exportar el modelo (JSON)
 
@@ -38,3 +52,62 @@ go.Serializer.importFromFile(diagram).then(() => diagram.zoomToFit());
 
 El ejemplo de arriba muestra el JSON serializado en tiempo real y permite
 exportarlo a un archivo o volver a importarlo.
+
+## Importar/exportar GraphML
+
+[GraphML](http://graphml.graphdrawing.org/) es un formato XML de intercambio
+de grafos que entienden herramientas como yEd o Gephi. `go.Serializer`
+también lo soporta:
+
+- `go.Serializer.serializeToGraphML(diagram)` → `string` XML
+- `go.Serializer.deserializeFromGraphML(xml, diagram)` → restaura el modelo
+- `go.Serializer.exportToGraphMLFile(diagram, 'grafo.graphml')` → descarga
+- `go.Serializer.importFromGraphMLFile(diagram)` → abre un selector de
+  archivo y lo carga
+
+```js
+const xml = go.Serializer.serializeToGraphML(diagram);
+go.Serializer.exportToGraphMLFile(diagram, 'grafo.graphml');
+
+go.Serializer.importFromGraphMLFile(diagram).then(() => diagram.zoomToFit());
+```
+
+Cada propiedad del dato de nodo/enlace (además de `key`/`from`/`to`, que se
+mapean a los atributos `id`/`source`/`target` de GraphML) se guarda como un
+`<data>` declarado con su `<key attr.type="...">` — `string`, `int`,
+`double` o `boolean` según el tipo detectado. Las claves de nodo que parecen
+números (`"3"`) se restauran como número al importar, igual que se
+exportaron; las que no, se mantienen como texto.
+
+## Renderizado en servidor (Node)
+
+GraphoJS no depende de ningún paquete de canvas de Node — pero puedes
+renderizar un diagrama a PNG en un servidor combinando un DOM ligero (para la
+lógica del `Diagram`, que necesita `document`) con un canvas nativo rápido de
+tu elección para los píxeles reales, ya que el canvas de `jsdom` no tiene un
+backend 2D real:
+
+```js
+import { JSDOM } from 'jsdom';
+import { createCanvas } from '@napi-rs/canvas'; // o 'canvas', 'skia-canvas'...
+import * as go from 'graphojs/go';
+import { renderDiagramToCanvas } from 'graphojs';
+
+const dom = new JSDOM('<div id="root"></div>');
+global.document = dom.window.document; // el Diagram necesita `document`
+
+const diagram = new go.Diagram('root');
+diagram.nodeTemplate = /* ... */;
+diagram.model = new go.GraphLinksModel({ nodeDataArray, linkDataArray });
+
+const canvas = createCanvas(1, 1); // renderDiagramToCanvas lo redimensiona
+renderDiagramToCanvas(diagram, canvas, { padding: 20, scale: 2 });
+const png = canvas.toBuffer('image/png');
+```
+
+`renderDiagramToCanvas(diagram, canvas, options)` solo necesita que `canvas`
+tenga `width`/`height` (asignables) y `getContext('2d')` — el mismo contrato
+que ya cumplen `node-canvas`, `@napi-rs/canvas` y `skia-canvas` — sin ningún
+otro requisito de DOM (nada de `getBoundingClientRect` ni `style`). Usa
+`measureDiagramContent(diagram)` si necesitas los límites del contenido
+(`{ x, y, width, height }`) para calcular tú mismo el tamaño del canvas.

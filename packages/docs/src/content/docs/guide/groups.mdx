@@ -22,6 +22,22 @@ diagram.groupTemplate = $(go.Group, 'Vertical', ...);
 El `groupTemplate` define el aspecto del grupo; los nodos con `group: 1`
 quedan dentro.
 
+## Grupos por categoría
+
+Igual que con nodos y enlaces, puedes tener grupos con aspectos distintos
+según su `category`, usando `groupTemplateMap` (o el atajo `addGroupTemplate`):
+
+```js
+diagram.groupTemplate = $(go.Group, 'Auto', $(go.Shape, 'rect', { fill: '#eee' }));
+diagram.addGroupTemplate('team', $(go.Group, 'Auto', $(go.Shape, 'RoundedRectangle', { fill: 'lightblue' })));
+
+// { key: 1, isGroup: true } usa el groupTemplate por defecto
+// { key: 2, isGroup: true, category: 'team' } usa el template 'team'
+```
+
+Una plantilla de `groupTemplateMap` con coincidencia de categoría tiene
+prioridad sobre el `groupTemplate` por defecto.
+
 ## API de grupos
 
 - `group.memberParts` / `group.memberNodes` / `group.memberLinks`

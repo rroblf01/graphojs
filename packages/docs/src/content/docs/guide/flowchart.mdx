@@ -1,0 +1,31 @@
+---
+title: "Ejemplo: Diagrama de flujo con carriles"
+description: Flowchart con swimlanes, figuras BPMN y enlaces etiquetados.
+---
+
+import Playground from '../../../components/Playground.astro';
+import flowchartExample from '../../../examples/flowchart.js?raw';
+
+Un diagrama de flujo con **carriles** (swimlanes) separa el proceso por
+responsable — aquí, "Ventas" y "Almacén" — usando figuras de inicio/fin,
+proceso y decisión.
+
+<Playground code={flowchartExample} height={520} />
+
+## Cómo está construido
+
+- Cada carril son dos nodos fijos (`selectable: false`, `draggable: false`,
+  `zOrder: -10`): una franja de color con el nombre y un fondo ancho donde se
+  colocan los nodos del flujo. GraphoJS no modela "pools"/"lanes" nativamente
+  — construirlos como nodos de fondo es la forma habitual de conseguir el
+  mismo resultado visual.
+- `nodeTemplateMap` registra una plantilla por `category`: `'terminator'`
+  (óvalo, inicio/fin), `'process'` (rectángulo redondeado) y `'decision'`
+  (`gatewayExclusive`, la figura de puerta exclusiva de BPMN — ver
+  [Figuras](/guide/shapes/)).
+- Los nodos del flujo tienen `x`/`y` fijos en los datos (sin `diagram.layout`)
+  para controlar en qué carril cae cada uno.
+- Las ramas de la decisión usan `linkDataArray[i].label` ('Sí'/'No'); el
+  usuario puede arrastrar esas etiquetas con
+  [`LinkLabelDraggingTool`](/guide/templates/#etiquetas-de-enlace), activo
+  por defecto.

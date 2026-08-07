@@ -1,0 +1,29 @@
+---
+title: "Ejemplo: Organigrama"
+description: Organigrama completo con TreeLayout y botones de colapso.
+---
+
+import Playground from '../../../components/Playground.astro';
+import orgChartExample from '../../../examples/org-chart.js?raw';
+
+Un organigrama es un `TreeLayout` con nodos que combinan nombre + cargo y un
+[`TreeExpanderButton`](/guide/tree/#treeexpanderbutton) para colapsar ramas
+completas.
+
+<Playground code={orgChartExample} height={520} />
+
+## Cómo está construido
+
+- Los datos usan `parent` para expresar la jerarquía (ver
+  [Árboles](/guide/tree/)).
+- El template de nodo es un `Panel('Horizontal')` con una tarjeta
+  (`Auto` + `RoundedRectangle` + nombre/cargo en un `Panel('Vertical')`) y el
+  botón expansor al lado.
+- `diagram.layout = new go.TreeLayout({ nodeSpacing, layerSpacing })` ordena
+  el árbol; los enlaces usan `routing: 'orthogonal'` para las líneas en
+  ángulo recto típicas de un organigrama.
+- Pulsa el botón "−"/"+" de cualquier jefatura para colapsar o expandir a su
+  equipo.
+
+Para adaptarlo a tu propio equipo, cambia `nodeDataArray` — cada persona es
+`{ key, parent, name, title }`.

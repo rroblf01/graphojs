@@ -51,8 +51,8 @@ para que el propio canvas sea un widget accesible:
   `aria-roledescription="diagram"`; su `aria-label` se recalcula solo con el
   número de nodos/grupos/enlaces y cuántos hay seleccionados.
 - Una región `aria-live="polite"` (oculta visualmente, junto al canvas)
-  anuncia los cambios de selección — "Nodo «X» seleccionado",
-  "3 elementos seleccionados", "Selección vacía" — sin que tengas que
+  anuncia los cambios de selección — por defecto en inglés: `Node "X"
+  selected`, `3 items selected`, `Selection cleared` — sin que tengas que
   cablear nada tú mismo.
 - **Con el canvas enfocado y sin nada seleccionado**, las flechas mueven un
   *cursor de foco* (un recuadro discontinuo) entre nodos, grupos y enlaces —
@@ -60,6 +60,27 @@ para que el propio canvas sea un widget accesible:
   <kbd>Esc</kbd> limpia el foco y la selección. En cuanto hay una selección,
   las flechas vuelven a su comportamiento normal de mover los nodos
   seleccionados (`nudgeSelection`) — nunca compiten entre sí.
+
+### Traducir los anuncios (`accessibilityMessages`)
+
+Los textos de arriba están en inglés por defecto (igual que el resto de la
+API). Para traducirlos o cambiar la redacción, sobrescribe cualquier
+subconjunto de `AccessibilityMessages` — al construir el diagrama o después:
+
+```js
+diagram.accessibilityMessages = {
+  ...diagram.accessibilityMessages, // conserva los formateadores que no toques
+  selectionCleared: () => 'Selección vacía',
+  singleSelected: (description) => `${description} seleccionado`,
+  multipleSelected: (count) => `${count} elementos seleccionados`,
+  focusMoved: (description) => `Foco en ${description}`,
+  describePart: (part) => `Nodo "${part.label ?? part.key}"`,
+};
+```
+
+O pásalo directamente al constructor con `new go.Diagram(div, {
+accessibilityMessages: { ... } })`. Solo hace falta definir los campos que
+quieras cambiar — el resto sigue usando el valor por defecto en inglés.
 
 Esto cubre la navegación básica sin ratón y el anuncio de estado a un lector
 de pantalla; no pretende ser una edición completamente no visual del

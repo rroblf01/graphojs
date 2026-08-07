@@ -1,4 +1,4 @@
-import type { ChangedEvent, LinkData, Model, NodeData, NodeKey } from '../model/Model.ts';
+import type { ChangedEvent, LinkCapableModel, Model, NodeData } from '../model/Model.ts';
 import type { Command } from './Command.ts';
 
 /**
@@ -51,7 +51,7 @@ export class ModelTransactionCommand implements Command {
         break;
       }
       case 'link Added': {
-        const linkModel = this.model as unknown as LinkOps;
+        const linkModel = this.model as unknown as LinkCapableModel;
         if (event.link && 'addLink' in linkModel) {
           const key = linkModel.getLinkKey(event.link);
           const exists = linkModel.getLinkDataArray().some((l) => linkModel.getLinkKey(l) === key);
@@ -60,7 +60,7 @@ export class ModelTransactionCommand implements Command {
         break;
       }
       case 'link Removed': {
-        const linkModel = this.model as unknown as LinkOps;
+        const linkModel = this.model as unknown as LinkCapableModel;
         if (event.link && 'getLinkKey' in linkModel) {
           const key = linkModel.getLinkKey(event.link);
           if (key !== undefined && linkModel.getLinkData(key)) {
@@ -77,7 +77,7 @@ export class ModelTransactionCommand implements Command {
             this.model.setNodeProperty(key, event.propertyName, event.newValue);
           }
         } else if (event.link) {
-          const linkModel = this.model as unknown as LinkOps;
+          const linkModel = this.model as unknown as LinkCapableModel;
           const key = linkModel.getLinkKey(event.link);
           if (key !== undefined && linkModel.getLinkData(key)) {
             linkModel.setLinkProperty(key, event.propertyName, event.newValue);
@@ -97,7 +97,7 @@ export class ModelTransactionCommand implements Command {
         if (event.node) this.model.addNode({ ...event.node });
         break;
       case 'link Added': {
-        const linkModel = this.model as unknown as LinkOps;
+        const linkModel = this.model as unknown as LinkCapableModel;
         if (event.link && 'getLinkKey' in linkModel) {
           const key = linkModel.getLinkKey(event.link);
           if (key !== undefined) linkModel.removeLink(key);
@@ -105,7 +105,7 @@ export class ModelTransactionCommand implements Command {
         break;
       }
       case 'link Removed': {
-        const linkModel = this.model as unknown as LinkOps;
+        const linkModel = this.model as unknown as LinkCapableModel;
         if (event.link && 'addLink' in linkModel) {
           const key = linkModel.getLinkKey(event.link);
           const exists = linkModel.getLinkDataArray().some((l) => linkModel.getLinkKey(l) === key);
@@ -121,7 +121,7 @@ export class ModelTransactionCommand implements Command {
             this.model.setNodeProperty(key, event.propertyName, event.oldValue);
           }
         } else if (event.link) {
-          const linkModel = this.model as unknown as LinkOps;
+          const linkModel = this.model as unknown as LinkCapableModel;
           const key = linkModel.getLinkKey(event.link);
           if (key !== undefined && linkModel.getLinkData(key)) {
             linkModel.setLinkProperty(key, event.propertyName, event.oldValue);
@@ -135,16 +135,6 @@ export class ModelTransactionCommand implements Command {
   describe(): string {
     return this.name;
   }
-}
-
-/** Minimal structural interface for models with link operations. */
-export interface LinkOps {
-  getLinkKey(linkData: LinkData): NodeKey | undefined;
-  getLinkData(key: NodeKey): LinkData | undefined;
-  getLinkDataArray(): readonly LinkData[];
-  addLink(linkData: LinkData): NodeKey;
-  removeLink(key: NodeKey): boolean;
-  setLinkProperty(key: NodeKey, propertyName: string, value: unknown): void;
 }
 
 /** @deprecated Use ModelTransactionCommand. */

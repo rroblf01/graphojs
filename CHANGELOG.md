@@ -42,7 +42,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`role="application"`, `aria-roledescription`), an `aria-live` region
   announces selection/focus changes, and Arrow keys move a keyboard focus
   cursor between parts when nothing is selected (Enter/Space selects,
-  Escape clears).
+  Escape clears). Announcement text is in English by default and fully
+  overridable via `diagram.accessibilityMessages` /
+  `DiagramOptions.accessibilityMessages` for localization.
 - `vitest --coverage` script wired into CI (`pnpm test:coverage`, uploaded as
   a build artifact).
 
@@ -59,6 +61,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `diagram.model = ...` load or a full model resync — only on later
   incremental single-part updates. They're now applied consistently in both
   paths.
+- Pinch-to-zoom on touch devices didn't anchor on the pinch midpoint — the
+  offset update divided by the new scale instead of the old one, so
+  pinching with the fingers held perfectly still left the viewport offset
+  completely unchanged (visually anchoring the zoom at the canvas origin
+  instead of under the fingers).
+- `Layout.doLayout()` called with no explicit collection always operated on
+  empty arrays — `Layout` had no real reference to its `Diagram`, only a
+  cast-based probe that could never succeed. `Layout.diagram` is now wired
+  up automatically by `Diagram.layout = ...`.
+- `Diagram.selectPartsInRect(rect, partialInclusion=false)` threw
+  `r.containsRect is not a function` when called with a plain
+  `{x,y,width,height}` object — exactly what `DragSelectingTool` always
+  passes when `isPartialInclusion` is set to `false`.
 
 ### Performance
 

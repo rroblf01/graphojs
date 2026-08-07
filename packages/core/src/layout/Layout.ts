@@ -1,3 +1,4 @@
+import type { Diagram } from '../diagram/Diagram.ts';
 import { Link } from '../parts/Link.ts';
 import { Node } from '../parts/Node.ts';
 import type { Part } from '../parts/Part.ts';
@@ -24,6 +25,13 @@ export abstract class Layout {
   protected padding: number;
   protected direction: 'horizontal' | 'vertical';
   protected center: boolean;
+
+  /**
+   * GoJS-compatible: the Diagram this layout is assigned to (set by
+   * `Diagram.layout = ...`), used by `doLayout()` when called with no
+   * explicit collection.
+   */
+  diagram: Diagram | null = null;
 
   constructor(options: LayoutOptions = {}) {
     this.spacing = options.spacing ?? 50;
@@ -180,16 +188,12 @@ export abstract class Layout {
 
   /** The nodes this layout applies to when no collection is given. */
   private diagramParts(): Node[] {
-    const diagram = (this as unknown as { diagram?: { allNodes?: () => Node[] } }).diagram;
-    if (diagram && typeof diagram.allNodes === 'function') return diagram.allNodes();
-    return [];
+    return this.diagram?.allNodes ?? [];
   }
 
   /** The links this layout applies to when no collection is given. */
   private diagramLinks(): Link[] {
-    const diagram = (this as unknown as { diagram?: { allLinks?: () => Link[] } }).diagram;
-    if (diagram && typeof diagram.allLinks === 'function') return diagram.allLinks();
-    return [];
+    return this.diagram?.allLinks ?? [];
   }
 
   /** GoJS-compatible: The current layout network (or null). */

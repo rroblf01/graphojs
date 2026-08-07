@@ -49,9 +49,7 @@ export class CommandHandler {
 
   /** Whether mutating commands are allowed (diagram enabled and not read-only). */
   private canModify(): boolean {
-    const enabled = (this.diagram as unknown as { isEnabled?: boolean }).isEnabled !== false;
-    const readOnly = (this.diagram as unknown as { isReadOnly?: boolean }).isReadOnly === true;
-    return enabled && !readOnly;
+    return this.diagram.isEnabled !== false && this.diagram.isReadOnly !== true;
   }
 
   /** Delete the currently selected parts (undoable). */
@@ -655,7 +653,7 @@ export class CommandHandler {
   /** GoJS-compatible: Group the selected nodes into a new Group part. */
   groupSelection(): boolean {
     if (!this.canModify()) return false;
-    if ((this.diagram as unknown as { allowGroup?: boolean }).allowGroup === false) return false;
+    if (this.diagram.allowGroup === false) return false;
     const nodes = this.diagram.getSelectedParts().filter((p): p is Node => p instanceof Node);
     if (nodes.length === 0) return false;
 

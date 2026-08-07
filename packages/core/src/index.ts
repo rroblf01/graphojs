@@ -29,9 +29,9 @@ export {
   Position,
   ScrollBehavior,
 } from './constants.ts';
-export type { DiagramOptions } from './diagram/Diagram.ts';
+export type { AccessibilityMessages, DiagramOptions } from './diagram/Diagram.ts';
 // Diagram
-export { Diagram } from './diagram/Diagram.ts';
+export { Diagram, defaultAccessibilityMessages } from './diagram/Diagram.ts';
 export type {
   DiagramEvent,
   DiagramEventHandler,

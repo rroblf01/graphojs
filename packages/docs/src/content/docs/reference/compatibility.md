@@ -24,12 +24,8 @@ resumen de lo que está soportado.
 - Model: `mergeChanges`, incremental JSON, validación
 - Export: PNG (`makeImage`), SVG (`makeSvg`), print
 - Navegación de grafo: `findLinksInto/OutOf`, `findNodesInto/OutOf`, tree helpers
-- Widgets de extensión al estilo GoJS: `TreeExpanderButton`, `PanelExpanderButton`
-  (se importan desde `graphojs`, no desde `graphojs/go` — igual que en GoJS)
 - Guías de alineación al arrastrar al estilo `GuidedDraggingTool`:
   `draggingTool.isGuidedDraggingEnabled` / `guidelineSnapDistance`
-- Arrastre de etiquetas de enlace al estilo `LinkLabelDraggingTool`:
-  `link.labelSegmentIndex` / `labelSegmentFraction` / `labelOffset`
 - `diagram.print()` imprime como SVG vectorial por defecto (PDF vectorial al
   "Guardar como PDF"); `format: 'png'` para el PNG rasterizado clásico
 - Import/export GraphML (sin equivalente directo en GoJS):
@@ -38,6 +34,45 @@ resumen de lo que está soportado.
   sin equivalente en GoJS (solo DOM/navegador)
 - Accesibilidad del canvas (ARIA, región `aria-live`, cursor de foco por
   teclado) — sin equivalente en GoJS
+
+## Extensiones estilo GoJS (fuera de `go.*`)
+
+**Decisión de diseño, válida para 1.0.0 y en adelante**: al igual que en GoJS
+real (donde viven en el paquete separado `gojs/extensions`, no en el núcleo),
+estos widgets/herramientas se importan desde `graphojs` directamente — **no**
+desde `graphojs/go` — y seguirán así de forma permanente. No es un olvido ni
+algo pendiente de "promocionar" a `go.*`; es la superficie GoJS-compatible
+correcta:
+
+- `TreeExpanderButton` / `PanelExpanderButton` — botones de colapso/expansión
+  para plantillas de nodo (ver [Árboles](/guide/tree/) y
+  [Templates](/guide/templates/)).
+- `LinkLabelDraggingTool` — arrastra la etiqueta de un enlace
+  (`link.labelSegmentIndex` / `labelSegmentFraction` / `labelOffset`).
+
+Si en el futuro GraphoJS añade más utilidades de este estilo (paneles
+inspirados en otras extensiones de GoJS), la misma regla aplica: se exponen
+desde `graphojs`, y `go.*` se queda como un espejo fiel del núcleo real de
+GoJS.
+
+## Superficie experimental
+
+La mayoría de lo listado arriba se considera estable de cara a 1.0.0. Estas
+piezas son más recientes, no tienen precedente real en GoJS que copiar, y su
+forma concreta (opciones, valores por defecto, incluso nombres) puede seguir
+cambiando antes de 1.0.0 — no se eliminarán sin un ciclo de deprecación, pero
+tampoco hay garantía de estabilidad total todavía. Están marcadas con
+`@experimental` en su JSDoc:
+
+- `renderDiagramToCanvas` / `measureDiagramContent` (renderizado en servidor)
+  — falta validación con uso real más allá de los tests de este repo.
+- `Serializer.serializeToGraphML` / `deserializeFromGraphML` /
+  `exportToGraphMLFile` / `importFromGraphMLFile` — formato de intercambio
+  propio de GraphoJS (GraphML no tiene equivalente en la API de GoJS), las
+  heurísticas de tipo/coerción de claves numéricas podrían refinarse.
+- `AccessibilityMessages` / `diagram.accessibilityMessages` — previsiblemente
+  crecerá con más ganchos (anunciar deshacer/rehacer, añadir/borrar, no solo
+  selección/foco) antes de 1.0.0; los cambios serán aditivos, no rupturas.
 
 ## Diferencias conocidas
 

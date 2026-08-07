@@ -126,7 +126,13 @@ function escapeXml(value: string): string {
     .replace(/'/g, '&apos;');
 }
 
-/** Serialize a diagram's model to a GraphML XML string. */
+/**
+ * Serialize a diagram's model to a GraphML XML string.
+ *
+ * @experimental The attribute-type inference and node-key numeric coercion
+ * heuristics may still change before 1.0.0 — there's no real GoJS API to
+ * mirror here, so the round-trip format is this project's own design.
+ */
 export function serializeToGraphML(diagram: Diagram): string {
   const model = diagram.getModel();
   const nodeDataArray = model.nodeDataArray;
@@ -201,7 +207,11 @@ function coerceGraphMLValue(value: string, attrType: GraphMLAttrType | undefined
   }
 }
 
-/** Parse a GraphML XML string into a diagram's model. */
+/**
+ * Parse a GraphML XML string into a diagram's model.
+ *
+ * @experimental See {@link serializeToGraphML}.
+ */
 export function deserializeFromGraphML(xml: string, diagram: Diagram): void {
   const doc = new DOMParser().parseFromString(xml, 'application/xml');
   if (doc.querySelector('parsererror')) {
@@ -242,7 +252,11 @@ export function deserializeFromGraphML(xml: string, diagram: Diagram): void {
   diagram.setModel(new GraphLinksModel({ nodeDataArray, linkDataArray }));
 }
 
-/** Export a diagram's model to a downloadable .graphml file. */
+/**
+ * Export a diagram's model to a downloadable .graphml file.
+ *
+ * @experimental See {@link serializeToGraphML}.
+ */
 export function exportToGraphMLFile(diagram: Diagram, filename: string): void {
   const xml = serializeToGraphML(diagram);
   const blob = new Blob([xml], { type: 'application/xml' });
@@ -256,7 +270,11 @@ export function exportToGraphMLFile(diagram: Diagram, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
-/** Import a diagram's model from a .graphml file chosen by the user. */
+/**
+ * Import a diagram's model from a .graphml file chosen by the user.
+ *
+ * @experimental See {@link serializeToGraphML}.
+ */
 export function importFromGraphMLFile(diagram: Diagram): Promise<void> {
   return new Promise((resolve, reject) => {
     const input = document.createElement('input');

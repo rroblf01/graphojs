@@ -19,17 +19,58 @@ between minor releases, per [semver](https://semver.org/#spec-item-4).
 
 ## Phase 1 — API stability
 
-- [ ] Audit the public surface (`src/index.ts`, `src/go.ts`) and explicitly
-  mark anything experimental (e.g. `renderDiagramToCanvas`, GraphML support)
-  as such in the docs, so 1.0.0 can ship without promising stability for
-  things that aren't ready.
-- [ ] Remove or justify every `as any` / `as unknown as X` cast in `src/`
-  (test files are exempt — casting mocks is normal there).
-- [ ] Decide the final shape of anything still marked "extension-style, not
-  in `go.*`" (`TreeExpanderButton`, `PanelExpanderButton`,
-  `LinkLabelDraggingTool`) — keep them out of `go.*` permanently (matching
-  real GoJS, where these live in a separate extensions module) or fold them
-  in; document the decision in `compatibility.md`.
+- [x] Audited the public surface and marked what isn't ready to promise
+  stability for: `renderDiagramToCanvas`/`measureDiagramContent`, the
+  GraphML Serializer functions, and `AccessibilityMessages` are now tagged
+  `@experimental` in their JSDoc (visible as IDE tooltips) and listed in a
+  new "Superficie experimental" section in `compatibility.md`.
+- [x] Audit every `as any` / `as unknown as X` cast in `src/` (51 found, 0
+  bare `any`). Fixed what was actually unnecessary or unsafe, and along the
+  way found two real bugs hiding behind loose casts:
+  - `Layout.doLayout()` (called with no explicit collection) always
+    operated on empty arrays — `Layout` never actually held a reference to
+    its `Diagram`, only a cast-based duck-type probe that could never
+    succeed. `Layout.diagram` is now a real field, wired up by
+    `Diagram.layout = ...`, plus a new `Diagram.allNodes` getter
+    (mirroring the existing `allLinks`) so `doLayout()` has something to
+    read.
+  - `Diagram.selectPartsInRect(rect, partialInclusion=false)` crashed with
+    `r.containsRect is not a function` whenever called with a plain
+    `{x,y,width,height}` literal — which is exactly what
+    `DragSelectingTool` always passes. The cast pretended a plain object
+    literal was a real `Rect` instance; now a real `Rect` is constructed
+    instead of cast.
+  - Removed genuinely dead code in `ContextMenuTool` (it isn't wired into
+    any ToolManager event list today, so `doMouseUp`'s delegate-through-a-
+    private-method cast could never run) and simplified unnecessary casts
+    in `CommandHandler`/`Model`/`ModelTransactionCommand` where the real
+    type already exposed what was needed.
+  - Consolidated the duplicated `LinkCapableModel` (`model/Model.ts`) /
+    `LinkOps` (`undo/ModelTransactionCommand.ts`) structural types into one.
+  - **Left as-is, deliberately**: `Binding.ts`'s `BindingTarget = Part |
+    GraphObject` duck-typing (avoids a real circular value-import between
+    `Binding.ts` and `GraphObject.ts`), the dynamic template-property-bag
+    assignment pattern in `Diagram.applyTemplateProperties`/
+    `GraphObject.make`, and the Vue prop-typing casts — these are
+    genuinely hard to avoid given what they do, not just untidy.
+  - **Lesson learned the hard way**: an early pass "simplified" the
+    `_model as unknown as {...}` capability probes in `Diagram.ts` by
+    calling `getLinkDataArray()`/`getLinkKey()` directly, reasoning that
+    `_model` is typed as `GraphLinksModel`. The test suite caught this
+    immediately — GoJS-compatible code can (and does, in
+    `go-migration.test.ts`) assign a `TreeModel` via
+    `diagram.model = treeModel as unknown as GraphLinksModel`, mirroring
+    real GoJS's polymorphic `Diagram.model`. The capability check was
+    restored, now using the shared `LinkCapableModel` type instead of an
+    ad hoc one. A reminder that "the type says X" and "X is true at
+    runtime" are different claims when the codebase itself contains
+    sanctioned escape hatches.
+- [x] Decided the final shape of anything marked "extension-style, not in
+  `go.*`" (`TreeExpanderButton`, `PanelExpanderButton`,
+  `LinkLabelDraggingTool`): they stay out of `go.*` permanently, matching
+  real GoJS's own separate extensions module. Documented as a standing
+  design decision (not a pending "to promote later" item) in
+  `compatibility.md`'s new "Extensiones estilo GoJS" section.
 
 ## Phase 2 — Performance at scale
 
@@ -68,6 +109,12 @@ between minor releases, per [semver](https://semver.org/#spec-item-4).
 The first accessibility pass (ARIA roles, live region, keyboard focus cursor)
 shipped in [Unreleased] of the CHANGELOG. For 1.0.0:
 
+- [x] Fixed during the Phase 1 audit: the live-region announcements and
+  `aria-label` were hardcoded in Spanish, inconsistent with the rest of the
+  (English) public API — an English-speaking screen-reader user would have
+  heard Spanish. Defaults are now English, with every string overridable
+  per-part via `diagram.accessibilityMessages` /
+  `DiagramOptions.accessibilityMessages` (see the Interaction guide).
 - [ ] Respect `prefers-reduced-motion` in `AnimationManager`.
 - [ ] Add high-contrast-friendly focus/selection styling (current colors are
   fixed hex values, not theme-aware).

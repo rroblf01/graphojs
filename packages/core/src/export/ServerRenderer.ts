@@ -29,7 +29,12 @@ export interface ServerRenderOptions {
   maxHeight?: number;
 }
 
-/** Bounding box of all visible content in `diagram`, ignoring the grid layer. */
+/**
+ * Bounding box of all visible content in `diagram`, ignoring the grid layer.
+ *
+ * @experimental Shape and defaults may still change before 1.0.0 based on
+ * real-world server-rendering usage.
+ */
 export function measureDiagramContent(diagram: Diagram): {
   x: number;
   y: number;
@@ -77,6 +82,9 @@ export function measureDiagramContent(diagram: Diagram): {
  *
  * GraphoJS does not depend on any Node canvas package — bring whichever one
  * you prefer; this only requires `width`/`height`/`getContext('2d')`.
+ *
+ * @experimental Shape and defaults may still change before 1.0.0 based on
+ * real-world server-rendering usage.
  */
 export function renderDiagramToCanvas(
   diagram: Diagram,

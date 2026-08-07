@@ -1,4 +1,5 @@
 import { AnimationManager } from '../animation/AnimationManager.ts';
+import type { Binding } from '../binding/Binding.ts';
 import { CommandHandler } from '../command/CommandHandler.ts';
 import { InputEvent } from '../events/InputEvent.ts';
 import type { ContextMenu } from '../export/ContextMenu.ts';
@@ -13,7 +14,13 @@ import type { Spot } from '../geometry/Spot.ts';
 import { createDefaultLayers, type Layer, LayerNames } from '../layer/Layer.ts';
 import type { Layout } from '../layout/Layout.ts';
 import { GraphLinksModel } from '../model/GraphLinksModel.ts';
-import type { ChangedEvent, LinkData, NodeData, NodeKey } from '../model/Model.ts';
+import type {
+  ChangedEvent,
+  LinkCapableModel,
+  LinkData,
+  NodeData,
+  NodeKey,
+} from '../model/Model.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
 import type { Panel } from '../panel/Panel.ts';
 import { Shape } from '../panel/Shape.ts';
@@ -89,7 +96,69 @@ export interface DiagramOptions {
   initialContentAlignment?: Spot;
   /** GoJS-compatible: Content alignment offset. */
   initialContentAlignmentOffset?: { x: number; y: number };
+  /**
+   * Accessibility message formatters (aria-label, live-region
+   * announcements). Defaults to English; override to localize. See
+   * {@link AccessibilityMessages}.
+   */
+  accessibilityMessages?: Partial<AccessibilityMessages>;
 }
+
+/**
+ * Message formatters for the diagram's accessibility features: the canvas
+ * `aria-label` and the off-screen `aria-live` region announcements (see the
+ * Interaction guide's Accessibility section). All defaults are in English;
+ * override any subset via `DiagramOptions.accessibilityMessages` or
+ * `diagram.accessibilityMessages = {...}` to localize.
+ *
+ * @experimental This interface is likely to grow more hooks (e.g. announcing
+ * undo/redo or add/delete, not just selection/focus) before 1.0.0 — expect
+ * additive changes, not removals.
+ */
+export interface AccessibilityMessages {
+  /** Short description of a part, e.g. `Node "Alpha"` — used by the other messages below. */
+  describePart(part: Part): string;
+  /** The canvas `aria-label`, given the current content/selection counts. */
+  ariaLabel(counts: { nodes: number; groups: number; links: number; selected: number }): string;
+  /** Announcement when the selection becomes empty. */
+  selectionCleared(): string;
+  /** Announcement when exactly one part is selected (`description` from `describePart`). */
+  singleSelected(description: string): string;
+  /** Announcement when more than one part is selected. */
+  multipleSelected(count: number): string;
+  /** Announcement when the keyboard focus cursor moves (`description` from `describePart`). */
+  focusMoved(description: string): string;
+}
+
+/** Default English {@link AccessibilityMessages}. */
+export const defaultAccessibilityMessages: AccessibilityMessages = {
+  describePart(part: Part): string {
+    const label = (part as { label?: string }).label;
+    if (part instanceof Group) return `Group "${label || String(part.key)}"`;
+    if (part instanceof Link) return `Link from ${String(part.fromKey)} to ${String(part.toKey)}`;
+    if (part instanceof Node) return `Node "${label || String(part.key)}"`;
+    return `Item ${String(part.key)}`;
+  },
+  ariaLabel({ nodes, groups, links, selected }): string {
+    let label = `Diagram with ${nodes} node${nodes === 1 ? '' : 's'}`;
+    if (groups > 0) label += `, ${groups} group${groups === 1 ? '' : 's'}`;
+    label += ` and ${links} link${links === 1 ? '' : 's'}`;
+    if (selected > 0) label += `. ${selected} selected`;
+    return label;
+  },
+  selectionCleared(): string {
+    return 'Selection cleared';
+  },
+  singleSelected(description: string): string {
+    return `${description} selected`;
+  },
+  multipleSelected(count: number): string {
+    return `${count} items selected`;
+  },
+  focusMoved(description: string): string {
+    return `Focus on ${description}`;
+  },
+};
 
 /**
  * A diagram that renders nodes and links on a canvas.
@@ -145,6 +214,8 @@ export class Diagram {
   private focusedPart: Part | null = null;
   /** Accessibility: off-screen `aria-live` region announcing selection/focus changes. */
   private liveRegion: HTMLElement | null = null;
+  /** Accessibility: message formatters for the aria-label and live-region announcements (default: English). */
+  accessibilityMessages: AccessibilityMessages;
   private events: DiagramEvents = new DiagramEvents();
   private layerCache: LayerCache | null = null;
   private layerCacheEnabled = false;
@@ -271,6 +342,10 @@ export class Diagram {
     this._scrollMode = resolvedOptions.scrollMode ?? 'document';
     this._initialContentAlignment = resolvedOptions.initialContentAlignment ?? null;
     this._initialContentAlignmentOffset = resolvedOptions.initialContentAlignmentOffset ?? null;
+    this.accessibilityMessages = {
+      ...defaultAccessibilityMessages,
+      ...resolvedOptions.accessibilityMessages,
+    };
 
     // Create canvas
     this.canvas = document.createElement('canvas');
@@ -1469,15 +1544,21 @@ export class Diagram {
     return this._model.getNodeData(part.key);
   }
 
-  /** The link data array, or [] when the model has no links (e.g. TreeModel). */
+  /**
+   * The link data array, or [] when the model has no links. `_model` is
+   * typed as `GraphLinksModel`, but GoJS-compatible code can assign a
+   * `TreeModel` via `diagram.model = treeModel as unknown as GraphLinksModel`
+   * (mirroring real GoJS, where `Diagram.model` accepts any `Model`), so this
+   * still has to check the capability at runtime rather than assume it.
+   */
   private getLinksArray(): LinkData[] {
-    const m = this._model as unknown as { getLinkDataArray?: () => readonly LinkData[] };
+    const m = this._model as unknown as Partial<LinkCapableModel>;
     return m.getLinkDataArray ? [...m.getLinkDataArray()] : [];
   }
 
-  /** Get a link key, or undefined when the model has no links. */
+  /** Get a link's key, or undefined when the model has no links (see `getLinksArray`). */
   private getLinkKeyOf(linkData: LinkData): NodeKey | undefined {
-    const m = this._model as unknown as { getLinkKey?: (l: LinkData) => NodeKey | undefined };
+    const m = this._model as unknown as Partial<LinkCapableModel>;
     return m.getLinkKey ? m.getLinkKey(linkData) : undefined;
   }
 
@@ -1656,13 +1737,13 @@ export class Diagram {
   private applyTemplateProperties(part: Part, props: Record<string, unknown>): void {
     for (const [key, value] of Object.entries(props)) {
       if (key === '__bindings__' && Array.isArray(value)) {
-        for (const b of value as unknown[]) {
-          (part as unknown as { addBinding: (b: unknown) => void }).addBinding(b);
+        for (const b of value as Binding[]) {
+          part.addBinding(b);
         }
         continue;
       }
       if (key === '__binding__') {
-        (part as unknown as { addBinding: (b: unknown) => void }).addBinding(value);
+        part.addBinding(value as Binding);
         continue;
       }
       if (key === 'width') {
@@ -2128,19 +2209,18 @@ export class Diagram {
     rect: { x: number; y: number; width: number; height: number },
     partialInclusion = true,
   ): void {
-    const r = rect as unknown as RectClass;
+    // Build a real Rect instance: containsRect/intersects are called ON this
+    // value below, so a plain {x,y,width,height} literal (as passed by
+    // DragSelectingTool) would be missing its prototype methods.
+    const r = new RectClass(rect.x, rect.y, rect.width, rect.height);
     for (const [, node] of this._nodes) {
-      const hit = partialInclusion
-        ? node.bounds.intersects(r)
-        : r.containsRect(node.bounds as unknown as RectClass);
+      const hit = partialInclusion ? node.bounds.intersects(r) : r.containsRect(node.bounds);
       if (hit) {
         this.select(node, true);
       }
     }
     for (const [, link] of this._links) {
-      const hit = partialInclusion
-        ? link.bounds.intersects(r)
-        : r.containsRect(link.bounds as unknown as RectClass);
+      const hit = partialInclusion ? link.bounds.intersects(r) : r.containsRect(link.bounds);
       if (hit) {
         this.select(link, true);
       }
@@ -2159,15 +2239,6 @@ export class Diagram {
     };
   }
 
-  /** Accessibility: a short human-readable description of a part, for announcements. */
-  private describePart(part: Part): string {
-    const label = (part as { label?: string }).label;
-    if (part instanceof Group) return `Grupo "${label || String(part.key)}"`;
-    if (part instanceof Link) return `Enlace de ${String(part.fromKey)} a ${String(part.toKey)}`;
-    if (part instanceof Node) return `Nodo "${label || String(part.key)}"`;
-    return `Elemento ${String(part.key)}`;
-  }
-
   /** Accessibility: push a message to the off-screen live region. */
   private announce(message: string): void {
     if (this.liveRegion) this.liveRegion.textContent = message;
@@ -2175,28 +2246,25 @@ export class Diagram {
 
   /** Accessibility: refresh the canvas's aria-label to reflect content/selection counts. */
   private updateCanvasAriaLabel(): void {
-    const nodeCount = this._nodes.size;
-    const groupCount = this._groups.size;
-    const linkCount = this._links.size;
-    const selectedCount = this.selectedParts.size;
-    let label = `Diagrama con ${nodeCount} nodo${nodeCount === 1 ? '' : 's'}`;
-    if (groupCount > 0) label += `, ${groupCount} grupo${groupCount === 1 ? '' : 's'}`;
-    label += ` y ${linkCount} enlace${linkCount === 1 ? '' : 's'}`;
-    if (selectedCount > 0) {
-      label += `. ${selectedCount} seleccionado${selectedCount === 1 ? '' : 's'}`;
-    }
+    const label = this.accessibilityMessages.ariaLabel({
+      nodes: this._nodes.size,
+      groups: this._groups.size,
+      links: this._links.size,
+      selected: this.selectedParts.size,
+    });
     this.canvas.setAttribute('aria-label', label);
   }
 
   /** Accessibility: announce the current selection and refresh the aria-label. */
   private announceSelectionChange(): void {
     const parts = this.getSelectedParts();
+    const m = this.accessibilityMessages;
     if (parts.length === 0) {
-      this.announce('Selección vacía');
+      this.announce(m.selectionCleared());
     } else if (parts.length === 1) {
-      this.announce(`${this.describePart(parts[0]!)} seleccionado`);
+      this.announce(m.singleSelected(m.describePart(parts[0]!)));
     } else {
-      this.announce(`${parts.length} elementos seleccionados`);
+      this.announce(m.multipleSelected(parts.length));
     }
     this.updateCanvasAriaLabel();
   }
@@ -2218,7 +2286,11 @@ export class Diagram {
     this.focusedPart = allParts[nextIndex] ?? null;
     this.invalidate();
     if (this.focusedPart) {
-      this.announce(`Foco en ${this.describePart(this.focusedPart)}`);
+      this.announce(
+        this.accessibilityMessages.focusMoved(
+          this.accessibilityMessages.describePart(this.focusedPart),
+        ),
+      );
     }
   }
 
@@ -2303,6 +2375,11 @@ export class Diagram {
   /** GoJS-compatible: All links in this diagram. */
   get allLinks(): Link[] {
     return Array.from(this._links.values());
+  }
+
+  /** GoJS-compatible: All nodes in this diagram (as an array). */
+  get allNodes(): Node[] {
+    return Array.from(this._nodes.values());
   }
 
   /** GoJS-compatible: The nodes in this diagram. */
@@ -2440,7 +2517,9 @@ export class Diagram {
   }
 
   set layout(value: Layout | null) {
+    if (this._layout && this._layout !== value) this._layout.diagram = null;
     this._layout = value;
+    if (value) value.diagram = this;
     this.applyDiagramLayout();
   }
 

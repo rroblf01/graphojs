@@ -33,21 +33,11 @@ export class ContextMenuTool extends Tool {
 
     const point = this.getDiagramPoint(e);
     this._currentPart = this.findPartAt(point.x, point.y);
-
-    // Delegate to the diagram's context-menu handling.
-    const menu = (diagram as unknown as { handleContextMenu?: (ev: MouseEvent) => void })
-      .handleContextMenu;
-    if (menu) {
-      menu.call(diagram, e);
-    }
   }
 
   /** GoJS-compatible: Hide any currently visible context menu. */
   hide(): void {
-    const diagram = this.diagram;
-    if (!diagram) return;
-    const hide = (diagram as unknown as { hideContextMenu?: () => void }).hideContextMenu;
-    if (hide) hide.call(diagram);
+    this.diagram?.hideContextMenu();
     this._currentPart = null;
   }
 }

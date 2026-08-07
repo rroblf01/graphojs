@@ -3,9 +3,11 @@ export type NodeKey = string | number;
 /** Structural interface for models that support links (GraphLinksModel). */
 export interface LinkCapableModel {
   getLinkDataArray(): readonly LinkData[];
+  getLinkData(key: NodeKey): LinkData | undefined;
   getLinkKey(linkData: LinkData): NodeKey | undefined;
   addLink(linkData: LinkData): NodeKey;
   removeLink(key: NodeKey): boolean;
+  setLinkProperty(key: NodeKey, propertyName: string, value: unknown): void;
 }
 
 export interface NodeData {

@@ -2796,9 +2796,9 @@ describe('O22: accessibility — ARIA attributes, live region, keyboard focus cu
     });
 
     const label = d.getRenderer().getCanvas().getAttribute('aria-label')!;
-    expect(label).toContain('2 nodos');
-    expect(label).toContain('1 grupo');
-    expect(label).toContain('1 enlace');
+    expect(label).toContain('2 nodes');
+    expect(label).toContain('1 group');
+    expect(label).toContain('1 link');
   });
 
   it('announces the selection and appends the selected count to the aria-label', () => {
@@ -2811,11 +2811,11 @@ describe('O22: accessibility — ARIA attributes, live region, keyboard focus cu
 
     d.select(node);
     expect(live.textContent).toContain('Alpha');
-    expect(live.textContent).toContain('seleccionado');
-    expect(d.getRenderer().getCanvas().getAttribute('aria-label')).toContain('1 seleccionado');
+    expect(live.textContent).toContain('selected');
+    expect(d.getRenderer().getCanvas().getAttribute('aria-label')).toContain('1 selected');
 
     d.clearSelection();
-    expect(live.textContent).toBe('Selección vacía');
+    expect(live.textContent).toBe('Selection cleared');
   });
 
   it('ArrowDown moves a keyboard focus cursor between parts when nothing is selected and the canvas is focused', () => {
@@ -2888,5 +2888,68 @@ describe('O22: accessibility — ARIA attributes, live region, keyboard focus cu
 
     expect(() => d.getModel().removeNode(1)).not.toThrow();
     expect(() => d.invalidate()).not.toThrow();
+  });
+
+  it('accessibilityMessages can be overridden per-instance to localize announcements', () => {
+    const d = createDiagram();
+    d.accessibilityMessages = {
+      ...d.accessibilityMessages,
+      selectionCleared: () => 'Selección vacía',
+      singleSelected: (description) => `${description} seleccionado`,
+    };
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, label: 'Alpha' }],
+    });
+    const node = d.findNodeForKey(1)!;
+    const live = getLiveRegion(d);
+
+    d.select(node);
+    // Overridden strings are used...
+    expect(live.textContent).toBe('Node "Alpha" seleccionado');
+
+    d.clearSelection();
+    expect(live.textContent).toBe('Selección vacía');
+
+    // ...while non-overridden formatters (describePart, ariaLabel, etc.)
+    // keep the English defaults untouched.
+    expect(d.getRenderer().getCanvas().getAttribute('aria-label')).toContain('Diagram with');
+  });
+
+  it('DiagramOptions.accessibilityMessages sets the initial formatters at construction', () => {
+    const div = document.createElement('div');
+    const d = new Diagram({
+      div,
+      accessibilityMessages: { selectionCleared: () => 'Nada seleccionado' },
+    });
+    diagrams.push(d);
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const live = d
+      .getRenderer()
+      .getCanvas()
+      .parentElement!.querySelector('[aria-live]') as HTMLElement;
+
+    d.clearSelection();
+    expect(live.textContent).toBe('Nada seleccionado');
+  });
+});
+
+describe('O23: selectPartsInRect(rect, partialInclusion=false) with a plain rect literal', () => {
+  it('does not throw and only selects fully-contained parts', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 50 }, // fully inside the selection rect
+        { key: 2, x: 40, y: 0, width: 50, height: 50 }, // only partially overlapping
+      ],
+    });
+    const a = d.findNodeForKey(1)!;
+    const b = d.findNodeForKey(2)!;
+
+    // DragSelectingTool always passes a plain literal, never a real Rect
+    // instance — this used to throw "r.containsRect is not a function".
+    expect(() => d.selectPartsInRect({ x: 0, y: 0, width: 60, height: 60 }, false)).not.toThrow();
+
+    expect(a.isSelected).toBe(true);
+    expect(b.isSelected).toBe(false);
   });
 });

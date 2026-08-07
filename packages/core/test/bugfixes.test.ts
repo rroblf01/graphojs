@@ -2371,3 +2371,522 @@ describe('G1: moving an obstacle node re-routes non-adjacent links', () => {
     expect(unrelated.pathPoints.length).toBe(0);
   });
 });
+
+describe('O17: Diagram.collapseTree/expandTree and TreeExpanderButton/PanelExpanderButton', () => {
+  it('collapseTree hides all descendants; expandTree shows only direct children whose own subtree is not collapsed', () => {
+    const d = createDiagram();
+    // A -> B -> D, A -> C (a small tree via the "parent" data property)
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 'A', x: 0, y: 0 },
+        { key: 'B', x: 100, y: 100, parent: 'A' },
+        { key: 'C', x: 200, y: 100, parent: 'A' },
+        { key: 'D', x: 100, y: 200, parent: 'B' },
+      ],
+    });
+    const a = d.findNodeForKey('A')!;
+    const b = d.findNodeForKey('B')!;
+    const c = d.findNodeForKey('C')!;
+    const dd = d.findNodeForKey('D')!;
+
+    d.collapseTree(a);
+    expect(a.isTreeExpanded).toBe(false);
+    expect(b.visible).toBe(false);
+    expect(c.visible).toBe(false);
+    expect(dd.visible).toBe(false); // hidden regardless of depth
+
+    d.expandTree(a);
+    expect(a.isTreeExpanded).toBe(true);
+    expect(b.visible).toBe(true);
+    expect(c.visible).toBe(true);
+    expect(dd.visible).toBe(true); // B was still expanded, so D reappears too
+  });
+
+  it('expandTree does not reveal grandchildren of a child that is itself collapsed', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 'A', x: 0, y: 0 },
+        { key: 'B', x: 100, y: 100, parent: 'A' },
+        { key: 'D', x: 100, y: 200, parent: 'B' },
+      ],
+    });
+    const a = d.findNodeForKey('A')!;
+    const b = d.findNodeForKey('B')!;
+    const dd = d.findNodeForKey('D')!;
+
+    d.collapseTree(b); // B's own subtree (D) is collapsed
+    expect(dd.visible).toBe(false);
+
+    d.collapseTree(a);
+    d.expandTree(a); // re-expanding A shows B, but B is still individually collapsed
+    expect(b.visible).toBe(true);
+    expect(dd.visible).toBe(false);
+  });
+
+  it('fires TreeCollapsed/TreeExpanded diagram events', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 'A', x: 0, y: 0 },
+        { key: 'B', x: 100, y: 100, parent: 'A' },
+      ],
+    });
+    const a = d.findNodeForKey('A')!;
+    const events: string[] = [];
+    d.addDiagramListener('TreeCollapsed', () => events.push('TreeCollapsed'));
+    d.addDiagramListener('TreeExpanded', () => events.push('TreeExpanded'));
+
+    d.collapseTree(a);
+    d.expandTree(a);
+    expect(events).toEqual(['TreeCollapsed', 'TreeExpanded']);
+  });
+
+  it("TreeExpanderButton toggles the clicked node's tree on click", async () => {
+    const { TreeExpanderButton } = await import('../src/panel/Buttons.ts');
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(Panel, 'Spot', $(Shape, 'rect'), TreeExpanderButton());
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 'A', x: 0, y: 0, width: 60, height: 30 },
+        { key: 'B', x: 100, y: 100, width: 60, height: 30, parent: 'A' },
+      ],
+    });
+    const a = d.findNodeForKey('A')!;
+    const b = d.findNodeForKey('B')!;
+    const button = a.findObject('TREEEXPANDERBUTTON')!;
+
+    expect(a.isTreeExpanded).toBe(true);
+    button.click!(new InputEvent(new MouseEvent('click')), button);
+    expect(a.isTreeExpanded).toBe(false);
+    expect(b.visible).toBe(false);
+
+    button.click!(new InputEvent(new MouseEvent('click')), button);
+    expect(a.isTreeExpanded).toBe(true);
+    expect(b.visible).toBe(true);
+  });
+
+  it('PanelExpanderButton toggles the visibility of a named element in the same template', async () => {
+    const { PanelExpanderButton } = await import('../src/panel/Buttons.ts');
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Panel,
+      'Vertical',
+      $(Shape, 'rect'),
+      $(TextBlock, 'Details go here', { name: 'DETAILS' }),
+      PanelExpanderButton('DETAILS'),
+    );
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const node = d.findNodeForKey(1)!;
+    const details = node.findObject('DETAILS')!;
+    const button = node.findObject('PANELEXPANDERBUTTON_DETAILS')!;
+
+    expect(details.visible).toBe(true);
+    button.click!(new InputEvent(new MouseEvent('click')), button);
+    expect(details.visible).toBe(false);
+    button.click!(new InputEvent(new MouseEvent('click')), button);
+    expect(details.visible).toBe(true);
+  });
+});
+
+describe('O18: DraggingTool.isGuidedDraggingEnabled (alignment guidelines)', () => {
+  it('is disabled by default: dragging near another node does not snap', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 30 },
+        { key: 2, x: 200, y: 3, width: 50, height: 30 },
+      ],
+    });
+    const node2 = d.findNodeForKey(2)!;
+    const tool = d.toolManager.draggingTool!;
+    expect(tool.isGuidedDraggingEnabled).toBe(false);
+
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 210, clientY: 13 }));
+    tool.doMouseMove(new MouseEvent('mousemove', { button: 0, clientX: 220, clientY: 13 }));
+    tool.doMouseUp(new MouseEvent('mouseup', { button: 0, clientX: 220, clientY: 13 }));
+
+    // Moved by exactly +10/+0 with no snapping toward node1's y=0 top edge.
+    expect(node2.bounds.x).toBe(210);
+    expect(node2.bounds.y).toBe(3);
+    expect(d.getAlignmentGuidelines()).toEqual([]);
+  });
+
+  it('snaps the dragged node onto a nearby edge/center and shows a guideline', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 30 }, // top edge at y=0
+        { key: 2, x: 200, y: 4, width: 50, height: 30 }, // top edge at y=4, within threshold of 0
+      ],
+    });
+    const node2 = d.findNodeForKey(2)!;
+    const tool = d.toolManager.draggingTool!;
+    tool.isGuidedDraggingEnabled = true;
+
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 210, clientY: 14 }));
+    tool.doMouseMove(new MouseEvent('mousemove', { button: 0, clientX: 260, clientY: 14 }));
+
+    // x moved freely by +50 (no horizontal alignment candidate nearby)...
+    expect(node2.bounds.x).toBe(250);
+    // ...but y snapped from 4 back to 0 to align with node1's top edge.
+    expect(node2.bounds.y).toBe(0);
+    expect(d.getAlignmentGuidelines().length).toBe(1);
+
+    tool.doMouseUp(new MouseEvent('mouseup', { button: 0, clientX: 260, clientY: 14 }));
+    // Guidelines are cleared once the drag ends.
+    expect(d.getAlignmentGuidelines()).toEqual([]);
+  });
+
+  it('does not snap once the misalignment exceeds guidelineSnapDistance', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 30 },
+        { key: 2, x: 200, y: 40, width: 50, height: 30 }, // top edge at y=40, far from y=0
+      ],
+    });
+    const node2 = d.findNodeForKey(2)!;
+    const tool = d.toolManager.draggingTool!;
+    tool.isGuidedDraggingEnabled = true;
+    tool.guidelineSnapDistance = 6;
+
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 210, clientY: 50 }));
+    tool.doMouseMove(new MouseEvent('mousemove', { button: 0, clientX: 260, clientY: 50 }));
+
+    expect(node2.bounds.y).toBe(40); // unchanged: 40 is outside the 6px threshold
+    expect(d.getAlignmentGuidelines()).toEqual([]);
+  });
+
+  it('is skipped while grid snapping is enabled', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 30 },
+        { key: 2, x: 200, y: 4, width: 50, height: 30 },
+      ],
+    });
+    const node2 = d.findNodeForKey(2)!;
+    const tool = d.toolManager.draggingTool!;
+    tool.isGuidedDraggingEnabled = true;
+    d.enableSnapToGrid();
+    d.setGridSize(10);
+
+    // dy = +2 -> pre-snap y = 6: within the alignment threshold of node1's
+    // y=0 top edge (would snap to 0), but grid-snaps (size 10) to 10 instead.
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 210, clientY: 14 }));
+    tool.doMouseMove(new MouseEvent('mousemove', { button: 0, clientX: 260, clientY: 16 }));
+
+    expect(node2.bounds.y).toBe(10);
+    expect(d.getAlignmentGuidelines()).toEqual([]);
+  });
+});
+
+describe('O19: LinkLabelDraggingTool', () => {
+  function setupLabeledLink(d: Diagram): Link {
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 50, height: 30 },
+        { key: 2, x: 250, y: 0, width: 50, height: 30 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const link = [...d.links.values()][0] as Link;
+    link.setPathPoints([
+      { x: 0, y: 50 },
+      { x: 200, y: 50 },
+    ]);
+    link.label = 'Edge';
+    return link;
+  }
+
+  it('getLabelBounds centers the label at the segment midpoint plus the perpendicular offset', () => {
+    const d = createDiagram();
+    const link = setupLabeledLink(d);
+
+    const bounds = link.getLabelBounds()!;
+    // Midpoint (100, 50) + default labelOffset (7) along the downward normal.
+    expect(bounds.center.x).toBeCloseTo(100, 5);
+    expect(bounds.center.y).toBeCloseTo(57, 5);
+  });
+
+  it('dragging the label onto the path sets segmentFraction/offset to match the drop point', async () => {
+    const d = createDiagram();
+    const link = setupLabeledLink(d);
+
+    const { LinkLabelDraggingTool } = await import('../src/tool/LinkLabelDraggingTool.ts');
+    const tool = new LinkLabelDraggingTool();
+    tool.diagram = d;
+
+    expect(
+      tool.canStart(
+        'linkLabelDragging',
+        new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 57 }),
+      ),
+    ).toBe(true);
+
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 57 }));
+    expect(tool.isDragging).toBe(true);
+    tool.doMouseMove(new MouseEvent('mousemove', { button: 0, clientX: 200, clientY: 50 }));
+
+    // (200, 50) is exactly the segment's end point b -> fraction 1, offset 0.
+    expect(link.labelSegmentIndex).toBe(0);
+    expect(link.labelSegmentFraction).toBeCloseTo(1, 5);
+    expect(link.labelOffset).toBeCloseTo(0, 5);
+    expect(link.labelSide).toBe('auto');
+
+    tool.doMouseUp(new MouseEvent('mouseup', { button: 0, clientX: 200, clientY: 50 }));
+    expect(tool.isDragging).toBe(false);
+
+    // The move was recorded as a single undoable transaction.
+    d.getUndoManager().undo();
+    expect(link.labelSegmentFraction).toBeCloseTo(0.5, 5);
+    expect(link.labelOffset).toBeCloseTo(7, 5);
+
+    d.getUndoManager().redo();
+    expect(link.labelSegmentFraction).toBeCloseTo(1, 5);
+    expect(link.labelOffset).toBeCloseTo(0, 5);
+  });
+
+  it('does not start when the click misses the label', async () => {
+    const d = createDiagram();
+    setupLabeledLink(d);
+
+    const { LinkLabelDraggingTool } = await import('../src/tool/LinkLabelDraggingTool.ts');
+    const tool = new LinkLabelDraggingTool();
+    tool.diagram = d;
+
+    expect(
+      tool.canStart(
+        'linkLabelDragging',
+        new MouseEvent('mousedown', { button: 0, clientX: 600, clientY: 600 }),
+      ),
+    ).toBe(false);
+
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 600, clientY: 600 }));
+    expect(tool.isDragging).toBe(false);
+    expect(tool.currentLink).toBeNull();
+  });
+
+  it('does not push an undo command when the label is dropped back in place', async () => {
+    const d = createDiagram();
+    const link = setupLabeledLink(d);
+    const sizeBefore = d.getUndoManager().getUndoStack().length;
+
+    const { LinkLabelDraggingTool } = await import('../src/tool/LinkLabelDraggingTool.ts');
+    const tool = new LinkLabelDraggingTool();
+    tool.diagram = d;
+
+    tool.doMouseDown(new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 57 }));
+    tool.doMouseUp(new MouseEvent('mouseup', { button: 0, clientX: 100, clientY: 57 }));
+
+    expect(link.labelSegmentFraction).toBeCloseTo(0.5, 5);
+    expect(d.getUndoManager().getUndoStack().length).toBe(sizeBefore);
+  });
+});
+
+describe('O20: GraphObject.margin accepts a plain number (GoJS shorthand for a uniform margin)', () => {
+  it('normalizes a numeric margin into a Margin with that value on all four sides', () => {
+    const t = new TextBlock('x');
+    t.margin = 8;
+    expect(t.margin?.top).toBe(8);
+    expect(t.margin?.right).toBe(8);
+    expect(t.margin?.bottom).toBe(8);
+    expect(t.margin?.left).toBe(8);
+  });
+
+  it('actually affects layout: measureWithMargin adds the margin on every side', () => {
+    const noMargin = new TextBlock('x');
+    noMargin.desiredSize = new Size(20, 10);
+    const withMargin = new TextBlock('x');
+    withMargin.desiredSize = new Size(20, 10);
+    withMargin.margin = 5;
+
+    const base = noMargin.measureWithMargin();
+    const padded = withMargin.measureWithMargin();
+    expect(padded.width).toBe(base.width + 10); // +5 left +5 right
+    expect(padded.height).toBe(base.height + 10); // +5 top +5 bottom
+  });
+
+  it('a Margin instance (or Margin-shaped object) still passes through unchanged', () => {
+    const t = new TextBlock('x');
+    t.margin = { top: 1, right: 2, bottom: 3, left: 4 } as never;
+    expect(t.margin?.top).toBe(1);
+    expect(t.margin?.left).toBe(4);
+  });
+});
+
+describe('O21: bare label/fill/stroke node & group data properties apply on the initial model load', () => {
+  it('applies node.label/fill/stroke/angle from nodeData without needing a template or binding', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, label: 'Hello', fill: '#ff0000', stroke: '#00ff00', angle: 45 },
+      ],
+    });
+    const node = d.findNodeForKey(1)!;
+
+    expect(node.label).toBe('Hello');
+    expect(node.fill).toBe('#ff0000');
+    expect(node.stroke).toBe('#00ff00');
+    expect(node.angle).toBe(45);
+  });
+
+  it('applies group.fill/stroke from nodeData without needing a template', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, isGroup: true, x: 0, y: 0, fill: '#123456', stroke: '#abcdef' }],
+    });
+    const group = d.getPart(1) as Group;
+
+    expect(group.fill).toBe('#123456');
+    expect(group.stroke).toBe('#abcdef');
+  });
+
+  it('picks up a later bare-property change on a full model resync (not just via single-node sync)', () => {
+    const d = createDiagram();
+    const model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, label: 'Before' }],
+    });
+    d.model = model;
+    expect(d.findNodeForKey(1)!.label).toBe('Before');
+
+    model.setNodeProperty(1, 'label', 'After');
+    // Force a full resync path (same one `diagram.model = ...` goes through).
+    d.model = model;
+    expect(d.findNodeForKey(1)!.label).toBe('After');
+  });
+});
+
+describe('O22: accessibility — ARIA attributes, live region, keyboard focus cursor', () => {
+  function getLiveRegion(d: Diagram): HTMLElement {
+    const canvas = d.getRenderer().getCanvas();
+    return canvas.parentElement!.querySelector('[aria-live]') as HTMLElement;
+  }
+
+  it('the canvas is keyboard-focusable with an application role and roledescription', () => {
+    const d = createDiagram();
+    const canvas = d.getRenderer().getCanvas();
+
+    expect(canvas.tabIndex).toBe(0);
+    expect(canvas.getAttribute('role')).toBe('application');
+    expect(canvas.getAttribute('aria-roledescription')).toBe('diagram');
+  });
+
+  it('creates a visually-hidden aria-live region next to the canvas', () => {
+    const d = createDiagram();
+    const live = getLiveRegion(d);
+
+    expect(live).not.toBeNull();
+    expect(live.getAttribute('aria-live')).toBe('polite');
+    expect(live.style.width).toBe('1px');
+  });
+
+  it('the aria-label reflects node/link counts and updates on model load', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0 },
+        { key: 2, x: 100, y: 0 },
+        { key: 3, isGroup: true, x: 200, y: 0 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+
+    const label = d.getRenderer().getCanvas().getAttribute('aria-label')!;
+    expect(label).toContain('2 nodos');
+    expect(label).toContain('1 grupo');
+    expect(label).toContain('1 enlace');
+  });
+
+  it('announces the selection and appends the selected count to the aria-label', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, label: 'Alpha' }],
+    });
+    const node = d.findNodeForKey(1)!;
+    const live = getLiveRegion(d);
+
+    d.select(node);
+    expect(live.textContent).toContain('Alpha');
+    expect(live.textContent).toContain('seleccionado');
+    expect(d.getRenderer().getCanvas().getAttribute('aria-label')).toContain('1 seleccionado');
+
+    d.clearSelection();
+    expect(live.textContent).toBe('Selección vacía');
+  });
+
+  it('ArrowDown moves a keyboard focus cursor between parts when nothing is selected and the canvas is focused', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 20, height: 20, label: 'First' },
+        { key: 2, x: 100, y: 0, width: 20, height: 20, label: 'Second' },
+      ],
+    });
+    const canvas = d.getRenderer().getCanvas();
+    document.body.appendChild(canvas.parentElement!); // jsdom only focuses connected elements
+    canvas.focus();
+    expect(document.activeElement).toBe(canvas);
+    const live = getLiveRegion(d);
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    expect(live.textContent).toContain('First');
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    expect(live.textContent).toContain('Second');
+
+    // Wraps back around to the first part.
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    expect(live.textContent).toContain('First');
+  });
+
+  it('Enter selects the focused part; Escape clears both the focus cursor and the selection', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 20, height: 20, label: 'Only' }],
+    });
+    const node = d.findNodeForKey(1)!;
+    const canvas = d.getRenderer().getCanvas();
+    document.body.appendChild(canvas.parentElement!);
+    canvas.focus();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    expect(node.isSelected).toBe(true);
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(node.isSelected).toBe(false);
+  });
+
+  it('arrow keys still nudge an existing selection instead of moving the focus cursor', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 20, height: 20 }],
+    });
+    const node = d.findNodeForKey(1)!;
+    const canvas = d.getRenderer().getCanvas();
+    canvas.focus();
+    d.select(node);
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+
+    expect(node.bounds.x).toBeGreaterThan(0); // nudged, not just a focus-cursor move
+  });
+
+  it('removing the focused part clears the dangling focus-cursor reference', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 20, height: 20 }],
+    });
+    const canvas = d.getRenderer().getCanvas();
+    document.body.appendChild(canvas.parentElement!);
+    canvas.focus();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+
+    expect(() => d.getModel().removeNode(1)).not.toThrow();
+    expect(() => d.invalidate()).not.toThrow();
+  });
+});

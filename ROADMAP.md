@@ -346,25 +346,44 @@ shipped in [Unreleased] of the CHANGELOG. For 1.0.0:
   - **Measured improvement**: importing only `Diagram` now costs ~63.9 KB
     gzip, down from ~76.5 KB before (a real ~16% cut for that common case)
     — out of a ~78 KB gzip full-bundle baseline.
-  - **The remaining gap is real and not fixable by more build-config
-    tuning.** Importing only `Point` — a leaf class with zero internal
-    imports, confirmed to tree-shake to 682 B gzip in complete isolation
-    (bypassing the package's `exports` map entirely to import its compiled
-    file directly) — still costs ~63.9 KB through the package's public
-    `graphojs` entry point, i.e. no better than importing `Diagram`.
-    Root cause: `index.ts` re-exports ~150 names from one barrel file, and
-    esbuild (confirmed the same limitation holds for the class of bundlers
-    it represents) cannot cleanly shake through a re-export barrel that
-    large to prove entire sibling modules are unreachable — a documented,
-    known bundler limitation with large barrel files, not something
-    `sideEffects`/`splitting`/`minify` tuning resolves. A full fix would
-    mean exposing many fine-grained subpath exports (e.g. `graphojs/Point`,
-    `graphojs/Diagram`, one per class) instead of one broad barrel — a
-    breaking change to the public API shape, out of scope here. Since GoJS
-    has the same one-big-bundle limitation, the "~74 KB gzip, smaller than
-    GoJS" comparison in the CHANGELOG/README remains valid — it's a
-    full-bundle-to-full-bundle comparison either way, which is what most
-    real consumers (using most of the API surface) actually experience.
+  - **Revisited later, same session: mitigated without the breaking change.**
+    The gap through the *main barrel* is real and unchanged — importing only
+    `Point` through `graphojs`/`graphojs/go` still costs ~62.4 KB gzip, no
+    better than importing `Diagram`, for the same root cause (`index.ts`
+    re-exports ~150 names from one barrel; esbuild/webpack/rollup can't shake
+    through a barrel that large). What changed: this was previously framed
+    as "a full fix would mean exposing many fine-grained subpath exports —
+    a breaking change, out of scope." That framing was wrong — it doesn't
+    have to replace the barrel to coexist with it. Added a wildcard subpath
+    export (`"./*"` in `package.json`, mapping to `bundle: false`'s
+    already-existing one-file-per-module `dist/` layout) *alongside* the
+    unchanged `graphojs`/`graphojs/go`/etc. entries — purely additive, zero
+    breaking changes. `import { Point } from 'graphojs/geometry/Point'` now
+    costs 0.7 KB gzip (confirmed via esbuild, not just the trivial "no
+    imports" case) — a ~99% reduction for consumers who only need isolated
+    utilities. Documented as a deliberately less-stable escape hatch (deep
+    paths mirror internal file layout, not held to the same semver
+    guarantee as the curated entry points) in a new "Reducing your bundle
+    size" guide. Since GoJS has the same one-big-bundle limitation, the
+    "~74 KB gzip, smaller than GoJS" full-bundle comparison in the
+    CHANGELOG/README remains valid on its own terms — this doesn't replace
+    that comparison, it adds a second, better option for consumers who don't
+    need most of the API surface.
+  - Also enabled `tsup`'s `minify: true` (previously `false`) — the
+    published dist ships minified now, shrinking every individual file
+    (`Diagram.js`: 103.7 KB → 55.2 KB raw). Doesn't move the numbers above
+    (those already assume a consumer's own bundler minifies), but matters
+    for anyone loading straight from a CDN with no build step of their own.
+  - **Considered and deferred, for anyone picking this up later**: splitting
+    `Diagram.ts` (3,884 lines, the single largest source file) into smaller
+    modules, and/or turning the Shape-figure renderer into a registry so
+    unused figures don't get pulled in — both would need real refactoring
+    risk for uncertain payoff, since `Diagram` genuinely depends on most of
+    the codebase for normal usage (this is *why* deep-importing `Diagram`
+    barely beats importing it from the barrel: 61.3 KB vs 62.4 KB gzip —
+    there's little slack there to recover). Worth revisiting only if a
+    concrete use case needs `Diagram` itself to be smaller, not just leaf
+    utilities.
 
 ## Late finding — group templates weren't rendered at all
 

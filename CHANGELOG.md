@@ -71,6 +71,21 @@ full history of what led here.
   collapse/expand — not just selection/focus changes. `diagram.announce()`
   is now public, for tools/integrations that want to announce their own
   actions.
+- A wildcard subpath export (`"./*"`) alongside the existing curated entry
+  points — any internal module is now importable directly, e.g.
+  `import { Point } from 'graphojs/geometry/Point'` or
+  `import { TreeLayout } from 'graphojs/layout/TreeLayout'`. Measured effect:
+  a leaf class like `Point` costs 62.4 KB gzip through the main `graphojs`
+  barrel (same as importing `Diagram` — the barrel is too large for esbuild/
+  webpack/rollup to shake through), but only 0.7 KB gzip imported directly —
+  a ~99% reduction for consumers who only need a handful of isolated
+  utilities (geometry helpers, a single layout algorithm, etc.) without
+  constructing a `Diagram`. This is purely additive: `graphojs`/`graphojs/go`
+  and the other existing entry points are unchanged, so nothing breaks for
+  existing consumers — it's an opt-in escape hatch, not a replacement. Unlike
+  the curated entry points, deep import paths mirror internal file layout and
+  aren't held to the same semver stability guarantee — see the new
+  "Reducing your bundle size" guide.
 
 ### Fixed
 
@@ -168,19 +183,29 @@ full history of what led here.
 
 ### Performance
 
-- Minified core bundle ≈ 74 KB gzip (~297 KB raw) — grew from the additions
+- Minified core bundle ≈ 74 KB gzip (~292 KB raw) — grew from the additions
   above; still smaller than GoJS (~130 KB gzip).
 - The package now ships unbundled (`tsup`'s `bundle: false`, mirroring
   `src/`'s module structure in `dist/` instead of one flattened file per
   subpath) so a consumer's own bundler has a real module graph to
-  tree-shake against — importing only `Diagram` now costs ~63.9 KB gzip,
+  tree-shake against — importing only `Diagram` now costs ~62.4 KB gzip,
   down from ~76.5 KB (no better than importing everything) before this
-  change. Full tree-shaking down to individual leaf classes is still
-  blocked by the size of the `graphojs`/`graphojs/go` re-export barrels (a
-  known bundler limitation, not fixable by more build config — see
-  ROADMAP.md Phase 7); `graphojs/templates` isn't affected by this and
-  tree-shakes cleanly (confirmed ~0.8 KB gzip for a single template
-  helper).
+  change. Tree-shaking down to individual leaf classes *through the main
+  barrel* is still blocked by the size of the `graphojs`/`graphojs/go`
+  re-export barrels (a known bundler limitation, not fixable by more build
+  config — see ROADMAP.md Phase 7) — but see above: deep imports sidestep the
+  barrel entirely, at a real ~99% size reduction for leaf utilities.
+  `graphojs/templates` isn't affected by the barrel problem and tree-shakes
+  cleanly on its own (confirmed ~0.8 KB gzip for a single template helper).
+- The published dist is now minified (`tsup`'s `minify: true`, previously
+  `false`) — `dist/diagram/Diagram.js`, the single largest file, drops from
+  103.7 KB to 55.2 KB raw (22.5 KB → 13.8 KB gzip), total `dist/` from
+  2.9 MB to 2.3 MB raw. This has no effect on consumers who bundle their own
+  app (their bundler already minifies, so double-minification converges to
+  the same result) — it specifically helps anyone loading straight from a
+  CDN without a build step (see the "Usar GraphoJS sin npm (CDN)" guide),
+  who now downloads meaningfully fewer bytes per file with zero setup
+  required on their end.
 - `ForceDirectedLayout`'s repulsion pass is now approximated with a
   Barnes-Hut quadtree (O(n log n) instead of O(n²) per iteration), and its
   attraction pass now iterates links directly instead of scanning every

@@ -26,6 +26,7 @@ export default defineConfig({
           label: 'Conceptos básicos',
           items: [
             { label: 'Usar GraphoJS sin npm (CDN)', link: '/guide/cdn/' },
+            { label: 'Reducir el tamaño de tu bundle', link: '/guide/bundle-size/' },
             { label: 'Diagrama', link: '/guide/diagram/' },
             { label: 'Modelo', link: '/guide/model/' },
             { label: 'Templates', link: '/guide/templates/' },

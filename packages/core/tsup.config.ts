@@ -8,7 +8,7 @@ export default defineConfig({
   sourcemap: false,
   clean: true,
   treeshake: true,
-  minify: false,
+  minify: true,
   target: 'es2022',
   external: ['react', 'react-dom', 'vue'],
 });

@@ -49,6 +49,11 @@
       "types": "./dist/vue/index.d.ts",
       "import": "./dist/vue/index.js",
       "require": "./dist/vue/index.cjs"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "require": "./dist/*.cjs"
     }
   },
   "peerDependencies": {

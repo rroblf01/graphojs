@@ -1,0 +1,75 @@
+---
+title: Reducir el tamaño de tu bundle
+description: Cuándo el import normal te vale, y cuándo un import profundo te ahorra hasta un 99%.
+---
+
+GraphoJS tiene dos formas de importar, con un coste muy distinto según qué
+necesites:
+
+```js
+// 1. El namespace de siempre — cómodo, pensado para el caso normal
+import * as go from 'graphojs/go';
+
+// 2. Import profundo — el mismo código, sin pasar por el barril de exports
+import { Point } from 'graphojs/geometry/Point';
+```
+
+## Por qué hay diferencia
+
+`graphojs`/`graphojs/go` son **barriles**: un solo archivo que reexporta
+~150 nombres. Ni esbuild, ni webpack, ni rollup pueden demostrar qué partes
+de un barril tan grande son "inalcanzables" para tu código, así que cuando
+importas *cualquier cosa* a través de él, tu bundler se lleva prácticamente
+todo el barril entero — no solo lo que usas.
+
+Medido con esbuild (`minify: true`, gzip):
+
+| Import | Peso real |
+|---|---|
+| `import { Diagram } from 'graphojs'` | 62.4 KB gzip |
+| `import { Point } from 'graphojs'` (¡una clase sin dependencias!) | 62.4 KB gzip — igual que `Diagram` |
+| `import { Point } from 'graphojs/geometry/Point'` | **0.7 KB gzip** |
+| `import { TreeLayout } from 'graphojs/layout/TreeLayout'` | 21.6 KB gzip |
+| `import { Diagram } from 'graphojs/diagram/Diagram'` | 61.3 KB gzip |
+
+La fila de `Point` es la que importa: pedirlo por el barril cuesta **lo
+mismo que pedir `Diagram` entero** (62.4 KB), porque el barril no deja ver
+que `Point` no necesita nada más. Pedirlo por su ruta directa cuesta 0.7 KB
+— una reducción del 99%.
+
+Fíjate también en la última fila: importar `Diagram` por su ruta directa
+(61.3 KB) apenas mejora sobre importarlo por el barril (62.4 KB). Esto no es
+un fallo del import profundo — es que `Diagram` **de verdad** depende de
+casi todo el resto de la librería (herramientas de interacción, renderer,
+comandos de undo/redo, etc.), así que no hay mucho que "ahorrar" ahí. El
+import profundo no es magia: solo deja de pagar por cosas que
+*genuinamente* no necesitas.
+
+## Cuál usar
+
+- **Usas `Diagram`** (la inmensa mayoría de los casos): usa
+  `graphojs`/`graphojs/go` sin pensarlo más — el barril no te cuesta nada
+  extra frente a un import profundo de `Diagram`, y es la superficie de API
+  estable y documentada en el resto de esta guía.
+- **Solo necesitas piezas sueltas** — una clase de geometría, un algoritmo
+  de layout en un Worker o en el servidor, una utilidad de animación — sin
+  construir nunca un `Diagram`: usa el import profundo correspondiente. La
+  ruta espeja la estructura interna de `src/`; consulta la [referencia de la
+  API](/reference/api/) o el propio paquete publicado para encontrar la
+  ruta exacta de lo que buscas.
+
+## Una advertencia sobre estabilidad
+
+Los imports profundos (`graphojs/<lo-que-sea>`) no tienen la misma garantía
+de estabilidad semver que `graphojs`, `graphojs/go`, `graphojs/templates`,
+`graphojs/react` y `graphojs/vue` — esos cinco son la superficie pública
+curada, documentada y estable. Una ruta interna podría reorganizarse en una
+versión menor si el código se reestructura. Si te preocupa la estabilidad
+a largo plazo más que los últimos KB, quédate con el namespace normal.
+
+## Para quien no usa bundler
+
+Si cargas GraphoJS [directamente desde un CDN](/guide/cdn/) sin ningún paso
+de build propio, el paquete publicado ya viene minificado — no hace falta
+nada más de tu parte para beneficiarte de los archivos más pequeños
+posibles.

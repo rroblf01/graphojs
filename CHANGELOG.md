@@ -153,6 +153,18 @@ full history of what led here.
   this pushed content out of the SVG's natural viewport, making exported/
   printed diagrams look cropped or empty at the top. Affected any diagram
   using a node template, i.e. effectively all of them.
+- A declarative port (`portId` on a template element) resolved to the wrong
+  location — sometimes off the node entirely — for any node not positioned
+  at the diagram origin `(0, 0)`. `Node.collectPortsFromPanel()` /
+  `updatePortSpots()` derived the port's fractional spot by dividing the
+  element's position directly by the node's width/height, without first
+  subtracting the node's own `bounds.x`/`bounds.y` — but a template
+  element's `position` is always in absolute diagram coordinates, so the
+  computed spot silently depended on where the node happened to sit on the
+  canvas. Every existing port test used a node at `(0, 0)`, where subtracting
+  zero has no effect, which is why this went unnoticed. In practice this
+  made `LinkingTool`'s "drag from a port to draw a new link" gesture appear
+  to do nothing for any off-origin node with a declared port.
 
 ### Performance
 

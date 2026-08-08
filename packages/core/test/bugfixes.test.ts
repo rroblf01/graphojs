@@ -510,6 +510,43 @@ describe('C20: declarative ports resolve after layout', () => {
     const link = [...d.links.values()][0] as Link;
     expect(link.fromPort.x).toBeGreaterThan(50);
   });
+
+  it('resolves a port spot the same way regardless of the node position on the canvas', () => {
+    // Regression test: collectPortsFromPanel/updatePortSpots divided the
+    // element's ABSOLUTE position by the node's width/height directly,
+    // without subtracting the node's own bounds.x/y first — so the computed
+    // spot (and therefore the port's real location) depended on where the
+    // node happened to sit on the canvas, not on the port element's actual
+    // position within the node. A node at the origin masked this because
+    // subtracting 0 has no effect, which is why every prior port test used
+    // x: 0, y: 0.
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(Shape, 'RoundedRectangle', { width: 100, height: 50 }),
+      $(Shape, 'Circle', { portId: 'out', width: 10, height: 10, alignment: Spot.Right }),
+    );
+    const m = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 300, y: 150, width: 100, height: 50 },
+      ],
+    });
+    d.model = m;
+
+    const nodeAtOrigin = d.findNodeForKey(1) as Node;
+    const nodeOffCanvas = d.findNodeForKey(2) as Node;
+    const portOrigin = nodeAtOrigin.findPort('out');
+    const portOffset = nodeOffCanvas.findPort('out');
+
+    // Both nodes use the identical template, so the port's spot (a fraction
+    // of the node's own width/height) must be identical regardless of the
+    // node's absolute x/y — only the resolved point differs.
+    expect(portOffset?.spot.x).toBeCloseTo(portOrigin?.spot.x ?? Number.NaN, 5);
+    expect(portOffset?.spot.y).toBeCloseTo(portOrigin?.spot.y ?? Number.NaN, 5);
+  });
 });
 
 describe('C22: invalidateLinksForNode clears cached link paths', () => {
@@ -3287,5 +3324,58 @@ describe('O27: link template path/arrowhead Shapes no longer double-render as a 
     // clobber the path Shape's explicit strokeWidth (5).
     expect(link.strokeWidth).toBe(5);
     expect(link.stroke).toBe('#123456');
+  });
+});
+
+describe('O28: CommandHandler.deleteSelection() no longer throws when isValidLinkRemoval/isValidNodeRemoval rejects', () => {
+  it('declines a rejected link removal silently, like LinkingTool declines an invalid new link', () => {
+    // Regression test: deleteSelection() ran each RemoveLinkCommand/
+    // RemoveNodeCommand with no try/catch, so a rejecting
+    // isValidLinkRemoval/isValidNodeRemoval threw all the way out through
+    // Diagram's keydown handler for Delete/Backspace — an uncaught
+    // exception from a keyboard shortcut, unlike LinkingTool's interactive
+    // drag, which silently declines an invalid new link instead of
+    // throwing.
+    const d = createDiagram();
+    const model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    model.isValidLinkRemoval = () => false;
+    d.model = model;
+
+    const linkKey = model.getLinkKey(model.getLinkDataArray()[0]!)!;
+    const link = d.findLinkForKey(linkKey)!;
+    d.select(link);
+    const handler = d.getCommandHandler();
+
+    expect(() => handler.deleteSelection()).not.toThrow();
+    expect(model.getLinkData(linkKey)).toBeDefined(); // still there — removal was declined, not silently allowed
+  });
+
+  it('still deletes an unrestricted node in the same selection when a link removal is rejected', () => {
+    const d = createDiagram();
+    const model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 50 },
+        { key: 2, x: 200, y: 0, width: 100, height: 50 },
+        { key: 3, x: 400, y: 0, width: 100, height: 50 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    model.isValidLinkRemoval = () => false;
+    d.model = model;
+
+    const linkKey = model.getLinkKey(model.getLinkDataArray()[0]!)!;
+    d.select(d.findLinkForKey(linkKey)!);
+    d.select(d.findNodeForKey(3)!, true); // add to selection
+    const handler = d.getCommandHandler();
+
+    expect(() => handler.deleteSelection()).not.toThrow();
+    expect(model.getLinkData(linkKey)).toBeDefined(); // link removal declined
+    expect(model.containsNode(3)).toBe(false); // unrestricted node still removed
   });
 });

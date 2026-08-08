@@ -115,10 +115,24 @@ export class CommandHandler {
     undoManager.beginTransaction('Delete');
     try {
       for (const linkKey of linkKeys) {
-        undoManager.execute(new RemoveLinkCommand(model, linkKey));
+        // isValidLinkRemoval/isValidNodeRemoval rejecting a delete throws —
+        // matching LinkingTool's interactive drag, which silently declines
+        // an invalid new link instead of throwing, deleting via a keyboard
+        // shortcut or a click on a trash icon should decline the same way,
+        // not surface as an uncaught error from inside a key handler. Any
+        // other parts in the same multi-selection still get deleted.
+        try {
+          undoManager.execute(new RemoveLinkCommand(model, linkKey));
+        } catch {
+          /* rejected by isValidLinkRemoval — leave this one in place */
+        }
       }
       for (const nodeKey of nodeKeys) {
-        undoManager.execute(new RemoveNodeCommand(model, nodeKey));
+        try {
+          undoManager.execute(new RemoveNodeCommand(model, nodeKey));
+        } catch {
+          /* rejected by isValidNodeRemoval — leave this one in place */
+        }
       }
     } finally {
       undoManager.commitTransaction();

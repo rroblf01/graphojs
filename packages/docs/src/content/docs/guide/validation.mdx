@@ -6,7 +6,18 @@ description: Rechaza nodos o enlaces que no cumplan tus reglas con isValidNode /
 import Playground from '../../../components/Playground.astro';
 import validationExample from '../../../examples/validation.js?raw';
 
-<Playground code={validationExample} height={480} />
+`model.isValidLink` (y `model.isValidNode`) se comprueban en **dos sitios
+distintos, con comportamiento distinto** — este ejemplo deja probar ambos
+por separado, para que no se mezclen:
+
+1. **Arrastrando con el ratón**: arrastra desde el punto gris del borde
+   derecho de "Entrada A" hasta "Entrada B" (se rechaza, sin ningún aviso) o
+   hasta "Salida" (se acepta).
+2. **Por código**: los dos botones bajo el diagrama llaman directamente a
+   `model.addLink(...)` — uno con un enlace válido, otro con uno inválido —
+   para que veas la diferencia de comportamiento frente al arrastre.
+
+<Playground code={validationExample} height={520} />
 
 ## API
 
@@ -15,14 +26,44 @@ model.isValidNode = (nodeData) => boolean;
 model.isValidLink = (linkData) => boolean; // linkData tiene { from, to, ... }
 ```
 
-Ambos se comprueban en **dos sitios**:
+La regla de este ejemplo: solo se aceptan enlaces de un nodo `kind: 'input'`
+a uno `kind: 'output'` (nunca input→input, output→output, ni auto-enlaces).
 
-- **Interactivo**: `LinkingTool` (arrastrar para crear un enlace) descarta
-  el intento en silencio si `isValidLink` devuelve `false` — no se crea el
-  enlace, no hay error visible.
-- **Programático**: `model.addNode(...)` / `model.addLink(...)` lanzan una
-  excepción si la validación falla, así que envuélvelos en un
-  `diagram.commit(...)` o `try/catch` si esperas que puedan rechazarse.
+### Interactivo vs. programático
+
+|  | Arrastrando (`LinkingTool`) | Por código (`model.addLink`) |
+|---|---|---|
+| Si es válido | Se crea el enlace, se dispara `LinkDrawn` | Se crea, sin más |
+| Si es inválido | **No pasa nada** — no se crea, no hay evento, no hay error | **Lanza una excepción** (`Error: Link validation failed`) |
+
+Esa fila de "si es inválido" es la parte que conviene recordar: al arrastrar,
+una regla que rechaza el enlace es **silenciosa** (ideal para el usuario,
+pero fácil de no notar mientras desarrollas); al llamar a `model.addLink(...)`
+directamente, una regla que rechaza el enlace **lanza**, así que hace falta
+envolver la llamada en un `try/catch` si esperas que pueda rechazarse.
+`diagram.commit(fn)` **no** atrapa esa excepción por ti — usa
+`try { ... } finally { ... }` internamente, así que la transacción se cierra
+igual, pero la excepción sigue propagándose fuera de `commit(...)`. Si quieres
+manejarla, el `try/catch` tiene que envolver la llamada a `addLink` (dentro o
+fuera del `commit`), no sustituirlo.
 
 También existen `isValidNodeRemoval` / `isValidLinkRemoval` con la misma
 forma, para impedir borrados en vez de altas.
+
+### El punto gris es un `portId`, no decoración
+
+El pequeño círculo del borde derecho de cada nodo no es solo un detalle
+visual: `LinkingTool` solo empieza a arrastrar un enlace nuevo si el punto
+donde presionas el ratón cae sobre un elemento con un `portId` declarado
+(no vacío) — no basta con presionar "en cualquier parte del nodo". Si ningún
+elemento de la plantilla tiene `portId`, arrastrar para crear un enlace
+simplemente no hace nada, sin ningún error que lo delate:
+
+```js
+$(go.Shape, 'Circle', {
+  portId: 'out', // obligatorio y no vacío — activa el arrastre desde aquí
+  width: 10,
+  height: 10,
+  alignment: go.Spot.Right,
+}),
+```

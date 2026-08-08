@@ -1,0 +1,62 @@
+---
+/**
+ * Overrides Starlight's default SocialIcons component to add a "latest
+ * release" badge next to the GitHub link in the navbar. The badge image
+ * comes from shields.io, which queries the GitHub API itself at request
+ * time — so it always reflects whatever's actually tagged as the latest
+ * release, with no build-time fetch or rebuild-on-release step needed.
+ */
+import config from 'virtual:starlight/user-config';
+// biome-ignore lint/correctness/noUnusedImports: Astro frontmatter imports are used in the template
+import { Icon } from '@astrojs/starlight/components';
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro frontmatter bindings are used in the template
+const links = config.social || [];
+// biome-ignore lint/correctness/noUnusedVariables: Astro frontmatter bindings are used in the template
+const repo = 'rroblf01/graphojs';
+---
+
+{
+  links.length > 0 && (
+    <>
+      {links.map(({ label, href, icon }) => (
+        <a {href} rel="me" class="sl-flex">
+          <span class="sr-only">{label}</span>
+          <Icon name={icon} />
+        </a>
+      ))}
+      <a
+        href={`https://github.com/${repo}/releases/latest`}
+        class="sl-flex release-badge"
+        rel="noopener"
+      >
+        <img
+          src={`https://img.shields.io/github/v/release/${repo}?label=%C3%BAltima%20release&color=blue`}
+          alt="Última release publicada en GitHub"
+          width="140"
+          height="20"
+          loading="lazy"
+        />
+      </a>
+    </>
+  )
+}
+
+<style>
+  @layer starlight.core {
+    a {
+      color: var(--sl-color-text-accent);
+      padding: 0.5em;
+      margin: -0.5em;
+    }
+    a:hover {
+      color: var(--sl-color-white);
+    }
+    .release-badge {
+      align-items: center;
+    }
+    .release-badge img {
+      display: block;
+    }
+  }
+</style>

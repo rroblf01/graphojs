@@ -163,10 +163,17 @@ export class Node extends Part {
       for (const el of panel.elements) {
         if (el.portId) {
           const port = new Port(el.portId);
-          // Derive a fractional spot from the element's position in the panel
+          // Derive a fractional spot from the element's position in the panel.
+          // el.position is always absolute (diagram) coordinates, so it must be
+          // taken relative to this node's own bounds — not divided as-is, or
+          // the spot depends on the node's position on the canvas instead of
+          // its position within the node.
           const w = this.bounds.width || 1;
           const h = this.bounds.height || 1;
-          const spot = new Spot(w > 0 ? el.position.x / w : 0.5, h > 0 ? el.position.y / h : 0.5);
+          const spot = new Spot(
+            w > 0 ? (el.position.x - this.bounds.x) / w : 0.5,
+            h > 0 ? (el.position.y - this.bounds.y) / h : 0.5,
+          );
           port.spot = spot;
           this._ports.push(port);
         }
@@ -192,7 +199,10 @@ export class Node extends Part {
         if (el.portId) {
           const port = byId.get(el.portId);
           if (port) {
-            port.spot = new Spot(w > 0 ? el.position.x / w : 0.5, h > 0 ? el.position.y / h : 0.5);
+            port.spot = new Spot(
+              w > 0 ? (el.position.x - this.bounds.x) / w : 0.5,
+              h > 0 ? (el.position.y - this.bounds.y) / h : 0.5,
+            );
           }
         }
         if (el instanceof Panel) walk(el);

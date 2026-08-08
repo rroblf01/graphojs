@@ -30,8 +30,10 @@ señalados en naranja:
 Pulsa **🔁 Defecto en control de calidad** o **🔁 Cliente no satisfecho** para
 disparar cada bucle: el enlace naranja correspondiente parpadea un momento
 (para que veas *cuál* bucle se activó) y luego el progreso rebobina
-automáticamente hasta justo antes del paso al que se vuelve — con una
-explicación en el panel de abajo de qué pasó y por qué.
+automáticamente hasta el paso al que se vuelve — ese paso se queda
+completado, porque es justo ahí donde apunta la flecha naranja; solo lo que
+viene después vuelve a quedar pendiente — con una explicación en el panel de
+abajo de qué pasó y por qué.
 
 La leyenda de colores (pendiente / completado / bucle) está siempre visible,
 no solo después de interactuar.
@@ -44,21 +46,34 @@ no solo después de interactuar.
   campo propio (`loop: 'loopQuality'` / `'loopRetry'`) para poder encontrarlos
   después con `diagram.allLinks.find(...)` y darles su color naranja.
 - El deslizador **no anima nada por sí solo**: solo guarda el paso objetivo
-  (0 a 10). El botón **▶ Animar** es quien recorre el camino paso a paso,
-  coloreando cada nodo y el enlace que lo precede antes de pasar al
-  siguiente — con una pequeña pausa entre pasos para que se note el avance.
+  (0 a 10). El botón **▶ Animar** llama a `goToProgress(objetivo)`, que mira
+  cuántos pasos están completados *ahora mismo* y avanza o retrocede desde
+  ahí — nunca reinicia a cero. Por eso encadenar dos botones (o el deslizador
+  y un botón de bucle) siempre continúa de forma natural desde donde estaba,
+  en vez de dar un salto visual al principio.
 - Los colores de los nodos están enlazados al modelo
-  (`new go.Binding('fill', 'fill')`), así que cambiarlos en tiempo de
-  ejecución requiere pasar por `model.setDataProperty(data, 'fill', color)`.
-  Mutar `node.data.fill` directamente **no** dispara el refresco del
-  binding — es un error fácil de cometer y de no notar, porque no lanza
-  ningún error, simplemente el color nunca cambia en pantalla. Los enlaces,
-  en cambio, no usan binding para su color: basta con asignar `link.stroke`
-  directamente y llamar a `diagram.invalidate()`.
-- Cada botón de bucle reutiliza la misma función `animateProgress()` que usa
-  "▶ Animar" — primero hace parpadear su enlace, luego llama a
-  `animateProgress(pasoDestino, explicación)`, donde el segundo parámetro es
-  el texto que se muestra como primera línea del panel de resultado.
+  (`new go.Binding('fill', 'fill')`), pero la animación **no** los cambia con
+  `model.setDataProperty()` — los pinta directamente en el `Shape`/`TextBlock`
+  renderizados (`node.panel.elements[0].fill = ...`) y llama a
+  `diagram.invalidate()`. El motivo es un efecto secundario real: *cualquier*
+  cambio de propiedad a través del modelo, aunque sea puramente cosmético
+  como un color, dispara `Diagram.invalidateLinksForNode()` — que fuerza a
+  recalcular la ruta de **todos** los enlaces auto-enrutados, no solo los del
+  nodo que cambió. Con esta demo animando colores varias veces por segundo,
+  eso hacía que el enlace largo de "¿Satisfecho? → Prepara contrato" se
+  reenrutara en cada paso, y a veces el enrutador ortogonal elegía un camino
+  distinto que cruzaba por encima de "Control de calidad" — mezclando
+  visualmente los dos bucles. Pintar el `Shape` directamente cambia el color
+  sin tocar el modelo, así que la geometría de los enlaces nunca se invalida.
+  Para los enlaces (su color de progreso, y el parpadeo de los bucles) pasa
+  lo mismo por una razón distinta: no usan binding, así que basta con asignar
+  `link.stroke` directamente.
+- Cada botón de bucle encadena las mismas fases siempre en el mismo orden:
+  1. `goToProgress(pasoOrigen)` — avanza o retrocede hasta el paso donde vive
+     el bucle (p.ej. "Control de calidad"), desde el progreso actual.
+  2. El enlace del bucle parpadea, para que se vea *cuál* se ha activado.
+  3. `goToProgress(pasoDestino)` — deshace paso a paso hasta justo antes del
+     paso al que se vuelve.
 - Ninguna animación se acumula: pulsar dos botones seguidos (o el mismo dos
   veces) invalida un token de la animación anterior antes de empezar la
-  siguiente desde cero.
+  siguiente.

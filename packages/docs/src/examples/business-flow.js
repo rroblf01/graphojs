@@ -10,7 +10,10 @@ root.style.display = 'flex';
 root.style.flexDirection = 'column';
 
 const diagramHost = document.createElement('div');
-diagramHost.style.cssText = 'flex:1 1 auto;min-height:0;position:relative;';
+// min-height evita que las filas de controles de abajo (leyenda, progreso,
+// botones de bucle, log) aplasten el lienzo a casi 0px en pantallas
+// estrechas, donde el editor se apila encima y deja poca altura al frame.
+diagramHost.style.cssText = 'flex:1 1 auto;min-height:200px;position:relative;';
 root.appendChild(diagramHost);
 
 const diagram = new go.Diagram(diagramHost);
@@ -158,7 +161,6 @@ diagram.model = new go.GraphLinksModel({ nodeDataArray, linkDataArray });
 
 // Los dos enlaces de bucle se distinguen por color y grosor — se buscan
 // *después* de asignar el modelo, cuando ya existen los Links.
-const model = diagram.getModel();
 const loopLinks = {};
 for (const link of diagram.allLinks) {
   if (link.data?.loop) {
@@ -174,10 +176,16 @@ log.style.cssText =
   'background:#eef2f5;border-radius:6px;color:#263238;white-space:pre-wrap;';
 log.textContent = 'Elige hasta qué paso animar y pulsa "▶ Animar".';
 
-// Leyenda siempre visible — no depende de haber pulsado nada todavía.
-const legend = document.createElement('div');
+// Leyenda siempre visible — no depende de haber pulsado nada todavía. Va en
+// la misma fila que los controles (no en una fila propia) para no sumar más
+// altura fija de la necesaria: cuantas más filas separadas, menos espacio le
+// queda al lienzo en pantallas estrechas donde el editor se apila encima.
+const bar = document.createElement('div');
+bar.style.cssText = 'display:flex;gap:10px;margin:0 8px 8px;flex-wrap:wrap;align-items:center;';
+
+const legend = document.createElement('span');
 legend.style.cssText =
-  'display:flex;gap:14px;margin:0 8px 4px;flex-wrap:wrap;font:600 11px system-ui, sans-serif;color:#546e7a;';
+  'display:flex;gap:12px;flex-wrap:wrap;font:600 11px system-ui, sans-serif;color:#546e7a;';
 function swatch(color, text) {
   const item = document.createElement('span');
   item.style.cssText = 'display:inline-flex;align-items:center;gap:5px;';
@@ -189,10 +197,7 @@ function swatch(color, text) {
 }
 swatch(PENDING.fill, 'Pendiente');
 swatch(DONE.fill, 'Completado');
-swatch(LOOP_COLOR, 'Enlace de bucle (reintento)');
-
-const bar = document.createElement('div');
-bar.style.cssText = 'display:flex;gap:10px;margin:0 8px 8px;flex-wrap:wrap;align-items:center;';
+swatch(LOOP_COLOR, 'Bucle');
 
 const sliderLabel = document.createElement('label');
 sliderLabel.style.cssText = 'font:600 12px system-ui, sans-serif;color:#37474f;';
@@ -215,12 +220,30 @@ function refreshPctLabel() {
 slider.addEventListener('input', refreshPctLabel);
 refreshPctLabel();
 
+// Cambia el color de un paso pintando directamente su Shape/TextBlock
+// renderizados, en vez de con model.setDataProperty(). A propósito: CUALQUIER
+// cambio de propiedad vía el modelo (aunque sea puramente cosmético, como un
+// color) dispara Diagram.invalidateLinksForNode(), que fuerza a recalcular la
+// ruta de TODOS los enlaces auto-enrutados — incluidos los de los bucles, que
+// son largos y cruzan varias filas. El resultado, con esta demo animando
+// colores varias veces por segundo, era que el enlace de "¿Satisfecho?" se
+// reenrutaba en cada paso y a veces el router elegía un camino distinto que
+// cruzaba por encima de "Control de calidad", mezclando visualmente los dos
+// bucles. Pintar el Shape directamente cambia el color sin tocar el modelo,
+// así que la geometría de los enlaces nunca se invalida.
+function setStepColor(node, colors) {
+  const [shape, text] = node.panel?.elements ?? [];
+  if (shape) {
+    shape.fill = colors.fill;
+    shape.stroke = colors.stroke;
+  }
+  if (text) text.stroke = colors.stroke;
+}
+
 function resetStyles() {
   for (const s of STEPS) {
     const node = diagram.findNodeForKey(s.key);
-    if (!node) continue;
-    model.setDataProperty(node.data, 'fill', PENDING.fill);
-    model.setDataProperty(node.data, 'stroke', PENDING.stroke);
+    if (node) setStepColor(node, PENDING);
   }
   for (const link of diagram.allLinks) {
     if (link.data?.loop) continue;
@@ -232,70 +255,124 @@ function resetStyles() {
 
 let animationToken = 0;
 
-// Anima el "relleno" de progreso paso a paso hasta `target`. `note`, si se
-// da, se muestra como primera línea del log (usado por los botones de
-// bucle para explicar qué disparó el rebobinado).
-function animateProgress(target, note) {
+function describeProgress(target, note) {
+  const done = STEPS.slice(0, target).map((s) => s.label);
+  const pending = STEPS.slice(target).map((s) => s.label);
+  return (
+    (note ? `${note}\n\n` : '') +
+    `Progreso: ${target}/${STEPS.length} (${Math.round((target / STEPS.length) * 100)}%)\n` +
+    `✅ Hecho: ${done.join(' → ') || '(nada aún)'}\n` +
+    `⏳ Pendiente: ${pending.join(' → ') || '(nada, proceso completo)'}`
+  );
+}
+
+// Cuántos pasos están ya completados ahora mismo — se apoya en que
+// goToProgress mantiene siempre un prefijo contiguo "hecho" (1..N).
+function currentDoneCount() {
+  let count = 0;
+  for (const s of STEPS) {
+    const node = diagram.findNodeForKey(s.key);
+    if (node?.panel?.elements[0]?.fill === DONE.fill) count++;
+    else break;
+  }
+  return count;
+}
+
+function markStepDone(i) {
+  const step = STEPS[i];
+  const node = diagram.findNodeForKey(step.key);
+  if (node) setStepColor(node, DONE);
+  if (i > 0) {
+    const prevKey = STEPS[i - 1].key;
+    const link = diagram.allLinks.find((l) => l.data?.from === prevKey && l.data?.to === step.key);
+    if (link) {
+      link.stroke = '#2e7d32';
+      link.strokeWidth = 3;
+    }
+  }
+}
+
+function markStepPending(i) {
+  const step = STEPS[i];
+  const node = diagram.findNodeForKey(step.key);
+  if (node) setStepColor(node, PENDING);
+  if (i > 0) {
+    const prevKey = STEPS[i - 1].key;
+    const link = diagram.allLinks.find((l) => l.data?.from === prevKey && l.data?.to === step.key);
+    if (link) {
+      link.stroke = '#90a4ae';
+      link.strokeWidth = 2;
+    }
+  }
+}
+
+// Anima el progreso *desde donde esté ahora mismo* hasta `target` — nunca
+// reinicia a cero primero. Si el objetivo está por delante, rellena hacia
+// delante paso a paso; si está por detrás, deshace paso a paso. Así, pulsar
+// un botón de bucle nunca "salta" visualmente al principio: continúa desde
+// el estado actual en la dirección que corresponda.
+function goToProgress(target, onDone) {
   const myToken = ++animationToken; // cancela cualquier animación anterior en curso
-  resetStyles();
-  let i = 0;
+  const current = currentDoneCount();
+  if (target === current) {
+    onDone?.(myToken);
+    return;
+  }
+  const forward = target > current;
+  let i = current;
   const tick = () => {
-    if (myToken !== animationToken || i >= target) {
-      const done = STEPS.slice(0, target).map((s) => s.label);
-      const pending = STEPS.slice(target).map((s) => s.label);
-      log.textContent =
-        (note ? `${note}\n\n` : '') +
-        `Progreso: ${target}/${STEPS.length} (${Math.round((target / STEPS.length) * 100)}%)\n` +
-        `✅ Hecho: ${done.join(' → ') || '(nada aún)'}\n` +
-        `⏳ Pendiente: ${pending.join(' → ') || '(nada, proceso completo)'}`;
+    if (myToken !== animationToken) return;
+    if (forward ? i >= target : i <= target) {
+      onDone?.(myToken);
       return;
     }
-    const step = STEPS[i];
-    const node = diagram.findNodeForKey(step.key);
-    if (node) {
-      model.setDataProperty(node.data, 'fill', DONE.fill);
-      model.setDataProperty(node.data, 'stroke', DONE.stroke);
-    }
-    if (i > 0) {
-      const prevKey = STEPS[i - 1].key;
-      const link = diagram.allLinks.find(
-        (l) => l.data?.from === prevKey && l.data?.to === step.key,
-      );
-      if (link) {
-        link.stroke = '#2e7d32';
-        link.strokeWidth = 3;
-      }
+    if (forward) {
+      markStepDone(i);
+      i++;
+    } else {
+      i--;
+      markStepPending(i);
     }
     diagram.invalidate();
-    i++;
     setTimeout(tick, 260);
   };
   tick();
 }
 
-// Dispara un bucle: hace parpadear su enlace un momento (para que se vea
-// *cuál* bucle se ha activado) y luego rebobina el progreso hasta justo
-// antes del paso destino, para que se pueda repetir desde ahí.
-function triggerLoop(loopKey, destKey, reason) {
-  animationToken++; // corta cualquier animación de progreso en curso
+// Dispara un bucle completo, en tres fases visibles:
+//  1. Avanza (o retrocede) desde el progreso actual hasta el paso donde vive
+//     el bucle (p.ej. "Control de calidad") — nunca reinicia desde cero.
+//  2. El enlace del bucle parpadea, para que se vea *cuál* se ha activado.
+//  3. El progreso se deshace paso a paso hasta el paso destino — el propio
+//     paso destino se queda completado (es justo ahí donde apunta la flecha
+//     naranja); solo lo que viene DESPUÉS vuelve a quedar pendiente.
+function triggerLoop(loopKey, originKey, destKey, reason) {
   const link = loopLinks[loopKey];
   if (!link) return;
-  const rewindTarget = STEPS.findIndex((s) => s.key === destKey);
-  let flashes = 0;
-  const flashTick = () => {
-    link.strokeWidth = flashes % 2 === 0 ? 6 : 3;
-    diagram.invalidate();
-    flashes++;
-    if (flashes < 6) {
-      setTimeout(flashTick, 130);
-    } else {
+  const originCount = STEPS.findIndex((s) => s.key === originKey) + 1;
+  const destCount = STEPS.findIndex((s) => s.key === destKey) + 1;
+
+  goToProgress(originCount, (myToken) => {
+    let flashes = 0;
+    const flashTick = () => {
+      if (myToken !== animationToken) return;
+      link.strokeWidth = flashes % 2 === 0 ? 6 : 3;
+      diagram.invalidate();
+      flashes++;
+      if (flashes < 6) {
+        setTimeout(flashTick, 130);
+        return;
+      }
       link.strokeWidth = 3;
-      slider.value = String(rewindTarget);
-      refreshPctLabel();
-      animateProgress(rewindTarget, reason);
-    }
-  };
-  flashTick();
+      diagram.invalidate();
+      goToProgress(destCount, () => {
+        slider.value = String(destCount);
+        refreshPctLabel();
+        log.textContent = describeProgress(destCount, reason);
+      });
+    };
+    flashTick();
+  });
 }
 
 const mk = (label, css, fn) => {
@@ -310,8 +387,12 @@ const mk = (label, css, fn) => {
 bar.appendChild(sliderLabel);
 bar.appendChild(slider);
 bar.appendChild(pctLabel);
+bar.appendChild(legend);
 mk('▶ Animar', 'border:1px solid #81c784;background:#e8f5e9;color:#1b5e20;', () => {
-  animateProgress(Number(slider.value));
+  const target = Number(slider.value);
+  goToProgress(target, () => {
+    log.textContent = describeProgress(target);
+  });
 });
 mk('↺ Reiniciar', 'border:1px solid #90a4ae;background:#eceff1;color:#37474f;', () => {
   animationToken++; // corta cualquier animación en curso
@@ -330,13 +411,14 @@ const mkLoop = (label, css, fn) => {
   return b;
 };
 mkLoop(
-  '🔁 Defecto en control de calidad',
+  '🔁 Defecto de calidad',
   `border:1px solid ${LOOP_COLOR};background:#fbe9e7;color:${LOOP_COLOR};`,
   () => {
     triggerLoop(
       'loopQuality',
+      8,
       7,
-      '🔁 Bucle "Defecto": el control de calidad falla y volvemos a fabricar el producto.',
+      '🔁 Bucle "Defecto": el control de calidad encuentra un problema — volvemos a justo después de fabricar, listos para repetir el control.',
     );
   },
 );
@@ -346,13 +428,13 @@ mkLoop(
   () => {
     triggerLoop(
       'loopRetry',
+      10,
       4,
-      '🔁 Bucle "No satisfecho": el cliente rechaza el resultado y volvemos a preparar el contrato.',
+      '🔁 Bucle "No satisfecho": el cliente rechaza el resultado — volvemos a justo después de preparar el contrato, listos para firmarlo de nuevo.',
     );
   },
 );
 
-root.appendChild(legend);
 root.appendChild(bar);
 root.appendChild(loopBar);
 root.appendChild(log);

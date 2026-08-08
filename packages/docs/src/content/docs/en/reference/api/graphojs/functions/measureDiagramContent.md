@@ -1,0 +1,45 @@
+---
+editUrl: false
+next: false
+prev: false
+title: "measureDiagramContent"
+---
+
+> **measureDiagramContent**(`diagram`): `object`
+
+Defined in: [export/ServerRenderer.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ServerRenderer.ts#L38)
+
+Bounding box of all visible content in `diagram`, ignoring the grid layer.
+
+ Shape and defaults may still change before 1.0.0 based on
+real-world server-rendering usage.
+
+:::caution[Experimental]
+This API should not be used in production and may be trimmed from a public release.
+:::
+
+## Parameters
+
+### diagram
+
+[`Diagram`](/en/reference/api/graphojs/classes/diagram/)
+
+## Returns
+
+`object`
+
+### height
+
+> **height**: `number`
+
+### width
+
+> **width**: `number`
+
+### x
+
+> **x**: `number`
+
+### y
+
+> **y**: `number`

@@ -1,0 +1,116 @@
+---
+title: Interaction
+description: Selection, dragging, text editing, and diagram events.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import interactionExample from '../../../../examples/interaction.js?raw';
+
+GraphoJS includes interaction tools: select with a click, move by
+dragging, and edit text with a double click.
+
+<Playground code={interactionExample} height={500} />
+
+## Events
+
+`diagram.addDiagramListener('SelectionChanged', handler)` lets you react to
+changes in selection, movement, resizing, and more.
+
+## Text editing
+
+A `TextBlock` with `editable: true` allows editing the label with a double
+click. Changes are applied to the model transactionally.
+
+## Interaction flags
+
+The diagram respects `isReadOnly`, `allowMove`, `allowCopy`, `allowDelete`,
+`allowZoom`, `allowTextEdit`, `allowLink`, and `allowRelink` (same as GoJS).
+
+## Alignment guides while dragging
+
+Similar to GoJS's `GuidedDraggingTool` extension, `DraggingTool` can show
+dashed guide lines and snap the dragged node to the edges/centers of nearby
+nodes:
+
+```js
+diagram.toolManager.draggingTool.isGuidedDraggingEnabled = true;
+diagram.toolManager.draggingTool.guidelineSnapDistance = 6; // px, por defecto
+```
+
+It is disabled by default (same as in GoJS, where it's a separate extension
+tool) and is ignored while `diagram.isSnapToGridEnabled()` is active — only
+one kind of snapping makes sense at a time.
+
+## Accessibility
+
+A `<canvas>` has no DOM children that a screen reader can traverse, so
+GraphoJS adds, by default and with no configuration, the minimum needed for
+the canvas itself to be an accessible widget:
+
+- The canvas is focusable (`tabindex="0"`) with `role="application"` and
+  `aria-roledescription="diagram"`; its `aria-label` is recalculated with
+  just the number of nodes/groups/links and how many are selected.
+- An `aria-live="polite"` region (visually hidden, next to the canvas)
+  announces state changes — in English by default: selection changes
+  (`Node "X" selected`, `3 items selected`, `Selection cleared`), undo/
+  redo (`Undone: ...`, `Redone: ...`), deletion (`3 items deleted`), and
+  collapsing/expanding a tree (`Node "X" collapsed`/`expanded`) — without
+  you having to wire anything up yourself. `diagram.announce(message)` is
+  public in case a custom tool or integration wants to announce something
+  else.
+- **With the canvas focused and nothing selected**, the arrow keys move a
+  *focus cursor* (a dashed outline) between nodes, groups, and links —
+  <kbd>Enter</kbd>/<kbd>Space</kbd> select the focused element, and
+  <kbd>Esc</kbd> clears the focus and the selection. As soon as there is a
+  selection, the arrow keys return to their normal behavior of moving the
+  selected nodes (`nudgeSelection`) — the two never compete with each other.
+
+### Translating the announcements (`accessibilityMessages`)
+
+The texts above are in English by default (same as the rest of the API). To
+translate them or change the wording, override any subset of
+`AccessibilityMessages` — when building the diagram or afterward:
+
+```js
+diagram.accessibilityMessages = {
+  ...diagram.accessibilityMessages, // conserva los formateadores que no toques
+  selectionCleared: () => 'Selección vacía',
+  singleSelected: (description) => `${description} seleccionado`,
+  multipleSelected: (count) => `${count} elementos seleccionados`,
+  focusMoved: (description) => `Foco en ${description}`,
+  describePart: (part) => `Nodo "${part.label ?? part.key}"`,
+};
+```
+
+Or pass it directly to the constructor with `new go.Diagram(div, {
+accessibilityMessages: { ... } })`. You only need to define the fields you
+want to change — the rest keeps using the English default.
+
+### `prefers-reduced-motion`
+
+If the user's operating system has "reduce motion" enabled, GraphoJS
+disables animations by default —
+`diagram.animationManager.isEnabled` starts as `false` and any
+animation (`animate()`, `tween()`, ...) jumps straight to its final values
+instead of interpolating frame by frame. This is only the **initial**
+value: setting `diagram.animationManager.isEnabled = true` after
+constructing the diagram always overrides it, whether the user wants to
+force animations on or explicitly turn them off.
+
+### High contrast (`selectionStyle`)
+
+Similarly, if the system requests more contrast (`prefers-contrast:
+more` or Windows' high-contrast mode, `forced-colors: active`), the
+selection/focus colors automatically switch to a higher-contrast palette
+(`highContrastSelectionStyle`, also exported in case you want to reuse it)
+instead of the default blue/purple
+(`defaultSelectionStyle`). It can be overridden with `diagram.selectionStyle
+= { ...diagram.selectionStyle, selectionColor: '#ff0000' }` or via
+`DiagramOptions.selectionStyle` when constructing the diagram — just like
+`accessibilityMessages`, any field you don't touch keeps its
+automatically detected value.
+
+This covers basic keyboard-only navigation and announcing state to a screen
+reader; it isn't meant to be a fully non-visual way of editing the diagram
+(GoJS doesn't offer this either — the canvas is, by nature, a visual
+medium).

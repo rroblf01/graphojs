@@ -1,0 +1,49 @@
+---
+title: Diagram
+description: The Diagram canvas, viewport, zoom, trees, and navigation.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import diagramExample from '../../../../examples/diagram.js?raw';
+
+`go.Diagram` is the interactive canvas. It's created on top of a DOM element:
+
+```js
+const diagram = new go.Diagram('mi-div');
+```
+
+<Playground code={diagramExample} height={520} />
+
+## Viewport and zoom
+
+- `diagram.scale` / `diagram.zoomFactor` — zoom level
+- `diagram.position` / `diagram.scrollMode` — scrolling
+- `diagram.zoomToFit()`, `diagram.zoomToRect(r)`, `diagram.centerRect(r)`
+- `diagram.minScale` / `diagram.maxScale`
+
+## Model
+
+Assign `diagram.model = new go.GraphLinksModel({ nodeDataArray, linkDataArray })`.
+Changes to the model are reflected automatically.
+
+## Graph navigation
+
+- `diagram.findNodeForKey(key)` / `findLinkForKey(key)` / `findPartForKey(key)`
+- `diagram.nodes` / `diagram.links` / `diagram.groups` (iterables)
+- `node.findLinksInto()`, `node.findNodesOutOf()`, `node.findTreeChildrenNodes()`
+
+## Trees
+
+For hierarchical structures, use `TreeModel` (with `parent` in the data) or
+nodes with a `parent` field in `GraphLinksModel`:
+
+```js
+diagram.findTreeRoots();   // nodos sin padre
+diagram.findTreeChildren(node);
+diagram.findTreeParent(node);
+```
+
+## Events
+
+`addDiagramListener('SelectionChanged', handler)` — there are ~30 event types
+(`ObjectSingleClicked`, `PartMoved`, `LinkDrawn`, `LayoutCompleted`, ...).

@@ -1,0 +1,59 @@
+---
+title: React and Vue
+description: Use GraphoJS with graphojs/react and graphojs/vue.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import reactVueExample from '../../../../examples/react-vue.js?raw';
+
+GraphoJS has wrappers for React (`graphojs/react`) and Vue (`graphojs/vue`)
+as subpaths of the `graphojs` package. React and Vue are optional
+dependencies: install them only if you use the corresponding subpath.
+
+<Playground code={reactVueExample} height={440} />
+
+## Installation
+
+```bash
+npm install graphojs react          # para graphojs/react
+npm install graphojs vue            # para graphojs/vue
+```
+
+## React
+
+```tsx
+import { Diagram, Palette, Overview } from 'graphojs/react';
+import { GraphLinksModel, GraphObject } from 'graphojs';
+
+<Diagram
+  model={model}
+  nodeTemplate={template}
+  initDiagram={(d) => d.zoomToFit()}
+  onSelectionChanged={() => {}}
+/>
+```
+
+## Vue
+
+```vue
+<script setup>
+import { Diagram } from 'graphojs/vue';
+</script>
+
+<template>
+  <Diagram :model="model" :node-template="template" />
+</template>
+```
+
+## Callbacks
+
+Both wrappers expose `initDiagram`, `onModelChange`, `onDiagramEvent`, and
+`onSelectionChanged` (and, in Vue, the equivalent emits).
+
+## Svelte / Angular
+
+Out of scope for 1.0.0 — an explicit decision, not an oversight. GraphoJS is
+framework-agnostic at its core (the actual `Diagram` is a plain class over a
+`<canvas>`), so a Svelte or Angular wrapper would follow the same thin
+pattern as `graphojs/react`/`graphojs/vue` if it's decided to add one later —
+but not before 1.0.0.

@@ -9,6 +9,14 @@ export default defineConfig({
     trace: 'on-first-retry',
     baseURL: 'http://localhost:4173',
   },
+  // A small tolerance for toHaveScreenshot() — CI's Firefox runs on a
+  // different OS/font stack than whatever machine captured the committed
+  // baselines, so anti-aliasing produces tiny (~0.01%) pixel diffs with no
+  // functional regression. 2% comfortably covers that noise while still
+  // catching real rendering regressions, which are far larger in practice.
+  expect: {
+    toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
+  },
   webServer: {
     command: 'node e2e/build-fixtures.mjs && node e2e/server.mjs',
     port: 4173,

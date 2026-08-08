@@ -1,0 +1,25 @@
+---
+title: Alignment guides
+description: Automatic snapping to the edges/centers of other nodes while dragging.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import guidedDraggingExample from '../../../../examples/guided-dragging.js?raw';
+
+<Playground code={guidedDraggingExample} height={480} />
+
+## Enabling it
+
+```js
+diagram.toolManager.draggingTool.isGuidedDraggingEnabled = true;
+diagram.toolManager.draggingTool.guidelineSnapDistance = 8; // px, opcional
+```
+
+When dragging a node, if any of its edges or its center comes within
+`guidelineSnapDistance` pixels of the edge/center of another node, the
+dragged node snaps exactly to that position and a guide line is drawn to
+indicate it.
+
+It is not compatible with `diagram.isSnapToGridEnabled()` at the same time —
+if grid snapping is active, alignment guides are automatically disabled for
+the duration of that drag.

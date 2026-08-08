@@ -1,0 +1,28 @@
+---
+title: "Example: Gantt chart"
+description: Gantt chart with tasks, dependencies, and milestones using the flag shape.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import ganttExample from '../../../../examples/gantt.js?raw';
+
+A Gantt chart doesn't use any GraphoJS `Layout`: each task computes its own
+position (`x = start day × day width`, `y = row × row height`,
+`width = duration × day width`) before building the model.
+
+<Playground code={ganttExample} height={420} />
+
+## How it's built
+
+- `nodeTemplateMap` distinguishes three categories: `'tick'` (fixed day-ruler
+  marks), `'task'` (a rectangular bar showing the duration), and
+  `'milestone'` (zero duration, drawn with the `flag` shape — see
+  [Shapes](/en/guide/shapes/)).
+- Dependencies (`dependsOn`) are translated into links with
+  `routing: 'orthogonal'`, the usual style for Gantt connectors.
+- Since each bar already has its `x`/`y`/`width` computed, there's no need
+  for `diagram.layout` — just `zoomToFit()` at the end.
+
+For a truly editable Gantt chart (dragging to move/resize tasks) you'd
+combine this with a custom `Tool` that adjusts `width`/`x` in one-day
+increments — GraphoJS doesn't include this out of the box, just like GoJS.

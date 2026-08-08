@@ -1,0 +1,73 @@
+---
+title: Trees
+description: Expandable hierarchies with TreeModel or the parent field.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import treeExample from '../../../../examples/tree.js?raw';
+
+For hierarchical structures, use a `parent` field in the data and
+`TreeLayout` to arrange the tree.
+
+<Playground code={treeExample} height={500} />
+
+## Hierarchy with parent
+
+The data uses `parent` to indicate the parent node:
+
+```js
+{ key: 4, parent: 2, label: 'Nivel 3a' }
+```
+
+`TreeLayout` arranges nodes automatically according to depth.
+
+## Tree navigation
+
+- `diagram.findTreeRoots()` — nodes without a parent.
+- `node.findTreeParentNode()` — the parent.
+- `node.findTreeChildrenNodes()` — the children.
+- `node.isTreeLeaf()` — no children.
+
+## Expand / collapse
+
+To collapse a subtree (hiding all its descendants) without the nodes needing
+to be a `Group`, use `node.isTreeExpanded` together with
+`diagram.collapseTree`/`expandTree`:
+
+```js
+node.isTreeExpanded; // true por defecto
+diagram.collapseTree(node); // oculta todos los descendientes de node
+diagram.expandTree(node); // los vuelve a mostrar (respetando los que
+// a su vez estén colapsados en un nivel inferior)
+```
+
+These operations trigger the diagram's `TreeCollapsed`/`TreeExpanded`
+events.
+
+This is independent of `Group.isSubGraphExpanded` +
+`collapseGroup`/`expandGroup` (see [Groups](/en/guide/groups/)), which
+collapses group membership rather than the tree hierarchy.
+
+### TreeExpanderButton
+
+`TreeExpanderButton()` builds a button ("−"/"+") ready to add to a node's
+template; clicking it calls `collapseTree`/`expandTree` on the node that
+contains it:
+
+```js
+import * as go from 'graphojs/go';
+import { TreeExpanderButton } from 'graphojs';
+
+const $ = go.GraphObject.make;
+
+diagram.nodeTemplate = $(
+  go.Panel,
+  'Horizontal',
+  $(go.Panel, 'Auto', $(go.Shape, 'RoundedRectangle'), $(go.TextBlock, new go.Binding('text', 'label'))),
+  TreeExpanderButton(), // { size, background, stroke } opcionales
+);
+```
+
+`TreeExpanderButton`/`PanelExpanderButton` are not part of the `go.*`
+namespace (nor are they in real GoJS, where they live in the extensions
+module): they're imported directly from `graphojs`.

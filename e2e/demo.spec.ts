@@ -9,6 +9,14 @@ test('demo flowchart renders without errors', async ({ page }) => {
 
   await page.goto('/examples/flowchart.html');
   await page.waitForFunction(() => document.querySelector('canvas'), undefined, { timeout: 15000 });
+  // The canvas element exists as soon as the Diagram constructor returns,
+  // but the first paint only happens inside a requestAnimationFrame
+  // callback scheduled at the end of that constructor — wait for it to
+  // actually fire before reading pixel data (otherwise this races with
+  // WebKit's slower first-rAF timing in CI and reads a still-blank canvas).
+  await page.evaluate(
+    () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+  );
   expect(errors, `errors: ${errors.join('\n')}`).toEqual([]);
 
   const pixelCount = await page.evaluate(() => {

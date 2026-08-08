@@ -1,0 +1,65 @@
+---
+title: Layouts
+description: Grid, Tree, Circular, and ForceDirected with a single click.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import layoutsExample from '../../../../examples/layouts.js?raw';
+
+GraphoJS includes several layouts: `GridLayout`, `TreeLayout`, `CircularLayout`,
+`ForceDirectedLayout`, `LayeredDigraphLayout`, and `SpotLayout`.
+
+<Playground code={layoutsExample} height={460} />
+
+## Using a layout
+
+```js
+diagram.layout = new go.GridLayout();
+diagram.layoutDiagram();
+```
+
+## Changing it at runtime
+
+You can assign a new layout and re-run `layoutDiagram()` at any
+time (the example above does this with `__setLayout`).
+
+## A note on ForceDirected
+
+`ForceDirectedLayout` approximates node repulsion with a
+[Barnes-Hut tree](https://es.wikipedia.org/wiki/Algoritmo_de_Barnes-Hut)
+(the same technique used by D3-force and most n-body simulators):
+each iteration is O(n log n) instead of O(n²), which makes it usable with
+thousands of nodes without the running time exploding.
+
+```js
+diagram.layout = new go.ForceDirectedLayout({
+  maxIterations: 300,
+  theta: 0.9, // por defecto — compromiso precisión/velocidad de la aproximación
+});
+```
+
+`theta` controls that trade-off: lower is more accurate but slower
+(`theta: 0` disables the approximation, computing the exact repulsion
+between every pair); higher is faster but less faithful to the exact
+result. The default value (0.9) works well in practice.
+
+## LayeredDigraphLayout
+
+Arranges a directed graph into layers (Sugiyama-style): each node is
+assigned to a layer based on its longest path from the roots, and within
+each layer the order is reduced by minimizing link crossings with
+`reduceCrossings: true` (the default):
+
+```js
+diagram.layout = new go.LayeredDigraphLayout({
+  direction: 'vertical', // o 'horizontal'
+  layerSpacing: 80,
+  reduceCrossings: true,
+});
+```
+
+Crossing reduction uses the **median** heuristic (Gansner et al., the same
+one used by Graphviz/`dot`) in alternating downward and upward passes,
+followed by a *transpose* pass that swaps adjacent nodes within a layer
+whenever that reduces the actual number of crossings — more robust against
+outliers, and able to resolve cases that a single barycenter pass cannot.

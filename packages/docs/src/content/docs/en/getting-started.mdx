@@ -1,0 +1,40 @@
+---
+title: Getting Started
+description: Build your first diagram with GraphoJS in under a minute.
+---
+
+import Playground from '../../../components/Playground.astro';
+import gettingStarted from '../../../examples/getting-started.js?raw';
+
+GraphoJS is an open-source (MIT), drop-in alternative to GoJS. Most
+applications migrate by changing **just the import line**.
+
+## Installation
+
+```bash
+npm install graphojs
+# or, for the GoJS-compatible namespace:
+import * as go from 'graphojs/go';
+```
+
+Just want to try it without setting up a project? You can load GraphoJS
+directly from a CDN, no `npm install` or bundler required — see [Using
+GraphoJS without npm (CDN)](/en/guide/cdn/).
+
+## Your first diagram
+
+The playground below shows a diagram with three nodes and two links. Edit
+the code and press **Run** (or Ctrl/Cmd+Enter) to see the result.
+
+<Playground code={gettingStarted} height={500} />
+
+## What happened
+
+1. `go.Diagram('graphojs-root')` creates the diagram inside the element with that id.
+2. `diagram.nodeTemplate` defines how each node is drawn (a shape + a label).
+3. `diagram.model` is a `GraphLinksModel` with `nodeDataArray` and `linkDataArray`.
+4. The engine takes care of rendering, events, and interactions.
+
+## Next step
+
+Continue with [Templates](/en/guide/templates/) to customize nodes and links.

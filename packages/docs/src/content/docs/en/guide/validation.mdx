@@ -1,0 +1,71 @@
+---
+title: Validation
+description: Reject nodes or links that don't meet your rules with isValidNode / isValidLink.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import validationExample from '../../../../examples/validation.js?raw';
+
+`model.isValidLink` (and `model.isValidNode`) are checked in **two different
+places, with different behavior** — this example lets you try both
+separately, so they don't get mixed up:
+
+1. **Dragging with the mouse**: drag from the gray dot on the right edge
+   of "Input A" to "Input B" (rejected, with no warning at all) or
+   to "Output" (accepted).
+2. **From code**: the two buttons below the diagram call
+   `model.addLink(...)` directly — one with a valid link, the other with an
+   invalid one — so you can see the difference in behavior compared to
+   dragging.
+
+<Playground code={validationExample} height={520} />
+
+## API
+
+```js
+model.isValidNode = (nodeData) => boolean;
+model.isValidLink = (linkData) => boolean; // linkData has { from, to, ... }
+```
+
+The rule for this example: only links from a `kind: 'input'` node to a
+`kind: 'output'` node are accepted (never input→input, output→output, or
+self-links).
+
+### Interactive vs. programmatic
+
+|  | Dragging (`LinkingTool`) | From code (`model.addLink`) |
+|---|---|---|
+| If valid | The link is created, `LinkDrawn` fires | Created, no further ceremony |
+| If invalid | **Nothing happens** — no link, no event, no error | **Throws an exception** (`Error: Link validation failed`) |
+
+That "if invalid" row is the part worth remembering: when dragging,
+a rule that rejects the link is **silent** (great for the end user,
+but easy to miss while developing); when calling `model.addLink(...)`
+directly, a rule that rejects the link **throws**, so you need to
+wrap the call in a `try/catch` if you expect it might be rejected.
+`diagram.commit(fn)` does **not** catch that exception for you — it uses
+`try { ... } finally { ... }` internally, so the transaction still closes
+properly, but the exception keeps propagating out of `commit(...)`. If you
+want to handle it, the `try/catch` has to wrap the call to `addLink` (inside
+or outside the `commit`), not replace it.
+
+There are also `isValidNodeRemoval` / `isValidLinkRemoval`, with the same
+shape, to prevent deletions instead of additions.
+
+### The gray dot is a `portId`, not decoration
+
+The small circle on the right edge of each node isn't just a visual
+detail: `LinkingTool` only starts dragging a new link if the point
+where you press the mouse lands on an element with a declared
+`portId` (non-empty) — pressing "anywhere on the node" isn't enough. If no
+element in the template has a `portId`, dragging to create a link
+simply does nothing, with no error to give it away:
+
+```js
+$(go.Shape, 'Circle', {
+  portId: 'out', // required and non-empty — enables dragging from here
+  width: 10,
+  height: 10,
+  alignment: go.Spot.Right,
+}),
+```

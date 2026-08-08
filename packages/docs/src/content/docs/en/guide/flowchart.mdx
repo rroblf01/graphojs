@@ -1,0 +1,31 @@
+---
+title: "Example: Flowchart with lanes"
+description: Flowchart with swimlanes, BPMN shapes, and labeled links.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import flowchartExample from '../../../../examples/flowchart.js?raw';
+
+A flowchart with **lanes** (swimlanes) splits the process by
+owner — here, "Ventas" (Sales) and "Almacén" (Warehouse) — using start/end,
+process, and decision shapes.
+
+<Playground code={flowchartExample} height={520} />
+
+## How it's built
+
+- Each lane is two fixed nodes (`selectable: false`, `draggable: false`,
+  `zOrder: -10`): a colored strip with the name and a wide background where
+  the flow's nodes are placed. GraphoJS doesn't model "pools"/"lanes"
+  natively — building them as background nodes is the usual way to achieve
+  the same visual result.
+- `nodeTemplateMap` registers a template per `category`: `'terminator'`
+  (oval, start/end), `'process'` (rounded rectangle), and `'decision'`
+  (`gatewayExclusive`, BPMN's exclusive gateway shape — see
+  [Shapes](/en/guide/shapes/)).
+- The flow's nodes have fixed `x`/`y` in the data (no `diagram.layout`)
+  to control which lane each one falls into.
+- The decision branches use `linkDataArray[i].label` ('Sí'/'No'); the
+  user can drag those labels with
+  [`LinkLabelDraggingTool`](/en/guide/templates/#link-labels), which is
+  active by default.

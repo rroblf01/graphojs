@@ -1,0 +1,27 @@
+---
+title: "Example: Org chart"
+description: Complete org chart with TreeLayout and collapse buttons.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import orgChartExample from '../../../../examples/org-chart.js?raw';
+
+An org chart is a `TreeLayout` with nodes that combine a name and a title,
+plus a [`TreeExpanderButton`](/en/guide/tree/#treeexpanderbutton) to collapse
+entire branches.
+
+<Playground code={orgChartExample} height={520} />
+
+## How it's built
+
+- The data uses `parent` to express the hierarchy (see [Trees](/en/guide/tree/)).
+- The node template is a `Panel('Horizontal')` with a card (`Auto` +
+  `RoundedRectangle` + name/title in a `Panel('Vertical')`) and the expander
+  button next to it.
+- `diagram.layout = new go.TreeLayout({ nodeSpacing, layerSpacing })` arranges
+  the tree; links use `routing: 'orthogonal'` for the right-angle lines
+  typical of an org chart.
+- Click the "−"/"+" button on any manager to collapse or expand their team.
+
+To adapt it to your own team, change `nodeDataArray` — each person is
+`{ key, parent, name, title }`.

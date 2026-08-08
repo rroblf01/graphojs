@@ -1,0 +1,32 @@
+---
+title: Dragging a link label
+description: Reposition a Link's label along its path with LinkLabelDraggingTool.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import linkLabelDraggingExample from '../../../../examples/link-label-dragging.js?raw';
+
+`LinkLabelDraggingTool` is registered by default — any link with a visible
+label (a `TextBlock` in the `linkTemplate`) can already be dragged, with no
+additional configuration.
+
+<Playground code={linkLabelDraggingExample} height={480} />
+
+## How it works
+
+```js
+diagram.linkTemplate = $(
+  go.Link,
+  $(go.Shape, { stroke: '#4dd0e1', strokeWidth: 2 }),
+  $(go.Shape, { toArrow: 'Triangle' }),
+  $(go.TextBlock, 'label', new go.Binding('text', 'label')),
+);
+```
+
+Dragging the label updates two properties of the `Link`:
+
+- `link.labelSegmentFraction` — position along the path segment (0 to 1).
+- `link.labelOffset` — offset perpendicular to the path.
+
+The movement is undoable (`SetLinkLabelPositionCommand`) — undo/redo works
+just like with any other edit.

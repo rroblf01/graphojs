@@ -1,0 +1,99 @@
+---
+title: Business flow
+description: A process with two real loops, a failure state that stops the flow, and a progress animation up to any step you choose.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import businessFlowExample from '../../../../examples/business-flow.js?raw';
+
+A "business" example: the full cycle of an order, from the customer's call
+to their feedback, with **two real loops** (not just decorative ones), a
+**failure state** that stops the process where it happens, and a progress
+animation that fills in the path traveled up to the step you choose —
+useful for tracking dashboards where you want to show "how far we've
+gotten" in a process.
+
+<Playground code={businessFlowExample} height={640} />
+
+## What you're looking at
+
+The diagram has **10 steps** on the main path (from "Customer calls" to
+"Customer gives feedback"), plus a final decision node and two **loops**
+highlighted in orange:
+
+1. **Quality control → Manufacture product.** If quality control finds a
+   defect, the process doesn't move on to "Ship to customer": it goes back
+   to manufacturing. It's a short loop, contained within production.
+2. **Satisfied? → Prepare contract.** If the customer isn't satisfied at
+   the end, the process doesn't finish: the contract is prepared again from
+   scratch. It's a long loop that reopens almost the entire process.
+
+Click **🔁 Defect in quality control** or **🔁 Customer not satisfied** to
+trigger each loop: the corresponding orange link blinks for a moment (so
+you can see *which* loop was activated), and then the progress
+automatically rewinds to the step it returns to — that step stays
+completed, because that's exactly where the orange arrow points; only what
+comes after it becomes pending again — with an explanation in the panel
+below of what happened and why.
+
+The color legend (pending / completed / failure / loop) is always visible,
+not just after interacting.
+
+### Simulate a failure
+
+Pick a step from the **"Fail at:"** dropdown and click **❌ Simulate
+failure**: the process advances (or rewinds) to exactly that step and
+paints it **red** — it stops there, nothing after it gets colored on its
+own, regardless of what step you were at before clicking. The panel below
+explains which step failed and what's blocked. To recover, raise the
+slider and click **▶ Animate**: the failed step is treated just like any
+other pending step, so it completes (in green) and the process continues
+normally — or click **↺ Reset** to start from scratch.
+
+## How it works
+
+- The model has **real cycles**: a link can go back to an earlier node
+  without GraphoJS complaining — it doesn't require the graph to be
+  acyclic. Each link is simply `{ from, to }`; the loop links additionally
+  carry their own field (`loop: 'loopQuality'` / `'loopRetry'`) so they can
+  be found later with `diagram.allLinks.find(...)` and colored orange.
+- The slider **doesn't animate anything by itself**: it just stores the
+  target step (0 to 10). The **▶ Animate** button calls
+  `goToProgress(target)`, which looks at how many steps are completed
+  *right now* and moves forward or backward from there — it never resets
+  to zero. That's why chaining two buttons (or the slider and a loop
+  button) always continues naturally from where it was, instead of jumping
+  visually back to the start.
+- Node colors are bound to the model
+  (`new go.Binding('fill', 'fill')`), but the animation does **not** change
+  them through `model.setDataProperty()` — it paints the rendered
+  `Shape`/`TextBlock` directly (`node.panel.elements[0].fill = ...`) and
+  calls `diagram.invalidate()`. The reason is a real side effect: *any*
+  property change made through the model, even a purely cosmetic one like a
+  color, triggers `Diagram.invalidateLinksForNode()` — which forces the
+  route of **every** auto-routed link to be recalculated, not just the
+  links of the node that changed. With this demo animating colors several
+  times per second, that caused the long "Satisfied? → Prepare contract"
+  link to be rerouted on every step, and sometimes the orthogonal router
+  picked a different path that crossed over "Quality control" — visually
+  mixing up the two loops. Painting the `Shape` directly changes the color
+  without touching the model, so link geometry is never invalidated. For
+  the links (their progress color, and the loop blink) the same thing
+  happens for a different reason: they don't use binding, so it's enough
+  to assign `link.stroke` directly.
+- Each loop button always chains the same phases in the same order:
+  1. `goToProgress(sourceStep)` — advances or rewinds to the step where the
+     loop lives (e.g., "Quality control"), from the current progress.
+  2. The loop link blinks, so you can see *which* one was activated.
+  3. `goToProgress(targetStep)` — undoes step by step down to the step it
+     returns to. That step stays completed (it's exactly where the orange
+     arrow points); only what comes after it becomes pending again.
+- `currentDoneCount()` counts how many consecutive steps, from the start,
+  are green — and stops at the first step that isn't, whether because it's
+  pending (blue) or **failed (red)**. That's why "Simulate failure" and
+  "▶ Animate" work together with no extra code: the failed step counts as
+  "not done," so retrying with the slider simply repaints it green and
+  continues from there, like any other pending step.
+- No animation piles up: clicking two buttons in a row (or the same one
+  twice) invalidates a token from the previous animation before starting
+  the next one.

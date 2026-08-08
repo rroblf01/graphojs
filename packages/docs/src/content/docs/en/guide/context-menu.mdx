@@ -1,0 +1,42 @@
+---
+title: Context menu and tooltips
+description: Right-click for an action menu, and tooltips on hover.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import contextMenuExample from '../../../../examples/context-menu.js?raw';
+
+<Playground code={contextMenuExample} height={520} />
+
+## Tooltips
+
+```js
+diagram.nodeTemplate = $(
+  go.Node, 'Auto',
+  new go.Binding('tooltip', 'tooltip'),
+  // ...
+);
+diagram.enableTooltips({ delay: 300 });
+```
+
+`part.tooltip` is the text shown on hover — bind it from the node/link data
+and enable `diagram.enableTooltips()` once.
+
+## Context menu
+
+```js
+diagram.setContextMenu(
+  go.createDefaultContextMenu(diagram, {
+    partItems: [{ label: '🗑 Delete', action: (d, part) => d.getModel().removeNode(part.key) }],
+    backgroundItems: [{ label: '➕ Add node', action: (d) => { /* ... */ } }],
+  }),
+);
+```
+
+- `partItems` are shown when right-clicking a node or link.
+- `backgroundItems` are shown when right-clicking empty background.
+- `action(diagram, part, event)` receives the diagram, the clicked part
+  (`null` for the background), and the original mouse event.
+
+"Zoom In" / "Zoom Out" / "Zoom to Fit" are added by default too — pass
+`showDefaults: false` to remove them.

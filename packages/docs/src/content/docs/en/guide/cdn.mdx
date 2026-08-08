@@ -1,0 +1,96 @@
+---
+title: Using GraphoJS without npm (CDN)
+description: Load GraphoJS straight from unpkg with an import map — no npm install, no bundler.
+---
+
+For a quick prototype, a one-page demo, or just trying out the library
+without setting up a project, you don't need `npm install` or any bundler:
+modern browsers support native ES modules, and
+[unpkg](https://unpkg.com/) serves any npm package as static files. All you
+need is an [import
+map](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap)
+pointing `graphojs/go` at the real published file.
+
+Save this as an `.html` file and open it directly in your browser (or
+upload it to any static hosting):
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>GraphoJS without npm</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "graphojs/go": "https://unpkg.com/graphojs@1.0.0/dist/go.js"
+        }
+      }
+    </script>
+    <style>
+      html, body { margin: 0; height: 100%; }
+      #diagram { width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="diagram"></div>
+    <script type="module">
+      import * as go from 'graphojs/go';
+
+      const $ = go.GraphObject.make;
+      const diagram = new go.Diagram('diagram');
+      diagram.background = '#fafbfc';
+
+      diagram.nodeTemplate = $(
+        go.Node,
+        'Auto',
+        $(go.Shape, 'RoundedRectangle', {
+          fill: '#e3f2fd',
+          stroke: '#1976d2',
+          strokeWidth: 2,
+        }),
+        $(go.TextBlock, { margin: 8 }, new go.Binding('text', 'label')),
+      );
+
+      diagram.model = new go.GraphLinksModel({
+        nodeDataArray: [
+          { key: 1, label: 'No npm install' },
+          { key: 2, label: 'No bundler' },
+          { key: 3, label: 'Just a <script type="module">' },
+        ],
+        linkDataArray: [
+          { from: 1, to: 2 },
+          { from: 2, to: 3 },
+        ],
+      });
+      diagram.zoomToFit();
+    </script>
+  </body>
+</html>
+```
+
+## Important details
+
+- **Always pin an exact version** (`@1.0.0`, not `@latest` and not
+  unversioned). Unversioned unpkg resolves to whatever's latest — if a new
+  version ships with changes, your page's behavior would change without you
+  touching anything.
+- **unpkg doesn't resolve `package.json`'s `exports` subpaths on its
+  own**: requesting `https://unpkg.com/graphojs@1.0.0/go` directly returns
+  `404` — you have to point at the real file inside `dist/`
+  (`https://unpkg.com/graphojs@1.0.0/dist/go.js`). The import map above
+  already does that translation for you: in your code you always import
+  from the normal specifier `graphojs/go`, exactly like with npm.
+- This same pattern works for `graphojs/templates`
+  (`https://unpkg.com/graphojs@1.0.0/dist/templates.js`). For
+  `graphojs/react` or `graphojs/vue` you'd additionally need React/Vue as
+  ES modules in the import map — for those cases, a bundler is still the
+  more practical choice.
+- None of this is specific to GraphoJS: it's the browser's standard import
+  map mechanism. If you already use this with other libraries, you'll
+  recognize it.
+
+When you're ready for a real project, use [`npm install
+graphojs`](/en/getting-started/) — an import map is great for prototyping,
+but a bundler gives you better load times, tree-shaking, and type-checking
+during development.

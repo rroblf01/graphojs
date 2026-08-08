@@ -1,0 +1,32 @@
+---
+title: Undo and redo
+description: Undo/redo with button state and action description.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import undoRedoExample from '../../../../examples/undo-redo.js?raw';
+
+Every `diagram.commit(...)` (or any interactive `CommandHandler`/tool) is an
+undo step. `diagram.undo()` / `diagram.redo()` navigate the history.
+
+<Playground code={undoRedoExample} height={480} />
+
+## API
+
+```js
+diagram.commit((d) => d.getModel().addNode({ key, label: 'Nodo' }), 'Añadir nodo');
+
+diagram.undo();
+diagram.redo();
+
+const um = diagram.getUndoManager();
+um.canUndo(); // boolean
+um.canRedo(); // boolean
+um.getUndoDescription(); // nombre de la próxima acción a deshacer, o null
+um.getRedoDescription(); // nombre de la próxima acción a rehacer, o null
+```
+
+The second argument to `commit()` is the transaction name — it appears in
+`getUndoDescription()`/`getRedoDescription()` and in screen reader
+announcements (`Undone: ...` / `Redone: ...`, see
+[Accessibility](/en/guide/accessibility/)).

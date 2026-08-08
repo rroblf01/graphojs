@@ -1,0 +1,53 @@
+---
+title: Drag & drop
+description: Dynamically add nodes and drag them around the canvas.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import dragDropExample from '../../../../examples/drag-drop.js?raw';
+
+There are two ways to add nodes to the diagram: **dragging them from a palette**
+or using the button. In both cases, once on the canvas, nodes are moved with
+the mouse.
+
+<Playground code={dragDropExample} height={520} />
+
+## Dragging from a palette
+
+The top bar is a `Palette`: each element is a draggable **template**.
+Drop it onto the canvas and a node will be created at the drop point, using
+the template's data (shape, color, and label).
+
+```js
+import { getAllTemplates } from 'graphojs/templates';
+
+new go.Palette(paletteEl, diagram, getAllTemplates(), { showCategories: false });
+```
+
+Internally the core uses native HTML5 drag & drop: the dragged element writes
+`application/x-graphojs-template` to the `dataTransfer`, and the diagram
+listens for it in its `drop` handler, creating the node where you drop it.
+
+## Adding nodes with the button
+
+The panel below the diagram has a **+ Add node** button. Each click creates a
+node with a **unique key** and places it in a grid position (without
+overlapping).
+
+```js
+model.addNodeData({ key: 2, label: 'Nuevo', x: 40, y: 40 });
+```
+
+## Unique keys
+
+It's important to generate keys that don't collide:
+
+```js
+const keys = model.getNodeDataArray().map((d) => d.key ?? 0);
+const next = Math.max(0, ...keys) + 1;
+```
+
+## Dragging nodes on the canvas
+
+Once added, nodes are moved with the mouse (DraggingTool), and the
+position is saved to the model in an **undoable** way (Ctrl/Cmd+Z undoes it).

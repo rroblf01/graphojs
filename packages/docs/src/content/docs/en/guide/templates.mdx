@@ -1,0 +1,113 @@
+---
+title: Templates
+description: Customize nodes, links, and groups with GraphObject.make and bindings.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import templatesExample from '../../../../examples/templates.js?raw';
+
+Templates define how each node, link, or group is rendered. They're built
+with `GraphObject.make` (the `$` shortcut) and can use **bindings** to read
+data from the model.
+
+<Playground code={templatesExample} height={500} />
+
+## Structure of a template
+
+A node template is a `Panel` (here of type `Auto`) with children:
+
+- `go.Shape` — the shape (fill, stroke, minimum size).
+- `go.TextBlock` — the label, bound to a data property.
+
+## Bindings
+
+`new go.Binding('text', 'name')` binds `data.name` to the `TextBlock`'s
+`text` property. When the model changes, the label updates automatically.
+
+## Part-level properties
+
+Properties like `background`, `width`, `height`, or `scale` in the
+template's props map are applied **to the Part** (not to the Panel), just
+like in GoJS.
+
+## Links
+
+A link template usually has:
+- A `Shape` that draws the line.
+- A `Shape` with `toArrow` for the arrowhead.
+
+### Link labels
+
+`link.label` (text), `labelColor`, and `labelFont` control the link's
+label. Its position is calculated over the chosen segment:
+
+- `labelSegmentIndex` — which segment of the route to use (-1 = the middle
+  segment, the default).
+- `labelSegmentFraction` — position along that segment, from 0 (start)
+  to 1 (end); 0.5 (midpoint) by default.
+- `labelOffset` / `labelSide` — perpendicular distance from the route and
+  which side (`'top' | 'bottom' | 'left' | 'right' | 'auto'`).
+
+The user can drag the label with the mouse — in the style of GoJS's
+`LinkLabelDraggingTool` extension — to reposition it freely;
+`labelSegmentIndex`/`labelSegmentFraction`/`labelOffset` update in real time
+(with `labelSide: 'auto'`) and the move is recorded in the undo/redo
+history. This tool is registered by default on every `Diagram`, with no
+extra configuration.
+
+## Templates by category
+
+In addition to the default template (`nodeTemplate`/`linkTemplate`/
+`groupTemplate`), you can register different templates per `category` using
+the corresponding maps — data with `category: 'x'` uses the `'x'` template
+in the map; if there's no match, the default template is used:
+
+```js
+diagram.nodeTemplateMap.set('decision', $(go.Node, 'Auto', $(go.Shape, 'diamond'), ...));
+diagram.addNodeTemplate('decision', decisionTemplate); // equivalente
+
+diagram.linkTemplateMap.set('dashed', $(go.Link, $(go.Shape, { strokeDashArray: [4, 4] })));
+
+diagram.groupTemplateMap.set('team', $(go.Group, 'Auto', $(go.Shape, 'RoundedRectangle', { fill: 'lightblue' })));
+
+// { key: 1, category: 'decision' } usa el template de nodo 'decision'
+// { key: 2, isGroup: true, category: 'team' } usa el template de grupo 'team'
+```
+
+`addNodeTemplate`/`addLinkTemplate`/`addGroupTemplate` are shortcuts
+equivalent to `xTemplateMap.set(category, template)`; `removeNodeTemplate`/
+`removeLinkTemplate`/`removeGroupTemplate` remove them from the map.
+
+## Expander panels
+
+`PanelExpanderButton(name)` builds a button ("−"/"+") that toggles the
+`visible` property of another element in the same template, located by its
+`name` via `Part.findObject(name)` — useful for a "details" panel that shows
+or hides within the node itself:
+
+```js
+import * as go from 'graphojs/go';
+import { PanelExpanderButton } from 'graphojs';
+
+const $ = go.GraphObject.make;
+
+diagram.nodeTemplate = $(
+  go.Panel,
+  'Vertical',
+  $(
+    go.Panel,
+    'Horizontal',
+    $(go.TextBlock, new go.Binding('text', 'name')),
+    PanelExpanderButton('DETAILS'),
+  ),
+  $(
+    go.Panel,
+    'Auto',
+    { name: 'DETAILS', visible: false },
+    $(go.TextBlock, new go.Binding('text', 'description')),
+  ),
+);
+```
+
+To toggle the tree hierarchy instead of an arbitrary element, use
+`TreeExpanderButton` — see [Trees](/en/guide/tree/#treeexpanderbutton).

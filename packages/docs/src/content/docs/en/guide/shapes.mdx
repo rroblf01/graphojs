@@ -1,0 +1,39 @@
+---
+title: Shape figures
+description: The available Shape figures and how to use them.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import shapesExample from '../../../../examples/shapes.js?raw';
+
+GraphoJS includes ~80 Shape figures. A `Shape`'s `figure` determines its
+form, and it can come from the model via a binding.
+
+<Playground code={shapesExample} height={500} />
+
+## Available figures
+
+`Rectangle`, `RoundedRectangle`, `Ellipse`, `Diamond`, `Triangle`, `Hexagon`,
+`Star`, `Cross`, `Cylinder`, `Document`, `Parallelogram`, and many more.
+
+### UML / BPMN / annotations
+
+- `component` — UML component (box with two connector notches on the left edge).
+- `gatewayExclusive` — BPMN exclusive gateway (diamond with an X).
+- `gatewayParallel` — BPMN parallel gateway (diamond with a +).
+- `callout` — comment bubble with a tail.
+- `bracket` — flowchart annotation bracket, open on the left.
+- `flag` — flag/pennant, useful for milestones (see the [Gantt](/en/guide/gantt/) guide).
+- `chevron` — simple arrow/ribbon (distinct from `doubleChevron`).
+- `tape` — ANSI paper tape symbol (wavy edges).
+- `shield` — security/protection shield.
+- `bolt` — lightning bolt/trigger symbol.
+
+## Changing the shape dynamically
+
+```js
+$(go.Shape, 'Rectangle', {}, new go.Binding('figure', 'figure'))
+```
+
+The `figure` is read from `data.figure`, so each node can have a different
+shape. Try changing `figure` or `fill` in the data.

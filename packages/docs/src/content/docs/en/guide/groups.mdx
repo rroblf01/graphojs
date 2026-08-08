@@ -1,0 +1,49 @@
+---
+title: Groups
+description: Group related nodes with Group.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import groupsExample from '../../../../examples/groups.js?raw';
+
+`Group` lets you visually group related nodes. Nodes with
+`group: <key>` become members of the group.
+
+<Playground code={groupsExample} height={500} />
+
+## How it works
+
+```js
+diagram.groupTemplate = $(go.Group, 'Vertical', ...);
+// ...
+{ key: 2, group: 1, label: 'API' }
+```
+
+The `groupTemplate` defines the group's appearance; nodes with `group: 1`
+end up inside it.
+
+## Groups by category
+
+Just like with nodes and links, you can have groups with different
+appearances based on their `category`, using `groupTemplateMap` (or the
+`addGroupTemplate` shortcut):
+
+```js
+diagram.groupTemplate = $(go.Group, 'Auto', $(go.Shape, 'rect', { fill: '#eee' }));
+diagram.addGroupTemplate('team', $(go.Group, 'Auto', $(go.Shape, 'RoundedRectangle', { fill: 'lightblue' })));
+
+// { key: 1, isGroup: true } usa el groupTemplate por defecto
+// { key: 2, isGroup: true, category: 'team' } usa el template 'team'
+```
+
+A `groupTemplateMap` template with a matching category takes priority over
+the default `groupTemplate`.
+
+## Group API
+
+- `group.memberParts` / `group.memberNodes` / `group.memberLinks`
+- `group.isSubGraphExpanded` — collapse/expand
+- `diagram.collapseGroup(g)` / `diagram.expandGroup(g)`
+- `part.containingGroup` — a node's group
+
+Try adding more nodes with `group: 1` or `group: 4`.

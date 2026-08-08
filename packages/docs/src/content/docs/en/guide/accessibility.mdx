@@ -1,0 +1,59 @@
+---
+title: Accessibility
+description: Keyboard navigation, screen reader announcements, high contrast, and reduced motion.
+---
+
+import Playground from '../../../../components/Playground.astro';
+import accessibilityExample from '../../../../examples/accessibility.js?raw';
+
+GraphoJS adds accessibility to the canvas with no extra configuration — this
+playground makes visible what's normally invisible on purpose (the
+`aria-live` announcements are hidden from sighted users, but here we mirror
+them in a log so you can see them).
+
+<Playground code={accessibilityExample} height={560} />
+
+## Keyboard navigation
+
+1. Click the diagram or press <kbd>Tab</kbd> to focus it.
+2. With nothing selected, the arrow keys move a *focus cursor* (a dashed
+   box) between nodes and links.
+3. <kbd>Enter</kbd> or <kbd>Space</kbd> select the focused element.
+4. With something selected, the arrow keys move the selected nodes
+   instead — <kbd>Esc</kbd> clears the selection and the focus.
+
+## `prefers-reduced-motion`
+
+```js
+diagram.animationManager.isEnabled = false;
+```
+
+If the operating system has "reduce motion" enabled, this is already the
+default — any animation jumps straight to its final value instead of
+interpolating frame by frame. The playground button toggles it manually so
+you can compare.
+
+## High contrast
+
+```js
+diagram.selectionStyle = go.highContrastSelectionStyle;
+```
+
+Same as with motion: if the OS requests `prefers-contrast: more` or
+`forced-colors: active`, GraphoJS already uses this palette (black/red/
+yellow, designed so selection and focus stay distinguishable from each
+other) without you having to do anything.
+
+## Custom announcements
+
+```js
+diagram.accessibilityMessages = {
+  ...diagram.accessibilityMessages,
+  selectionCleared: () => 'Selection cleared',
+};
+```
+
+Any custom tool or integration can announce something with
+`diagram.announce('message')` — it's the same mechanism GraphoJS uses
+internally for selection, undo/redo, deletion, and collapsing/expanding
+trees.

@@ -19,9 +19,11 @@ root.appendChild(diagramHost);
 const diagram = new go.Diagram(diagramHost);
 diagram.background = '#fafbfc';
 
-// Colores por estado: pendiente (por defecto) vs completado (tras animar).
+// Colores por estado: pendiente (por defecto), completado (tras animar), o
+// fallido (rojo — el proceso se detiene ahí, no sigue solo).
 const PENDING = { fill: '#e3f2fd', stroke: '#1976d2' };
 const DONE = { fill: '#c8e6c9', stroke: '#2e7d32' };
+const FAILED = { fill: '#ffcdd2', stroke: '#c62828' };
 const LOOP_COLOR = '#e65100';
 
 diagram.nodeTemplateMap.set(
@@ -197,6 +199,7 @@ function swatch(color, text) {
 }
 swatch(PENDING.fill, 'Pendiente');
 swatch(DONE.fill, 'Completado');
+swatch(FAILED.fill, 'Fallo');
 swatch(LOOP_COLOR, 'Bucle');
 
 const sliderLabel = document.createElement('label');
@@ -306,6 +309,23 @@ function markStepPending(i) {
   }
 }
 
+// Marca el paso `i` como fallido (rojo) — el proceso se detiene ahí: no se
+// completa, y no se colorea nada después. El enlace que entra en ese paso
+// también se pinta rojo, para que se vea *dónde* exactamente se paró.
+function markStepFailed(i) {
+  const step = STEPS[i];
+  const node = diagram.findNodeForKey(step.key);
+  if (node) setStepColor(node, FAILED);
+  if (i > 0) {
+    const prevKey = STEPS[i - 1].key;
+    const link = diagram.allLinks.find((l) => l.data?.from === prevKey && l.data?.to === step.key);
+    if (link) {
+      link.stroke = FAILED.stroke;
+      link.strokeWidth = 3;
+    }
+  }
+}
+
 // Anima el progreso *desde donde esté ahora mismo* hasta `target` — nunca
 // reinicia a cero primero. Si el objetivo está por delante, rellena hacia
 // delante paso a paso; si está por detrás, deshace paso a paso. Así, pulsar
@@ -399,6 +419,47 @@ mk('↺ Reiniciar', 'border:1px solid #90a4ae;background:#eceff1;color:#37474f;'
   resetStyles();
   log.textContent = 'Elige hasta qué paso animar y pulsa "▶ Animar".';
 });
+const failBar = document.createElement('div');
+failBar.style.cssText = 'display:flex;gap:10px;margin:0 8px 8px;flex-wrap:wrap;align-items:center;';
+
+const failLabel = document.createElement('label');
+failLabel.style.cssText = 'font:600 12px system-ui, sans-serif;color:#37474f;';
+failLabel.textContent = 'Fallar en:';
+
+const failSelect = document.createElement('select');
+failSelect.style.cssText = `padding:5px 8px;border-radius:6px;border:1px solid ${FAILED.stroke};color:${FAILED.stroke};font:600 12px system-ui, sans-serif;`;
+STEPS.forEach((s, i) => {
+  const opt = document.createElement('option');
+  opt.value = String(i);
+  opt.textContent = s.label;
+  failSelect.appendChild(opt);
+});
+failSelect.value = slider.value; // por defecto, el paso donde empieza el deslizador
+
+failBar.appendChild(failLabel);
+failBar.appendChild(failSelect);
+const failBtn = document.createElement('button');
+failBtn.textContent = '❌ Simular fallo';
+failBtn.style.cssText = `padding:6px 14px;font:600 12px system-ui, sans-serif;border-radius:6px;cursor:pointer;border:1px solid ${FAILED.stroke};background:#ffebee;color:${FAILED.stroke};`;
+failBtn.addEventListener('click', () => {
+  const failIndex = Number(failSelect.value);
+  // Llega (hacia delante o hacia atrás) justo hasta el paso elegido antes de
+  // marcarlo como fallido, igual que hacen los bucles — nunca salta de golpe.
+  goToProgress(failIndex, (myToken) => {
+    if (myToken !== animationToken) return;
+    markStepFailed(failIndex);
+    diagram.invalidate();
+    slider.value = String(failIndex);
+    refreshPctLabel();
+    const done = STEPS.slice(0, failIndex).map((s) => s.label);
+    const blocked = STEPS.slice(failIndex).map((s) => s.label);
+    log.textContent =
+      `❌ Falló: "${STEPS[failIndex].label}" — el proceso se detiene aquí, no continúa solo.\n\n` +
+      `✅ Hecho: ${done.join(' → ') || '(nada aún)'}\n` +
+      `🚫 Bloqueado desde aquí: ${blocked.join(' → ')}`;
+  });
+});
+failBar.appendChild(failBtn);
 
 const loopBar = document.createElement('div');
 loopBar.style.cssText = 'display:flex;gap:10px;margin:0 8px 8px;flex-wrap:wrap;align-items:center;';
@@ -436,6 +497,7 @@ mkLoop(
 );
 
 root.appendChild(bar);
+root.appendChild(failBar);
 root.appendChild(loopBar);
 root.appendChild(log);
 diagram.zoomToFit();

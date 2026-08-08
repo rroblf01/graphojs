@@ -1,6 +1,6 @@
 ---
 title: Flujo de negocio
-description: Un proceso con dos bucles reales, botones para dispararlos, y una animación de progreso hasta el punto que elijas.
+description: Un proceso con dos bucles reales, un estado de fallo que detiene el flujo, y una animación de progreso hasta el punto que elijas.
 ---
 
 import Playground from '../../../components/Playground.astro';
@@ -8,9 +8,10 @@ import businessFlowExample from '../../../examples/business-flow.js?raw';
 
 Un ejemplo "de negocio": el ciclo completo de un pedido, desde que el
 cliente llama hasta que da su opinión, con **dos bucles reales** (no solo
-decorativos) y una animación de progreso que rellena el camino recorrido
-hasta el paso que elijas — útil para paneles de seguimiento donde quieres
-mostrar "hasta dónde hemos llegado" en un proceso.
+decorativos), un **estado de fallo** que detiene el proceso donde ocurre, y
+una animación de progreso que rellena el camino recorrido hasta el paso que
+elijas — útil para paneles de seguimiento donde quieres mostrar "hasta dónde
+hemos llegado" en un proceso.
 
 <Playground code={businessFlowExample} height={640} />
 
@@ -35,8 +36,19 @@ completado, porque es justo ahí donde apunta la flecha naranja; solo lo que
 viene después vuelve a quedar pendiente — con una explicación en el panel de
 abajo de qué pasó y por qué.
 
-La leyenda de colores (pendiente / completado / bucle) está siempre visible,
-no solo después de interactuar.
+La leyenda de colores (pendiente / completado / fallo / bucle) está siempre
+visible, no solo después de interactuar.
+
+### Simular un fallo
+
+Elige un paso en el desplegable **"Fallar en:"** y pulsa **❌ Simular
+fallo**: el proceso avanza (o retrocede) hasta justo ese paso y lo pinta en
+**rojo** — se detiene ahí, nada después se colorea solo, sin importar en qué
+paso estabas antes de pulsar. El panel de abajo explica qué paso falló y qué
+queda bloqueado. Para recuperarte, sube el deslizador y pulsa **▶ Animar**: el
+paso fallido se trata igual que cualquier otro pendiente, así que se
+completa (en verde) y el proceso sigue con normalidad — o pulsa
+**↺ Reiniciar** para empezar de cero.
 
 ## Cómo funciona
 
@@ -72,8 +84,15 @@ no solo después de interactuar.
   1. `goToProgress(pasoOrigen)` — avanza o retrocede hasta el paso donde vive
      el bucle (p.ej. "Control de calidad"), desde el progreso actual.
   2. El enlace del bucle parpadea, para que se vea *cuál* se ha activado.
-  3. `goToProgress(pasoDestino)` — deshace paso a paso hasta justo antes del
-     paso al que se vuelve.
+  3. `goToProgress(pasoDestino)` — deshace paso a paso hasta el paso al que
+     se vuelve. Ese paso se queda completado (es justo donde apunta la
+     flecha naranja); solo lo que viene después vuelve a quedar pendiente.
+- `currentDoneCount()` cuenta cuántos pasos seguidos, desde el principio,
+  están en verde — y se detiene en el primer paso que no lo esté, sea porque
+  está pendiente (azul) o **fallido (rojo)**. Por eso "Simular fallo" y
+  "▶ Animar" funcionan juntos sin código extra: el paso fallido cuenta como
+  "no hecho", así que reintentar con el deslizador simplemente lo repinta en
+  verde y continúa desde ahí, como cualquier otro paso pendiente.
 - Ninguna animación se acumula: pulsar dos botones seguidos (o el mismo dos
   veces) invalida un token de la animación anterior antes de empezar la
   siguiente.

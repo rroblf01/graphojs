@@ -57,6 +57,7 @@ const mk = (label, css, fn) => {
   b.style.cssText = `padding:6px 14px;font:600 12px system-ui, sans-serif;border-radius:6px;cursor:pointer;${css}`;
   b.addEventListener('click', fn);
   bar.appendChild(b);
+  return b;
 };
 
 const pre = document.createElement('pre');
@@ -78,10 +79,18 @@ mk('⬆ Importar GraphML', 'border:1px solid #b0bec5;background:#eceff1;color:#3
     refreshPreview();
   });
 });
-mk(
+// Sin cambios en el diagrama desde el último refresco, el texto generado es
+// idéntico — el botón confirma con un check momentáneo que sí se ejecutó.
+const refreshBtn = mk(
   '↻ Refrescar vista previa',
   'border:1px solid #cfd8dc;background:#fff;color:#455a64;',
-  refreshPreview,
+  () => {
+    refreshPreview();
+    refreshBtn.textContent = '✓ Actualizado';
+    setTimeout(() => {
+      refreshBtn.textContent = '↻ Refrescar vista previa';
+    }, 900);
+  },
 );
 
 root.appendChild(bar);

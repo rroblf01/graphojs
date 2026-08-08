@@ -1,0 +1,64 @@
+---
+title: Flujo de negocio
+description: Un proceso con dos bucles reales, botones para dispararlos, y una animación de progreso hasta el punto que elijas.
+---
+
+import Playground from '../../../components/Playground.astro';
+import businessFlowExample from '../../../examples/business-flow.js?raw';
+
+Un ejemplo "de negocio": el ciclo completo de un pedido, desde que el
+cliente llama hasta que da su opinión, con **dos bucles reales** (no solo
+decorativos) y una animación de progreso que rellena el camino recorrido
+hasta el paso que elijas — útil para paneles de seguimiento donde quieres
+mostrar "hasta dónde hemos llegado" en un proceso.
+
+<Playground code={businessFlowExample} height={640} />
+
+## Qué estás viendo
+
+El diagrama tiene **10 pasos** en el camino principal (de "Cliente llama" a
+"Cliente da su opinión"), más un nodo de decisión final y dos **bucles**
+señalados en naranja:
+
+1. **Control de calidad → Fabricamos producto.** Si el control de calidad
+   encuentra un defecto, el proceso no avanza a "Enviamos al cliente": vuelve
+   a fabricar. Es un bucle corto, dentro de producción.
+2. **¿Satisfecho? → Prepara contrato.** Si el cliente no queda satisfecho al
+   final, no se termina: se vuelve a preparar el contrato desde cero. Es un
+   bucle largo, que reabre casi todo el proceso.
+
+Pulsa **🔁 Defecto en control de calidad** o **🔁 Cliente no satisfecho** para
+disparar cada bucle: el enlace naranja correspondiente parpadea un momento
+(para que veas *cuál* bucle se activó) y luego el progreso rebobina
+automáticamente hasta justo antes del paso al que se vuelve — con una
+explicación en el panel de abajo de qué pasó y por qué.
+
+La leyenda de colores (pendiente / completado / bucle) está siempre visible,
+no solo después de interactuar.
+
+## Cómo funciona
+
+- El modelo tiene **ciclos reales**: un enlace puede volver a un nodo
+  anterior sin que GraphoJS se queje — no exige que el grafo sea acíclico.
+  Cada enlace es simplemente `{ from, to }`; los de bucle llevan además un
+  campo propio (`loop: 'loopQuality'` / `'loopRetry'`) para poder encontrarlos
+  después con `diagram.allLinks.find(...)` y darles su color naranja.
+- El deslizador **no anima nada por sí solo**: solo guarda el paso objetivo
+  (0 a 10). El botón **▶ Animar** es quien recorre el camino paso a paso,
+  coloreando cada nodo y el enlace que lo precede antes de pasar al
+  siguiente — con una pequeña pausa entre pasos para que se note el avance.
+- Los colores de los nodos están enlazados al modelo
+  (`new go.Binding('fill', 'fill')`), así que cambiarlos en tiempo de
+  ejecución requiere pasar por `model.setDataProperty(data, 'fill', color)`.
+  Mutar `node.data.fill` directamente **no** dispara el refresco del
+  binding — es un error fácil de cometer y de no notar, porque no lanza
+  ningún error, simplemente el color nunca cambia en pantalla. Los enlaces,
+  en cambio, no usan binding para su color: basta con asignar `link.stroke`
+  directamente y llamar a `diagram.invalidate()`.
+- Cada botón de bucle reutiliza la misma función `animateProgress()` que usa
+  "▶ Animar" — primero hace parpadear su enlace, luego llama a
+  `animateProgress(pasoDestino, explicación)`, donde el segundo parámetro es
+  el texto que se muestra como primera línea del panel de resultado.
+- Ninguna animación se acumula: pulsar dos botones seguidos (o el mismo dos
+  veces) invalida un token de la animación anterior antes de empezar la
+  siguiente desde cero.

@@ -88,11 +88,21 @@ const motionBtn = mk(
 );
 
 // Alto contraste: mismo cambio que ocurre solo si el SO pide más contraste.
+// selectionStyle solo colorea la selección, los handles y el cursor de foco
+// — sin nada seleccionado no hay ningún cambio visible, así que seleccionamos
+// un nodo para que el efecto se note de inmediato.
 let highContrast = false;
 mk('◐ Alto contraste', 'border:1px solid #90a4ae;background:#eceff1;color:#37474f;', () => {
   highContrast = !highContrast;
   diagram.selectionStyle = highContrast ? go.highContrastSelectionStyle : go.defaultSelectionStyle;
+  if (diagram.selection.length === 0) {
+    const node = diagram.findNodeForKey(1);
+    if (node) diagram.select(node);
+  }
   diagram.invalidate();
+  log.textContent = highContrast
+    ? '◐ Alto contraste activado — mira el color de selección y los handles del nodo seleccionado.'
+    : '◐ Alto contraste desactivado — de nuevo con los colores normales.';
 });
 
 mk('↻ Animar Nodo A', 'border:1px solid #81c784;background:#e8f5e9;color:#1b5e20;', () => {

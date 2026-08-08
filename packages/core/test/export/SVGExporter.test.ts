@@ -1,9 +1,26 @@
-import { describe, it, expect, vi } from 'vitest';
-import { SVGExporter, createSVGExporter, exportToSVG } from '../../src/export/SVGExporter.ts';
-import { Node } from '../../src/parts/Node.ts';
-import { Link } from '../../src/parts/Link.ts';
-import { Group } from '../../src/parts/Group.ts';
+import { describe, expect, it, vi } from 'vitest';
+import { createSVGExporter, exportToSVG, SVGExporter } from '../../src/export/SVGExporter.ts';
 import { Layer } from '../../src/layer/Layer.ts';
+import { Panel, shape } from '../../src/panel/Panel.ts';
+import { Group } from '../../src/parts/Group.ts';
+import { Link } from '../../src/parts/Link.ts';
+import { Node } from '../../src/parts/Node.ts';
+
+const noopCtx = {
+  save: vi.fn(),
+  restore: vi.fn(),
+  fillRect: vi.fn(),
+  strokeRect: vi.fn(),
+  beginPath: vi.fn(),
+  moveTo: vi.fn(),
+  lineTo: vi.fn(),
+  stroke: vi.fn(),
+  fill: vi.fn(),
+  ellipse: vi.fn(),
+  roundRect: vi.fn(),
+  fillText: vi.fn(),
+  setLineDash: vi.fn(),
+} as unknown as CanvasRenderingContext2D;
 
 vi.stubGlobal('btoa', (str: string) => Buffer.from(str).toString('base64'));
 
@@ -90,6 +107,31 @@ describe('SVGExporter', () => {
 
     expect(svg).toContain('rx="10"');
     expect(svg).toContain('ry="10"');
+  });
+
+  it('should export a node with a template panel at its own bounds, not offset again', () => {
+    // Regression test: `el.position` set during layout is already absolute
+    // (it comes from `panel.draw(ctx, node.bounds.x, node.bounds.y, ...)`),
+    // so the exporter must use it as-is — adding node.bounds on top used to
+    // double-count the offset and render every templated node shifted down
+    // and to the right of its real position.
+    const diagram = new MockDiagram();
+    const node = Node.fromPosAndSize(1, 40, 40, 100, 50);
+    const panel = new Panel('Auto');
+    const bg = shape('roundedRect');
+    bg.fill = '#e8f5e9';
+    panel.add(bg);
+    node.panel = panel;
+    panel.draw(noopCtx, node.bounds.x, node.bounds.y, node.bounds.width, node.bounds.height);
+    diagram.addPart(node);
+
+    const exporter = new SVGExporter();
+    const svg = exporter.export(diagram as unknown as Parameters<SVGExporter['export']>[0]);
+
+    expect(svg).toContain('x="40"');
+    expect(svg).toContain('y="40"');
+    expect(svg).not.toContain('x="80"');
+    expect(svg).not.toContain('y="80"');
   });
 
   it('should export a link', () => {

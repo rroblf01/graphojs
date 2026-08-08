@@ -3,11 +3,16 @@ title: Diagrama
 description: El lienzo Diagram, viewport, zoom, árboles y navegación.
 ---
 
+import Playground from '../../../components/Playground.astro';
+import diagramExample from '../../../examples/diagram.js?raw';
+
 `go.Diagram` es el lienzo interactivo. Se crea sobre un elemento del DOM:
 
 ```js
 const diagram = new go.Diagram('mi-div');
 ```
+
+<Playground code={diagramExample} height={520} />
 
 ## Viewport y zoom
 

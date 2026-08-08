@@ -144,6 +144,15 @@ full history of what led here.
   siblings/content settled) left the diagram visibly off-center or with
   content clipped outside the canvas. Fixed by moving `zoomToFit()` to run
   after all page setup completes, in each affected example.
+- `Diagram.makeSvg()` / `Serializer`'s SVG export and `diagram.print()`
+  (which embeds that same SVG by default) rendered every node using a
+  template panel (the standard `$(go.Node, 'Auto', ...)` pattern) shifted
+  down and to the right of its real position: `SVGExporter` added the node's
+  own `x`/`y` on top of each template element's position, which is already
+  in absolute diagram coordinates — double-counting the offset. Visually,
+  this pushed content out of the SVG's natural viewport, making exported/
+  printed diagrams look cropped or empty at the top. Affected any diagram
+  using a node template, i.e. effectively all of them.
 
 ### Performance
 

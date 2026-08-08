@@ -1,11 +1,11 @@
 import type { Diagram } from '../diagram/Diagram.ts';
-import { Group } from '../parts/Group.ts';
-import { Link } from '../parts/Link.ts';
-import { Node } from '../parts/Node.ts';
 import { LayerNames } from '../layer/Layer.ts';
 import { Panel } from '../panel/Panel.ts';
 import { Shape } from '../panel/Shape.ts';
 import { TextBlock } from '../panel/TextBlock.ts';
+import { Group } from '../parts/Group.ts';
+import { Link } from '../parts/Link.ts';
+import { Node } from '../parts/Node.ts';
 
 /**
  * SVG exporter for diagrams.
@@ -133,7 +133,7 @@ export class SVGExporter {
   private exportNode(node: Node): string {
     // Render the node's visual tree (template) when it has a panel
     if (node.panel) {
-      const panelSvg = this.renderPanelToSvg(node.panel, node.bounds.x, node.bounds.y);
+      const panelSvg = this.renderPanelToSvg(node.panel);
       const grouped = [`${this.indent}<g>`, ...panelSvg, `${this.indent}</g>`];
       return grouped.join('\n');
     }
@@ -194,12 +194,18 @@ export class SVGExporter {
     return element;
   }
 
-  /** Render a node's visual tree (template) as SVG when it has a panel. */
-  private renderPanelToSvg(panel: Panel, x: number, y: number): string[] {
+  /**
+   * Render a node's visual tree (template) as SVG when it has a panel.
+   * `el.position` is always already in absolute diagram coordinates (set by
+   * the layout pass via `panel.draw(ctx, node.bounds.x, node.bounds.y, ...)`),
+   * at every nesting level — so it must be used as-is, never added to a
+   * parent offset.
+   */
+  private renderPanelToSvg(panel: Panel): string[] {
     const out: string[] = [];
     for (const el of panel.elements) {
-      const ex = x + el.position.x;
-      const ey = y + el.position.y;
+      const ex = el.position.x;
+      const ey = el.position.y;
       const ew = el.actualSize.width || el.width || 1;
       const eh = el.actualSize.height || el.height || 1;
 
@@ -210,7 +216,7 @@ export class SVGExporter {
           `${this.indent}<text x="${ex + ew / 2}" y="${ey + eh / 2}" text-anchor="middle" dominant-baseline="central" fill="${el.color}" font="${el.font}">${this.escapeXml(el.text)}</text>`,
         );
       } else if (el instanceof Panel) {
-        out.push(...this.renderPanelToSvg(el, ex, ey));
+        out.push(...this.renderPanelToSvg(el));
       }
     }
     return out;

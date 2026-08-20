@@ -7,15 +7,15 @@
 import type React from 'react';
 import { useEffect, useRef } from 'react';
 import {
-  Diagram as GoDiagram,
-  type Panel,
-  type GraphLinksModel,
-  Palette as GoPalette,
-  Overview as GoOverview,
-  type Template,
+  type ChangedEvent,
   type DiagramEvent,
   type DiagramEventType,
-  type ChangedEvent,
+  Diagram as GoDiagram,
+  Overview as GoOverview,
+  Palette as GoPalette,
+  type GraphLinksModel,
+  type Panel,
+  type Template,
 } from '../index.ts';
 
 export interface DiagramProps {
@@ -69,6 +69,11 @@ export const Diagram: React.FC<DiagramProps> = ({
     if (!container) return;
     const diagram = new GoDiagram({ div: container });
     diagramRef.current = diagram;
+    // Templates must be applied before the model, since diagram.model= syncs
+    // Parts synchronously using whatever template is set at that moment.
+    diagram.nodeTemplate = nodeTemplate ?? null;
+    diagram.linkTemplate = linkTemplate ?? null;
+    diagram.groupTemplate = groupTemplate ?? null;
     initDiagram?.(diagram);
     onDiagramInit?.(diagram);
 
@@ -239,4 +244,4 @@ export const Overview: React.FC<OverviewProps> = ({ observed, className, style }
   );
 };
 
-export const version: string = '1.0.0';
+export const version: string = '1.1.0';

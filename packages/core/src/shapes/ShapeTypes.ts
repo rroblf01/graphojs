@@ -37,6 +37,8 @@ export type ShapeType =
   | 'plus'
   | 'minus'
   | 'line'
+  | 'lineH'
+  | 'lineV'
   | 'circle'
   | 'doubleArrow'
   | 'person'
@@ -370,6 +372,22 @@ export const SHAPES: Record<ShapeType, ShapeDefinition> = {
     name: 'Line',
     defaultWidth: 100,
     defaultHeight: 2,
+    resizable: true,
+    hasPorts: false,
+  },
+  lineH: {
+    type: 'lineH',
+    name: 'Horizontal Line',
+    defaultWidth: 100,
+    defaultHeight: 2,
+    resizable: true,
+    hasPorts: false,
+  },
+  lineV: {
+    type: 'lineV',
+    name: 'Vertical Line',
+    defaultWidth: 2,
+    defaultHeight: 100,
     resizable: true,
     hasPorts: false,
   },
@@ -805,6 +823,8 @@ const GOJS_FIGURE_ALIASES: Record<string, ShapeType> = {
   plus: 'plus',
   minus: 'minus',
   line: 'line',
+  lineh: 'lineH',
+  linev: 'lineV',
   circle: 'circle',
   doublearrow: 'doubleArrow',
   person: 'person',

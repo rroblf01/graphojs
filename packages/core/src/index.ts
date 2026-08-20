@@ -2,7 +2,7 @@
  * @module graphojs
  */
 
-export const version = '1.0.0';
+export const version = '1.1.0';
 
 export type { AnimationOptions } from './animation/Animation.ts';
 // Animations
@@ -136,8 +136,6 @@ export { Part } from './parts/Part.ts';
 export type { PortAlignment } from './parts/Port.ts';
 export { Port, Ports } from './parts/Port.ts';
 export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';
-export type { SelectionStyle } from './render/SelectionStyle.ts';
-export { defaultSelectionStyle, highContrastSelectionStyle } from './render/SelectionStyle.ts';
 // Rendering Optimizations
 export { createLayerCache, LayerCache } from './render/LayerCache.ts';
 export { CanvasPool, debounce, LinkPathCache, throttle } from './render/PerformanceCache.ts';
@@ -149,6 +147,8 @@ export {
 } from './render/RenderCache.ts';
 // Render
 export type { Renderer } from './render/Renderer.ts';
+export type { SelectionStyle } from './render/SelectionStyle.ts';
+export { defaultSelectionStyle, highContrastSelectionStyle } from './render/SelectionStyle.ts';
 export type { DiagramJSON } from './serialization/Serializer.ts';
 // Serialization
 export { Serializer } from './serialization/Serializer.ts';
@@ -159,6 +159,7 @@ export {
   getAllShapeTypes,
   getShapeDefinition,
   getShapesByCategory,
+  normalizeShapeType,
   SHAPES,
 } from './shapes/ShapeTypes.ts';
 export { PartPool } from './spatial/PartPool.ts';
@@ -204,6 +205,10 @@ export {
   SetNodePropertyCommand,
   SetZOrderCommand,
 } from './undo/commands.ts';
+export {
+  createModelTransactionCommand,
+  ModelTransactionCommand,
+} from './undo/ModelTransactionCommand.ts';
 export { createTransaction, Transaction } from './undo/Transaction.ts';
 export type { UndoManagerEvent, UndoManagerEventHandler } from './undo/UndoManager.ts';
 export { UndoManager } from './undo/UndoManager.ts';

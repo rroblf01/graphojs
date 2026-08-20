@@ -5,6 +5,55 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-08-20
+
+Bug-fix and small compatibility release, found by porting a real GoJS
+application's Gantt chart to `graphojs`. No breaking changes — the public API
+frozen in 1.0.0 is unaffected.
+
+### Added
+
+- `Spot.LeftSide` / `Spot.RightSide` — GoJS-compatible aliases for
+  `MiddleLeft`/`MiddleRight` (also resolved by `Spot.parse()`).
+- `Shape` figures `"LineH"` / `"LineV"` — the straight horizontal/vertical
+  lines GoJS uses to hand-build a background grid panel
+  (`$(go.Shape, "LineH", ...)`).
+- `graphojs/go` now also exports `LinkLabelDraggingTool`, `ReshapeLinkCommand`,
+  `SetLinkLabelPositionCommand`, and the `LinkLabelPosition` type — part of
+  the documented compatibility surface, but previously only reachable from
+  the main `graphojs` entry point.
+- The main `graphojs` entry point now also exports `ModelTransactionCommand`,
+  `createModelTransactionCommand`, and `normalizeShapeType` — previously only
+  reachable from `graphojs/go`.
+
+### Fixed
+
+- `graphojs/react`'s `<Diagram>` assigned `diagram.model` inside its mount
+  effect *before* the separate `nodeTemplate`/`linkTemplate` effects ran.
+  Since `diagram.model = ...` synchronously builds every `Part` using
+  whatever template is set at that exact moment, passing `model` together
+  with `nodeTemplate`/`linkTemplate` on the very first render synced every
+  node with no template at all — visually, nodes with no color, no text, and
+  links with no arrowheads. Templates from props are now applied inside the
+  mount effect itself, before the model.
+- `graphojs/vue`'s `<Diagram>` had the identical bug, even more directly:
+  `onMounted` assigned `diagram.model` before `diagram.nodeTemplate` /
+  `linkTemplate` / `groupTemplate`, all within the same function. Reordered
+  to apply templates before the model.
+- `Panel`'s `'Auto'` and `'Spot'` layouts, `'Position'`, and the aligned-
+  element branch of `'Table'`, measured an element's box including its
+  margin but never carved that margin back out as inset space before
+  calling `draw()` — so `margin` created no visible padding for any panel
+  type except `'Vertical'`/`'Horizontal'`, which already handled this
+  correctly. Most visibly, a `TextBlock` with a left margin drew flush
+  against its container instead of inset, clipping its leading character
+  whenever the container was sized tightly around the text (e.g. a Gantt
+  bar label rendering `"A & launch"` instead of `"QA & launch"`).
+- `Binding` with `sourceProperty: ""` — GoJS's convention for "bind to the
+  whole source object", normally paired with a converter — resolved to
+  `data[""]`, which is always `undefined`, instead of the source object
+  itself.
+
 ## [1.0.0] - 2026-08-07
 
 The public API surface (`graphojs`, `graphojs/go`, `graphojs/templates`,
@@ -315,6 +364,7 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.1.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.1.0
 [1.0.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.0.0
 [0.2.0]: https://github.com/rroblf01/graphojs/releases/tag/v0.2.0
 [0.1.0]: https://github.com/rroblf01/graphojs/releases/tag/v0.1.0

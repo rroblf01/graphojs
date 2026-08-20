@@ -120,8 +120,13 @@ export class ShapeRenderer {
         this.renderMinus(x, y, width, height);
         break;
       case 'line':
+      case 'lineH':
         this.ctx.moveTo(x, y + height / 2);
         this.ctx.lineTo(x + width, y + height / 2);
+        break;
+      case 'lineV':
+        this.ctx.moveTo(x + width / 2, y);
+        this.ctx.lineTo(x + width / 2, y + height);
         break;
       case 'circle':
         this.renderEllipse(x, y, width, height);

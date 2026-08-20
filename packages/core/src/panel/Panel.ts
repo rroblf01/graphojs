@@ -544,6 +544,32 @@ export class Panel extends GraphObject {
     }
   }
 
+  /**
+   * Inset an outer (margin-inflated) box down to its margined content box,
+   * mirroring what layoutStack already does. Elements must be drawn at their
+   * content box, not the outer box measureWithMargin() returns, or their
+   * margin never actually creates visible inset space (e.g. a TextBlock's
+   * left margin gets ignored and its first character clips).
+   */
+  private static marginBox(
+    outerX: number,
+    outerY: number,
+    outerWidth: number,
+    outerHeight: number,
+    margin: Margin | null | undefined,
+  ): { x: number; y: number; width: number; height: number } {
+    const mTop = margin?.top ?? 0;
+    const mRight = margin?.right ?? 0;
+    const mBottom = margin?.bottom ?? 0;
+    const mLeft = margin?.left ?? 0;
+    return {
+      x: outerX + mLeft,
+      y: outerY + mTop,
+      width: outerWidth - mLeft - mRight,
+      height: outerHeight - mTop - mBottom,
+    };
+  }
+
   private layoutAuto(
     ctx: CanvasRenderingContext2D,
     x: number,
@@ -567,13 +593,18 @@ export class Panel extends GraphObject {
       if (!el) continue;
       const spot = el.alignment ?? Spot.Center;
       const s = el.measureWithMargin();
-      const elW = Math.min(s.width, width);
-      const elH = Math.min(s.height, height);
-      const elX = x + (width - elW) * spot.x;
-      const elY = y + (height - elH) * spot.y;
-      el.setPosition(elX, elY);
-      el.setActualSize(elW, elH);
-      el.draw(ctx, elX, elY, elW, elH);
+      const outerW = Math.min(s.width, width);
+      const outerH = Math.min(s.height, height);
+      const box = Panel.marginBox(
+        x + (width - outerW) * spot.x,
+        y + (height - outerH) * spot.y,
+        outerW,
+        outerH,
+        el.margin,
+      );
+      el.setPosition(box.x, box.y);
+      el.setActualSize(box.width, box.height);
+      el.draw(ctx, box.x, box.y, box.width, box.height);
     }
   }
 
@@ -588,13 +619,18 @@ export class Panel extends GraphObject {
       const s = el.measureWithMargin();
       const spot = el.alignment ?? Spot.Center;
       const point = spot.computePoint(x, y, width, height);
-      const elW = Math.min(s.width, width);
-      const elH = Math.min(s.height, height);
-      const elX = point.x - elW * spot.x;
-      const elY = point.y - elH * spot.y;
-      el.setPosition(elX, elY);
-      el.setActualSize(elW, elH);
-      el.draw(ctx, elX, elY, elW, elH);
+      const outerW = Math.min(s.width, width);
+      const outerH = Math.min(s.height, height);
+      const box = Panel.marginBox(
+        point.x - outerW * spot.x,
+        point.y - outerH * spot.y,
+        outerW,
+        outerH,
+        el.margin,
+      );
+      el.setPosition(box.x, box.y);
+      el.setActualSize(box.width, box.height);
+      el.draw(ctx, box.x, box.y, box.width, box.height);
     }
   }
 
@@ -623,13 +659,12 @@ export class Panel extends GraphObject {
     for (const el of this._elements) {
       const pos = (el as GraphObject & { position?: { x: number; y: number } }).position;
       const s = el.measureWithMargin();
-      const elX = x + (pos?.x ?? 0);
-      const elY = y + (pos?.y ?? 0);
-      const elW = Math.min(s.width, width);
-      const elH = Math.min(s.height, height);
-      el.setPosition(elX, elY);
-      el.setActualSize(elW, elH);
-      el.draw(ctx, elX, elY, elW, elH);
+      const outerW = Math.min(s.width, width);
+      const outerH = Math.min(s.height, height);
+      const box = Panel.marginBox(x + (pos?.x ?? 0), y + (pos?.y ?? 0), outerW, outerH, el.margin);
+      el.setPosition(box.x, box.y);
+      el.setActualSize(box.width, box.height);
+      el.draw(ctx, box.x, box.y, box.width, box.height);
     }
   }
 
@@ -724,13 +759,18 @@ export class Panel extends GraphObject {
       const spot = el.alignment;
       if (spot) {
         const natural = el.measureWithMargin();
-        const elW = Math.min(natural.width, cellW);
-        const elH = Math.min(natural.height, cellH);
-        const elX = cellX + (cellW - elW) * spot.x;
-        const elY = cellY + (cellH - elH) * spot.y;
-        el.setPosition(elX, elY);
-        el.setActualSize(elW, elH);
-        el.draw(ctx, elX, elY, elW, elH);
+        const outerW = Math.min(natural.width, cellW);
+        const outerH = Math.min(natural.height, cellH);
+        const box = Panel.marginBox(
+          cellX + (cellW - outerW) * spot.x,
+          cellY + (cellH - outerH) * spot.y,
+          outerW,
+          outerH,
+          el.margin,
+        );
+        el.setPosition(box.x, box.y);
+        el.setActualSize(box.width, box.height);
+        el.draw(ctx, box.x, box.y, box.width, box.height);
       } else {
         el.setPosition(cellX, cellY);
         el.setActualSize(cellW, cellH);

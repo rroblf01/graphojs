@@ -200,7 +200,8 @@ pnpm test:e2e
 - [x] Accessibility pass (ARIA roles, live region, keyboard focus navigation)
 - [x] Full sample guides with playgrounds (org chart, flowchart with swimlanes, Gantt)
 
-See [ROADMAP.md](./ROADMAP.md) for what's left before a 1.0.0 release.
+See [ROADMAP.md](./ROADMAP.md) for the history of how 1.0.0 was reached and
+[CHANGELOG.md](./CHANGELOG.md) for what's changed since.
 
 ## License
 

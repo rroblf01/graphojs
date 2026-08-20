@@ -8,8 +8,8 @@ import {
   Binding,
   Canvas2DRenderer,
   ClickCreatingTool,
-  defaultSelectionStyle,
   Diagram,
+  defaultSelectionStyle,
   GraphLinksModel,
   GraphObject,
   type Group,
@@ -3377,5 +3377,87 @@ describe('O28: CommandHandler.deleteSelection() no longer throws when isValidLin
     expect(() => handler.deleteSelection()).not.toThrow();
     expect(model.getLinkData(linkKey)).toBeDefined(); // link removal declined
     expect(model.containsNode(3)).toBe(false); // unrestricted node still removed
+  });
+});
+
+describe('O29: Spot.LeftSide/RightSide GoJS-compatible aliases', () => {
+  it('LeftSide/RightSide are aliases of MiddleLeft/MiddleRight', () => {
+    expect(Spot.LeftSide.equals(Spot.MiddleLeft)).toBe(true);
+    expect(Spot.RightSide.equals(Spot.MiddleRight)).toBe(true);
+  });
+
+  it('Spot.parse resolves the "LeftSide"/"RightSide" names', () => {
+    expect(Spot.parse('LeftSide').equals(Spot.MiddleLeft)).toBe(true);
+    expect(Spot.parse('RightSide').equals(Spot.MiddleRight)).toBe(true);
+  });
+});
+
+describe('O30: Binding with sourceProperty "" binds the whole source object', () => {
+  it('passes the entire node data object to the converter, not data[""]', () => {
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    let received: unknown;
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(
+        Shape,
+        'Rectangle',
+        { name: 'shape' },
+        new Binding('fill', '', (whole: unknown) => {
+          received = whole;
+          return (whole as { color: string }).color;
+        }),
+      ),
+    );
+    const model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, name: 'Alpha', color: 'red', x: 0, y: 0, width: 100, height: 50 }],
+    });
+    d.model = model;
+
+    const node = d.findNodeForKey(1) as Node;
+    const shape = node.findObject('shape') as Shape;
+
+    expect(received).toEqual({
+      key: 1,
+      name: 'Alpha',
+      color: 'red',
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 50,
+    });
+    expect(shape.fill).toBe('red');
+  });
+});
+
+describe('O31: Panel Auto/Spot/Position/Table layouts respect element margin', () => {
+  it('offsets a left-aligned, margined element by its left margin instead of ignoring it', async () => {
+    const { Margin } = await import('../src/index.ts');
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(Shape, 'Rectangle', { name: 'bg' }),
+      $(TextBlock, 'QA & launch', {
+        name: 'label',
+        alignment: Spot.Left,
+        margin: new Margin(0, 0, 0, 10),
+      }),
+    );
+    const model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 200, height: 40 }],
+    });
+    d.model = model;
+
+    const node = d.findNodeForKey(1) as Node;
+    const bg = node.findObject('bg') as Shape;
+    const label = node.findObject('label') as TextBlock;
+
+    // Before the fix, margin inflated the box used for alignment math but was
+    // never carved out as inset space before draw(), so the label started at
+    // the same x as the background — clipping its leftmost character.
+    expect(label.position.x).toBeCloseTo(bg.position.x + 10, 5);
   });
 });

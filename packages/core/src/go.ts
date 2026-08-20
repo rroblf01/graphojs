@@ -126,6 +126,7 @@ export { DraggingTool } from './tool/DraggingTool.ts';
 export { DragSelectingTool } from './tool/DragSelectingTool.ts';
 export { LinkingBaseTool } from './tool/LinkingBaseTool.ts';
 export { LinkingTool } from './tool/LinkingTool.ts';
+export { LinkLabelDraggingTool } from './tool/LinkLabelDraggingTool.ts';
 export { LinkReshapingTool } from './tool/LinkReshapingTool.ts';
 export { PanningTool } from './tool/PanningTool.ts';
 export { RelinkingTool } from './tool/RelinkingTool.ts';
@@ -138,6 +139,7 @@ export { Tool } from './tool/Tool.ts';
 export { ToolManager } from './tool/ToolManager.ts';
 export { ZoomingTool } from './tool/ZoomingTool.ts';
 export type { Command } from './undo/Command.ts';
+export type { LinkLabelPosition } from './undo/commands.ts';
 // Serialization / Undo commands
 export {
   AddLinkCommand,
@@ -145,7 +147,9 @@ export {
   MoveNodeCommand,
   RemoveLinkCommand,
   RemoveNodeCommand,
+  ReshapeLinkCommand,
   ResizeNodeCommand,
+  SetLinkLabelPositionCommand,
   SetLinkPropertyCommand,
   SetNodePropertyCommand,
   SetZOrderCommand,
@@ -159,7 +163,7 @@ export type { UndoManagerEvent, UndoManagerEventHandler } from './undo/UndoManag
 // Undo
 export { UndoManager } from './undo/UndoManager.ts';
 
-export const version = '1.0.0';
+export const version = '1.1.0';
 
 export type { ContextMenuItem, ContextMenuOptions } from './export/ContextMenu.ts';
 export { ContextMenu, createDefaultContextMenu } from './export/ContextMenu.ts';
@@ -180,8 +184,6 @@ export { createSVGExporter, exportToSVG, SVGExporter } from './export/SVGExporte
 export type { TooltipOptions } from './export/TooltipManager.ts';
 export { createTooltipManager, TooltipManager } from './export/TooltipManager.ts';
 export { Canvas2DRenderer } from './render/Canvas2DRenderer.ts';
-export type { SelectionStyle } from './render/SelectionStyle.ts';
-export { defaultSelectionStyle, highContrastSelectionStyle } from './render/SelectionStyle.ts';
 // Rendering Optimizations
 export { createLayerCache, LayerCache } from './render/LayerCache.ts';
 export { CanvasPool, debounce, LinkPathCache, throttle } from './render/PerformanceCache.ts';
@@ -193,6 +195,8 @@ export {
 } from './render/RenderCache.ts';
 // Render
 export type { Renderer } from './render/Renderer.ts';
+export type { SelectionStyle } from './render/SelectionStyle.ts';
+export { defaultSelectionStyle, highContrastSelectionStyle } from './render/SelectionStyle.ts';
 export { ShapeRenderer } from './shapes/ShapeRenderer.ts';
 export type { ShapeDefinition, ShapeType } from './shapes/ShapeTypes.ts';
 // Shapes

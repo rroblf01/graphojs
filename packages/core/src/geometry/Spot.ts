@@ -35,6 +35,8 @@ export class Spot {
   static readonly MiddleLeft = new Spot(0, 0.5);
   /** GoJS-compatible: Spot at the middle of the left edge. */
   static readonly Left = new Spot(0, 0.5);
+  /** GoJS-compatible: Spot at the middle of the left edge. */
+  static readonly LeftSide = new Spot(0, 0.5);
   /** Spot at the center. */
   static readonly Center = new Spot(0.5, 0.5);
   /** GoJS-compatible: Spot at the center. */
@@ -45,6 +47,8 @@ export class Spot {
   static readonly MiddleRight = new Spot(1, 0.5);
   /** GoJS-compatible: Spot at the middle of the right edge. */
   static readonly Right = new Spot(1, 0.5);
+  /** GoJS-compatible: Spot at the middle of the right edge. */
+  static readonly RightSide = new Spot(1, 0.5);
   /** Spot at the bottom-left corner. */
   static readonly BottomLeft = new Spot(0, 1);
   /** Spot at the bottom-center. */
@@ -119,6 +123,7 @@ export class Spot {
       case 'Left':
       case 'MiddleLeft':
       case 'LeftMiddle':
+      case 'LeftSide':
         return Spot.MiddleLeft;
       case 'Center':
       case 'MiddleCenter':
@@ -126,6 +131,7 @@ export class Spot {
       case 'Right':
       case 'MiddleRight':
       case 'RightMiddle':
+      case 'RightSide':
         return Spot.MiddleRight;
       case 'BottomLeft':
         return Spot.BottomLeft;

@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
-import { createApp, h, nextTick, ref, defineComponent, type Component } from 'vue';
-import { Diagram, Palette, Overview, version } from '../src/vue/index.ts';
-import { GraphLinksModel, Diagram as GoDiagram } from '../src/index.ts';
+import { describe, expect, it, vi } from 'vitest';
+import { type Component, createApp, defineComponent, h, nextTick, ref } from 'vue';
+import { Diagram as GoDiagram, GraphLinksModel, GraphObject, Panel, Shape } from '../src/index.ts';
+import { Diagram, Overview, Palette, version } from '../src/vue/index.ts';
 
 function mountApp(
   comp: Component,
@@ -46,7 +46,7 @@ function mountReactive(
 
 describe('graphojs/vue', () => {
   it('exposes a version', () => {
-    expect(version).toBe('1.0.0');
+    expect(version).toBe('1.1.0');
   });
 
   it('mounts a Diagram component and initializes the diagram', async () => {
@@ -63,6 +63,31 @@ describe('graphojs/vue', () => {
     await nextTick();
     expect(created).toBeInstanceOf(GoDiagram);
     expect(created!.model).toBe(model);
+    app.unmount();
+    host.remove();
+  });
+
+  it('applies nodeTemplate before syncing the model on the very first mount (regression: effect order)', async () => {
+    // onMounted used to set diagram.model before nodeTemplate, so a
+    // model+nodeTemplate passed together on first mount synced nodes with
+    // no template at all.
+    let created: GoDiagram | null = null;
+    const $ = GraphObject.make;
+    const nodeTemplate = $(Panel, 'Auto', $(Shape, 'Rectangle', { name: 'shape' }));
+    const model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    const { app, host } = mountApp(Diagram, {
+      model,
+      nodeTemplate,
+      initDiagram: (d: GoDiagram) => {
+        created = d;
+      },
+    });
+    await nextTick();
+
+    const node = created!.findNodeForKey(1);
+    expect(node?.findObject('shape')).toBeInstanceOf(Shape);
     app.unmount();
     host.remove();
   });

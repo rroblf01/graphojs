@@ -4,18 +4,18 @@
  * @module graphojs-vue
  */
 
+import { defineComponent, h, onMounted, onUnmounted, ref, watch } from 'vue';
 import {
+  type ChangedEvent,
+  type DiagramEvent,
+  type DiagramEventType,
   Diagram as GoDiagram,
   Overview as GoOverview,
   Palette as GoPalette,
   type GraphLinksModel,
   type Panel,
   type Template,
-  type DiagramEvent,
-  type DiagramEventType,
-  type ChangedEvent,
 } from '../index.ts';
-import { defineComponent, h, onMounted, onUnmounted, ref, watch } from 'vue';
 
 /**
  * A Vue component that renders a GraphoJS/GoJS-compatible diagram.
@@ -56,11 +56,13 @@ export const Diagram = defineComponent({
     onMounted(() => {
       if (!container.value) return;
       diagram = new GoDiagram({ div: container.value });
-      // Apply initial props immediately (watchers are lazy)
-      if (props.model) diagram.model = props.model;
+      // Apply initial props immediately (watchers are lazy). Templates must be
+      // set before the model, since diagram.model= syncs Parts synchronously
+      // using whatever template is set at that moment.
       if (props.nodeTemplate) diagram.nodeTemplate = props.nodeTemplate;
       if (props.linkTemplate) diagram.linkTemplate = props.linkTemplate;
       if (props.groupTemplate) diagram.groupTemplate = props.groupTemplate;
+      if (props.model) diagram.model = props.model;
 
       if (props.onModelChange) {
         const l = (e: ChangedEvent) => {
@@ -216,4 +218,4 @@ export const Overview = defineComponent({
   },
 });
 
-export const version: string = '1.0.0';
+export const version: string = '1.1.0';

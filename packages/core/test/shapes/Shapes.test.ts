@@ -1,20 +1,20 @@
-import { describe, it, expect } from 'vitest';
-import {
-  SHAPES,
-  getShapeDefinition,
-  getAllShapeTypes,
-  getShapesByCategory,
-  normalizeShapeType,
-} from '../../src/shapes/ShapeTypes.ts';
+import { describe, expect, it } from 'vitest';
 import { ShapeRenderer } from '../../src/shapes/ShapeRenderer.ts';
 import {
+  getAllShapeTypes,
+  getShapeDefinition,
+  getShapesByCategory,
+  normalizeShapeType,
+  SHAPES,
+} from '../../src/shapes/ShapeTypes.ts';
+import type { Template } from '../../src/template/Template.ts';
+import { templateToNodeData } from '../../src/template/Template.ts';
+import {
   getAllTemplates,
-  getTemplatesByCategory,
   getTemplateById,
   getTemplateCategories,
+  getTemplatesByCategory,
 } from '../../src/template/TemplateCollection.ts';
-import { templateToNodeData } from '../../src/template/Template.ts';
-import type { Template } from '../../src/template/Template.ts';
 
 describe('ShapeTypes', () => {
   it('should have all shape definitions', () => {
@@ -84,6 +84,14 @@ describe('ShapeTypes', () => {
     expect(normalizeShapeType('gatewayExclusive')).toBe('gatewayExclusive');
     expect(normalizeShapeType('GatewayExclusive')).toBe('gatewayExclusive');
     expect(normalizeShapeType('CALLOUT')).toBe('callout');
+  });
+
+  it('registers the LineH/LineV figures GoJS uses for hand-built grid lines', () => {
+    const shapeTypes = getAllShapeTypes();
+    expect(shapeTypes).toContain('lineH');
+    expect(shapeTypes).toContain('lineV');
+    expect(normalizeShapeType('LineH')).toBe('lineH');
+    expect(normalizeShapeType('LineV')).toBe('lineV');
   });
 });
 

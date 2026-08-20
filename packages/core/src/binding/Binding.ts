@@ -189,6 +189,10 @@ export class Binding {
 
   /** Resolve a dotted path on the data object, e.g. "a.b.c". */
   private resolvePath(data: unknown, path: string): unknown {
+    // GoJS-compatible: an empty sourceProperty means "bind to the whole source object".
+    if (path === '') {
+      return data;
+    }
     if (path.includes('.')) {
       let current: unknown = data;
       for (const segment of path.split('.')) {

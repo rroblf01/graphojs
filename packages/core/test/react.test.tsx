@@ -1,16 +1,17 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, afterEach } from 'vitest';
+
 import React, { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import { Diagram, Palette, Overview, version } from '../src/react/index.tsx';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
-  GraphLinksModel,
   Diagram as GoDiagram,
+  GraphLinksModel,
   GraphObject,
-  Shape,
   Panel,
+  Shape,
   type Template,
 } from '../src/index.ts';
+import { Diagram, Overview, Palette, version } from '../src/react/index.tsx';
 
 const roots: Root[] = [];
 
@@ -48,7 +49,7 @@ function renderStateful<P>(
 
 describe('graphojs/react', () => {
   it('exposes a version', () => {
-    expect(version).toBe('1.0.0');
+    expect(version).toBe('1.1.0');
   });
 
   it('renders a Diagram component and initializes the diagram', async () => {
@@ -71,6 +72,32 @@ describe('graphojs/react', () => {
     await act(async () => {});
     expect(created).toBeInstanceOf(GoDiagram);
     expect(created!.model).toBe(model);
+  });
+
+  it('applies nodeTemplate before syncing the model on the very first mount (regression: effect order)', async () => {
+    // The mount effect used to set diagram.model before the separate
+    // nodeTemplate effect ran, so a model+nodeTemplate passed together on
+    // first render synced nodes with no template at all.
+    let created: GoDiagram | null = null;
+    const $ = GraphObject.make;
+    const nodeTemplate = $(Panel, 'Auto', $(Shape, 'Rectangle', { name: 'shape' }));
+    const model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+
+    renderApp(
+      React.createElement(Diagram, {
+        model,
+        nodeTemplate,
+        initDiagram: (d) => {
+          created = d;
+        },
+      }),
+    );
+    await act(async () => {});
+
+    const node = created!.findNodeForKey(1);
+    expect(node?.findObject('shape')).toBeInstanceOf(Shape);
   });
 
   it('renders Palette and Overview components', async () => {

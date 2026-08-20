@@ -14,7 +14,7 @@ import {
 } from './LinkRouter.ts';
 import { LinkPathCache } from './PerformanceCache.ts';
 import { PathCache, TextMeasureCache } from './RenderCache.ts';
-import type { Renderer } from './Renderer.ts';
+import type { GridPatternStyle, Renderer } from './Renderer.ts';
 import { defaultSelectionStyle, type SelectionStyle } from './SelectionStyle.ts';
 
 /**
@@ -336,7 +336,7 @@ export class Canvas2DRenderer implements Renderer {
     let points = link.pathPoints;
     if (points.length === 0) {
       // Get all node bounds as obstacles (for avoidObstacles routing)
-      let obstacles: RoutingObstacle[] = [];
+      const obstacles: RoutingObstacle[] = [];
       if (link.avoidObstacles && link.routing === 'orthogonal') {
         for (const [key, bounds] of this.nodeBoundsMap) {
           if (key !== link.fromKey && key !== link.toKey) {
@@ -600,24 +600,31 @@ export class Canvas2DRenderer implements Renderer {
     this.ctx.restore();
   }
 
-  renderGrid(viewport: Rect, gridSize: number): void {
+  renderGrid(viewport: Rect, gridSize: number, pattern?: GridPatternStyle): void {
     this.ctx.save();
-    this.ctx.strokeStyle = '#e0e0e0';
-    this.ctx.lineWidth = 0.5;
 
-    const startX = Math.floor(viewport.x / gridSize) * gridSize;
-    const startY = Math.floor(viewport.y / gridSize) * gridSize;
+    const stepX = pattern?.cellWidth ?? gridSize;
+    const stepY = pattern?.cellHeight ?? gridSize;
+    const vertical = pattern?.vertical ?? { stroke: '#e0e0e0', strokeWidth: 0.5 };
+    const horizontal = pattern?.horizontal ?? { stroke: '#e0e0e0', strokeWidth: 0.5 };
+
+    const startX = Math.floor(viewport.x / stepX) * stepX;
+    const startY = Math.floor(viewport.y / stepY) * stepY;
     const endX = viewport.x + viewport.width;
     const endY = viewport.y + viewport.height;
 
-    for (let x = startX; x <= endX; x += gridSize) {
+    this.ctx.strokeStyle = vertical.stroke;
+    this.ctx.lineWidth = vertical.strokeWidth;
+    for (let x = startX; x <= endX; x += stepX) {
       this.ctx.beginPath();
       this.ctx.moveTo(x, viewport.y);
       this.ctx.lineTo(x, viewport.y + viewport.height);
       this.ctx.stroke();
     }
 
-    for (let y = startY; y <= endY; y += gridSize) {
+    this.ctx.strokeStyle = horizontal.stroke;
+    this.ctx.lineWidth = horizontal.strokeWidth;
+    for (let y = startY; y <= endY; y += stepY) {
       this.ctx.beginPath();
       this.ctx.moveTo(viewport.x, y);
       this.ctx.lineTo(viewport.x + viewport.width, y);

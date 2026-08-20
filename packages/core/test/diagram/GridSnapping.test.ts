@@ -1,6 +1,10 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
+import { Size } from '../../src/geometry/Size.ts';
+import { GraphObject } from '../../src/panel/GraphObject.ts';
+import { Panel } from '../../src/panel/Panel.ts';
+import { Shape } from '../../src/panel/Shape.ts';
 
 function mockContext() {
   return {
@@ -143,6 +147,54 @@ describe('Grid snapping', () => {
     const div = document.createElement('div');
     const diagram = new Diagram({ div, gridSize: 50 });
     expect(diagram.getGridSize()).toBe(50);
+    diagram.destroy();
+  });
+});
+
+describe('diagram.grid — GoJS-compatible Panel "Grid" background pattern', () => {
+  it('accepts a Panel and extracts its LineH/LineV Shape styling for rendering', () => {
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    const $ = GraphObject.make;
+
+    const gridPanel = $(
+      Panel,
+      'Grid',
+      { gridCellSize: new Size(30, 40) },
+      $(Shape, 'LineH', { stroke: 'blue', strokeWidth: 2 }),
+      $(Shape, 'LineV', { stroke: 'green', strokeWidth: 3 }),
+    );
+    diagram.grid = gridPanel;
+
+    expect(diagram.grid).toBe(gridPanel);
+    const style = (
+      diagram as unknown as { getGridPatternStyle(): Record<string, unknown> }
+    ).getGridPatternStyle();
+    expect(style).toEqual({
+      cellWidth: 30,
+      cellHeight: 40,
+      horizontal: { stroke: 'blue', strokeWidth: 2 },
+      vertical: { stroke: 'green', strokeWidth: 3 },
+    });
+    diagram.destroy();
+  });
+
+  it('returns undefined when no grid pattern is set', () => {
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    expect(diagram.grid).toBeNull();
+    const style = (diagram as unknown as { getGridPatternStyle(): unknown }).getGridPatternStyle();
+    expect(style).toBeUndefined();
+    diagram.destroy();
+  });
+
+  it('does not crash on a non-Panel value (grid used to be loosely typed as unknown)', () => {
+    const div = document.createElement('div');
+    const diagram = new Diagram({ div });
+    // biome-ignore lint/suspicious/noExplicitAny: exercising a pre-existing loose-typing edge case
+    (diagram as any).grid = { opacity: 0.1 };
+    const style = (diagram as unknown as { getGridPatternStyle(): unknown }).getGridPatternStyle();
+    expect(style).toBeUndefined();
     diagram.destroy();
   });
 });

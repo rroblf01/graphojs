@@ -41,6 +41,24 @@ export class ShapeRenderer {
       case 'triangle':
         this.renderTriangle(x, y, width, height);
         break;
+      case 'triangleDown':
+        this.renderTriangleDown(x, y, width, height);
+        break;
+      case 'triangleLeft':
+        this.renderTriangleLeft(x, y, width, height);
+        break;
+      case 'triangleRight':
+        this.renderTriangleRight(x, y, width, height);
+        break;
+      case 'square':
+        this.ctx.rect(x, y, width, height);
+        break;
+      case 'junction':
+        this.renderEllipse(x, y, width, height);
+        break;
+      case 'multiDocument':
+        this.renderMultiDocument(x, y, width, height);
+        break;
       case 'cross':
         this.renderCross(x, y, width, height);
         break;
@@ -555,6 +573,27 @@ export class ShapeRenderer {
     this.ctx.closePath();
   }
 
+  private renderTriangleDown(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x + width / 2, y + height);
+    this.ctx.lineTo(x, y);
+    this.ctx.lineTo(x + width, y);
+    this.ctx.closePath();
+  }
+
+  private renderTriangleLeft(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x, y + height / 2);
+    this.ctx.lineTo(x + width, y);
+    this.ctx.lineTo(x + width, y + height);
+    this.ctx.closePath();
+  }
+
+  private renderTriangleRight(x: number, y: number, width: number, height: number): void {
+    this.ctx.moveTo(x + width, y + height / 2);
+    this.ctx.lineTo(x, y + height);
+    this.ctx.lineTo(x, y);
+    this.ctx.closePath();
+  }
+
   private renderCross(x: number, y: number, width: number, height: number): void {
     const armWidth = width / 3;
     const armHeight = height / 3;
@@ -702,6 +741,38 @@ export class ShapeRenderer {
       const wy = y + height * 0.8 + (i % 2 === 0 ? waveHeight : 0);
       this.ctx.quadraticCurveTo(wx, wy, x + width - (i + 1) * waveWidth, y + height);
     }
+    this.ctx.closePath();
+  }
+
+  private renderMultiDocument(x: number, y: number, width: number, height: number): void {
+    const stackOffset = Math.min(width, height) * 0.08;
+
+    // Two stacked pages behind, peeking out at the top-right corner.
+    this.ctx.rect(x + stackOffset, y - stackOffset, width - stackOffset, height - stackOffset);
+    this.ctx.rect(
+      x + stackOffset * 2,
+      y - stackOffset * 2,
+      width - stackOffset * 2,
+      height - stackOffset * 2,
+    );
+
+    // Front page, same wavy-bottom shape as renderDocument.
+    const docWidth = width - stackOffset * 2;
+    const docHeight = height - stackOffset * 2;
+    const docX = x;
+    const docY = y + stackOffset * 2;
+    this.ctx.moveTo(docX, docY);
+    this.ctx.lineTo(docX + docWidth, docY);
+    this.ctx.lineTo(docX + docWidth, docY + docHeight * 0.8);
+
+    const waveHeight = docHeight * 0.2;
+    const waveWidth = docWidth / 4;
+    for (let i = 0; i < 4; i++) {
+      const wx = docX + docWidth - (i + 0.5) * waveWidth;
+      const wy = docY + docHeight * 0.8 + (i % 2 === 0 ? waveHeight : 0);
+      this.ctx.quadraticCurveTo(wx, wy, docX + docWidth - (i + 1) * waveWidth, docY + docHeight);
+    }
+    this.ctx.lineTo(docX, docY + docHeight);
     this.ctx.closePath();
   }
 

@@ -3,6 +3,14 @@ import type { Group } from '../parts/Group.ts';
 import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
 
+/** Line styling extracted from a `diagram.grid` pattern Panel's `Shape` children. */
+export interface GridPatternStyle {
+  cellWidth?: number;
+  cellHeight?: number;
+  horizontal?: { stroke: string; strokeWidth: number };
+  vertical?: { stroke: string; strokeWidth: number };
+}
+
 /**
  * Abstract renderer interface for diagram parts.
  */
@@ -25,8 +33,8 @@ export interface Renderer {
   /** Render a selection rectangle. */
   renderSelectionRect(rect: Rect): void;
 
-  /** Render a grid background. */
-  renderGrid(viewport: Rect, gridSize: number): void;
+  /** Render a grid background, optionally styled by a `diagram.grid` pattern. */
+  renderGrid(viewport: Rect, gridSize: number, pattern?: GridPatternStyle): void;
 
   /** Save the current canvas state. */
   save(): void;

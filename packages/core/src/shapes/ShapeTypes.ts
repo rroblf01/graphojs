@@ -10,6 +10,12 @@ export type ShapeType =
   | 'octagon'
   | 'star'
   | 'triangle'
+  | 'triangleDown'
+  | 'triangleLeft'
+  | 'triangleRight'
+  | 'square'
+  | 'junction'
+  | 'multiDocument'
   | 'cross'
   | 'arrow'
   | 'cloud'
@@ -163,6 +169,54 @@ export const SHAPES: Record<ShapeType, ShapeDefinition> = {
     name: 'Triangle',
     defaultWidth: 100,
     defaultHeight: 80,
+    resizable: true,
+    hasPorts: true,
+  },
+  triangleDown: {
+    type: 'triangleDown',
+    name: 'Triangle Down',
+    defaultWidth: 100,
+    defaultHeight: 80,
+    resizable: true,
+    hasPorts: true,
+  },
+  triangleLeft: {
+    type: 'triangleLeft',
+    name: 'Triangle Left',
+    defaultWidth: 80,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  triangleRight: {
+    type: 'triangleRight',
+    name: 'Triangle Right',
+    defaultWidth: 80,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: true,
+  },
+  square: {
+    type: 'square',
+    name: 'Square',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  junction: {
+    type: 'junction',
+    name: 'Junction',
+    defaultWidth: 12,
+    defaultHeight: 12,
+    resizable: false,
+    hasPorts: false,
+  },
+  multiDocument: {
+    type: 'multiDocument',
+    name: 'Multi-Document',
+    defaultWidth: 100,
+    defaultHeight: 70,
     resizable: true,
     hasPorts: true,
   },
@@ -738,12 +792,15 @@ export function getShapesByCategory(category: string): ShapeDefinition[] {
     'end',
     'io',
     'document',
+    'multiDocument',
     'predefinedProcess',
     'merge',
+    'junction',
   ];
 
   const basicShapes: ShapeType[] = [
     'rect',
+    'square',
     'ellipse',
     'roundedRect',
     'diamond',
@@ -751,6 +808,9 @@ export function getShapesByCategory(category: string): ShapeDefinition[] {
     'octagon',
     'star',
     'triangle',
+    'triangleDown',
+    'triangleLeft',
+    'triangleRight',
     'pentagon',
   ];
 
@@ -791,7 +851,12 @@ const GOJS_FIGURE_ALIASES: Record<string, ShapeType> = {
   ellipsis: 'ellipse',
   oval: 'ellipse',
   triangleup: 'triangle',
-  triangledown: 'triangle',
+  triangledown: 'triangleDown',
+  triangleleft: 'triangleLeft',
+  triangleright: 'triangleRight',
+  square: 'square',
+  junction: 'junction',
+  multidocument: 'multiDocument',
   diamond: 'diamond',
   hexagon: 'hexagon',
   octagon: 'octagon',

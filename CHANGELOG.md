@@ -5,6 +5,33 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-08-20
+
+Further GoJS compatibility work on top of 1.1.0, from the same migration
+exercise. No breaking changes.
+
+### Added
+
+- 6 more `Shape` figures: `Square`, `Junction`, `MultiDocument`, and rotated
+  `TriangleDown`/`TriangleLeft`/`TriangleRight` variants.
+- `Panel "Grid"` — a real, GoJS-compatible pattern panel for `diagram.grid`
+  (`$(go.Panel, "Grid", { gridCellSize }, $(go.Shape, "LineH", ...), $(go.Shape, "LineV", ...))`).
+  `diagram.grid` was previously typed `unknown` and silently discarded
+  whatever was assigned to it — it's now a real `Panel | null` that drives
+  the existing `gridSize`/`showGrid` rendering: the pattern's `LineH`/`LineV`
+  `Shape` children's `stroke`/`strokeWidth` style the grid lines, and its
+  `gridCellSize` overrides the uniform `gridSize` step. `Renderer.renderGrid`
+  gained an optional 3rd `GridPatternStyle` parameter (both exported) to
+  carry this through; omitting a grid pattern renders exactly as before.
+- `Part.toolTip` (a `Panel` template) now actually shows on hover, after
+  `Diagram.toolTipDelay` (default 500ms) — previously a typed field nobody
+  read. Reuses the same floating-`<div>`-plus-`<canvas>` rendering approach
+  already used for `Part.contextMenu`, extracted into a shared
+  `Diagram.renderFloatingPanel()` helper. `Diagram.hideToolTip()` is public,
+  mirroring the existing `hideContextMenu()`. This is independent of the
+  simpler, graphojs-only plain-text `part.tooltip` (`TooltipManager`) — if a
+  part sets both, both are still handled by their own separate mechanisms.
+
 ## [1.1.0] - 2026-08-20
 
 Bug-fix and small compatibility release, found by porting a real GoJS
@@ -364,6 +391,7 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.2.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.2.0
 [1.1.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.1.0
 [1.0.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.0.0
 [0.2.0]: https://github.com/rroblf01/graphojs/releases/tag/v0.2.0

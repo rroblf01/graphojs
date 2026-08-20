@@ -16,7 +16,8 @@ export type PanelType =
   | 'Vertical'
   | 'Horizontal'
   | 'Viewbox'
-  | 'Position';
+  | 'Position'
+  | 'Grid';
 
 /**
  * A Panel is a GraphObject that contains and lays out other GraphObjects.
@@ -30,10 +31,17 @@ export class Panel extends GraphObject {
   static readonly Table = 'Table';
   static readonly Viewbox = 'Viewbox';
   static readonly Position = 'Position';
+  static readonly Grid = 'Grid';
 
   private _type: PanelType;
   private _elements: GraphObject[] = [];
   private _padding: Margin | null = null;
+  /**
+   * GoJS-compatible: the cell size for a `'Grid'`-type panel (e.g.
+   * `diagram.grid`). Only meaningful on a Grid pattern panel — never laid
+   * out or drawn as part of a normal visual tree.
+   */
+  gridCellSize: Size | null = null;
   private _spacing = 0;
   private _background: string | null = null;
   private _rowCount = 0;
@@ -357,6 +365,11 @@ export class Panel extends GraphObject {
       }
       case 'Table':
         return this.measureTable(padW, padH);
+      case 'Grid':
+        // A Grid panel (e.g. diagram.grid) is a pattern read for its Shape
+        // children's styling — it's never actually laid out or drawn as
+        // part of a normal visual tree, so it has no real measured size.
+        return new SizeClass(padW, padH);
       default:
         return new SizeClass(padW, padH);
     }

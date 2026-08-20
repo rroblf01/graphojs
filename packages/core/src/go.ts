@@ -163,7 +163,7 @@ export type { UndoManagerEvent, UndoManagerEventHandler } from './undo/UndoManag
 // Undo
 export { UndoManager } from './undo/UndoManager.ts';
 
-export const version = '1.1.0';
+export const version = '1.2.0';
 
 export type { ContextMenuItem, ContextMenuOptions } from './export/ContextMenu.ts';
 export { ContextMenu, createDefaultContextMenu } from './export/ContextMenu.ts';
@@ -194,7 +194,7 @@ export {
   TextMeasureCache,
 } from './render/RenderCache.ts';
 // Render
-export type { Renderer } from './render/Renderer.ts';
+export type { GridPatternStyle, Renderer } from './render/Renderer.ts';
 export type { SelectionStyle } from './render/SelectionStyle.ts';
 export { defaultSelectionStyle, highContrastSelectionStyle } from './render/SelectionStyle.ts';
 export { ShapeRenderer } from './shapes/ShapeRenderer.ts';

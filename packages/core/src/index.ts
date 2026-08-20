@@ -2,7 +2,7 @@
  * @module graphojs
  */
 
-export const version = '1.1.0';
+export const version = '1.2.0';
 
 export type { AnimationOptions } from './animation/Animation.ts';
 // Animations
@@ -147,7 +147,7 @@ export {
   TextMeasureCache,
 } from './render/RenderCache.ts';
 // Render
-export type { Renderer } from './render/Renderer.ts';
+export type { GridPatternStyle, Renderer } from './render/Renderer.ts';
 export type { SelectionStyle } from './render/SelectionStyle.ts';
 export { defaultSelectionStyle, highContrastSelectionStyle } from './render/SelectionStyle.ts';
 export type { DiagramJSON } from './serialization/Serializer.ts';

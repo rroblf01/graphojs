@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Rect } from '../../src/geometry/Rect.ts';
 import { Panel, shape } from '../../src/panel/Panel.ts';
 import { Group } from '../../src/parts/Group.ts';
@@ -180,5 +180,47 @@ describe('Canvas2DRenderer renderGroup', () => {
 
     expect(ctx.fillStyle).toBe('#123456');
     expect(ctx.fillRect).toHaveBeenCalledWith(0, 0, 100, 60);
+  });
+});
+
+describe('Canvas2DRenderer renderGrid with a diagram.grid pattern', () => {
+  function createRenderer(): Canvas2DRenderer {
+    const canvas = document.createElement('canvas');
+    return new Canvas2DRenderer(canvas);
+  }
+
+  it('falls back to the default gray styling and uniform gridSize when no pattern is given', () => {
+    const renderer = createRenderer();
+    const ctx = (renderer as unknown as { ctx: ReturnType<typeof mockContext> }).ctx;
+    const strokeCalls: Array<{ style: unknown; width: unknown }> = [];
+    ctx.stroke = vi.fn(() => strokeCalls.push({ style: ctx.strokeStyle, width: ctx.lineWidth }));
+
+    renderer.renderGrid(new Rect(0, 0, 10, 10), 20);
+
+    expect(strokeCalls).toEqual([
+      { style: '#e0e0e0', width: 0.5 },
+      { style: '#e0e0e0', width: 0.5 },
+    ]);
+  });
+
+  it('uses the pattern cellWidth/cellHeight and separate horizontal/vertical line styling', () => {
+    const renderer = createRenderer();
+    const ctx = (renderer as unknown as { ctx: ReturnType<typeof mockContext> }).ctx;
+    const strokeCalls: Array<{ style: unknown; width: unknown }> = [];
+    ctx.stroke = vi.fn(() => strokeCalls.push({ style: ctx.strokeStyle, width: ctx.lineWidth }));
+
+    // 10x10 viewport with 20px cells: exactly one vertical line (x=0) and
+    // one horizontal line (y=0), so each stroke() call is unambiguous.
+    renderer.renderGrid(new Rect(0, 0, 10, 10), 5, {
+      cellWidth: 20,
+      cellHeight: 20,
+      vertical: { stroke: 'blue', strokeWidth: 2 },
+      horizontal: { stroke: 'red', strokeWidth: 3 },
+    });
+
+    expect(strokeCalls).toEqual([
+      { style: 'blue', width: 2 },
+      { style: 'red', width: 3 },
+    ]);
   });
 });

@@ -93,6 +93,35 @@ describe('ShapeTypes', () => {
     expect(normalizeShapeType('LineH')).toBe('lineH');
     expect(normalizeShapeType('LineV')).toBe('lineV');
   });
+
+  it('registers Square, Junction, MultiDocument, and the rotated Triangle figures', () => {
+    const shapeTypes = getAllShapeTypes();
+    for (const type of [
+      'square',
+      'junction',
+      'multiDocument',
+      'triangleDown',
+      'triangleLeft',
+      'triangleRight',
+    ]) {
+      expect(shapeTypes).toContain(type);
+      const def = getShapeDefinition(type as never);
+      expect(def.defaultWidth).toBeGreaterThan(0);
+      expect(def.defaultHeight).toBeGreaterThan(0);
+    }
+  });
+
+  it('normalizes GoJS names for the new figures, and TriangleDown/Left/Right are distinct from Triangle', () => {
+    expect(normalizeShapeType('Square')).toBe('square');
+    expect(normalizeShapeType('Junction')).toBe('junction');
+    expect(normalizeShapeType('MultiDocument')).toBe('multiDocument');
+    // Regression: "TriangleDown" used to alias plain 'triangle' (pointing up),
+    // rendering identically to TriangleUp instead of actually pointing down.
+    expect(normalizeShapeType('TriangleDown')).toBe('triangleDown');
+    expect(normalizeShapeType('TriangleDown')).not.toBe('triangle');
+    expect(normalizeShapeType('TriangleLeft')).toBe('triangleLeft');
+    expect(normalizeShapeType('TriangleRight')).toBe('triangleRight');
+  });
 });
 
 describe('ShapeRenderer', () => {

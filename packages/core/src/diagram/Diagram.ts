@@ -22,7 +22,7 @@ import type {
   NodeKey,
 } from '../model/Model.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
-import type { Panel } from '../panel/Panel.ts';
+import { Panel } from '../panel/Panel.ts';
 import { Shape } from '../panel/Shape.ts';
 import { TextBlock } from '../panel/TextBlock.ts';
 import { Group } from '../parts/Group.ts';
@@ -31,7 +31,7 @@ import { Node } from '../parts/Node.ts';
 import type { Part } from '../parts/Part.ts';
 import { Canvas2DRenderer } from '../render/Canvas2DRenderer.ts';
 import { LayerCache } from '../render/LayerCache.ts';
-import type { Renderer } from '../render/Renderer.ts';
+import type { GridPatternStyle, Renderer } from '../render/Renderer.ts';
 import {
   defaultSelectionStyle,
   hexToRgba,
@@ -290,6 +290,12 @@ export class Diagram {
   private _maxSelectionCount = Infinity;
   private _transactionStack: Array<{ events: ChangedEvent[]; name: string }> = [];
   private _contextMenuEl: HTMLElement | null = null;
+  private _toolTipEl: HTMLElement | null = null;
+  private _toolTipCurrentPart: Part | null = null;
+  private _toolTipTimer: ReturnType<typeof setTimeout> | null = null;
+  private _toolTipDismiss: (() => void) | null = null;
+  /** GoJS-compatible: delay (ms) before a part's `toolTip` Panel appears on hover. */
+  toolTipDelay = 500;
   private backBuffer: HTMLCanvasElement | null = null;
   private backBufferEnabled = false;
   private layoutProbeCtx: CanvasRenderingContext2D | null = null;
@@ -1057,31 +1063,47 @@ export class Diagram {
     }
   }
 
+  /**
+   * Render a Panel template into a floating, fixed-position `<div>` (with
+   * its own `<canvas>`) appended to `document.body` at the given page
+   * coordinates. Shared by the part `contextMenu` and `toolTip` templates,
+   * which both render an ad hoc floating Panel outside the diagram canvas.
+   */
+  private renderFloatingPanel(
+    template: Panel,
+    x: number,
+    y: number,
+    width = 160,
+    height = 200,
+  ): HTMLElement {
+    const el = document.createElement('div');
+    el.style.cssText =
+      'position:fixed;z-index:10000;background:white;border:1px solid #999;box-shadow:2px 2px 6px rgba(0,0,0,0.3);';
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.display = 'block';
+    el.appendChild(canvas);
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    document.body.appendChild(el);
+
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      template.setPosition(0, 0);
+      template.setActualSize(width, height);
+      template.draw(ctx, 0, 0, width, height);
+    }
+    return el;
+  }
+
   /** Show a floating context menu rendered from a part's contextMenu template. */
   private showPartContextMenu(part: Part, e: MouseEvent): void {
     const template = part.contextMenu;
     if (!template) return;
     this.hideContextMenu();
 
-    const el = document.createElement('div');
-    el.style.cssText =
-      'position:fixed;z-index:10000;background:white;border:1px solid #999;box-shadow:2px 2px 6px rgba(0,0,0,0.3);';
-    const canvas = document.createElement('canvas');
-    canvas.width = 160;
-    canvas.height = 200;
-    canvas.style.display = 'block';
-    el.appendChild(canvas);
-    el.style.left = `${e.clientX}px`;
-    el.style.top = `${e.clientY}px`;
-    document.body.appendChild(el);
-
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      template.setPosition(0, 0);
-      template.setActualSize(160, 200);
-      template.draw(ctx, 0, 0, 160, 200);
-    }
-    this._contextMenuEl = el;
+    this._contextMenuEl = this.renderFloatingPanel(template, e.clientX, e.clientY);
 
     const dismiss = (): void => {
       this.hideContextMenu();
@@ -1097,6 +1119,79 @@ export class Diagram {
     if (this._contextMenuEl) {
       this._contextMenuEl.remove();
       this._contextMenuEl = null;
+    }
+  }
+
+  /**
+   * Called on every canvas mousemove: shows a part's `toolTip` template
+   * after hovering it for `toolTipDelay` ms. `ToolManager` has no hover
+   * dispatch of its own (only button-gated drag moves), so this is driven
+   * directly from `setupEventListeners`, the same way `tooltipManager`
+   * (the separate, simpler plain-text `part.tooltip` mechanism) already is.
+   */
+  private handleToolTipMouseMove(e: MouseEvent): void {
+    const point = this.getDiagramPoint(e);
+    const part = this.findPartAt(point.x, point.y);
+    if (part === this._toolTipCurrentPart) return; // already shown, or still waiting on the timer
+
+    this.hideToolTip();
+    this._toolTipCurrentPart = part;
+
+    if (part?.toolTip) {
+      this._toolTipTimer = setTimeout(() => {
+        if (this._toolTipCurrentPart === part) this.showPartToolTip(part, e);
+      }, this.toolTipDelay);
+    }
+  }
+
+  /** Called when the mouse leaves the canvas. */
+  private handleToolTipMouseLeave(): void {
+    this.hideToolTip();
+  }
+
+  /**
+   * Show a floating tooltip rendered from a part's `toolTip` template
+   * (GoJS-compatible: `Part.toolTip` is a `Panel`, unlike the simpler
+   * plain-text `part.tooltip` handled by `TooltipManager`).
+   */
+  private showPartToolTip(part: Part, e: MouseEvent): void {
+    const template = part.toolTip;
+    if (!template) return;
+
+    const size = template.measureWithMargin();
+    this._toolTipEl = this.renderFloatingPanel(
+      template,
+      e.clientX,
+      e.clientY,
+      Math.max(1, Math.ceil(size.width)),
+      Math.max(1, Math.ceil(size.height)),
+    );
+
+    // Stored so hideToolTip() can remove these listeners no matter what
+    // triggers it (hover-away, canvas mouseleave, destroy) — not just a
+    // click/wheel dismiss — otherwise every shown tooltip leaks one pair of
+    // window listeners.
+    const dismiss = (): void => this.hideToolTip();
+    this._toolTipDismiss = dismiss;
+    window.addEventListener('mousedown', dismiss);
+    window.addEventListener('wheel', dismiss);
+  }
+
+  /** GoJS-compatible: hide any floating part `toolTip` and reset hover tracking. */
+  hideToolTip(): void {
+    if (this._toolTipTimer) {
+      clearTimeout(this._toolTipTimer);
+      this._toolTipTimer = null;
+    }
+    this._toolTipCurrentPart = null;
+    if (this._toolTipDismiss) {
+      window.removeEventListener('mousedown', this._toolTipDismiss);
+      window.removeEventListener('wheel', this._toolTipDismiss);
+      this._toolTipDismiss = null;
+    }
+    if (this._toolTipEl) {
+      this._toolTipEl.remove();
+      this._toolTipEl = null;
     }
   }
 
@@ -1371,11 +1466,13 @@ export class Diagram {
     this.addCanvasListener('mousemove', (e) => {
       this._toolManager.handleMouseMove(e as MouseEvent);
       this.tooltipManager?.handleMouseMove(e as MouseEvent);
+      this.handleToolTipMouseMove(e as MouseEvent);
     });
     this.addCanvasListener('mouseup', (e) => this._toolManager.handleMouseUp(e as MouseEvent));
     this.addCanvasListener('mouseleave', (e) => {
       this._toolManager.handleMouseUp(e as MouseEvent);
       this.tooltipManager?.handleMouseLeave();
+      this.handleToolTipMouseLeave();
     });
     this.addCanvasListener('click', (e) => this.handleCanvasClick(e as MouseEvent));
     this.addCanvasListener('dblclick', (e) => this.handleDoubleClick(e as MouseEvent));
@@ -2519,16 +2616,44 @@ export class Diagram {
     return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
   }
 
-  private _gridPattern: unknown = null;
+  private _gridPattern: Panel | null = null;
 
-  /** GoJS-compatible: A Shape (or null) used as a grid pattern behind the diagram. */
-  get grid(): unknown {
+  /**
+   * GoJS-compatible: A `Panel` (type `"Grid"`, e.g.
+   * `$(go.Panel, "Grid", { gridCellSize }, $(go.Shape, "LineH", ...), $(go.Shape, "LineV", ...))`)
+   * used as the background grid pattern. Its `Shape` children's `stroke`/
+   * `strokeWidth` style the grid lines; `null` falls back to the default
+   * styling driven by `gridSize` alone.
+   */
+  get grid(): Panel | null {
     return this._gridPattern;
   }
 
-  set grid(value: unknown) {
+  set grid(value: Panel | null) {
     this._gridPattern = value;
     this.invalidate();
+  }
+
+  /** Extract renderer-friendly grid styling from `this._gridPattern`'s `Shape` children, if set. */
+  private getGridPatternStyle(): GridPatternStyle | undefined {
+    const pattern = this._gridPattern;
+    // `grid` used to be loosely typed as `unknown`, so a caller may still
+    // assign an arbitrary non-Panel value; only real Panels have styling
+    // to extract.
+    if (!(pattern instanceof Panel)) return undefined;
+
+    const style: GridPatternStyle = {};
+    if (pattern.gridCellSize) {
+      style.cellWidth = pattern.gridCellSize.width;
+      style.cellHeight = pattern.gridCellSize.height;
+    }
+    for (const el of pattern.elements) {
+      if (!(el instanceof Shape)) continue;
+      const lineStyle = { stroke: el.stroke, strokeWidth: el.strokeWidth };
+      if (el.shape === 'lineH') style.horizontal = lineStyle;
+      else if (el.shape === 'lineV') style.vertical = lineStyle;
+    }
+    return style;
   }
 
   private _contentAlignment: Spot | null = null;
@@ -3017,7 +3142,7 @@ export class Diagram {
         (width * 2) / this._scale,
         (height * 2) / this._scale,
       );
-      target.renderGrid(viewport, this.gridSize);
+      target.renderGrid(viewport, this.gridSize, this.getGridPatternStyle());
     }
 
     // Auto-initialize virtualization if not already done
@@ -3803,8 +3928,9 @@ export class Diagram {
     this.tooltipManager?.destroy();
     this.tooltipManager = null;
 
-    // Remove any floating part context menu
+    // Remove any floating part context menu / toolTip
     this.hideContextMenu();
+    this.hideToolTip();
 
     // Remove any active text-editing input overlay
     const editingInput = document.querySelector('input.graphojs-text-editing');

@@ -108,6 +108,7 @@ export type { TreeModelJSON } from './model/TreeModel.ts';
 export { TreeModel } from './model/TreeModel.ts';
 export type { ExpanderButtonOptions } from './panel/Buttons.ts';
 export { PanelExpanderButton, TreeExpanderButton } from './panel/Buttons.ts';
+export { drawGeometryString } from './panel/GeometryString.ts';
 // Panels
 export { GraphObject } from './panel/GraphObject.ts';
 export type { PanelType } from './panel/Panel.ts';

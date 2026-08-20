@@ -8,11 +8,11 @@ resumen de lo que está soportado. Para el detalle completo de cada clase,
 método y propiedad, consulta la [referencia de API](/reference/api/), generada
 directamente desde el código fuente. Cubre los 5 subpaths públicos
 (`graphojs`, `graphojs/go`, `graphojs/templates`, `graphojs/react`,
-`graphojs/vue`) — nota que `graphojs/go` reexporta prácticamente las mismas
-clases que `graphojs` bajo el namespace `go.*`, así que su página en la
-referencia solo muestra lo que es exclusivo de ese subpath (p. ej.
-`ModelTransactionCommand`); para el resto de clases (`go.Diagram`,
-`go.Node`, ...) consulta directamente la página de `graphojs`.
+`graphojs/vue`) — nota que `graphojs/go` reexporta las mismas clases que
+`graphojs` bajo el namespace `go.*` (hoy no hay nada exclusivo de
+`graphojs/go`), así que su página de referencia se verá escasa; para las
+clases reales (`go.Diagram`, `go.Node`, ...) consulta directamente la
+página de `graphojs`.
 
 ## Superficie implementada
 
@@ -91,7 +91,7 @@ tampoco hay garantía de estabilidad total todavía. Están marcadas con
 
 | GoJS | GraphoJS |
 |------|----------|
-| Cientos de figuras Shape | 75 figuras comunes + símbolos de flowchart/BPMN/UML |
+| Cientos de figuras Shape | 77 figuras comunes + símbolos de flowchart/BPMN/UML |
 | `Shape.geometryString` completo | Soporta M/L/H/V/C/S/Q/T/A/Z |
 | Licensed (proprietary) | MIT |
 | `Part` IS a `GraphObject` | `Part` tiene un `panel` (árbol visual) |

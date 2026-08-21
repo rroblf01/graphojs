@@ -78,6 +78,7 @@ export class Shape extends GraphObject {
   private _stroke: BrushLike = '#333333';
   private _strokeWidth = 1;
   private _cornerRadius = 0;
+  private _interval = 1;
 
   constructor(shape?: string) {
     super();
@@ -226,6 +227,20 @@ export class Shape extends GraphObject {
     this._cornerRadius = value;
   }
 
+  /**
+   * GoJS-compatible: for a `"LineH"`/`"LineV"` `Shape` tiled by a `Panel
+   * "Grid"`, how often this line is actually drawn — every Nth row/column
+   * instead of every one. Only consulted by `Panel`'s Grid tiling; a
+   * plain positive integer, defaulting to 1 (every line).
+   */
+  get interval(): number {
+    return this._interval;
+  }
+
+  set interval(value: number) {
+    this._interval = value;
+  }
+
   /** Fluent setter for fill. */
   setFill(value: BrushLike): this {
     this._fill = value;
@@ -258,6 +273,7 @@ export class Shape extends GraphObject {
     cloned._stroke = this._stroke;
     cloned._strokeWidth = this._strokeWidth;
     cloned._cornerRadius = this._cornerRadius;
+    cloned._interval = this._interval;
     cloned._geometryString = this._geometryString;
     cloned._geometry = this._geometry ? this._geometry.copy() : null;
     cloned._strokeCap = this._strokeCap;

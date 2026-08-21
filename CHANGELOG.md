@@ -5,6 +5,58 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-08-21
+
+Follow-up to 1.4.0, closing the remaining real gaps from a fifth round of
+the same GoJS-to-graphojs Gantt migration report. No breaking changes.
+
+### Added
+
+- `Shape.interval`: for a `"LineH"`/`"LineV"` `Shape` tiled by a `Panel
+  "Grid"`, draw only every Nth row/column instead of every one (e.g. a
+  heavier line every 5 columns) — the same real GoJS idiom of stacking two
+  `Shape "LineV"` children, one plain and one with `interval` set, now
+  works in a single Grid panel instead of needing two.
+- `Diagram.parts`: an iterator over every top-level Part (nodes, links,
+  groups, and bare decorative `Part`s), matching real GoJS's own
+  `Iterator` protocol (`while (it.next()) ...it.value`) and also usable
+  directly with `for...of`. Previously the only way to reach a Part was
+  to already know its key (`getPart`/`findPartForKey`/`findNodeForKey`/
+  `findLinkForKey`); there was no way to enumerate them all, the pattern
+  real GoJS code commonly uses to search/filter across the whole diagram.
+- The constructor's `div` is now optional (`new go.Diagram()`, or
+  `{ div: null }`) — a `Diagram` can be built up front (templates, tools,
+  listeners) before a host element exists yet, then attached later via
+  the `div` setter added in 1.4.0. This is what a `gojs-react`-style
+  `initDiagram: () => Diagram` factory needs, since it constructs the
+  `Diagram` before the ref's element has mounted.
+- `graphojs/react` gained `ReactDiagram`, a component matching
+  `gojs-react`'s actual shape — an `initDiagram: () => Diagram` factory
+  prop plus `ref.getDiagram()` — as an alternative to this module's own
+  `<Diagram>` (which instead takes `nodeTemplate`/`linkTemplate` as
+  declarative props). Lets code written against `gojs-react` port by
+  changing only the import. Scoped honestly: `modelData` is accepted for
+  prop-shape compatibility but inert (`Model` has no model-wide data to
+  apply it to); `onModelChange` fires with graphojs's own `ChangedEvent`,
+  not `gojs-react`'s `IncrementalData` shape; and `nodeDataArray`/
+  `linkDataArray` changes (when not `skipsDiagramUpdate`) do a full
+  `diagram.model =` resync, not a fine-grained incremental diff.
+
+### Fixed
+
+- Hovering a `Part.toolTip` immediately hid it again — shown and gone
+  within the same tick, before a person could ever actually read it. The
+  floating tooltip `<div>` is positioned exactly at the cursor
+  (`e.clientX`/`e.clientY`), so the instant it appeared it became "the
+  element under the pointer," and the browser fired a real `mouseleave`
+  on the canvas underneath — which the tooltip's own dismiss-on-hover-away
+  logic reacted to by hiding it. Fixed by excluding the floating tooltip
+  from hit-testing (`pointer-events: none`), which a tooltip never needed
+  anyway. Found while confirming a migration report's claim that
+  `$("ToolTip", ...)` didn't work as `Part.toolTip` — that constructor
+  form was already fine; this self-cancelling flicker was the real,
+  separate bug making it look broken.
+
 ## [1.4.0] - 2026-08-21
 
 Follow-up to 1.3.0, from a fourth round of the same GoJS-to-graphojs Gantt
@@ -568,6 +620,7 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.5.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.5.0
 [1.4.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.4.0
 [1.3.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.3.0
 [1.2.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.2.0

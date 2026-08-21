@@ -11,7 +11,14 @@ import {
   Shape,
   type Template,
 } from '../src/index.ts';
-import { Diagram, Overview, Palette, version } from '../src/react/index.tsx';
+import {
+  Diagram,
+  Overview,
+  Palette,
+  ReactDiagram,
+  type ReactDiagramRef,
+  version,
+} from '../src/react/index.tsx';
 
 const roots: Root[] = [];
 
@@ -49,7 +56,7 @@ function renderStateful<P>(
 
 describe('graphojs/react', () => {
   it('exposes a version', () => {
-    expect(version).toBe('1.4.0');
+    expect(version).toBe('1.5.0');
   });
 
   it('renders a Diagram component and initializes the diagram', async () => {
@@ -313,5 +320,112 @@ describe('graphojs/react', () => {
     );
     await act(async () => {});
     expect(document.body.querySelectorAll('div').length).toBeGreaterThan(0);
+  });
+
+  describe('ReactDiagram (gojs-react-shaped: factory + ref.getDiagram())', () => {
+    function makeInitDiagram(onCall?: () => void) {
+      return () => {
+        onCall?.();
+        const $ = GraphObject.make;
+        const d = new GoDiagram({ div: null });
+        d.nodeTemplate = $(Panel, 'Auto', $(Shape, 'Rectangle'));
+        return d;
+      };
+    }
+
+    it('calls initDiagram once, attaches div, seeds the model, and exposes it via the ref', async () => {
+      let initCalls = 0;
+      const ref = React.createRef<ReactDiagramRef>();
+      renderApp(
+        React.createElement(ReactDiagram, {
+          ref,
+          initDiagram: makeInitDiagram(() => {
+            initCalls++;
+          }),
+          nodeDataArray: [{ key: 1, x: 0, y: 0 }],
+        }),
+      );
+      await act(async () => {});
+
+      expect(initCalls).toBe(1);
+      const diagram = ref.current?.getDiagram();
+      expect(diagram).not.toBeUndefined();
+      expect(diagram?.div).not.toBeNull();
+      expect(diagram?.model.nodeDataArray.length).toBe(1);
+    });
+
+    it('resyncs the model when nodeDataArray changes, unless skipsDiagramUpdate is set', async () => {
+      const ref = React.createRef<ReactDiagramRef>();
+      const initDiagram = makeInitDiagram();
+      const host = document.createElement('div');
+      document.body.appendChild(host);
+      const root = createRoot(host);
+      roots.push(root);
+
+      root.render(
+        React.createElement(ReactDiagram, {
+          ref,
+          initDiagram,
+          nodeDataArray: [{ key: 1, x: 0, y: 0 }],
+        }),
+      );
+      await act(async () => {});
+      expect(ref.current?.getDiagram()?.model.nodeDataArray.length).toBe(1);
+
+      root.render(
+        React.createElement(ReactDiagram, {
+          ref,
+          initDiagram,
+          nodeDataArray: [
+            { key: 1, x: 0, y: 0 },
+            { key: 2, x: 10, y: 10 },
+          ],
+        }),
+      );
+      await act(async () => {});
+      expect(ref.current?.getDiagram()?.model.nodeDataArray.length).toBe(2);
+    });
+
+    it('does not resync the model when skipsDiagramUpdate is true', async () => {
+      const ref = React.createRef<ReactDiagramRef>();
+      const initDiagram = makeInitDiagram();
+      const host = document.createElement('div');
+      document.body.appendChild(host);
+      const root = createRoot(host);
+      roots.push(root);
+
+      root.render(
+        React.createElement(ReactDiagram, {
+          ref,
+          initDiagram,
+          nodeDataArray: [{ key: 1, x: 0, y: 0 }],
+          skipsDiagramUpdate: true,
+        }),
+      );
+      await act(async () => {});
+      const diagram = ref.current?.getDiagram();
+      expect(diagram?.model.nodeDataArray.length).toBe(1);
+
+      root.render(
+        React.createElement(ReactDiagram, {
+          ref,
+          initDiagram,
+          nodeDataArray: [
+            { key: 1, x: 0, y: 0 },
+            { key: 2, x: 10, y: 10 },
+          ],
+          skipsDiagramUpdate: true,
+        }),
+      );
+      await act(async () => {});
+      // Same diagram instance, and the model was left alone by the wrapper.
+      expect(ref.current?.getDiagram()).toBe(diagram);
+      expect(diagram?.model.nodeDataArray.length).toBe(1);
+    });
+
+    it('getDiagram() returns null before mount', () => {
+      const ref = React.createRef<ReactDiagramRef>();
+      expect(ref.current).toBeNull();
+    });
   });
 });

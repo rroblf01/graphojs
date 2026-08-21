@@ -3773,3 +3773,89 @@ describe('O39: go.Part was abstract, forcing a go.Node workaround for decorative
     expect(d.getPart(b.key)).toBe(b);
   });
 });
+
+describe('O40: Shape.interval did not exist, so a Panel "Grid" could not draw a heavier line every N cells', () => {
+  it('a "LineV" Shape with interval=3 only draws every 3rd column', () => {
+    const $ = GraphObject.make;
+    const grid = $(
+      Panel,
+      'Grid',
+      { gridCellSize: new Size(10, 10) },
+      $(Shape, 'LineV', { interval: 3 }),
+    );
+    grid.width = 40;
+    grid.height = 10;
+    const ctx = mockContext();
+    grid.draw(ctx, 0, 0, 40, 10);
+    // Columns at x=0,10,20,30,40 -> every 3rd (0,30) = 2 draws.
+    expect((ctx.moveTo as ReturnType<typeof vi.fn>).mock.calls.length).toBe(2);
+  });
+
+  it('defaults to interval=1 (every line), unaffected for existing templates', () => {
+    const $ = GraphObject.make;
+    const grid = $(Panel, 'Grid', { gridCellSize: new Size(10, 10) }, $(Shape, 'LineH'));
+    grid.width = 10;
+    grid.height = 30;
+    const ctx = mockContext();
+    grid.draw(ctx, 0, 0, 10, 30);
+    expect((ctx.moveTo as ReturnType<typeof vi.fn>).mock.calls.length).toBe(4);
+  });
+});
+
+describe('O41: Diagram.parts (no way to iterate every top-level Part without already knowing its key)', () => {
+  it('iterates nodes, links, groups, and bare decorative Parts together', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0 },
+        { key: 2, x: 100, y: 0 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const deco = new Part();
+    d.add(deco);
+
+    const seen = new Set<unknown>();
+    const it = d.parts;
+    while (it.next()) seen.add(it.value);
+
+    expect(seen.size).toBe(4); // 2 nodes + 1 link + 1 decorative part
+    expect(seen.has(d.findNodeForKey(1))).toBe(true);
+    expect(seen.has(d.findNodeForKey(2))).toBe(true);
+    expect(seen.has(deco)).toBe(true);
+  });
+
+  it('is also a real ES iterator (for...of works)', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const collected: unknown[] = [];
+    for (const p of d.parts) collected.push(p);
+    expect(collected).toEqual([d.findNodeForKey(1)]);
+  });
+});
+
+describe('O42: a shown Part.toolTip immediately hid itself (positioned exactly under the cursor)', () => {
+  it('the floating tooltip element has pointer-events: none, so it cannot steal the cursor from the canvas', () => {
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      { toolTip: $('ToolTip', $(TextBlock, 'hi')) },
+      $(Shape, 'RoundedRectangle', { width: 60, height: 30 }),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 60, height: 30 }],
+    });
+    d.toolTipDelay = 0;
+
+    const node = d.findNodeForKey(1) as Node;
+    // @ts-expect-error -- private, exercised directly like the surrounding suite already does
+    d.showPartToolTip(node, { clientX: 10, clientY: 10 });
+
+    // @ts-expect-error -- private field, asserting the actual DOM the fix touches
+    const el = d._toolTipEl as HTMLElement;
+    expect(el).toBeTruthy();
+    expect(el.style.pointerEvents).toBe('none');
+  });
+});

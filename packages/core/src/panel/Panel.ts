@@ -531,12 +531,14 @@ export class Panel extends GraphObject {
 
     for (const el of this._elements) {
       if (el instanceof Shape && el.shape === 'lineH') {
-        for (let ty = y; ty <= y + height; ty += cellHeight) {
-          el.draw(ctx, x, ty, width, 0);
+        const interval = Math.max(1, Math.floor(el.interval));
+        for (let row = 0, ty = y; ty <= y + height; row++, ty += cellHeight) {
+          if (row % interval === 0) el.draw(ctx, x, ty, width, 0);
         }
       } else if (el instanceof Shape && el.shape === 'lineV') {
-        for (let tx = x; tx <= x + width; tx += cellWidth) {
-          el.draw(ctx, tx, y, 0, height);
+        const interval = Math.max(1, Math.floor(el.interval));
+        for (let col = 0, tx = x; tx <= x + width; col++, tx += cellWidth) {
+          if (col % interval === 0) el.draw(ctx, tx, y, 0, height);
         }
       } else {
         const s = el.measureWithMargin();

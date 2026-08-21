@@ -2,7 +2,7 @@
  * @module graphojs
  */
 
-export const version = '1.4.0';
+export const version = '1.5.0';
 
 export type { AnimationOptions } from './animation/Animation.ts';
 // Animations

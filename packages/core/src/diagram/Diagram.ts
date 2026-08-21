@@ -1,5 +1,9 @@
 import { AnimationManager } from '../animation/AnimationManager.ts';
 import type { Binding } from '../binding/Binding.ts';
+import {
+  ArraySnapshotIterator,
+  type Iterator as CollectionsIterator,
+} from '../collections/Iterator.ts';
 import { CommandHandler } from '../command/CommandHandler.ts';
 import { InputEvent } from '../events/InputEvent.ts';
 import type { ContextMenu } from '../export/ContextMenu.ts';
@@ -66,8 +70,15 @@ import { UndoManager } from '../undo/UndoManager.ts';
 import { type DiagramEvent, DiagramEvents, type DiagramEventType } from './DiagramEvents.ts';
 
 export interface DiagramOptions {
-  /** The container element for the diagram. */
-  div: HTMLDivElement;
+  /**
+   * The container element for the diagram. Optional — a `Diagram`
+   * constructed without one starts detached (matching `div = null`);
+   * assign `.div` afterward to attach it. Lets frameworks that build the
+   * `Diagram` before a host element exists yet (e.g. a `gojs-react`-style
+   * `initDiagram: () => Diagram` factory, called before the ref's element
+   * mounts) construct it up front and attach it once the element is ready.
+   */
+  div?: HTMLDivElement | null;
   /** Initial scale. Default: 1 */
   initialScale?: number;
   /** Minimum scale for zoom. Default: 0.1 */
@@ -222,7 +233,7 @@ export class Diagram {
   private canvas: HTMLCanvasElement;
   private renderer: Renderer;
   private _model: GraphLinksModel;
-  private parts: Map<NodeKey, Node | Link | Group | Part> = new Map();
+  private _partsByKey: Map<NodeKey, Node | Link | Group | Part> = new Map();
   private _looseParts: Map<NodeKey, Part> = new Map();
   private _nodes: Map<NodeKey, Node> = new Map();
   private _groups: Map<NodeKey, Group> = new Map();
@@ -379,7 +390,7 @@ export class Diagram {
       resolvedOptions = options as DiagramOptions;
     }
 
-    this.container = resolvedOptions.div;
+    this.container = resolvedOptions.div ?? null;
     this._minScale = resolvedOptions.minScale ?? 0.1;
     this._maxScale = resolvedOptions.maxScale ?? 10;
     this.gridSize = resolvedOptions.gridSize ?? 20;
@@ -416,7 +427,7 @@ export class Diagram {
     this.canvas.tabIndex = 0;
     this.canvas.setAttribute('role', 'application');
     this.canvas.setAttribute('aria-roledescription', 'diagram');
-    this.container.appendChild(this.canvas);
+    this.container?.appendChild(this.canvas);
 
     // Accessibility: visually-hidden live region announcing selection and
     // keyboard-focus-cursor changes to screen readers.
@@ -431,7 +442,7 @@ export class Diagram {
       clip: 'rect(0 0 0 0)',
       whiteSpace: 'nowrap',
     });
-    this.container.appendChild(this.liveRegion);
+    this.container?.appendChild(this.liveRegion);
 
     // Create renderer
     this.renderer = new Canvas2DRenderer(this.canvas);
@@ -1195,6 +1206,14 @@ export class Diagram {
       Math.max(1, Math.ceil(size.width)),
       Math.max(1, Math.ceil(size.height)),
     );
+    // The floating element is positioned exactly at the cursor, so without
+    // this it would become "the element under the pointer" the instant it
+    // appears — the browser then fires a real mouseleave on the canvas
+    // underneath, which hideToolTip() (bound to canvas mouseleave) reacts
+    // to by immediately hiding the tooltip it just showed. A tooltip isn't
+    // meant to be interactive anyway, so excluding it from hit-testing
+    // both fixes the flicker and keeps hover/dismiss logic on the canvas.
+    this._toolTipEl.style.pointerEvents = 'none';
 
     // Stored so hideToolTip() can remove these listeners no matter what
     // triggers it (hover-away, canvas mouseleave, destroy) — not just a
@@ -1613,7 +1632,7 @@ export class Diagram {
   /** Sync visual parts from the model. */
   private syncPartsFromModel(): void {
     // Remove parts that no longer exist in model
-    for (const [key, part] of this.parts) {
+    for (const [key, part] of this._partsByKey) {
       let shouldRemove = false;
       if (part instanceof Node && !this._model.containsNode(key)) {
         shouldRemove = true;
@@ -1736,7 +1755,7 @@ export class Diagram {
     }
 
     // Apply bindings to all parts
-    for (const [, part] of this.parts) {
+    for (const [, part] of this._partsByKey) {
       if (part.bindings.length > 0 || part.panel !== null) {
         const data = this.getDataForPart(part);
         if (data) {
@@ -1782,7 +1801,7 @@ export class Diagram {
    * with node keys.
    */
   private getPartByKey(key: NodeKey): Node | Link | Group | Part | undefined {
-    return this.parts.get(key) ?? this.parts.get(this.linkPartKey(key));
+    return this._partsByKey.get(key) ?? this._partsByKey.get(this.linkPartKey(key));
   }
 
   private linkPartKey(key: NodeKey): string {
@@ -1940,7 +1959,7 @@ export class Diagram {
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) node.layer = layer;
     node.diagram = this;
-    this.parts.set(key, node);
+    this._partsByKey.set(key, node);
     this._nodes.set(key, node);
     this.fireDiagramEvent('PartAdded', node);
     this.markHitIndexDirty();
@@ -1998,7 +2017,7 @@ export class Diagram {
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) group.layer = layer;
     group.diagram = this;
-    this.parts.set(key, group);
+    this._partsByKey.set(key, group);
     this._groups.set(key, group);
     this.fireDiagramEvent('PartAdded', group);
     this.markHitIndexDirty();
@@ -2032,7 +2051,7 @@ export class Diagram {
     const layer = this.getLayer(layerName) ?? this.getLayer(LayerNames.Default);
     if (layer) link.layer = layer;
     link.diagram = this;
-    this.parts.set(this.linkPartKey(linkKey as NodeKey), link);
+    this._partsByKey.set(this.linkPartKey(linkKey as NodeKey), link);
     this._links.set(linkKey as NodeKey, link);
     this.fireDiagramEvent('PartAdded', link);
     this.fireDiagramEvent('LinkCreated', link);
@@ -2206,7 +2225,8 @@ export class Diagram {
     // Resolve by type to avoid node/link key namespace collisions
     let part: Node | Link | Group | Part | undefined;
     if (type === 'link') {
-      part = this._links.get(key) ?? (this.parts.get(this.linkPartKey(key)) as Link | undefined);
+      part =
+        this._links.get(key) ?? (this._partsByKey.get(this.linkPartKey(key)) as Link | undefined);
     } else if (type === 'group') {
       part = this._groups.get(key);
     } else if (type === 'node') {
@@ -2233,7 +2253,7 @@ export class Diagram {
       this._groups.delete(key);
     } else if (part instanceof Link) {
       this._links.delete(key);
-      this.parts.delete(this.linkPartKey(key));
+      this._partsByKey.delete(this.linkPartKey(key));
       this.selectedParts.delete(part);
       this.fireDiagramEvent('PartRemoved', part);
       this.markHitIndexDirty();
@@ -2241,7 +2261,7 @@ export class Diagram {
     } else {
       this._looseParts.delete(key);
     }
-    this.parts.delete(key);
+    this._partsByKey.delete(key);
     this.selectedParts.delete(part);
     this.fireDiagramEvent('PartRemoved', part);
     this.markHitIndexDirty();
@@ -2264,7 +2284,7 @@ export class Diagram {
   /** Find a part at the given diagram coordinates. */
   findPartAt(x: number, y: number): Node | Link | Group | null {
     // Use spatial index for hit testing when there are many parts
-    if (this.parts.size >= 50) {
+    if (this._partsByKey.size >= 50) {
       this.ensureHitIndex();
       if (this.hitIndex) {
         const candidates = this.hitIndex.queryRegion(new RectClass(x - 1, y - 1, 2, 2));
@@ -2315,8 +2335,8 @@ export class Diagram {
     let minY = 0;
     let maxX = 1000;
     let maxY = 1000;
-    if (this.parts.size > 0) {
-      for (const [, part] of this.parts) {
+    if (this._partsByKey.size > 0) {
+      for (const [, part] of this._partsByKey) {
         minX = Math.min(minX, part.bounds.x);
         minY = Math.min(minY, part.bounds.y);
         maxX = Math.max(maxX, part.bounds.right);
@@ -2327,7 +2347,7 @@ export class Diagram {
     this.hitIndex = new QuadTree<Part>(
       new RectClass(minX, minY, maxX - minX || 100, maxY - minY || 100),
     );
-    for (const [, part] of this.parts) {
+    for (const [, part] of this._partsByKey) {
       this.hitIndex.insertWithBounds(part.bounds, part);
     }
     this.hitIndexDirty = false;
@@ -2351,7 +2371,7 @@ export class Diagram {
 
   /** GoJS-compatible: Find a part (node, group, or link) by its model key. */
   findPartForKey(key: NodeKey): Part | null {
-    return this.parts.get(key) ?? null;
+    return this._partsByKey.get(key) ?? null;
   }
 
   /** GoJS-compatible: Find a link part by its model key. */
@@ -2374,7 +2394,7 @@ export class Diagram {
 
   /** GoJS-compatible: Remove all parts and clear the model. */
   clear(): void {
-    this.parts.clear();
+    this._partsByKey.clear();
     this._nodes.clear();
     this._links.clear();
     this._groups.clear();
@@ -2643,6 +2663,19 @@ export class Diagram {
     return this._groups;
   }
 
+  /**
+   * GoJS-compatible: an iterator over all of this diagram's top-level
+   * Parts (nodes, links, groups, and any bare decorative `Part`s added via
+   * `add()`), in no particular order — mirrors real GoJS's `Iterator`
+   * protocol (call `next()` before reading `.value`) and is also a real
+   * `[Symbol.iterator]`, so `for (const p of diagram.parts)` works too.
+   * Previously the only way to reach a Part was by already knowing its
+   * key (`getPart`/`findPartForKey`/`findNodeForKey`/...).
+   */
+  get parts(): CollectionsIterator<Node | Link | Group | Part> {
+    return new ArraySnapshotIterator(Array.from(this._partsByKey.values()));
+  }
+
   /** GoJS-compatible: Whether a node (group) subgraph is expanded. */
   isTreeExpanded(node: Node): boolean {
     if (node instanceof Group) {
@@ -2748,7 +2781,7 @@ export class Diagram {
     }
     // Clear stale parts and history when switching to a different model
     for (const layer of this._layers) layer.clear();
-    this.parts.clear();
+    this._partsByKey.clear();
     this._nodes.clear();
     this._links.clear();
     this._groups.clear();
@@ -3058,7 +3091,7 @@ export class Diagram {
    * changes or `themeManager.set(...)` is called.
    */
   updateThemeBindings(): void {
-    for (const [, part] of this.parts) {
+    for (const [, part] of this._partsByKey) {
       if (part.bindings.length > 0 || part.panel !== null) {
         const data = this.getDataForPart(part);
         if (data) part.applyBindings(data);
@@ -3517,7 +3550,7 @@ export class Diagram {
   ): (Node | Link | Group | Part)[] {
     const result: (Node | Link | Group | Part)[] = [];
     const r = new RectClass(rect.x, rect.y, rect.width, rect.height);
-    for (const part of this.parts.values()) {
+    for (const part of this._partsByKey.values()) {
       if (part.bounds.intersects(r)) {
         result.push(part);
       }
@@ -3529,23 +3562,23 @@ export class Diagram {
   add(part: Part): void {
     const key = part.key;
     if (key === undefined) return;
-    if (this.parts.has(key)) return;
+    if (this._partsByKey.has(key)) return;
     if (part instanceof Node) {
       this._nodes.set(key, part);
-      this.parts.set(key, part);
+      this._partsByKey.set(key, part);
       // Keep the model in sync when adding a part with attached data
       if (part.data && !this._model.containsNode(key)) {
         this._model.addNode({ ...part.data });
       }
     } else if (part instanceof Group) {
       this._groups.set(key, part);
-      this.parts.set(key, part);
+      this._partsByKey.set(key, part);
       if (part.data && !this._model.containsNode(key)) {
         this._model.addNode({ ...part.data });
       }
     } else if (part instanceof Link) {
       this._links.set(key, part);
-      this.parts.set(this.linkPartKey(key), part);
+      this._partsByKey.set(this.linkPartKey(key), part);
       const linkData = part.data as LinkData | null;
       if (linkData && !this.getLinkKeyOf(linkData)) {
         this.getLinksArray();
@@ -3555,7 +3588,7 @@ export class Diagram {
       // never enters the model — it's tracked and rendered, but has no
       // node/link data to sync.
       this._looseParts.set(key, part);
-      this.parts.set(key, part);
+      this._partsByKey.set(key, part);
     }
     const layer =
       this.getLayer(part.layerName ?? LayerNames.Default) ?? this.getLayer(LayerNames.Default);
@@ -4056,7 +4089,7 @@ export class Diagram {
     editingInput?.remove();
 
     // Clear parts and caches
-    this.parts.clear();
+    this._partsByKey.clear();
     this._nodes.clear();
     this._groups.clear();
     this._links.clear();

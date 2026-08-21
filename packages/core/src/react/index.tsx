@@ -5,15 +5,18 @@
  */
 
 import type React from 'react';
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import {
   type ChangedEvent,
   type DiagramEvent,
   type DiagramEventType,
   Diagram as GoDiagram,
+  GraphLinksModel as GoGraphLinksModel,
   Overview as GoOverview,
   Palette as GoPalette,
   type GraphLinksModel,
+  type LinkData,
+  type NodeData,
   type Panel,
   type Template,
 } from '../index.ts';
@@ -180,7 +183,6 @@ export const Palette: React.FC<PaletteProps> = ({
       paletteRef.current = null;
       container.innerHTML = '';
     };
-    // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect
   }, []);
 
   useEffect(() => {
@@ -228,7 +230,6 @@ export const Overview: React.FC<OverviewProps> = ({ observed, className, style }
       overviewRef.current = null;
       container.innerHTML = '';
     };
-    // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect
   }, []);
 
   useEffect(() => {
@@ -244,4 +245,115 @@ export const Overview: React.FC<OverviewProps> = ({ observed, className, style }
   );
 };
 
-export const version: string = '1.4.0';
+export interface ReactDiagramProps {
+  /**
+   * Called once, on mount, to construct the `Diagram` (templates, tools,
+   * listeners — whatever the app needs) *before* it has a div: `<ReactDiagram>`
+   * attaches it afterward via `diagram.div =`. Matches `gojs-react`'s
+   * `ReactDiagram` factory shape, so existing `initDiagram` functions port
+   * by only changing the import.
+   */
+  initDiagram: () => GoDiagram;
+  /** GoJS-compatible: initial/updated node data. */
+  nodeDataArray?: NodeData[];
+  /** GoJS-compatible: initial/updated link data. */
+  linkDataArray?: LinkData[];
+  /**
+   * Accepted for `gojs-react` prop-shape compatibility, but inert:
+   * graphojs's `Model` has no `modelData` (shared, model-wide data)
+   * concept to apply it to.
+   */
+  modelData?: Record<string, unknown>;
+  /**
+   * When true, `nodeDataArray`/`linkDataArray` prop changes are NOT
+   * synced to the model automatically — the app manages the model itself
+   * (e.g. via transactions on the instance from `ref.getDiagram()`),
+   * matching `gojs-react`'s advanced/incremental-update mode. When
+   * false/omitted (the default), changing these props replaces
+   * `diagram.model` with a freshly-built one — a full resync, not
+   * `gojs-react`'s finer-grained incremental `IncrementalData` diff.
+   */
+  skipsDiagramUpdate?: boolean;
+  /** GoJS-compatible: called whenever the diagram's model changes. */
+  onModelChange?: (event: ChangedEvent) => void;
+  divClassName?: string;
+  style?: React.CSSProperties;
+}
+
+export interface ReactDiagramRef {
+  /** GoJS-compatible: the underlying `Diagram`, once mounted (else `null`). */
+  getDiagram(): GoDiagram | null;
+}
+
+/**
+ * A React component matching `gojs-react`'s `ReactDiagram` shape (a
+ * factory prop plus `ref.getDiagram()`), for porting existing `gojs-react`
+ * code by only changing the import — as an alternative to this module's
+ * own `<Diagram>`, which instead takes `nodeTemplate`/`linkTemplate` as
+ * declarative props.
+ */
+export const ReactDiagram = forwardRef<ReactDiagramRef, ReactDiagramProps>(function ReactDiagram(
+  {
+    initDiagram,
+    nodeDataArray,
+    linkDataArray,
+    skipsDiagramUpdate,
+    onModelChange,
+    divClassName,
+    style,
+  },
+  ref,
+) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const diagramRef = useRef<GoDiagram | null>(null);
+  const modelListenerRef = useRef<((event: ChangedEvent) => void) | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    getDiagram: () => diagramRef.current,
+  }));
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once effect; initDiagram is a factory, called once by design (matches gojs-react)
+  useEffect(() => {
+    const diagram = initDiagram();
+    diagramRef.current = diagram;
+    if (containerRef.current) diagram.div = containerRef.current;
+
+    if (nodeDataArray || linkDataArray) {
+      diagram.model = new GoGraphLinksModel({ nodeDataArray, linkDataArray });
+    }
+
+    return () => {
+      diagram.destroy();
+      diagramRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const diagram = diagramRef.current;
+    if (!diagram) return;
+    if (modelListenerRef.current) diagram.removeModelChangedListener(modelListenerRef.current);
+    if (!onModelChange) {
+      modelListenerRef.current = null;
+      return;
+    }
+    const listener = (event: ChangedEvent): void => onModelChange(event);
+    modelListenerRef.current = listener;
+    diagram.addModelChangedListener(listener);
+  }, [onModelChange]);
+
+  useEffect(() => {
+    const diagram = diagramRef.current;
+    if (!diagram || skipsDiagramUpdate) return;
+    diagram.model = new GoGraphLinksModel({ nodeDataArray, linkDataArray });
+  }, [nodeDataArray, linkDataArray, skipsDiagramUpdate]);
+
+  return (
+    <div
+      ref={containerRef}
+      className={divClassName}
+      style={{ width: '100%', height: '100%', ...style }}
+    />
+  );
+});
+
+export const version: string = '1.5.0';

@@ -5,7 +5,7 @@ prev: false
 title: "QuadTree"
 ---
 
-Defined in: [spatial/QuadTree.ts:16](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L16)
+Defined in: [spatial/QuadTree.ts:16](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L16)
 
 A quadtree spatial index for fast 2D region queries.
 Used for viewport culling and hit-testing optimization.
@@ -22,7 +22,7 @@ Used for viewport culling and hit-testing optimization.
 
 > **new QuadTree**\<`T`\>(`bounds`, `options?`): `QuadTree`\<`T`\>
 
-Defined in: [spatial/QuadTree.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L25)
+Defined in: [spatial/QuadTree.ts:25](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L25)
 
 #### Parameters
 
@@ -56,7 +56,7 @@ Defined in: [spatial/QuadTree.ts:25](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **itemCount**(): `number`
 
-Defined in: [spatial/QuadTree.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L38)
+Defined in: [spatial/QuadTree.ts:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L38)
 
 Get the total number of items in the quadtree.
 
@@ -70,7 +70,7 @@ Get the total number of items in the quadtree.
 
 > **clear**(): `void`
 
-Defined in: [spatial/QuadTree.ts:257](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L257)
+Defined in: [spatial/QuadTree.ts:257](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L257)
 
 Remove all items.
 
@@ -84,7 +84,7 @@ Remove all items.
 
 > **getAllItems**(): `T`[]
 
-Defined in: [spatial/QuadTree.ts:269](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L269)
+Defined in: [spatial/QuadTree.ts:269](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L269)
 
 Get all items in the quadtree.
 
@@ -98,7 +98,7 @@ Get all items in the quadtree.
 
 > **getBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [spatial/QuadTree.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L33)
+Defined in: [spatial/QuadTree.ts:33](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L33)
 
 Get the bounds of this quadtree node.
 
@@ -112,7 +112,7 @@ Get the bounds of this quadtree node.
 
 > **insert**(`x`, `y`, `data`): `void`
 
-Defined in: [spatial/QuadTree.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L43)
+Defined in: [spatial/QuadTree.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L43)
 
 Insert an item at a point.
 
@@ -140,7 +140,7 @@ Insert an item at a point.
 
 > **insertWithBounds**(`bounds`, `data`): `void`
 
-Defined in: [spatial/QuadTree.ts:56](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L56)
+Defined in: [spatial/QuadTree.ts:56](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L56)
 
 Insert an item described by a bounding rectangle. The item is indexed by
 its full extent (not just its center) so a viewport/region query finds
@@ -166,7 +166,7 @@ it whenever the rectangle overlaps, even if its center point doesn't.
 
 > **isLeaf**(): `boolean`
 
-Defined in: [spatial/QuadTree.ts:264](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L264)
+Defined in: [spatial/QuadTree.ts:264](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L264)
 
 Check if this node is a leaf (has no children).
 
@@ -180,7 +180,7 @@ Check if this node is a leaf (has no children).
 
 > **queryCircle**(`cx`, `cy`, `radius`): `T`[]
 
-Defined in: [spatial/QuadTree.ts:199](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L199)
+Defined in: [spatial/QuadTree.ts:199](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L199)
 
 Query all items within a circle.
 
@@ -208,7 +208,7 @@ Query all items within a circle.
 
 > **queryNearest**(`x`, `y`, `maxDistance`): `T` \| `null`
 
-Defined in: [spatial/QuadTree.ts:211](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L211)
+Defined in: [spatial/QuadTree.ts:211](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L211)
 
 Query the nearest item to a point within maxDistance.
 
@@ -236,7 +236,7 @@ Query the nearest item to a point within maxDistance.
 
 > **queryRegion**(`bounds`): `T`[]
 
-Defined in: [spatial/QuadTree.ts:138](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L138)
+Defined in: [spatial/QuadTree.ts:138](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L138)
 
 Query all items within a region (inclusive).
 Returns data items found in the region.
@@ -257,7 +257,7 @@ Returns data items found in the region.
 
 > **queryRegionWithPoints**(`bounds`): `object`[]
 
-Defined in: [spatial/QuadTree.ts:173](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L173)
+Defined in: [spatial/QuadTree.ts:173](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L173)
 
 Query items within a rectangular region.
 Returns data items with their positions.
@@ -278,7 +278,7 @@ Returns data items with their positions.
 
 > **remove**(`data`): `boolean`
 
-Defined in: [spatial/QuadTree.ts:233](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/QuadTree.ts#L233)
+Defined in: [spatial/QuadTree.ts:233](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/QuadTree.ts#L233)
 
 Remove an item from the quadtree.
 

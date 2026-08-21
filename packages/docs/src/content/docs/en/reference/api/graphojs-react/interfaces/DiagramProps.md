@@ -5,7 +5,7 @@ prev: false
 title: "DiagramProps"
 ---
 
-Defined in: [react/index.tsx:21](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L21)
+Defined in: [react/index.tsx:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L24)
 
 ## Properties
 
@@ -13,7 +13,7 @@ Defined in: [react/index.tsx:21](https://github.com/rroblf01/graphojs/blob/da00c
 
 > `optional` **className?**: `string`
 
-Defined in: [react/index.tsx:40](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L40)
+Defined in: [react/index.tsx:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L43)
 
 ***
 
@@ -21,7 +21,7 @@ Defined in: [react/index.tsx:40](https://github.com/rroblf01/graphojs/blob/da00c
 
 > `optional` **groupTemplate?**: [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
-Defined in: [react/index.tsx:29](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L29)
+Defined in: [react/index.tsx:32](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L32)
 
 GoJS-compatible: the group template.
 
@@ -31,7 +31,7 @@ GoJS-compatible: the group template.
 
 > `optional` **initDiagram?**: (`diagram`) => `void`
 
-Defined in: [react/index.tsx:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L31)
+Defined in: [react/index.tsx:34](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L34)
 
 Called once the underlying diagram is created.
 
@@ -51,7 +51,7 @@ Called once the underlying diagram is created.
 
 > `optional` **linkTemplate?**: [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
-Defined in: [react/index.tsx:27](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L27)
+Defined in: [react/index.tsx:30](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L30)
 
 GoJS-compatible: the link template.
 
@@ -61,7 +61,7 @@ GoJS-compatible: the link template.
 
 > `optional` **model?**: [`GraphLinksModel`](/en/reference/api/graphojs/classes/graphlinksmodel/)
 
-Defined in: [react/index.tsx:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L23)
+Defined in: [react/index.tsx:26](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L26)
 
 GoJS-compatible: the model to display. Re-renders when it changes.
 
@@ -71,7 +71,7 @@ GoJS-compatible: the model to display. Re-renders when it changes.
 
 > `optional` **nodeTemplate?**: [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
-Defined in: [react/index.tsx:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L25)
+Defined in: [react/index.tsx:28](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L28)
 
 GoJS-compatible: the node template.
 
@@ -81,7 +81,7 @@ GoJS-compatible: the node template.
 
 > `optional` **onDiagramEvent?**: (`type`, `event`) => `void`
 
-Defined in: [react/index.tsx:37](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L37)
+Defined in: [react/index.tsx:40](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L40)
 
 Called for every fired diagram event of the given type.
 
@@ -105,7 +105,7 @@ Called for every fired diagram event of the given type.
 
 > `optional` **onDiagramInit?**: (`diagram`) => `void`
 
-Defined in: [react/index.tsx:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L33)
+Defined in: [react/index.tsx:36](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L36)
 
 Called after initDiagram with the diagram instance.
 
@@ -125,7 +125,7 @@ Called after initDiagram with the diagram instance.
 
 > `optional` **onModelChange?**: (`event`) => `void`
 
-Defined in: [react/index.tsx:35](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L35)
+Defined in: [react/index.tsx:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L38)
 
 GoJS-compatible: called whenever the diagram's model changes.
 
@@ -145,7 +145,7 @@ GoJS-compatible: called whenever the diagram's model changes.
 
 > `optional` **onSelectionChanged?**: (`diagram`) => `void`
 
-Defined in: [react/index.tsx:39](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L39)
+Defined in: [react/index.tsx:42](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L42)
 
 Sugar for the "SelectionChanged" diagram event.
 
@@ -165,4 +165,4 @@ Sugar for the "SelectionChanged" diagram event.
 
 > `optional` **style?**: `CSSProperties`
 
-Defined in: [react/index.tsx:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L41)
+Defined in: [react/index.tsx:44](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L44)

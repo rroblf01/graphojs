@@ -5,7 +5,7 @@ prev: false
 title: "ReshapeLinkCommand"
 ---
 
-Defined in: [undo/commands.ts:356](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L356)
+Defined in: [undo/commands.ts:356](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L356)
 
 Command to persist a manual link reshape (from LinkReshapingTool). There is
 no model-data field for a link's path points, so this operates directly on
@@ -21,7 +21,7 @@ the visual Link's pathPoints/hasManualReshape rather than through the model.
 
 > **new ReshapeLinkCommand**(`link`, `newPoints`, `oldPoints`, `oldHasManualReshape`): `ReshapeLinkCommand`
 
-Defined in: [undo/commands.ts:362](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L362)
+Defined in: [undo/commands.ts:362](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L362)
 
 #### Parameters
 
@@ -51,7 +51,7 @@ Defined in: [undo/commands.ts:362](https://github.com/rroblf01/graphojs/blob/da0
 
 > **describe**(): `string`
 
-Defined in: [undo/commands.ts:386](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L386)
+Defined in: [undo/commands.ts:386](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L386)
 
 Get a description of the command.
 
@@ -69,7 +69,7 @@ Get a description of the command.
 
 > **execute**(): `void`
 
-Defined in: [undo/commands.ts:374](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L374)
+Defined in: [undo/commands.ts:374](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L374)
 
 Execute the command.
 
@@ -87,7 +87,7 @@ Execute the command.
 
 > **undo**(): `void`
 
-Defined in: [undo/commands.ts:380](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L380)
+Defined in: [undo/commands.ts:380](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L380)
 
 Undo the command.
 

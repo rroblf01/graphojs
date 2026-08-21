@@ -46,7 +46,7 @@ function mountReactive(
 
 describe('graphojs/vue', () => {
   it('exposes a version', () => {
-    expect(version).toBe('1.6.0');
+    expect(version).toBe('1.7.0');
   });
 
   it('mounts a Diagram component and initializes the diagram', async () => {

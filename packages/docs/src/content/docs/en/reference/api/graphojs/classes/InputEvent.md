@@ -5,7 +5,7 @@ prev: false
 title: "InputEvent"
 ---
 
-Defined in: [events/InputEvent.ts:9](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L9)
+Defined in: [events/InputEvent.ts:9](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L9)
 
 GoJS-compatible: Wraps a browser event delivered to GraphObject handlers.
 Exposes diagram/model/document-point accessors that DOM MouseEvents lack.
@@ -16,7 +16,7 @@ Exposes diagram/model/document-point accessors that DOM MouseEvents lack.
 
 > **new InputEvent**(`source`): `InputEvent`
 
-Defined in: [events/InputEvent.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L23)
+Defined in: [events/InputEvent.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L23)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [events/InputEvent.ts:23](https://github.com/rroblf01/graphojs/blob/
 
 > **clickCount**: `number` = `0`
 
-Defined in: [events/InputEvent.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L19)
+Defined in: [events/InputEvent.ts:19](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L19)
 
 The click count for mouse events.
 
@@ -44,7 +44,7 @@ The click count for mouse events.
 
 > **diagram**: [`Diagram`](/en/reference/api/graphojs/classes/diagram/) \| `null` = `null`
 
-Defined in: [events/InputEvent.ts:13](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L13)
+Defined in: [events/InputEvent.ts:13](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L13)
 
 The diagram that received the event (if available).
 
@@ -54,7 +54,7 @@ The diagram that received the event (if available).
 
 > **handled**: `boolean` = `false`
 
-Defined in: [events/InputEvent.ts:17](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L17)
+Defined in: [events/InputEvent.ts:17](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L17)
 
 Whether this event has been handled (prevents further propagation).
 
@@ -64,7 +64,7 @@ Whether this event has been handled (prevents further propagation).
 
 > **key**: `string` = `''`
 
-Defined in: [events/InputEvent.ts:21](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L21)
+Defined in: [events/InputEvent.ts:21](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L21)
 
 The key involved in keyboard events (may be empty for mouse events).
 
@@ -74,7 +74,7 @@ The key involved in keyboard events (may be empty for mouse events).
 
 > `readonly` **source**: `MouseEvent` \| `KeyboardEvent`
 
-Defined in: [events/InputEvent.ts:11](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L11)
+Defined in: [events/InputEvent.ts:11](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L11)
 
 The original DOM event.
 
@@ -84,7 +84,7 @@ The original DOM event.
 
 > **targetObject**: [`GraphObject`](/en/reference/api/graphojs/classes/graphobject/) \| `null` = `null`
 
-Defined in: [events/InputEvent.ts:15](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L15)
+Defined in: [events/InputEvent.ts:15](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L15)
 
 The GraphObject the event targeted (if available).
 
@@ -96,7 +96,7 @@ The GraphObject the event targeted (if available).
 
 > **get** **alt**(): `boolean`
 
-Defined in: [events/InputEvent.ts:59](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L59)
+Defined in: [events/InputEvent.ts:59](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L59)
 
 GoJS-compatible: whether the Alt/Option key was held during the event.
 
@@ -112,7 +112,7 @@ GoJS-compatible: whether the Alt/Option key was held during the event.
 
 > **get** **button**(): `number`
 
-Defined in: [events/InputEvent.ts:69](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L69)
+Defined in: [events/InputEvent.ts:69](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L69)
 
 GoJS-compatible: the mouse button involved (0=left, 1=middle, 2=right), or -1 for non-mouse events.
 
@@ -128,7 +128,7 @@ GoJS-compatible: the mouse button involved (0=left, 1=middle, 2=right), or -1 fo
 
 > **get** **control**(): `boolean`
 
-Defined in: [events/InputEvent.ts:49](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L49)
+Defined in: [events/InputEvent.ts:49](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L49)
 
 GoJS-compatible: whether the Control key was held during the event.
 
@@ -144,7 +144,7 @@ GoJS-compatible: whether the Control key was held during the event.
 
 > **get** **left**(): `boolean`
 
-Defined in: [events/InputEvent.ts:74](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L74)
+Defined in: [events/InputEvent.ts:74](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L74)
 
 GoJS-compatible: whether the left mouse button was involved.
 
@@ -160,7 +160,7 @@ GoJS-compatible: whether the left mouse button was involved.
 
 > **get** **meta**(): `boolean`
 
-Defined in: [events/InputEvent.ts:64](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L64)
+Defined in: [events/InputEvent.ts:64](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L64)
 
 GoJS-compatible: whether the Meta/Command key was held during the event.
 
@@ -176,7 +176,7 @@ GoJS-compatible: whether the Meta/Command key was held during the event.
 
 > **get** **model**(): [`GraphLinksModel`](/en/reference/api/graphojs/classes/graphlinksmodel/) \| `null`
 
-Defined in: [events/InputEvent.ts:44](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L44)
+Defined in: [events/InputEvent.ts:44](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L44)
 
 GoJS-compatible: The model of the diagram receiving the event.
 
@@ -192,7 +192,7 @@ GoJS-compatible: The model of the diagram receiving the event.
 
 > **get** **right**(): `boolean`
 
-Defined in: [events/InputEvent.ts:79](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L79)
+Defined in: [events/InputEvent.ts:79](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L79)
 
 GoJS-compatible: whether the right mouse button was involved.
 
@@ -208,7 +208,7 @@ GoJS-compatible: whether the right mouse button was involved.
 
 > **get** **shift**(): `boolean`
 
-Defined in: [events/InputEvent.ts:54](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L54)
+Defined in: [events/InputEvent.ts:54](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L54)
 
 GoJS-compatible: whether the Shift key was held during the event.
 
@@ -222,7 +222,7 @@ GoJS-compatible: whether the Shift key was held during the event.
 
 > **documentPoint**(): `object`
 
-Defined in: [events/InputEvent.ts:28](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L28)
+Defined in: [events/InputEvent.ts:28](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L28)
 
 GoJS-compatible: The point in document coordinates.
 
@@ -244,7 +244,7 @@ GoJS-compatible: The point in document coordinates.
 
 > **viewPoint**(): `object`
 
-Defined in: [events/InputEvent.ts:36](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/events/InputEvent.ts#L36)
+Defined in: [events/InputEvent.ts:36](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/events/InputEvent.ts#L36)
 
 GoJS-compatible: The point in viewport (screen) coordinates.
 

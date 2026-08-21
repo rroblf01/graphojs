@@ -5,7 +5,7 @@ prev: false
 title: "CommandHandler"
 ---
 
-Defined in: [command/CommandHandler.ts:22](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L22)
+Defined in: [command/CommandHandler.ts:22](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L22)
 
 Handles high-level editing commands for a diagram.
 Provides delete, copy, cut, paste, and select-all operations.
@@ -16,7 +16,7 @@ Provides delete, copy, cut, paste, and select-all operations.
 
 > **new CommandHandler**(`diagram`): `CommandHandler`
 
-Defined in: [command/CommandHandler.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L31)
+Defined in: [command/CommandHandler.ts:31](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L31)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [command/CommandHandler.ts:31](https://github.com/rroblf01/graphojs/
 
 > **align**(`alignment`): `boolean`
 
-Defined in: [command/CommandHandler.ts:408](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L408)
+Defined in: [command/CommandHandler.ts:408](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L408)
 
 Align selected nodes (needs at least 2). Returns true if aligned.
 
@@ -54,7 +54,7 @@ Align selected nodes (needs at least 2). Returns true if aligned.
 
 > **bringToFront**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:551](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L551)
+Defined in: [command/CommandHandler.ts:551](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L551)
 
 Bring the selected parts to the front (highest z-order in their layer).
 
@@ -68,7 +68,7 @@ Bring the selected parts to the front (highest z-order in their layer).
 
 > **canCopy**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L41)
+Defined in: [command/CommandHandler.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L41)
 
 Whether copy/paste is available (there is something selected).
 
@@ -82,7 +82,7 @@ Whether copy/paste is available (there is something selected).
 
 > **canCopySelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:644](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L644)
+Defined in: [command/CommandHandler.ts:644](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L644)
 
 #### Returns
 
@@ -94,7 +94,7 @@ Defined in: [command/CommandHandler.ts:644](https://github.com/rroblf01/graphojs
 
 > **canCutSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:648](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L648)
+Defined in: [command/CommandHandler.ts:648](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L648)
 
 #### Returns
 
@@ -106,7 +106,7 @@ Defined in: [command/CommandHandler.ts:648](https://github.com/rroblf01/graphojs
 
 > **canDecreaseZoom**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:783](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L783)
+Defined in: [command/CommandHandler.ts:783](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L783)
 
 GoJS-compatible: Whether decreaseZoom is possible.
 
@@ -120,7 +120,7 @@ GoJS-compatible: Whether decreaseZoom is possible.
 
 > **canDeleteSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:640](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L640)
+Defined in: [command/CommandHandler.ts:640](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L640)
 
 #### Returns
 
@@ -132,7 +132,7 @@ Defined in: [command/CommandHandler.ts:640](https://github.com/rroblf01/graphojs
 
 > **canDuplicateSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:758](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L758)
+Defined in: [command/CommandHandler.ts:758](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L758)
 
 GoJS-compatible: Whether duplicateSelection is possible.
 
@@ -146,7 +146,7 @@ GoJS-compatible: Whether duplicateSelection is possible.
 
 > **canGroupSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:666](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L666)
+Defined in: [command/CommandHandler.ts:666](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L666)
 
 GoJS-compatible: Whether groupSelection is possible (>=1 selected node).
 
@@ -160,7 +160,7 @@ GoJS-compatible: Whether groupSelection is possible (>=1 selected node).
 
 > **canIncreaseZoom**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:771](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L771)
+Defined in: [command/CommandHandler.ts:771](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L771)
 
 GoJS-compatible: Whether increaseZoom is possible.
 
@@ -174,7 +174,7 @@ GoJS-compatible: Whether increaseZoom is possible.
 
 > **canPaste**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:46](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L46)
+Defined in: [command/CommandHandler.ts:46](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L46)
 
 Whether there is content on the clipboard to paste.
 
@@ -188,7 +188,7 @@ Whether there is content on the clipboard to paste.
 
 > **canPasteSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:656](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L656)
+Defined in: [command/CommandHandler.ts:656](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L656)
 
 #### Returns
 
@@ -200,7 +200,7 @@ Defined in: [command/CommandHandler.ts:656](https://github.com/rroblf01/graphojs
 
 > **canSelectAll**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:652](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L652)
+Defined in: [command/CommandHandler.ts:652](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L652)
 
 #### Returns
 
@@ -212,7 +212,7 @@ Defined in: [command/CommandHandler.ts:652](https://github.com/rroblf01/graphojs
 
 > **canUngroupSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:725](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L725)
+Defined in: [command/CommandHandler.ts:725](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L725)
 
 GoJS-compatible: Whether ungroupSelection is possible (>=1 selected group).
 
@@ -226,7 +226,7 @@ GoJS-compatible: Whether ungroupSelection is possible (>=1 selected group).
 
 > **canZoomToFit**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:802](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L802)
+Defined in: [command/CommandHandler.ts:802](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L802)
 
 GoJS-compatible: Whether the diagram can zoom to fit.
 
@@ -240,7 +240,7 @@ GoJS-compatible: Whether the diagram can zoom to fit.
 
 > **clearClipboard**(): `void`
 
-Defined in: [command/CommandHandler.ts:368](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L368)
+Defined in: [command/CommandHandler.ts:368](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L368)
 
 Clear the clipboard.
 
@@ -254,7 +254,7 @@ Clear the clipboard.
 
 > **copySelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:175](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L175)
+Defined in: [command/CommandHandler.ts:175](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L175)
 
 Copy the selected parts (and their connected links) to the clipboard.
 
@@ -268,7 +268,7 @@ Copy the selected parts (and their connected links) to the clipboard.
 
 > **cutSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:216](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L216)
+Defined in: [command/CommandHandler.ts:216](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L216)
 
 Cut the selected parts (copy + delete).
 
@@ -282,7 +282,7 @@ Cut the selected parts (copy + delete).
 
 > **decreaseZoom**(`factor?`): `boolean`
 
-Defined in: [command/CommandHandler.ts:788](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L788)
+Defined in: [command/CommandHandler.ts:788](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L788)
 
 GoJS-compatible: Zoom out by a factor.
 
@@ -302,7 +302,7 @@ GoJS-compatible: Zoom out by a factor.
 
 > **deleteSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:56](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L56)
+Defined in: [command/CommandHandler.ts:56](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L56)
 
 Delete the currently selected parts (undoable).
 
@@ -316,7 +316,7 @@ Delete the currently selected parts (undoable).
 
 > **deleteSelectionNoUndo**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:154](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L154)
+Defined in: [command/CommandHandler.ts:154](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L154)
 
 Delete the selection without undo support. Returns true if any were removed.
 
@@ -330,7 +330,7 @@ Delete the selection without undo support. Returns true if any were removed.
 
 > **distributeHorizontally**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:485](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L485)
+Defined in: [command/CommandHandler.ts:485](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L485)
 
 Distribute selected nodes evenly along the horizontal axis. Returns true if done.
 
@@ -344,7 +344,7 @@ Distribute selected nodes evenly along the horizontal axis. Returns true if done
 
 > **distributeVertically**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:518](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L518)
+Defined in: [command/CommandHandler.ts:518](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L518)
 
 Distribute selected nodes evenly along the vertical axis. Returns true if done.
 
@@ -358,7 +358,7 @@ Distribute selected nodes evenly along the vertical axis. Returns true if done.
 
 > **duplicateSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:763](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L763)
+Defined in: [command/CommandHandler.ts:763](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L763)
 
 GoJS-compatible: Duplicate the selection at a small offset.
 
@@ -372,7 +372,7 @@ GoJS-compatible: Duplicate the selection at a small offset.
 
 > **getClipboard**(): `object`
 
-Defined in: [command/CommandHandler.ts:356](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L356)
+Defined in: [command/CommandHandler.ts:356](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L356)
 
 Get the current clipboard contents.
 
@@ -394,7 +394,7 @@ Get the current clipboard contents.
 
 > **getDiagram**(): [`Diagram`](/en/reference/api/graphojs/classes/diagram/)
 
-Defined in: [command/CommandHandler.ts:36](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L36)
+Defined in: [command/CommandHandler.ts:36](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L36)
 
 Get the diagram this handler belongs to.
 
@@ -408,7 +408,7 @@ Get the diagram this handler belongs to.
 
 > **groupSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:671](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L671)
+Defined in: [command/CommandHandler.ts:671](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L671)
 
 GoJS-compatible: Group the selected nodes into a new Group part.
 
@@ -422,7 +422,7 @@ GoJS-compatible: Group the selected nodes into a new Group part.
 
 > **increaseZoom**(`factor?`): `boolean`
 
-Defined in: [command/CommandHandler.ts:776](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L776)
+Defined in: [command/CommandHandler.ts:776](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L776)
 
 GoJS-compatible: Zoom in by a factor.
 
@@ -442,7 +442,7 @@ GoJS-compatible: Zoom in by a factor.
 
 > **lower**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:617](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L617)
+Defined in: [command/CommandHandler.ts:617](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L617)
 
 Lower the selected parts by one z-order step.
 
@@ -456,7 +456,7 @@ Lower the selected parts by one z-order step.
 
 > **nudgeSelection**(`dx`, `dy`, `scale?`): `boolean`
 
-Defined in: [command/CommandHandler.ts:383](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L383)
+Defined in: [command/CommandHandler.ts:383](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L383)
 
 GoJS-compatible: Nudge the selected parts by the given deltas (arrow keys).
 
@@ -484,7 +484,7 @@ GoJS-compatible: Nudge the selected parts by the given deltas (arrow keys).
 
 > **pasteClipboard**(`offset?`): `boolean`
 
-Defined in: [command/CommandHandler.ts:223](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L223)
+Defined in: [command/CommandHandler.ts:223](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L223)
 
 Paste the clipboard (nodes + links) into the diagram (undoable).
 
@@ -504,7 +504,7 @@ Paste the clipboard (nodes + links) into the diagram (undoable).
 
 > **pasteClipboardAt**(`x`, `y`): `boolean`
 
-Defined in: [command/CommandHandler.ts:228](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L228)
+Defined in: [command/CommandHandler.ts:228](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L228)
 
 Paste the clipboard so the first node lands at the given position.
 
@@ -528,7 +528,7 @@ Paste the clipboard so the first node lands at the given position.
 
 > **pasteSelection**(`position?`): `boolean`
 
-Defined in: [command/CommandHandler.ts:814](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L814)
+Defined in: [command/CommandHandler.ts:814](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L814)
 
 GoJS-compatible: Paste the current clipboard at the given position, if any.
 
@@ -554,7 +554,7 @@ GoJS-compatible: Paste the current clipboard at the given position, if any.
 
 > **raise**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:612](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L612)
+Defined in: [command/CommandHandler.ts:612](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L612)
 
 Raise the selected parts by one z-order step.
 
@@ -568,7 +568,7 @@ Raise the selected parts by one z-order step.
 
 > **redo**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:351](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L351)
+Defined in: [command/CommandHandler.ts:351](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L351)
 
 Redo the last operation.
 
@@ -582,7 +582,7 @@ Redo the last operation.
 
 > **resetZoom**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:795](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L795)
+Defined in: [command/CommandHandler.ts:795](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L795)
 
 GoJS-compatible: Reset the zoom to 1.
 
@@ -596,7 +596,7 @@ GoJS-compatible: Reset the zoom to 1.
 
 > **selectAll**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:321](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L321)
+Defined in: [command/CommandHandler.ts:321](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L321)
 
 Select all parts in the diagram.
 
@@ -610,7 +610,7 @@ Select all parts in the diagram.
 
 > **selectAllInDiagram**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:661](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L661)
+Defined in: [command/CommandHandler.ts:661](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L661)
 
 GoJS-compatible: Select all parts in the diagram.
 
@@ -624,7 +624,7 @@ GoJS-compatible: Select all parts in the diagram.
 
 > **sendToBack**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:582](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L582)
+Defined in: [command/CommandHandler.ts:582](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L582)
 
 Send the selected parts to the back (lowest z-order in their layer).
 
@@ -638,7 +638,7 @@ Send the selected parts to the back (lowest z-order in their layer).
 
 > **setClipboard**(`data`): `void`
 
-Defined in: [command/CommandHandler.ts:361](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L361)
+Defined in: [command/CommandHandler.ts:361](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L361)
 
 Set the clipboard contents.
 
@@ -658,7 +658,7 @@ Set the clipboard contents.
 
 > **undo**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:346](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L346)
+Defined in: [command/CommandHandler.ts:346](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L346)
 
 Undo the last operation.
 
@@ -672,7 +672,7 @@ Undo the last operation.
 
 > **ungroupSelection**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:730](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L730)
+Defined in: [command/CommandHandler.ts:730](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L730)
 
 GoJS-compatible: Ungroup the selected groups, releasing their members.
 
@@ -686,7 +686,7 @@ GoJS-compatible: Ungroup the selected groups, releasing their members.
 
 > **zoomToFit**(): `boolean`
 
-Defined in: [command/CommandHandler.ts:807](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/command/CommandHandler.ts#L807)
+Defined in: [command/CommandHandler.ts:807](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/command/CommandHandler.ts#L807)
 
 GoJS-compatible: Zoom to fit the entire diagram in the viewport.
 

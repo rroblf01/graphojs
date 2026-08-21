@@ -5,7 +5,7 @@ prev: false
 title: "ShapeRenderer"
 ---
 
-Defined in: [shapes/ShapeRenderer.ts:6](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeRenderer.ts#L6)
+Defined in: [shapes/ShapeRenderer.ts:6](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeRenderer.ts#L6)
 
 Renders various shapes on a Canvas 2D context.
 
@@ -15,7 +15,7 @@ Renders various shapes on a Canvas 2D context.
 
 > **new ShapeRenderer**(`ctx`): `ShapeRenderer`
 
-Defined in: [shapes/ShapeRenderer.ts:9](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeRenderer.ts#L9)
+Defined in: [shapes/ShapeRenderer.ts:9](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeRenderer.ts#L9)
 
 #### Parameters
 
@@ -33,7 +33,7 @@ Defined in: [shapes/ShapeRenderer.ts:9](https://github.com/rroblf01/graphojs/blo
 
 > **renderShape**(`type`, `x`, `y`, `width`, `height`): `void`
 
-Defined in: [shapes/ShapeRenderer.ts:16](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeRenderer.ts#L16)
+Defined in: [shapes/ShapeRenderer.ts:16](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeRenderer.ts#L16)
 
 Render a shape by type.
 

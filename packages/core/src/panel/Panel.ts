@@ -876,6 +876,11 @@ export class Panel extends GraphObject {
     return null;
   }
 
+  /** GoJS-compatible alias: real GoJS names this method `findObject`. */
+  findObject(name: string): GraphObject | null {
+    return this.findElement(name);
+  }
+
   /** The bounds of this panel within the parent coordinate space. */
   override getBounds(): Rect {
     return {

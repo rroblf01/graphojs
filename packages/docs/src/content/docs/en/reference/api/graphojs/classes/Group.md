@@ -5,7 +5,7 @@ prev: false
 title: "Group"
 ---
 
-Defined in: [parts/Group.ts:12](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L12)
+Defined in: [parts/Group.ts:12](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L12)
 
 A group is a Part that can contain other Parts (nodes and links).
 Groups act as subgraphs within a diagram.
@@ -20,7 +20,7 @@ Groups act as subgraphs within a diagram.
 
 > **new Group**(`key`, `bounds?`): `Group`
 
-Defined in: [parts/Group.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L19)
+Defined in: [parts/Group.ts:19](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L19)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: [parts/Group.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **actualBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [parts/Part.ts:202](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L202)
+Defined in: [parts/Part.ts:230](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L230)
 
 GoJS-compatible: The actual bounds of this part in document coordinates.
 
@@ -60,7 +60,7 @@ GoJS-compatible: The actual bounds of this part in document coordinates.
 
 > **set** **actualBounds**(`value`): `void`
 
-Defined in: [parts/Part.ts:206](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L206)
+Defined in: [parts/Part.ts:234](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L234)
 
 ##### Parameters
 
@@ -84,7 +84,7 @@ Defined in: [parts/Part.ts:206](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **adornments**(): `ReadonlyMap`\<`string`, [`Adornment`](/en/reference/api/graphojs/classes/adornment/)\>
 
-Defined in: [parts/Part.ts:537](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L537)
+Defined in: [parts/Part.ts:572](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L572)
 
 Get all adornments on this part.
 
@@ -104,7 +104,7 @@ Get all adornments on this part.
 
 > **get** **angle**(): `number`
 
-Defined in: [parts/Part.ts:285](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L285)
+Defined in: [parts/Part.ts:313](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L313)
 
 The rotation angle in degrees.
 
@@ -116,7 +116,7 @@ The rotation angle in degrees.
 
 > **set** **angle**(`value`): `void`
 
-Defined in: [parts/Part.ts:289](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L289)
+Defined in: [parts/Part.ts:317](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L317)
 
 ##### Parameters
 
@@ -140,7 +140,7 @@ Defined in: [parts/Part.ts:289](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **background**(): `string` \| `null`
 
-Defined in: [parts/Part.ts:157](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L157)
+Defined in: [parts/Part.ts:185](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L185)
 
 GoJS-compatible: The background color of this part.
 
@@ -152,7 +152,7 @@ GoJS-compatible: The background color of this part.
 
 > **set** **background**(`value`): `void`
 
-Defined in: [parts/Part.ts:161](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L161)
+Defined in: [parts/Part.ts:189](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L189)
 
 ##### Parameters
 
@@ -176,7 +176,7 @@ Defined in: [parts/Part.ts:161](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **bindings**(): readonly [`Binding`](/en/reference/api/graphojs/classes/binding/)[]
 
-Defined in: [parts/Part.ts:568](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L568)
+Defined in: [parts/Part.ts:603](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L603)
 
 Get all bindings on this part.
 
@@ -196,7 +196,7 @@ readonly [`Binding`](/en/reference/api/graphojs/classes/binding/)[]
 
 > **get** **bounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [parts/Part.ts:107](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L107)
+Defined in: [parts/Part.ts:135](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L135)
 
 ##### Returns
 
@@ -206,7 +206,7 @@ Defined in: [parts/Part.ts:107](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **bounds**(`value`): `void`
 
-Defined in: [parts/Part.ts:111](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L111)
+Defined in: [parts/Part.ts:139](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L139)
 
 ##### Parameters
 
@@ -230,7 +230,7 @@ Defined in: [parts/Part.ts:111](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **category**(): `string`
 
-Defined in: [parts/Part.ts:340](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L340)
+Defined in: [parts/Part.ts:368](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L368)
 
 GoJS-compatible: The category of this part (used to select a template).
 
@@ -242,7 +242,7 @@ GoJS-compatible: The category of this part (used to select a template).
 
 > **set** **category**(`value`): `void`
 
-Defined in: [parts/Part.ts:344](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L344)
+Defined in: [parts/Part.ts:372](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L372)
 
 ##### Parameters
 
@@ -266,7 +266,7 @@ Defined in: [parts/Part.ts:344](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **center**(): `object`
 
-Defined in: [parts/Part.ts:628](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L628)
+Defined in: [parts/Part.ts:663](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L663)
 
 Get the center point.
 
@@ -294,7 +294,7 @@ Get the center point.
 
 > **get** **containingGroup**(): [`Part`](/en/reference/api/graphojs/classes/part/) \| `null`
 
-Defined in: [parts/Part.ts:377](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L377)
+Defined in: [parts/Part.ts:405](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L405)
 
 Get the containing group, or null if top-level.
 
@@ -306,7 +306,7 @@ Get the containing group, or null if top-level.
 
 > **set** **containingGroup**(`value`): `void`
 
-Defined in: [parts/Part.ts:382](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L382)
+Defined in: [parts/Part.ts:410](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L410)
 
 Set the containing group.
 
@@ -330,27 +330,29 @@ Set the containing group.
 
 #### Get Signature
 
-> **get** **contextMenu**(): [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
+> **get** **contextMenu**(): [`Panel`](/en/reference/api/graphojs/classes/panel/) \| [`HTMLInfo`](/en/reference/api/graphojs/classes/htmlinfo/) \| `null`
 
-Defined in: [parts/Part.ts:453](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L453)
+Defined in: [parts/Part.ts:488](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L488)
 
-GoJS-compatible: A context menu template (Panel) shown on right-click.
+GoJS-compatible: a context menu shown on right-click — a Panel
+template drawn to canvas, or an [HTMLInfo](/en/reference/api/graphojs/classes/htmlinfo/) for full control over
+an HTML element.
 
 ##### Returns
 
-[`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
+[`Panel`](/en/reference/api/graphojs/classes/panel/) \| [`HTMLInfo`](/en/reference/api/graphojs/classes/htmlinfo/) \| `null`
 
 #### Set Signature
 
 > **set** **contextMenu**(`value`): `void`
 
-Defined in: [parts/Part.ts:457](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L457)
+Defined in: [parts/Part.ts:492](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L492)
 
 ##### Parameters
 
 ###### value
 
-[`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
+[`Panel`](/en/reference/api/graphojs/classes/panel/) \| [`HTMLInfo`](/en/reference/api/graphojs/classes/htmlinfo/) \| `null`
 
 ##### Returns
 
@@ -368,7 +370,7 @@ Defined in: [parts/Part.ts:457](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **copyable**(): `boolean`
 
-Defined in: [parts/Part.ts:90](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L90)
+Defined in: [parts/Part.ts:118](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L118)
 
 GoJS-compatible: Whether this part can be copied.
 
@@ -380,7 +382,7 @@ GoJS-compatible: Whether this part can be copied.
 
 > **set** **copyable**(`value`): `void`
 
-Defined in: [parts/Part.ts:94](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L94)
+Defined in: [parts/Part.ts:122](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L122)
 
 ##### Parameters
 
@@ -404,7 +406,7 @@ Defined in: [parts/Part.ts:94](https://github.com/rroblf01/graphojs/blob/da00c05
 
 > **get** **cursor**(): `string`
 
-Defined in: [parts/Part.ts:175](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L175)
+Defined in: [parts/Part.ts:203](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L203)
 
 GoJS-compatible: The cursor shown when hovering this part.
 
@@ -416,7 +418,7 @@ GoJS-compatible: The cursor shown when hovering this part.
 
 > **set** **cursor**(`value`): `void`
 
-Defined in: [parts/Part.ts:179](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L179)
+Defined in: [parts/Part.ts:207](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L207)
 
 ##### Parameters
 
@@ -440,7 +442,7 @@ Defined in: [parts/Part.ts:179](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **data**(): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/) \| `null`
 
-Defined in: [parts/Part.ts:331](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L331)
+Defined in: [parts/Part.ts:359](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L359)
 
 GoJS-compatible: Reference to the model data object for this part.
 
@@ -452,7 +454,7 @@ GoJS-compatible: Reference to the model data object for this part.
 
 > **set** **data**(`value`): `void`
 
-Defined in: [parts/Part.ts:335](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L335)
+Defined in: [parts/Part.ts:363](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L363)
 
 ##### Parameters
 
@@ -476,7 +478,7 @@ Defined in: [parts/Part.ts:335](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **deletable**(): `boolean`
 
-Defined in: [parts/Part.ts:68](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L68)
+Defined in: [parts/Part.ts:96](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L96)
 
 GoJS-compatible: Whether this part can be deleted.
 
@@ -488,7 +490,7 @@ GoJS-compatible: Whether this part can be deleted.
 
 > **set** **deletable**(`value`): `void`
 
-Defined in: [parts/Part.ts:72](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L72)
+Defined in: [parts/Part.ts:100](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L100)
 
 ##### Parameters
 
@@ -512,7 +514,7 @@ Defined in: [parts/Part.ts:72](https://github.com/rroblf01/graphojs/blob/da00c05
 
 > **get** **desiredSize**(): [`Size`](/en/reference/api/graphojs/classes/size/) \| `null`
 
-Defined in: [parts/Part.ts:134](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L134)
+Defined in: [parts/Part.ts:162](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L162)
 
 GoJS-compatible: The desired size of this part.
 
@@ -524,7 +526,7 @@ GoJS-compatible: The desired size of this part.
 
 > **set** **desiredSize**(`value`): `void`
 
-Defined in: [parts/Part.ts:139](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L139)
+Defined in: [parts/Part.ts:167](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L167)
 
 ##### Parameters
 
@@ -548,7 +550,7 @@ Defined in: [parts/Part.ts:139](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **diagram**(): [`Diagram`](/en/reference/api/graphojs/classes/diagram/) \| `null`
 
-Defined in: [parts/Part.ts:415](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L415)
+Defined in: [parts/Part.ts:443](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L443)
 
 GoJS-compatible: The diagram that this part is in (or null).
 
@@ -560,7 +562,7 @@ GoJS-compatible: The diagram that this part is in (or null).
 
 > **set** **diagram**(`value`): `void`
 
-Defined in: [parts/Part.ts:420](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L420)
+Defined in: [parts/Part.ts:448](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L448)
 
 Set the diagram this part belongs to.
 
@@ -586,7 +588,7 @@ Set the diagram this part belongs to.
 
 > **get** **dragAlpha**(): `number`
 
-Defined in: [parts/Part.ts:349](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L349)
+Defined in: [parts/Part.ts:377](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L377)
 
 GoJS-compatible: The opacity used when this part is being dragged.
 
@@ -598,7 +600,7 @@ GoJS-compatible: The opacity used when this part is being dragged.
 
 > **set** **dragAlpha**(`value`): `void`
 
-Defined in: [parts/Part.ts:353](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L353)
+Defined in: [parts/Part.ts:381](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L381)
 
 ##### Parameters
 
@@ -622,7 +624,7 @@ Defined in: [parts/Part.ts:353](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **draggable**(): `boolean`
 
-Defined in: [parts/Part.ts:471](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L471)
+Defined in: [parts/Part.ts:506](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L506)
 
 Whether this part can be dragged.
 
@@ -634,7 +636,7 @@ Whether this part can be dragged.
 
 > **set** **draggable**(`value`): `void`
 
-Defined in: [parts/Part.ts:475](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L475)
+Defined in: [parts/Part.ts:510](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L510)
 
 ##### Parameters
 
@@ -658,7 +660,7 @@ Defined in: [parts/Part.ts:475](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **elements**(): readonly [`GraphObject`](/en/reference/api/graphojs/classes/graphobject/)[]
 
-Defined in: [parts/Part.ts:511](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L511)
+Defined in: [parts/Part.ts:546](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L546)
 
 GoJS-compatible: Get the child elements in this part's visual tree.
 
@@ -678,7 +680,7 @@ readonly [`GraphObject`](/en/reference/api/graphojs/classes/graphobject/)[]
 
 > **get** **fill**(): `string`
 
-Defined in: [parts/Part.ts:252](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L252)
+Defined in: [parts/Part.ts:280](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L280)
 
 ##### Returns
 
@@ -688,7 +690,7 @@ Defined in: [parts/Part.ts:252](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **fill**(`value`): `void`
 
-Defined in: [parts/Part.ts:256](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L256)
+Defined in: [parts/Part.ts:284](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L284)
 
 ##### Parameters
 
@@ -712,7 +714,7 @@ Defined in: [parts/Part.ts:256](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **height**(): `number`
 
-Defined in: [parts/Part.ts:125](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L125)
+Defined in: [parts/Part.ts:153](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L153)
 
 GoJS-compatible: The height of this part (delegates to its bounds).
 
@@ -724,7 +726,7 @@ GoJS-compatible: The height of this part (delegates to its bounds).
 
 > **set** **height**(`value`): `void`
 
-Defined in: [parts/Part.ts:129](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L129)
+Defined in: [parts/Part.ts:157](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L157)
 
 ##### Parameters
 
@@ -748,7 +750,7 @@ Defined in: [parts/Part.ts:129](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **isGroup**(): `boolean`
 
-Defined in: [parts/Group.ts:24](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L24)
+Defined in: [parts/Group.ts:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L24)
 
 Whether this is a group (always true).
 
@@ -764,7 +766,7 @@ Whether this is a group (always true).
 
 > **get** **isHighlighted**(): `boolean`
 
-Defined in: [parts/Part.ts:99](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L99)
+Defined in: [parts/Part.ts:127](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L127)
 
 GoJS-compatible: Whether this part is currently highlighted.
 
@@ -776,7 +778,7 @@ GoJS-compatible: Whether this part is currently highlighted.
 
 > **set** **isHighlighted**(`value`): `void`
 
-Defined in: [parts/Part.ts:103](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L103)
+Defined in: [parts/Part.ts:131](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L131)
 
 ##### Parameters
 
@@ -800,7 +802,7 @@ Defined in: [parts/Part.ts:103](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **isInDocumentBounds**(): `boolean`
 
-Defined in: [parts/Part.ts:358](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L358)
+Defined in: [parts/Part.ts:386](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L386)
 
 GoJS-compatible: Whether this part is within the document bounds.
 
@@ -812,7 +814,7 @@ GoJS-compatible: Whether this part is within the document bounds.
 
 > **set** **isInDocumentBounds**(`value`): `void`
 
-Defined in: [parts/Part.ts:362](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L362)
+Defined in: [parts/Part.ts:390](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L390)
 
 ##### Parameters
 
@@ -836,7 +838,7 @@ Defined in: [parts/Part.ts:362](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **isMemberOfGroup**(): `boolean`
 
-Defined in: [parts/Part.ts:387](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L387)
+Defined in: [parts/Part.ts:415](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L415)
 
 GoJS-compatible: Whether this part is a member of a group.
 
@@ -856,7 +858,7 @@ GoJS-compatible: Whether this part is a member of a group.
 
 > **get** **isPositioned**(): `boolean`
 
-Defined in: [parts/Part.ts:392](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L392)
+Defined in: [parts/Part.ts:420](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L420)
 
 GoJS-compatible: Whether this part has been given a position/bounds.
 
@@ -876,7 +878,7 @@ GoJS-compatible: Whether this part has been given a position/bounds.
 
 > **get** **isSelected**(): `boolean`
 
-Defined in: [parts/Part.ts:236](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L236)
+Defined in: [parts/Part.ts:264](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L264)
 
 ##### Returns
 
@@ -886,7 +888,7 @@ Defined in: [parts/Part.ts:236](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **isSelected**(`value`): `void`
 
-Defined in: [parts/Part.ts:240](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L240)
+Defined in: [parts/Part.ts:268](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L268)
 
 ##### Parameters
 
@@ -910,7 +912,7 @@ Defined in: [parts/Part.ts:240](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **isSubGraphExpanded**(): `boolean`
 
-Defined in: [parts/Group.ts:49](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L49)
+Defined in: [parts/Group.ts:49](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L49)
 
 Whether the subgraph is expanded.
 
@@ -922,7 +924,7 @@ Whether the subgraph is expanded.
 
 > **set** **isSubGraphExpanded**(`value`): `void`
 
-Defined in: [parts/Group.ts:54](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L54)
+Defined in: [parts/Group.ts:54](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L54)
 
 Set whether the subgraph is expanded.
 
@@ -944,7 +946,7 @@ Set whether the subgraph is expanded.
 
 > **get** **isTreeExpanded**(): `boolean`
 
-Defined in: [parts/Part.ts:81](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L81)
+Defined in: [parts/Part.ts:109](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L109)
 
 GoJS-compatible: Whether this part's tree-children (per findTreeChildrenNodes)
 are shown. Distinct from Group.isSubGraphExpanded — this applies to any Part
@@ -958,7 +960,7 @@ and is what TreeExpanderButton toggles via Diagram.collapseTree/expandTree.
 
 > **set** **isTreeExpanded**(`value`): `void`
 
-Defined in: [parts/Part.ts:85](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L85)
+Defined in: [parts/Part.ts:113](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L113)
 
 ##### Parameters
 
@@ -982,7 +984,7 @@ Defined in: [parts/Part.ts:85](https://github.com/rroblf01/graphojs/blob/da00c05
 
 > **get** **isVisibleObject**(): `boolean`
 
-Defined in: [parts/Part.ts:211](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L211)
+Defined in: [parts/Part.ts:239](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L239)
 
 GoJS-compatible: Whether this part and its ancestors are visible.
 
@@ -1002,7 +1004,7 @@ GoJS-compatible: Whether this part and its ancestors are visible.
 
 > **get** **key**(): [`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/)
 
-Defined in: [parts/Part.ts:63](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L63)
+Defined in: [parts/Part.ts:72](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L72)
 
 ##### Returns
 
@@ -1020,7 +1022,7 @@ Defined in: [parts/Part.ts:63](https://github.com/rroblf01/graphojs/blob/da00c05
 
 > **get** **layer**(): [`Layer`](/en/reference/api/graphojs/classes/layer/) \| `null`
 
-Defined in: [parts/Part.ts:397](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L397)
+Defined in: [parts/Part.ts:425](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L425)
 
 Get the layer this part belongs to.
 
@@ -1032,7 +1034,7 @@ Get the layer this part belongs to.
 
 > **set** **layer**(`value`): `void`
 
-Defined in: [parts/Part.ts:402](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L402)
+Defined in: [parts/Part.ts:430](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L430)
 
 Set the layer this part belongs to.
 
@@ -1058,7 +1060,7 @@ Set the layer this part belongs to.
 
 > **get** **layerName**(): `string`
 
-Defined in: [parts/Part.ts:367](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L367)
+Defined in: [parts/Part.ts:395](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L395)
 
 GoJS-compatible: The name of the layer this part belongs to.
 
@@ -1070,7 +1072,7 @@ GoJS-compatible: The name of the layer this part belongs to.
 
 > **set** **layerName**(`_value`): `void`
 
-Defined in: [parts/Part.ts:371](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L371)
+Defined in: [parts/Part.ts:399](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L399)
 
 ##### Parameters
 
@@ -1094,7 +1096,7 @@ Defined in: [parts/Part.ts:371](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **layout**(): [`Layout`](/en/reference/api/graphojs/classes/layout/) \| `null`
 
-Defined in: [parts/Group.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L60)
+Defined in: [parts/Group.ts:60](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L60)
 
 Get the layout for this group's members.
 
@@ -1106,7 +1108,7 @@ Get the layout for this group's members.
 
 > **set** **layout**(`value`): `void`
 
-Defined in: [parts/Group.ts:65](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L65)
+Defined in: [parts/Group.ts:65](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L65)
 
 Set the layout for this group's members.
 
@@ -1128,7 +1130,7 @@ Set the layout for this group's members.
 
 > **get** **location**(): [`Point`](/en/reference/api/graphojs/classes/point/)
 
-Defined in: [parts/Part.ts:298](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L298)
+Defined in: [parts/Part.ts:326](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L326)
 
 GoJS-compatible: The location point of this part — the point within the
 bounds at `locationSpot`. With the default locationSpot (0.5, 0.5) this
@@ -1142,7 +1144,7 @@ is the center; changing locationSpot moves the part so the spot stays put.
 
 > **set** **location**(`value`): `void`
 
-Defined in: [parts/Part.ts:306](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L306)
+Defined in: [parts/Part.ts:334](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L334)
 
 ##### Parameters
 
@@ -1166,7 +1168,7 @@ Defined in: [parts/Part.ts:306](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **locationSpot**(): `object`
 
-Defined in: [parts/Part.ts:313](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L313)
+Defined in: [parts/Part.ts:341](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L341)
 
 GoJS-compatible: The spot in the part that corresponds to the location point.
 
@@ -1186,7 +1188,7 @@ GoJS-compatible: The spot in the part that corresponds to the location point.
 
 > **set** **locationSpot**(`value`): `void`
 
-Defined in: [parts/Part.ts:317](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L317)
+Defined in: [parts/Part.ts:345](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L345)
 
 ##### Parameters
 
@@ -1216,7 +1218,7 @@ Defined in: [parts/Part.ts:317](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **maxSize**(): `object`
 
-Defined in: [parts/Part.ts:193](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L193)
+Defined in: [parts/Part.ts:221](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L221)
 
 GoJS-compatible: The maximum size of this part.
 
@@ -1236,7 +1238,7 @@ GoJS-compatible: The maximum size of this part.
 
 > **set** **maxSize**(`value`): `void`
 
-Defined in: [parts/Part.ts:197](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L197)
+Defined in: [parts/Part.ts:225](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L225)
 
 ##### Parameters
 
@@ -1266,7 +1268,7 @@ Defined in: [parts/Part.ts:197](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **memberCount**(): `number`
 
-Defined in: [parts/Group.ts:44](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L44)
+Defined in: [parts/Group.ts:44](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L44)
 
 Get the number of member parts.
 
@@ -1282,7 +1284,7 @@ Get the number of member parts.
 
 > **get** **memberLinks**(): [`Link`](/en/reference/api/graphojs/classes/link/)[]
 
-Defined in: [parts/Group.ts:39](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L39)
+Defined in: [parts/Group.ts:39](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L39)
 
 Get the member links.
 
@@ -1298,7 +1300,7 @@ Get the member links.
 
 > **get** **memberNodes**(): [`Node`](/en/reference/api/graphojs/classes/node/)[]
 
-Defined in: [parts/Group.ts:34](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L34)
+Defined in: [parts/Group.ts:34](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L34)
 
 Get the member nodes.
 
@@ -1314,7 +1316,7 @@ Get the member nodes.
 
 > **get** **memberParts**(): readonly [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
-Defined in: [parts/Group.ts:29](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L29)
+Defined in: [parts/Group.ts:29](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L29)
 
 Get the member parts of this group.
 
@@ -1330,7 +1332,7 @@ readonly [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
 > **get** **minSize**(): `object`
 
-Defined in: [parts/Part.ts:184](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L184)
+Defined in: [parts/Part.ts:212](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L212)
 
 GoJS-compatible: The minimum size of this part.
 
@@ -1350,7 +1352,7 @@ GoJS-compatible: The minimum size of this part.
 
 > **set** **minSize**(`value`): `void`
 
-Defined in: [parts/Part.ts:188](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L188)
+Defined in: [parts/Part.ts:216](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L216)
 
 ##### Parameters
 
@@ -1374,13 +1376,55 @@ Defined in: [parts/Part.ts:188](https://github.com/rroblf01/graphojs/blob/da00c0
 
 ***
 
+### name
+
+#### Get Signature
+
+> **get** **name**(): `string`
+
+Defined in: [parts/Part.ts:87](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L87)
+
+GoJS-compatible: an arbitrary name for this part. Real GoJS has this
+because `Part extends GraphObject`, which has its own `.name` (used
+for `findObject`-style lookups); graphojs's `Part` is a separate
+class, so it needs its own copy of the same property rather than
+inheriting it — most relevant for a bare decorative `Part` (see
+`Diagram.add`), which ported GoJS code may still identify by `.name`
+the way it would identify any other `GraphObject`.
+
+##### Returns
+
+`string`
+
+#### Set Signature
+
+> **set** **name**(`value`): `void`
+
+Defined in: [parts/Part.ts:91](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L91)
+
+##### Parameters
+
+###### value
+
+`string`
+
+##### Returns
+
+`void`
+
+#### Inherited from
+
+[`Part`](/en/reference/api/graphojs/classes/part/).[`name`](/en/reference/api/graphojs/classes/part/#name)
+
+***
+
 ### opacity
 
 #### Get Signature
 
 > **get** **opacity**(): `number`
 
-Defined in: [parts/Part.ts:244](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L244)
+Defined in: [parts/Part.ts:272](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L272)
 
 ##### Returns
 
@@ -1390,7 +1434,7 @@ Defined in: [parts/Part.ts:244](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **opacity**(`value`): `void`
 
-Defined in: [parts/Part.ts:248](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L248)
+Defined in: [parts/Part.ts:276](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L276)
 
 ##### Parameters
 
@@ -1414,7 +1458,7 @@ Defined in: [parts/Part.ts:248](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **panel**(): [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
-Defined in: [parts/Part.ts:498](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L498)
+Defined in: [parts/Part.ts:533](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L533)
 
 GoJS-compatible: Get the panel used to render this part's visual tree.
 
@@ -1426,7 +1470,7 @@ GoJS-compatible: Get the panel used to render this part's visual tree.
 
 > **set** **panel**(`value`): `void`
 
-Defined in: [parts/Part.ts:503](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L503)
+Defined in: [parts/Part.ts:538](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L538)
 
 GoJS-compatible: Set the panel used to render this part's visual tree.
 
@@ -1452,7 +1496,7 @@ GoJS-compatible: Set the panel used to render this part's visual tree.
 
 > **get** **pickable**(): `boolean`
 
-Defined in: [parts/Part.ts:166](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L166)
+Defined in: [parts/Part.ts:194](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L194)
 
 GoJS-compatible: Whether this part is pickable (hit-testable).
 
@@ -1464,7 +1508,7 @@ GoJS-compatible: Whether this part is pickable (hit-testable).
 
 > **set** **pickable**(`value`): `void`
 
-Defined in: [parts/Part.ts:170](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L170)
+Defined in: [parts/Part.ts:198](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L198)
 
 ##### Parameters
 
@@ -1488,7 +1532,7 @@ Defined in: [parts/Part.ts:170](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **placeholderPadding**(): `number`
 
-Defined in: [parts/Group.ts:70](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L70)
+Defined in: [parts/Group.ts:70](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L70)
 
 Get the placeholder padding.
 
@@ -1500,7 +1544,7 @@ Get the placeholder padding.
 
 > **set** **placeholderPadding**(`value`): `void`
 
-Defined in: [parts/Group.ts:75](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L75)
+Defined in: [parts/Group.ts:75](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L75)
 
 Set the placeholder padding.
 
@@ -1522,7 +1566,7 @@ Set the placeholder padding.
 
 > **get** **position**(): `object`
 
-Defined in: [parts/Part.ts:633](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L633)
+Defined in: [parts/Part.ts:668](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L668)
 
 Get the position (top-left).
 
@@ -1542,7 +1586,7 @@ Get the position (top-left).
 
 > **set** **position**(`value`): `void`
 
-Defined in: [parts/Part.ts:638](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L638)
+Defined in: [parts/Part.ts:673](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L673)
 
 Set the position (top-left), preserving size.
 
@@ -1574,7 +1618,7 @@ Set the position (top-left), preserving size.
 
 > **get** **resizable**(): `boolean`
 
-Defined in: [parts/Part.ts:480](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L480)
+Defined in: [parts/Part.ts:515](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L515)
 
 Whether this part can be resized.
 
@@ -1586,7 +1630,7 @@ Whether this part can be resized.
 
 > **set** **resizable**(`value`): `void`
 
-Defined in: [parts/Part.ts:484](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L484)
+Defined in: [parts/Part.ts:519](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L519)
 
 ##### Parameters
 
@@ -1610,7 +1654,7 @@ Defined in: [parts/Part.ts:484](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **rotatable**(): `boolean`
 
-Defined in: [parts/Part.ts:489](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L489)
+Defined in: [parts/Part.ts:524](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L524)
 
 Whether this part can be rotated.
 
@@ -1622,7 +1666,7 @@ Whether this part can be rotated.
 
 > **set** **rotatable**(`value`): `void`
 
-Defined in: [parts/Part.ts:493](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L493)
+Defined in: [parts/Part.ts:528](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L528)
 
 ##### Parameters
 
@@ -1646,7 +1690,7 @@ Defined in: [parts/Part.ts:493](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **scale**(): `number`
 
-Defined in: [parts/Part.ts:148](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L148)
+Defined in: [parts/Part.ts:176](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L176)
 
 GoJS-compatible: The scale of this part.
 
@@ -1658,7 +1702,7 @@ GoJS-compatible: The scale of this part.
 
 > **set** **scale**(`value`): `void`
 
-Defined in: [parts/Part.ts:152](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L152)
+Defined in: [parts/Part.ts:180](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L180)
 
 ##### Parameters
 
@@ -1682,7 +1726,7 @@ Defined in: [parts/Part.ts:152](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **selectable**(): `boolean`
 
-Defined in: [parts/Part.ts:228](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L228)
+Defined in: [parts/Part.ts:256](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L256)
 
 ##### Returns
 
@@ -1692,7 +1736,7 @@ Defined in: [parts/Part.ts:228](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **selectable**(`value`): `void`
 
-Defined in: [parts/Part.ts:232](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L232)
+Defined in: [parts/Part.ts:260](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L260)
 
 ##### Parameters
 
@@ -1716,7 +1760,7 @@ Defined in: [parts/Part.ts:232](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **selectionObject**(): [`GraphObject`](/en/reference/api/graphojs/classes/graphobject/) \| `null`
 
-Defined in: [parts/Part.ts:322](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L322)
+Defined in: [parts/Part.ts:350](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L350)
 
 GoJS-compatible: The GraphObject that is used as the selection object (for adornment placement).
 
@@ -1728,7 +1772,7 @@ GoJS-compatible: The GraphObject that is used as the selection object (for adorn
 
 > **set** **selectionObject**(`_value`): `void`
 
-Defined in: [parts/Part.ts:326](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L326)
+Defined in: [parts/Part.ts:354](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L354)
 
 ##### Parameters
 
@@ -1752,7 +1796,7 @@ Defined in: [parts/Part.ts:326](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **size**(): `object`
 
-Defined in: [parts/Part.ts:644](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L644)
+Defined in: [parts/Part.ts:679](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L679)
 
 Get the size.
 
@@ -1780,7 +1824,7 @@ Get the size.
 
 > **get** **stroke**(): `string`
 
-Defined in: [parts/Part.ts:260](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L260)
+Defined in: [parts/Part.ts:288](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L288)
 
 ##### Returns
 
@@ -1790,7 +1834,7 @@ Defined in: [parts/Part.ts:260](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **stroke**(`value`): `void`
 
-Defined in: [parts/Part.ts:264](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L264)
+Defined in: [parts/Part.ts:292](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L292)
 
 ##### Parameters
 
@@ -1814,7 +1858,7 @@ Defined in: [parts/Part.ts:264](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **strokeWidth**(): `number`
 
-Defined in: [parts/Part.ts:268](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L268)
+Defined in: [parts/Part.ts:296](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L296)
 
 ##### Returns
 
@@ -1824,7 +1868,7 @@ Defined in: [parts/Part.ts:268](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **strokeWidth**(`value`): `void`
 
-Defined in: [parts/Part.ts:272](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L272)
+Defined in: [parts/Part.ts:300](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L300)
 
 ##### Parameters
 
@@ -1848,7 +1892,7 @@ Defined in: [parts/Part.ts:272](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **tooltip**(): `string`
 
-Defined in: [parts/Part.ts:435](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L435)
+Defined in: [parts/Part.ts:463](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L463)
 
 The tooltip text shown when hovering over this part.
 
@@ -1860,7 +1904,7 @@ The tooltip text shown when hovering over this part.
 
 > **set** **tooltip**(`value`): `void`
 
-Defined in: [parts/Part.ts:439](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L439)
+Defined in: [parts/Part.ts:467](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L467)
 
 ##### Parameters
 
@@ -1882,27 +1926,28 @@ Defined in: [parts/Part.ts:439](https://github.com/rroblf01/graphojs/blob/da00c0
 
 #### Get Signature
 
-> **get** **toolTip**(): [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
+> **get** **toolTip**(): [`Panel`](/en/reference/api/graphojs/classes/panel/) \| [`HTMLInfo`](/en/reference/api/graphojs/classes/htmlinfo/) \| `null`
 
-Defined in: [parts/Part.ts:444](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L444)
+Defined in: [parts/Part.ts:475](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L475)
 
-GoJS-compatible: A tooltip template (Panel) shown on hover.
+GoJS-compatible: a tooltip shown on hover — a Panel template drawn to
+canvas, or an [HTMLInfo](/en/reference/api/graphojs/classes/htmlinfo/) for full control over an HTML element.
 
 ##### Returns
 
-[`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
+[`Panel`](/en/reference/api/graphojs/classes/panel/) \| [`HTMLInfo`](/en/reference/api/graphojs/classes/htmlinfo/) \| `null`
 
 #### Set Signature
 
 > **set** **toolTip**(`value`): `void`
 
-Defined in: [parts/Part.ts:448](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L448)
+Defined in: [parts/Part.ts:479](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L479)
 
 ##### Parameters
 
 ###### value
 
-[`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
+[`Panel`](/en/reference/api/graphojs/classes/panel/) \| [`HTMLInfo`](/en/reference/api/graphojs/classes/htmlinfo/) \| `null`
 
 ##### Returns
 
@@ -1920,7 +1965,7 @@ Defined in: [parts/Part.ts:448](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **tooltipVisible**(): `boolean`
 
-Defined in: [parts/Part.ts:462](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L462)
+Defined in: [parts/Part.ts:497](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L497)
 
 Whether the tooltip is currently visible.
 
@@ -1932,7 +1977,7 @@ Whether the tooltip is currently visible.
 
 > **set** **tooltipVisible**(`value`): `void`
 
-Defined in: [parts/Part.ts:466](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L466)
+Defined in: [parts/Part.ts:501](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L501)
 
 ##### Parameters
 
@@ -1956,7 +2001,7 @@ Defined in: [parts/Part.ts:466](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **visible**(): `boolean`
 
-Defined in: [parts/Part.ts:220](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L220)
+Defined in: [parts/Part.ts:248](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L248)
 
 ##### Returns
 
@@ -1966,7 +2011,7 @@ Defined in: [parts/Part.ts:220](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **visible**(`value`): `void`
 
-Defined in: [parts/Part.ts:224](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L224)
+Defined in: [parts/Part.ts:252](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L252)
 
 ##### Parameters
 
@@ -1990,7 +2035,7 @@ Defined in: [parts/Part.ts:224](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **width**(): `number`
 
-Defined in: [parts/Part.ts:116](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L116)
+Defined in: [parts/Part.ts:144](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L144)
 
 GoJS-compatible: The width of this part (delegates to its bounds).
 
@@ -2002,7 +2047,7 @@ GoJS-compatible: The width of this part (delegates to its bounds).
 
 > **set** **width**(`value`): `void`
 
-Defined in: [parts/Part.ts:120](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L120)
+Defined in: [parts/Part.ts:148](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L148)
 
 ##### Parameters
 
@@ -2026,7 +2071,7 @@ Defined in: [parts/Part.ts:120](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **zOrder**(): `number`
 
-Defined in: [parts/Part.ts:276](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L276)
+Defined in: [parts/Part.ts:304](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L304)
 
 ##### Returns
 
@@ -2036,7 +2081,7 @@ Defined in: [parts/Part.ts:276](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **zOrder**(`value`): `void`
 
-Defined in: [parts/Part.ts:280](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L280)
+Defined in: [parts/Part.ts:308](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L308)
 
 ##### Parameters
 
@@ -2058,7 +2103,7 @@ Defined in: [parts/Part.ts:280](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **add**(`part`): `void`
 
-Defined in: [parts/Group.ts:80](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L80)
+Defined in: [parts/Group.ts:80](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L80)
 
 Add a part to this group.
 
@@ -2078,7 +2123,7 @@ Add a part to this group.
 
 > **addAdornment**(`name`, `adornment`): `void`
 
-Defined in: [parts/Part.ts:547](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L547)
+Defined in: [parts/Part.ts:582](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L582)
 
 Add an adornment to this part.
 
@@ -2106,7 +2151,7 @@ Add an adornment to this part.
 
 > **addBinding**(`binding`): `this`
 
-Defined in: [parts/Part.ts:573](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L573)
+Defined in: [parts/Part.ts:608](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L608)
 
 Add a binding to this part.
 
@@ -2130,7 +2175,7 @@ Add a binding to this part.
 
 > **addVisual**(`element`): `this`
 
-Defined in: [parts/Part.ts:516](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L516)
+Defined in: [parts/Part.ts:551](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L551)
 
 GoJS-compatible: Add a child element to this part's visual tree.
 
@@ -2154,7 +2199,7 @@ GoJS-compatible: Add a child element to this part's visual tree.
 
 > **applyBindings**(`nodeData`): `number`
 
-Defined in: [parts/Part.ts:597](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L597)
+Defined in: [parts/Part.ts:632](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L632)
 
 Apply all bindings from model data to this part. Returns the number of properties set.
 
@@ -2178,7 +2223,7 @@ Apply all bindings from model data to this part. Returns the number of propertie
 
 > **applyTwoWayBindings**(`nodeData`): `number`
 
-Defined in: [parts/Part.ts:612](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L612)
+Defined in: [parts/Part.ts:647](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L647)
 
 Apply TwoWay bindings: write Part properties back to model data.
 
@@ -2202,7 +2247,7 @@ Apply TwoWay bindings: write Part properties back to model data.
 
 > **clearAdornments**(): `void`
 
-Defined in: [parts/Part.ts:563](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L563)
+Defined in: [parts/Part.ts:598](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L598)
 
 Remove all adornments from this part.
 
@@ -2220,7 +2265,7 @@ Remove all adornments from this part.
 
 > **clearBindings**(): `void`
 
-Defined in: [parts/Part.ts:587](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L587)
+Defined in: [parts/Part.ts:622](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L622)
 
 Remove all bindings from this part.
 
@@ -2238,7 +2283,7 @@ Remove all bindings from this part.
 
 > **collapse**(): `void`
 
-Defined in: [parts/Group.ts:167](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L167)
+Defined in: [parts/Group.ts:167](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L167)
 
 Collapse the group (hide members).
 
@@ -2252,7 +2297,7 @@ Collapse the group (hide members).
 
 > **contains**(`part`): `boolean`
 
-Defined in: [parts/Group.ts:102](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L102)
+Defined in: [parts/Group.ts:102](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L102)
 
 Check if a part is a member of this group.
 
@@ -2272,7 +2317,7 @@ Check if a part is a member of this group.
 
 > **containsPoint**(`point`): `boolean`
 
-Defined in: [parts/Group.ts:107](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L107)
+Defined in: [parts/Group.ts:107](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L107)
 
 Check if this group contains a point (including members).
 
@@ -2302,7 +2347,7 @@ Check if this group contains a point (including members).
 
 > **copy**(): `this`
 
-Defined in: [parts/Part.ts:649](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L649)
+Defined in: [parts/Part.ts:684](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L684)
 
 Create a deep copy of this part.
 
@@ -2320,7 +2365,7 @@ Create a deep copy of this part.
 
 > **expand**(): `void`
 
-Defined in: [parts/Group.ts:172](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L172)
+Defined in: [parts/Group.ts:172](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L172)
 
 Expand the group (show members).
 
@@ -2334,7 +2379,7 @@ Expand the group (show members).
 
 > **findAdornment**(`name`): [`Adornment`](/en/reference/api/graphojs/classes/adornment/) \| `undefined`
 
-Defined in: [parts/Part.ts:542](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L542)
+Defined in: [parts/Part.ts:577](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L577)
 
 Get a specific adornment by name.
 
@@ -2358,7 +2403,7 @@ Get a specific adornment by name.
 
 > **findAdornmentNamed**(`name`): [`Adornment`](/en/reference/api/graphojs/classes/adornment/) \| `null`
 
-Defined in: [parts/Part.ts:553](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L553)
+Defined in: [parts/Part.ts:588](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L588)
 
 GoJS-compatible: Find an adornment by name, or null if not present.
 
@@ -2382,7 +2427,7 @@ GoJS-compatible: Find an adornment by name, or null if not present.
 
 > **findBinding**(`targetProperty`): [`Binding`](/en/reference/api/graphojs/classes/binding/) \| `undefined`
 
-Defined in: [parts/Part.ts:592](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L592)
+Defined in: [parts/Part.ts:627](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L627)
 
 Find a binding targeting a specific property.
 
@@ -2406,7 +2451,7 @@ Find a binding targeting a specific property.
 
 > **findDiagram**(): [`Diagram`](/en/reference/api/graphojs/classes/diagram/) \| `null`
 
-Defined in: [parts/Part.ts:425](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L425)
+Defined in: [parts/Part.ts:453](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L453)
 
 GoJS-compatible: Find the diagram that contains this part.
 
@@ -2424,7 +2469,7 @@ GoJS-compatible: Find the diagram that contains this part.
 
 > **findLayer**(): [`Layer`](/en/reference/api/graphojs/classes/layer/) \| `null`
 
-Defined in: [parts/Part.ts:430](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L430)
+Defined in: [parts/Part.ts:458](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L458)
 
 GoJS-compatible: Find the layer that contains this part.
 
@@ -2442,7 +2487,7 @@ GoJS-compatible: Find the layer that contains this part.
 
 > **findMember**(`key`): [`Part`](/en/reference/api/graphojs/classes/part/) \| `undefined`
 
-Defined in: [parts/Group.ts:193](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L193)
+Defined in: [parts/Group.ts:193](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L193)
 
 Find a member by key.
 
@@ -2462,7 +2507,7 @@ Find a member by key.
 
 > **findObject**(`name`): [`GraphObject`](/en/reference/api/graphojs/classes/graphobject/) \| `null`
 
-Defined in: [parts/Part.ts:531](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L531)
+Defined in: [parts/Part.ts:566](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L566)
 
 GoJS-compatible: Find a GraphObject by name in this part's visual tree.
 
@@ -2486,7 +2531,7 @@ GoJS-compatible: Find a GraphObject by name in this part's visual tree.
 
 > **getAllParts**(): [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
-Defined in: [parts/Group.ts:182](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L182)
+Defined in: [parts/Group.ts:182](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L182)
 
 Get all parts in this group recursively.
 
@@ -2500,7 +2545,7 @@ Get all parts in this group recursively.
 
 > **getLevel**(): `number`
 
-Defined in: [parts/Group.ts:198](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L198)
+Defined in: [parts/Group.ts:198](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L198)
 
 Get the level of this group in the hierarchy.
 
@@ -2514,7 +2559,7 @@ Get the level of this group in the hierarchy.
 
 > **remove**(`part`): `boolean`
 
-Defined in: [parts/Group.ts:90](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L90)
+Defined in: [parts/Group.ts:90](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L90)
 
 Remove a part from this group.
 
@@ -2534,7 +2579,7 @@ Remove a part from this group.
 
 > **removeAdornment**(`name`): `boolean`
 
-Defined in: [parts/Part.ts:558](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L558)
+Defined in: [parts/Part.ts:593](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L593)
 
 Remove an adornment from this part.
 
@@ -2558,7 +2603,7 @@ Remove an adornment from this part.
 
 > **removeBinding**(`binding`): `boolean`
 
-Defined in: [parts/Part.ts:579](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L579)
+Defined in: [parts/Part.ts:614](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L614)
 
 Remove a binding from this part.
 
@@ -2582,7 +2627,7 @@ Remove a binding from this part.
 
 > **removeVisual**(`element`): `boolean`
 
-Defined in: [parts/Part.ts:525](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Part.ts#L525)
+Defined in: [parts/Part.ts:560](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Part.ts#L560)
 
 GoJS-compatible: Remove a child element from this part's visual tree.
 
@@ -2606,7 +2651,7 @@ GoJS-compatible: Remove a child element from this part's visual tree.
 
 > **toggle**(): `void`
 
-Defined in: [parts/Group.ts:177](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L177)
+Defined in: [parts/Group.ts:177](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L177)
 
 Toggle expansion state.
 
@@ -2620,7 +2665,7 @@ Toggle expansion state.
 
 > **updateBoundsFromMembers**(): `void`
 
-Defined in: [parts/Group.ts:122](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Group.ts#L122)
+Defined in: [parts/Group.ts:122](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Group.ts#L122)
 
 Update bounds to encompass all members.
 

@@ -5,7 +5,7 @@ prev: false
 title: "AnimationManager"
 ---
 
-Defined in: [animation/AnimationManager.ts:12](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L12)
+Defined in: [animation/AnimationManager.ts:12](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L12)
 
 Manages and runs animations.
 
@@ -25,7 +25,7 @@ Manages and runs animations.
 
 > **isEnabled**: `boolean` = `true`
 
-Defined in: [animation/AnimationManager.ts:24](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L24)
+Defined in: [animation/AnimationManager.ts:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L24)
 
 GoJS-compatible: whether animations actually animate, or jump straight to
 their final values. Default: true. GraphoJS defaults this to false when
@@ -40,7 +40,7 @@ the OS-level `prefers-reduced-motion: reduce` setting is on (see
 
 > **get** **count**(): `number`
 
-Defined in: [animation/AnimationManager.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L41)
+Defined in: [animation/AnimationManager.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L41)
 
 Get the number of running animations.
 
@@ -56,7 +56,7 @@ Get the number of running animations.
 
 > **get** **diagram**(): `DiagramEventsSink` \| `null`
 
-Defined in: [animation/AnimationManager.ts:27](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L27)
+Defined in: [animation/AnimationManager.ts:27](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L27)
 
 GoJS-compatible: The diagram this manager reports events to.
 
@@ -68,7 +68,7 @@ GoJS-compatible: The diagram this manager reports events to.
 
 > **set** **diagram**(`value`): `void`
 
-Defined in: [animation/AnimationManager.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L31)
+Defined in: [animation/AnimationManager.ts:31](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L31)
 
 ##### Parameters
 
@@ -88,7 +88,7 @@ Defined in: [animation/AnimationManager.ts:31](https://github.com/rroblf01/graph
 
 > **get** **isAnimating**(): `boolean`
 
-Defined in: [animation/AnimationManager.ts:36](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L36)
+Defined in: [animation/AnimationManager.ts:36](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L36)
 
 Whether any animation is currently running.
 
@@ -102,7 +102,7 @@ Whether any animation is currently running.
 
 > **add**(`animation`): `void`
 
-Defined in: [animation/AnimationManager.ts:61](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L61)
+Defined in: [animation/AnimationManager.ts:61](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L61)
 
 Add an animation to the manager.
 
@@ -122,7 +122,7 @@ Add an animation to the manager.
 
 > **animate**(`from`, `to`, `callback`, `options?`): [`Animation`](/en/reference/api/graphojs/classes/animation/)
 
-Defined in: [animation/AnimationManager.ts:49](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L49)
+Defined in: [animation/AnimationManager.ts:49](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L49)
 
 Create and run an animation.
 Returns the Animation object.
@@ -155,7 +155,7 @@ Returns the Animation object.
 
 > **cancelAll**(): `void`
 
-Defined in: [animation/AnimationManager.ts:87](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L87)
+Defined in: [animation/AnimationManager.ts:87](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L87)
 
 Cancel all animations.
 
@@ -169,7 +169,7 @@ Cancel all animations.
 
 > **pauseAll**(): `void`
 
-Defined in: [animation/AnimationManager.ts:96](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L96)
+Defined in: [animation/AnimationManager.ts:96](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L96)
 
 Pause all animations.
 
@@ -183,7 +183,7 @@ Pause all animations.
 
 > **resumeAll**(): `void`
 
-Defined in: [animation/AnimationManager.ts:103](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L103)
+Defined in: [animation/AnimationManager.ts:103](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L103)
 
 Resume all paused animations.
 
@@ -197,7 +197,7 @@ Resume all paused animations.
 
 > **tickManually**(): `void`
 
-Defined in: [animation/AnimationManager.ts:140](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/animation/AnimationManager.ts#L140)
+Defined in: [animation/AnimationManager.ts:140](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/animation/AnimationManager.ts#L140)
 
 Advance animations manually (for tests or custom loops).
 

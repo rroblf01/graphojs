@@ -5,7 +5,7 @@ prev: false
 title: "ResizeNodeCommand"
 ---
 
-Defined in: [undo/commands.ts:267](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L267)
+Defined in: [undo/commands.ts:267](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L267)
 
 Command to resize a node.
 
@@ -19,7 +19,7 @@ Command to resize a node.
 
 > **new ResizeNodeCommand**(`model`, `nodeKey`, `x`, `y`, `width`, `height`): `ResizeNodeCommand`
 
-Defined in: [undo/commands.ts:280](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L280)
+Defined in: [undo/commands.ts:280](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L280)
 
 #### Parameters
 
@@ -57,7 +57,7 @@ Defined in: [undo/commands.ts:280](https://github.com/rroblf01/graphojs/blob/da0
 
 > **describe**(): `string`
 
-Defined in: [undo/commands.ts:317](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L317)
+Defined in: [undo/commands.ts:317](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L317)
 
 Get a description of the command.
 
@@ -75,7 +75,7 @@ Get a description of the command.
 
 > **execute**(): `void`
 
-Defined in: [undo/commands.ts:296](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L296)
+Defined in: [undo/commands.ts:296](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L296)
 
 Execute the command.
 
@@ -93,7 +93,7 @@ Execute the command.
 
 > **undo**(): `void`
 
-Defined in: [undo/commands.ts:310](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L310)
+Defined in: [undo/commands.ts:310](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L310)
 
 Undo the command.
 

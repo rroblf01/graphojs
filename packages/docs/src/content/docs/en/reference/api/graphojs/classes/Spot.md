@@ -5,7 +5,7 @@ prev: false
 title: "Spot"
 ---
 
-Defined in: [geometry/Spot.ts:7](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L7)
+Defined in: [geometry/Spot.ts:7](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L7)
 
 A Spot represents an alignment point within a rectangle.
 Standard spots: TopLeft, TopCenter, TopRight, LeftMiddle, Center,
@@ -18,7 +18,7 @@ Fractional spots allow any position using x/y in [0,1] plus offsets.
 
 > **new Spot**(`x?`, `y?`, `offsetX?`, `offsetY?`): `Spot`
 
-Defined in: [geometry/Spot.ts:17](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L17)
+Defined in: [geometry/Spot.ts:17](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L17)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: [geometry/Spot.ts:17](https://github.com/rroblf01/graphojs/blob/da00
 
 > `readonly` **offsetX**: `number`
 
-Defined in: [geometry/Spot.ts:13](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L13)
+Defined in: [geometry/Spot.ts:13](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L13)
 
 Offset in pixels applied after the fractional position.
 
@@ -58,7 +58,7 @@ Offset in pixels applied after the fractional position.
 
 > `readonly` **offsetY**: `number`
 
-Defined in: [geometry/Spot.ts:15](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L15)
+Defined in: [geometry/Spot.ts:15](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L15)
 
 Offset in pixels applied after the fractional position.
 
@@ -68,7 +68,7 @@ Offset in pixels applied after the fractional position.
 
 > `readonly` **x**: `number`
 
-Defined in: [geometry/Spot.ts:9](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L9)
+Defined in: [geometry/Spot.ts:9](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L9)
 
 x as a fraction of the width (0..1).
 
@@ -78,7 +78,7 @@ x as a fraction of the width (0..1).
 
 > `readonly` **y**: `number`
 
-Defined in: [geometry/Spot.ts:11](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L11)
+Defined in: [geometry/Spot.ts:11](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L11)
 
 y as a fraction of the height (0..1).
 
@@ -88,7 +88,7 @@ y as a fraction of the height (0..1).
 
 > `readonly` `static` **Bottom**: `Spot`
 
-Defined in: [geometry/Spot.ts:53](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L53)
+Defined in: [geometry/Spot.ts:57](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L57)
 
 GoJS-compatible: Spot at the bottom-center.
 
@@ -98,7 +98,7 @@ GoJS-compatible: Spot at the bottom-center.
 
 > `readonly` `static` **BottomCenter**: `Spot`
 
-Defined in: [geometry/Spot.ts:51](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L51)
+Defined in: [geometry/Spot.ts:55](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L55)
 
 Spot at the bottom-center.
 
@@ -108,7 +108,7 @@ Spot at the bottom-center.
 
 > `readonly` `static` **BottomLeft**: `Spot`
 
-Defined in: [geometry/Spot.ts:49](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L49)
+Defined in: [geometry/Spot.ts:53](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L53)
 
 Spot at the bottom-left corner.
 
@@ -118,7 +118,7 @@ Spot at the bottom-left corner.
 
 > `readonly` `static` **BottomRight**: `Spot`
 
-Defined in: [geometry/Spot.ts:55](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L55)
+Defined in: [geometry/Spot.ts:59](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L59)
 
 Spot at the bottom-right corner.
 
@@ -128,7 +128,7 @@ Spot at the bottom-right corner.
 
 > `readonly` `static` **Center**: `Spot`
 
-Defined in: [geometry/Spot.ts:39](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L39)
+Defined in: [geometry/Spot.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L41)
 
 Spot at the center.
 
@@ -138,7 +138,7 @@ Spot at the center.
 
 > `readonly` `static` **Left**: `Spot`
 
-Defined in: [geometry/Spot.ts:37](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L37)
+Defined in: [geometry/Spot.ts:37](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L37)
 
 GoJS-compatible: Spot at the middle of the left edge.
 
@@ -148,9 +148,19 @@ GoJS-compatible: Spot at the middle of the left edge.
 
 > `readonly` `static` **LeftMiddle**: `Spot`
 
-Defined in: [geometry/Spot.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L33)
+Defined in: [geometry/Spot.ts:33](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L33)
 
 Spot at the middle of the left edge.
+
+***
+
+### LeftSide
+
+> `readonly` `static` **LeftSide**: `Spot`
+
+Defined in: [geometry/Spot.ts:39](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L39)
+
+GoJS-compatible: Spot at the middle of the left edge.
 
 ***
 
@@ -158,7 +168,7 @@ Spot at the middle of the left edge.
 
 > `readonly` `static` **MiddleCenter**: `Spot`
 
-Defined in: [geometry/Spot.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L41)
+Defined in: [geometry/Spot.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L43)
 
 GoJS-compatible: Spot at the center.
 
@@ -168,7 +178,7 @@ GoJS-compatible: Spot at the center.
 
 > `readonly` `static` **MiddleLeft**: `Spot`
 
-Defined in: [geometry/Spot.ts:35](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L35)
+Defined in: [geometry/Spot.ts:35](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L35)
 
 GoJS-compatible: Spot at the middle of the left edge.
 
@@ -178,7 +188,7 @@ GoJS-compatible: Spot at the middle of the left edge.
 
 > `readonly` `static` **MiddleRight**: `Spot`
 
-Defined in: [geometry/Spot.ts:45](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L45)
+Defined in: [geometry/Spot.ts:47](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L47)
 
 GoJS-compatible: Spot at the middle of the right edge.
 
@@ -188,7 +198,7 @@ GoJS-compatible: Spot at the middle of the right edge.
 
 > `readonly` `static` **None**: `Spot`
 
-Defined in: [geometry/Spot.ts:57](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L57)
+Defined in: [geometry/Spot.ts:61](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L61)
 
 GoJS-compatible: A spot with no meaningful position.
 
@@ -198,7 +208,7 @@ GoJS-compatible: A spot with no meaningful position.
 
 > `readonly` `static` **Right**: `Spot`
 
-Defined in: [geometry/Spot.ts:47](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L47)
+Defined in: [geometry/Spot.ts:49](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L49)
 
 GoJS-compatible: Spot at the middle of the right edge.
 
@@ -208,9 +218,19 @@ GoJS-compatible: Spot at the middle of the right edge.
 
 > `readonly` `static` **RightMiddle**: `Spot`
 
-Defined in: [geometry/Spot.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L43)
+Defined in: [geometry/Spot.ts:45](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L45)
 
 Spot at the middle of the right edge.
+
+***
+
+### RightSide
+
+> `readonly` `static` **RightSide**: `Spot`
+
+Defined in: [geometry/Spot.ts:51](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L51)
+
+GoJS-compatible: Spot at the middle of the right edge.
 
 ***
 
@@ -218,7 +238,7 @@ Spot at the middle of the right edge.
 
 > `readonly` `static` **Top**: `Spot`
 
-Defined in: [geometry/Spot.ts:29](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L29)
+Defined in: [geometry/Spot.ts:29](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L29)
 
 GoJS-compatible: Spot at the top-center.
 
@@ -228,7 +248,7 @@ GoJS-compatible: Spot at the top-center.
 
 > `readonly` `static` **TopCenter**: `Spot`
 
-Defined in: [geometry/Spot.ts:27](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L27)
+Defined in: [geometry/Spot.ts:27](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L27)
 
 Spot at the top-center.
 
@@ -238,7 +258,7 @@ Spot at the top-center.
 
 > `readonly` `static` **TopLeft**: `Spot`
 
-Defined in: [geometry/Spot.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L25)
+Defined in: [geometry/Spot.ts:25](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L25)
 
 Spot at the top-left corner.
 
@@ -248,7 +268,7 @@ Spot at the top-left corner.
 
 > `readonly` `static` **TopRight**: `Spot`
 
-Defined in: [geometry/Spot.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L31)
+Defined in: [geometry/Spot.ts:31](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L31)
 
 Spot at the top-right corner.
 
@@ -258,7 +278,7 @@ Spot at the top-right corner.
 
 > **computePoint**(`x`, `y`, `width`, `height`): `object`
 
-Defined in: [geometry/Spot.ts:143](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L143)
+Defined in: [geometry/Spot.ts:149](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L149)
 
 Compute the point within a rect for this spot.
 
@@ -298,7 +318,7 @@ Compute the point within a rect for this spot.
 
 > **copy**(): `Spot`
 
-Defined in: [geometry/Spot.ts:166](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L166)
+Defined in: [geometry/Spot.ts:172](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L172)
 
 GoJS-compatible: Return a copy of this spot.
 
@@ -312,7 +332,7 @@ GoJS-compatible: Return a copy of this spot.
 
 > **equals**(`other`): `boolean`
 
-Defined in: [geometry/Spot.ts:151](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L151)
+Defined in: [geometry/Spot.ts:157](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L157)
 
 Check if two spots are equivalent.
 
@@ -332,7 +352,7 @@ Check if two spots are equivalent.
 
 > **isSpot**(): `boolean`
 
-Defined in: [geometry/Spot.ts:77](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L77)
+Defined in: [geometry/Spot.ts:81](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L81)
 
 GoJS-compatible: Whether this spot has valid fractional coordinates.
 
@@ -346,7 +366,7 @@ GoJS-compatible: Whether this spot has valid fractional coordinates.
 
 > **offset**(`dx`, `dy`): `Spot`
 
-Defined in: [geometry/Spot.ts:161](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L161)
+Defined in: [geometry/Spot.ts:167](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L167)
 
 Return a copy with additional offset.
 
@@ -370,7 +390,7 @@ Return a copy with additional offset.
 
 > **pointToSpot**(`px`, `py`, `x`, `y`, `width`, `height`): `Spot`
 
-Defined in: [geometry/Spot.ts:103](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L103)
+Defined in: [geometry/Spot.ts:107](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L107)
 
 GoJS-compatible: Compute the spot (fraction) for a point within a rect.
 
@@ -410,7 +430,7 @@ GoJS-compatible: Compute the spot (fraction) for a point within a rect.
 
 > **setSpot**(`x`, `y`, `offsetX?`, `offsetY?`): `this`
 
-Defined in: [geometry/Spot.ts:89](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L89)
+Defined in: [geometry/Spot.ts:93](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L93)
 
 GoJS-compatible: In-place mutation returning this spot.
 
@@ -442,7 +462,7 @@ GoJS-compatible: In-place mutation returning this spot.
 
 > **spotToPoint**(`x`, `y`, `width`, `height`): `object`
 
-Defined in: [geometry/Spot.ts:98](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L98)
+Defined in: [geometry/Spot.ts:102](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L102)
 
 GoJS-compatible: Compute the point in the rect for this spot.
 
@@ -482,7 +502,7 @@ GoJS-compatible: Compute the point in the rect for this spot.
 
 > `static` **fromName**(`name`): `Spot`
 
-Defined in: [geometry/Spot.ts:110](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L110)
+Defined in: [geometry/Spot.ts:114](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L114)
 
 Create a Spot from a standard name.
 
@@ -502,7 +522,7 @@ Create a Spot from a standard name.
 
 > `static` **isSpot**(`value`): `boolean`
 
-Defined in: [geometry/Spot.ts:72](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L72)
+Defined in: [geometry/Spot.ts:76](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L76)
 
 GoJS-compatible: Whether the given value is a Spot object.
 
@@ -522,7 +542,7 @@ GoJS-compatible: Whether the given value is a Spot object.
 
 > `static` **parse**(`value`): `Spot`
 
-Defined in: [geometry/Spot.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Spot.ts#L60)
+Defined in: [geometry/Spot.ts:64](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Spot.ts#L64)
 
 GoJS-compatible: Parse a string like "0,0", "1 1 4 4", or a standard name like "MiddleCenter".
 

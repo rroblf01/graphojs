@@ -5,7 +5,7 @@ prev: false
 title: "Transaction"
 ---
 
-Defined in: [undo/Transaction.ts:7](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L7)
+Defined in: [undo/Transaction.ts:7](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L7)
 
 A transaction groups multiple commands into a single undoable unit.
 All sub-commands are executed together and undone together.
@@ -20,7 +20,7 @@ All sub-commands are executed together and undone together.
 
 > **new Transaction**(`name?`): `Transaction`
 
-Defined in: [undo/Transaction.ts:11](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L11)
+Defined in: [undo/Transaction.ts:11](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L11)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: [undo/Transaction.ts:11](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: [undo/Transaction.ts:26](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L26)
+Defined in: [undo/Transaction.ts:26](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L26)
 
 Whether this transaction has no commands.
 
@@ -56,7 +56,7 @@ Whether this transaction has no commands.
 
 > **get** **name**(): `string`
 
-Defined in: [undo/Transaction.ts:16](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L16)
+Defined in: [undo/Transaction.ts:16](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L16)
 
 The name of this transaction.
 
@@ -72,7 +72,7 @@ The name of this transaction.
 
 > **get** **size**(): `number`
 
-Defined in: [undo/Transaction.ts:21](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L21)
+Defined in: [undo/Transaction.ts:21](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L21)
 
 Get the number of sub-commands in this transaction.
 
@@ -86,7 +86,7 @@ Get the number of sub-commands in this transaction.
 
 > **add**(`command`): `this`
 
-Defined in: [undo/Transaction.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L31)
+Defined in: [undo/Transaction.ts:31](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L31)
 
 Add a command to this transaction.
 
@@ -106,7 +106,7 @@ Add a command to this transaction.
 
 > **clear**(): `void`
 
-Defined in: [undo/Transaction.ts:42](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L42)
+Defined in: [undo/Transaction.ts:42](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L42)
 
 Clear all commands in this transaction.
 
@@ -120,7 +120,7 @@ Clear all commands in this transaction.
 
 > **describe**(): `string`
 
-Defined in: [undo/Transaction.ts:61](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L61)
+Defined in: [undo/Transaction.ts:61](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L61)
 
 Get a description of this transaction.
 
@@ -138,7 +138,7 @@ Get a description of this transaction.
 
 > **execute**(): `void`
 
-Defined in: [undo/Transaction.ts:47](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L47)
+Defined in: [undo/Transaction.ts:47](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L47)
 
 Execute all commands in order.
 
@@ -156,7 +156,7 @@ Execute all commands in order.
 
 > **removeLast**(): [`Command`](/en/reference/api/graphojs/interfaces/command/) \| `null`
 
-Defined in: [undo/Transaction.ts:37](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L37)
+Defined in: [undo/Transaction.ts:37](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L37)
 
 Remove the last added command.
 
@@ -170,7 +170,7 @@ Remove the last added command.
 
 > **undo**(): `void`
 
-Defined in: [undo/Transaction.ts:54](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/Transaction.ts#L54)
+Defined in: [undo/Transaction.ts:54](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/Transaction.ts#L54)
 
 Undo all commands in reverse order.
 

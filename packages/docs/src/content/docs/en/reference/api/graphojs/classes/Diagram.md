@@ -5,7 +5,7 @@ prev: false
 title: "Diagram"
 ---
 
-Defined in: [diagram/Diagram.ts:209](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L209)
+Defined in: [diagram/Diagram.ts:228](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L228)
 
 A diagram that renders nodes and links on a canvas.
 
@@ -15,7 +15,7 @@ A diagram that renders nodes and links on a canvas.
 
 > **new Diagram**(`options`): `Diagram`
 
-Defined in: [diagram/Diagram.ts:352](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L352)
+Defined in: [diagram/Diagram.ts:380](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L380)
 
 #### Parameters
 
@@ -33,9 +33,19 @@ Defined in: [diagram/Diagram.ts:352](https://github.com/rroblf01/graphojs/blob/d
 
 > **accessibilityMessages**: [`AccessibilityMessages`](/en/reference/api/graphojs/interfaces/accessibilitymessages/)
 
-Defined in: [diagram/Diagram.ts:261](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L261)
+Defined in: [diagram/Diagram.ts:281](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L281)
 
 Accessibility: message formatters for the aria-label and live-region announcements (default: English).
+
+***
+
+### toolTipDelay
+
+> **toolTipDelay**: `number` = `500`
+
+Defined in: [diagram/Diagram.ts:320](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L320)
+
+GoJS-compatible: delay (ms) before a part's `toolTip` Panel appears on hover.
 
 ***
 
@@ -43,7 +53,7 @@ Accessibility: message formatters for the aria-label and live-region announcemen
 
 > `readonly` `static` **AlignFill**: `"Fill"` = `'Fill'`
 
-Defined in: [diagram/Diagram.ts:216](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L216)
+Defined in: [diagram/Diagram.ts:235](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L235)
 
 ***
 
@@ -51,7 +61,7 @@ Defined in: [diagram/Diagram.ts:216](https://github.com/rroblf01/graphojs/blob/d
 
 > `readonly` `static` **AlignMax**: `"Max"` = `'Max'`
 
-Defined in: [diagram/Diagram.ts:214](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L214)
+Defined in: [diagram/Diagram.ts:233](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L233)
 
 ***
 
@@ -59,7 +69,7 @@ Defined in: [diagram/Diagram.ts:214](https://github.com/rroblf01/graphojs/blob/d
 
 > `readonly` `static` **AlignMin**: `"Min"` = `'Min'`
 
-Defined in: [diagram/Diagram.ts:213](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L213)
+Defined in: [diagram/Diagram.ts:232](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L232)
 
 ***
 
@@ -67,7 +77,7 @@ Defined in: [diagram/Diagram.ts:213](https://github.com/rroblf01/graphojs/blob/d
 
 > `readonly` `static` **AlignNone**: `"None"` = `'None'`
 
-Defined in: [diagram/Diagram.ts:211](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L211)
+Defined in: [diagram/Diagram.ts:230](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L230)
 
 ***
 
@@ -75,7 +85,7 @@ Defined in: [diagram/Diagram.ts:211](https://github.com/rroblf01/graphojs/blob/d
 
 > `readonly` `static` **AlignScale**: `"Scale"` = `'Scale'`
 
-Defined in: [diagram/Diagram.ts:215](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L215)
+Defined in: [diagram/Diagram.ts:234](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L234)
 
 ***
 
@@ -83,7 +93,7 @@ Defined in: [diagram/Diagram.ts:215](https://github.com/rroblf01/graphojs/blob/d
 
 > `readonly` `static` **AlignSpot**: `"Spot"` = `'Spot'`
 
-Defined in: [diagram/Diagram.ts:212](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L212)
+Defined in: [diagram/Diagram.ts:231](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L231)
 
 ## Accessors
 
@@ -93,7 +103,7 @@ Defined in: [diagram/Diagram.ts:212](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **actualBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [diagram/Diagram.ts:3639](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3639)
+Defined in: [diagram/Diagram.ts:3968](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3968)
 
 GoJS-compatible: The actual bounds currently occupied by parts.
 
@@ -109,7 +119,7 @@ GoJS-compatible: The actual bounds currently occupied by parts.
 
 > **get** **allLinks**(): [`Link`](/en/reference/api/graphojs/classes/link/)[]
 
-Defined in: [diagram/Diagram.ts:2484](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2484)
+Defined in: [diagram/Diagram.ts:2671](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2671)
 
 GoJS-compatible: All links in this diagram.
 
@@ -125,7 +135,7 @@ GoJS-compatible: All links in this diagram.
 
 > **get** **allNodes**(): [`Node`](/en/reference/api/graphojs/classes/node/)[]
 
-Defined in: [diagram/Diagram.ts:2489](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2489)
+Defined in: [diagram/Diagram.ts:2676](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2676)
 
 GoJS-compatible: All nodes in this diagram (as an array).
 
@@ -141,7 +151,7 @@ GoJS-compatible: All nodes in this diagram (as an array).
 
 > **get** **allowArrange**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:1013](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L1013)
+Defined in: [diagram/Diagram.ts:1048](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1048)
 
 GoJS-compatible: Whether parts can be rearranged.
 
@@ -153,7 +163,7 @@ GoJS-compatible: Whether parts can be rearranged.
 
 > **set** **allowArrange**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:1017](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L1017)
+Defined in: [diagram/Diagram.ts:1052](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1052)
 
 ##### Parameters
 
@@ -173,7 +183,7 @@ Defined in: [diagram/Diagram.ts:1017](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **allowCopy**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:860](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L860)
+Defined in: [diagram/Diagram.ts:895](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L895)
 
 GoJS-compatible: Whether parts can be copied.
 
@@ -185,7 +195,7 @@ GoJS-compatible: Whether parts can be copied.
 
 > **set** **allowCopy**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:864](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L864)
+Defined in: [diagram/Diagram.ts:899](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L899)
 
 ##### Parameters
 
@@ -205,7 +215,7 @@ Defined in: [diagram/Diagram.ts:864](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowDelete**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:869](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L869)
+Defined in: [diagram/Diagram.ts:904](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L904)
 
 GoJS-compatible: Whether parts can be deleted.
 
@@ -217,7 +227,7 @@ GoJS-compatible: Whether parts can be deleted.
 
 > **set** **allowDelete**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:873](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L873)
+Defined in: [diagram/Diagram.ts:908](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L908)
 
 ##### Parameters
 
@@ -237,7 +247,7 @@ Defined in: [diagram/Diagram.ts:873](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowDrop**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:878](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L878)
+Defined in: [diagram/Diagram.ts:913](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L913)
 
 GoJS-compatible: Whether parts can be dropped onto the diagram.
 
@@ -249,7 +259,7 @@ GoJS-compatible: Whether parts can be dropped onto the diagram.
 
 > **set** **allowDrop**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:882](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L882)
+Defined in: [diagram/Diagram.ts:917](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L917)
 
 ##### Parameters
 
@@ -269,7 +279,7 @@ Defined in: [diagram/Diagram.ts:882](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowGroup**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:977](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L977)
+Defined in: [diagram/Diagram.ts:1012](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1012)
 
 GoJS-compatible: Whether nodes can be grouped.
 
@@ -281,7 +291,7 @@ GoJS-compatible: Whether nodes can be grouped.
 
 > **set** **allowGroup**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:981](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L981)
+Defined in: [diagram/Diagram.ts:1016](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1016)
 
 ##### Parameters
 
@@ -301,7 +311,7 @@ Defined in: [diagram/Diagram.ts:981](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowHorizontalScroll**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:896](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L896)
+Defined in: [diagram/Diagram.ts:931](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L931)
 
 GoJS-compatible: Whether horizontal scrolling is allowed.
 
@@ -313,7 +323,7 @@ GoJS-compatible: Whether horizontal scrolling is allowed.
 
 > **set** **allowHorizontalScroll**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:900](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L900)
+Defined in: [diagram/Diagram.ts:935](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L935)
 
 ##### Parameters
 
@@ -333,7 +343,7 @@ Defined in: [diagram/Diagram.ts:900](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowInsert**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:986](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L986)
+Defined in: [diagram/Diagram.ts:1021](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1021)
 
 GoJS-compatible: Whether new nodes can be inserted.
 
@@ -345,7 +355,7 @@ GoJS-compatible: Whether new nodes can be inserted.
 
 > **set** **allowInsert**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:990](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L990)
+Defined in: [diagram/Diagram.ts:1025](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1025)
 
 ##### Parameters
 
@@ -365,7 +375,7 @@ Defined in: [diagram/Diagram.ts:990](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowLink**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:959](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L959)
+Defined in: [diagram/Diagram.ts:994](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L994)
 
 GoJS-compatible: Whether new links can be drawn.
 
@@ -377,7 +387,7 @@ GoJS-compatible: Whether new links can be drawn.
 
 > **set** **allowLink**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:963](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L963)
+Defined in: [diagram/Diagram.ts:998](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L998)
 
 ##### Parameters
 
@@ -397,7 +407,7 @@ Defined in: [diagram/Diagram.ts:963](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowMove**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:851](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L851)
+Defined in: [diagram/Diagram.ts:886](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L886)
 
 GoJS-compatible: Whether parts can be moved.
 
@@ -409,7 +419,7 @@ GoJS-compatible: Whether parts can be moved.
 
 > **set** **allowMove**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:855](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L855)
+Defined in: [diagram/Diagram.ts:890](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L890)
 
 ##### Parameters
 
@@ -429,7 +439,7 @@ Defined in: [diagram/Diagram.ts:855](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowRelink**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:968](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L968)
+Defined in: [diagram/Diagram.ts:1003](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1003)
 
 GoJS-compatible: Whether existing links can be reconnected.
 
@@ -441,7 +451,7 @@ GoJS-compatible: Whether existing links can be reconnected.
 
 > **set** **allowRelink**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:972](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L972)
+Defined in: [diagram/Diagram.ts:1007](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1007)
 
 ##### Parameters
 
@@ -461,7 +471,7 @@ Defined in: [diagram/Diagram.ts:972](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowResize**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:995](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L995)
+Defined in: [diagram/Diagram.ts:1030](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1030)
 
 GoJS-compatible: Whether nodes can be resized.
 
@@ -473,7 +483,7 @@ GoJS-compatible: Whether nodes can be resized.
 
 > **set** **allowResize**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:999](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L999)
+Defined in: [diagram/Diagram.ts:1034](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1034)
 
 ##### Parameters
 
@@ -493,7 +503,7 @@ Defined in: [diagram/Diagram.ts:999](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowRotate**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:1004](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L1004)
+Defined in: [diagram/Diagram.ts:1039](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1039)
 
 GoJS-compatible: Whether nodes can be rotated.
 
@@ -505,7 +515,7 @@ GoJS-compatible: Whether nodes can be rotated.
 
 > **set** **allowRotate**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:1008](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L1008)
+Defined in: [diagram/Diagram.ts:1043](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1043)
 
 ##### Parameters
 
@@ -525,7 +535,7 @@ Defined in: [diagram/Diagram.ts:1008](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **allowTextEdit**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:950](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L950)
+Defined in: [diagram/Diagram.ts:985](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L985)
 
 GoJS-compatible: Whether in-place text editing is allowed.
 
@@ -537,7 +547,7 @@ GoJS-compatible: Whether in-place text editing is allowed.
 
 > **set** **allowTextEdit**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:954](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L954)
+Defined in: [diagram/Diagram.ts:989](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L989)
 
 ##### Parameters
 
@@ -557,7 +567,7 @@ Defined in: [diagram/Diagram.ts:954](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowVerticalScroll**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:905](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L905)
+Defined in: [diagram/Diagram.ts:940](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L940)
 
 GoJS-compatible: Whether vertical scrolling is allowed.
 
@@ -569,7 +579,7 @@ GoJS-compatible: Whether vertical scrolling is allowed.
 
 > **set** **allowVerticalScroll**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:909](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L909)
+Defined in: [diagram/Diagram.ts:944](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L944)
 
 ##### Parameters
 
@@ -589,7 +599,7 @@ Defined in: [diagram/Diagram.ts:909](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **allowZoom**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:887](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L887)
+Defined in: [diagram/Diagram.ts:922](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L922)
 
 GoJS-compatible: Whether zooming is allowed.
 
@@ -601,7 +611,7 @@ GoJS-compatible: Whether zooming is allowed.
 
 > **set** **allowZoom**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:891](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L891)
+Defined in: [diagram/Diagram.ts:926](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L926)
 
 ##### Parameters
 
@@ -621,7 +631,7 @@ Defined in: [diagram/Diagram.ts:891](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **animationManager**(): [`AnimationManager`](/en/reference/api/graphojs/classes/animationmanager/)
 
-Defined in: [diagram/Diagram.ts:575](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L575)
+Defined in: [diagram/Diagram.ts:610](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L610)
 
 GoJS-compatible: The animation manager.
 
@@ -637,7 +647,7 @@ GoJS-compatible: The animation manager.
 
 > **get** **autoScale**(): `number`
 
-Defined in: [diagram/Diagram.ts:2549](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2549)
+Defined in: [diagram/Diagram.ts:2781](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2781)
 
 GoJS-compatible: AutoScale mode (0=None, 1=Uniform, 2=Fit).
 
@@ -649,7 +659,7 @@ GoJS-compatible: AutoScale mode (0=None, 1=Uniform, 2=Fit).
 
 > **set** **autoScale**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:2553](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2553)
+Defined in: [diagram/Diagram.ts:2785](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2785)
 
 ##### Parameters
 
@@ -669,7 +679,7 @@ Defined in: [diagram/Diagram.ts:2553](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **background**(): `string`
 
-Defined in: [diagram/Diagram.ts:2702](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2702)
+Defined in: [diagram/Diagram.ts:2956](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2956)
 
 GoJS-compatible: The background color of the diagram.
 
@@ -681,7 +691,7 @@ GoJS-compatible: The background color of the diagram.
 
 > **set** **background**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:2706](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2706)
+Defined in: [diagram/Diagram.ts:2960](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2960)
 
 ##### Parameters
 
@@ -701,7 +711,7 @@ Defined in: [diagram/Diagram.ts:2706](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **commandHandler**(): [`CommandHandler`](/en/reference/api/graphojs/classes/commandhandler/)
 
-Defined in: [diagram/Diagram.ts:585](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L585)
+Defined in: [diagram/Diagram.ts:620](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L620)
 
 GoJS-compatible: The command handler.
 
@@ -717,7 +727,7 @@ GoJS-compatible: The command handler.
 
 > **get** **contentAlignment**(): [`Spot`](/en/reference/api/graphojs/classes/spot/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2537](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2537)
+Defined in: [diagram/Diagram.ts:2769](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2769)
 
 GoJS-compatible: The alignment of the diagram content within the viewport.
 
@@ -729,7 +739,7 @@ GoJS-compatible: The alignment of the diagram content within the viewport.
 
 > **set** **contentAlignment**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:2541](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2541)
+Defined in: [diagram/Diagram.ts:2773](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2773)
 
 ##### Parameters
 
@@ -747,15 +757,37 @@ Defined in: [diagram/Diagram.ts:2541](https://github.com/rroblf01/graphojs/blob/
 
 #### Get Signature
 
-> **get** **div**(): `HTMLDivElement`
+> **get** **div**(): `HTMLDivElement` \| `null`
 
-Defined in: [diagram/Diagram.ts:2685](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2685)
+Defined in: [diagram/Diagram.ts:2917](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2917)
 
-GoJS-compatible: The HTML element this diagram renders into.
+GoJS-compatible: The HTML element this diagram renders into, or `null` if detached.
 
 ##### Returns
 
-`HTMLDivElement`
+`HTMLDivElement` \| `null`
+
+#### Set Signature
+
+> **set** **div**(`value`): `void`
+
+Defined in: [diagram/Diagram.ts:2928](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2928)
+
+GoJS-compatible: reparent this diagram (the same instance, model, undo
+history, selection, and viewport) into a different div, or detach it
+from the DOM entirely with `null`. Real GoJS's `div` is read/write for
+exactly this: moving a diagram between containers (e.g. a framework
+remounting its host element) without recreating it.
+
+##### Parameters
+
+###### value
+
+`HTMLDivElement` \| `null`
+
+##### Returns
+
+`void`
 
 ***
 
@@ -765,7 +797,7 @@ GoJS-compatible: The HTML element this diagram renders into.
 
 > **get** **documentBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [diagram/Diagram.ts:3624](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3624)
+Defined in: [diagram/Diagram.ts:3953](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3953)
 
 GoJS-compatible: The bounds of the document (all content).
 
@@ -779,27 +811,31 @@ GoJS-compatible: The bounds of the document (all content).
 
 #### Get Signature
 
-> **get** **grid**(): `unknown`
+> **get** **grid**(): [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2525](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2525)
+Defined in: [diagram/Diagram.ts:2732](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2732)
 
-GoJS-compatible: A Shape (or null) used as a grid pattern behind the diagram.
+GoJS-compatible: A `Panel` (type `"Grid"`, e.g.
+`$(go.Panel, "Grid", { gridCellSize }, $(go.Shape, "LineH", ...), $(go.Shape, "LineV", ...))`)
+used as the background grid pattern. Its `Shape` children's `stroke`/
+`strokeWidth` style the grid lines; `null` falls back to the default
+styling driven by `gridSize` alone.
 
 ##### Returns
 
-`unknown`
+[`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
 #### Set Signature
 
 > **set** **grid**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:2529](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2529)
+Defined in: [diagram/Diagram.ts:2736](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2736)
 
 ##### Parameters
 
 ###### value
 
-`unknown`
+[`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
 ##### Returns
 
@@ -813,7 +849,7 @@ Defined in: [diagram/Diagram.ts:2529](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **groups**(): `ReadonlyMap`\<[`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/), [`Group`](/en/reference/api/graphojs/classes/group/)\>
 
-Defined in: [diagram/Diagram.ts:2504](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2504)
+Defined in: [diagram/Diagram.ts:2691](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2691)
 
 GoJS-compatible: The groups in this diagram.
 
@@ -829,7 +865,7 @@ GoJS-compatible: The groups in this diagram.
 
 > **get** **groupTemplate**(): [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
-Defined in: [diagram/Diagram.ts:614](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L614)
+Defined in: [diagram/Diagram.ts:649](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L649)
 
 GoJS-compatible: Get the default group template.
 
@@ -841,7 +877,7 @@ GoJS-compatible: Get the default group template.
 
 > **set** **groupTemplate**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:619](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L619)
+Defined in: [diagram/Diagram.ts:654](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L654)
 
 GoJS-compatible: Set the default group template.
 
@@ -863,7 +899,7 @@ GoJS-compatible: Set the default group template.
 
 > **get** **groupTemplateMap**(): `Map`\<`string`, [`Panel`](/en/reference/api/graphojs/classes/panel/)\>
 
-Defined in: [diagram/Diagram.ts:636](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L636)
+Defined in: [diagram/Diagram.ts:671](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L671)
 
 GoJS-compatible: Get the group template map.
 
@@ -879,7 +915,7 @@ GoJS-compatible: Get the group template map.
 
 > **get** **horizontalScrollPosition**(): `number`
 
-Defined in: [diagram/Diagram.ts:3644](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3644)
+Defined in: [diagram/Diagram.ts:3973](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3973)
 
 GoJS-compatible: The horizontal scroll position in document coordinates.
 
@@ -891,7 +927,7 @@ GoJS-compatible: The horizontal scroll position in document coordinates.
 
 > **set** **horizontalScrollPosition**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:3648](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3648)
+Defined in: [diagram/Diagram.ts:3977](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3977)
 
 ##### Parameters
 
@@ -911,7 +947,7 @@ Defined in: [diagram/Diagram.ts:3648](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **initialContentAlignment**(): [`Spot`](/en/reference/api/graphojs/classes/spot/) \| `null`
 
-Defined in: [diagram/Diagram.ts:932](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L932)
+Defined in: [diagram/Diagram.ts:967](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L967)
 
 GoJS-compatible: The initial content alignment spot.
 
@@ -923,7 +959,7 @@ GoJS-compatible: The initial content alignment spot.
 
 > **set** **initialContentAlignment**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:936](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L936)
+Defined in: [diagram/Diagram.ts:971](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L971)
 
 ##### Parameters
 
@@ -943,7 +979,7 @@ Defined in: [diagram/Diagram.ts:936](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **initialContentAlignmentOffset**(): \{ `x`: `number`; `y`: `number`; \} \| `null`
 
-Defined in: [diagram/Diagram.ts:941](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L941)
+Defined in: [diagram/Diagram.ts:976](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L976)
 
 GoJS-compatible: The initial content alignment offset.
 
@@ -955,7 +991,7 @@ GoJS-compatible: The initial content alignment offset.
 
 > **set** **initialContentAlignmentOffset**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:945](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L945)
+Defined in: [diagram/Diagram.ts:980](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L980)
 
 ##### Parameters
 
@@ -975,7 +1011,7 @@ Defined in: [diagram/Diagram.ts:945](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **isEnabled**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:914](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L914)
+Defined in: [diagram/Diagram.ts:949](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L949)
 
 GoJS-compatible: Whether the diagram is enabled (interactive).
 
@@ -987,7 +1023,7 @@ GoJS-compatible: Whether the diagram is enabled (interactive).
 
 > **set** **isEnabled**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:918](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L918)
+Defined in: [diagram/Diagram.ts:953](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L953)
 
 ##### Parameters
 
@@ -1007,7 +1043,7 @@ Defined in: [diagram/Diagram.ts:918](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **isModified**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:2712](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2712)
+Defined in: [diagram/Diagram.ts:2966](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2966)
 
 GoJS-compatible: Whether the diagram's model has been modified.
 
@@ -1019,7 +1055,7 @@ GoJS-compatible: Whether the diagram's model has been modified.
 
 > **set** **isModified**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:2716](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2716)
+Defined in: [diagram/Diagram.ts:2970](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2970)
 
 ##### Parameters
 
@@ -1039,7 +1075,7 @@ Defined in: [diagram/Diagram.ts:2716](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **isReadOnly**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:842](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L842)
+Defined in: [diagram/Diagram.ts:877](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L877)
 
 GoJS-compatible: Whether the diagram is read-only.
 
@@ -1051,7 +1087,7 @@ GoJS-compatible: Whether the diagram is read-only.
 
 > **set** **isReadOnly**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:846](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L846)
+Defined in: [diagram/Diagram.ts:881](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L881)
 
 ##### Parameters
 
@@ -1071,7 +1107,7 @@ Defined in: [diagram/Diagram.ts:846](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **layers**(): readonly [`Layer`](/en/reference/api/graphojs/classes/layer/)[]
 
-Defined in: [diagram/Diagram.ts:2616](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2616)
+Defined in: [diagram/Diagram.ts:2848](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2848)
 
 GoJS-compatible: The layers in this diagram.
 
@@ -1087,7 +1123,7 @@ readonly [`Layer`](/en/reference/api/graphojs/classes/layer/)[]
 
 > **get** **layout**(): [`Layout`](/en/reference/api/graphojs/classes/layout/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2623](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2623)
+Defined in: [diagram/Diagram.ts:2855](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2855)
 
 ##### Returns
 
@@ -1097,7 +1133,7 @@ Defined in: [diagram/Diagram.ts:2623](https://github.com/rroblf01/graphojs/blob/
 
 > **set** **layout**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:2627](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2627)
+Defined in: [diagram/Diagram.ts:2859](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2859)
 
 ##### Parameters
 
@@ -1117,7 +1153,7 @@ Defined in: [diagram/Diagram.ts:2627](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **links**(): `ReadonlyMap`\<[`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/), [`Link`](/en/reference/api/graphojs/classes/link/)\>
 
-Defined in: [diagram/Diagram.ts:2499](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2499)
+Defined in: [diagram/Diagram.ts:2686](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2686)
 
 GoJS-compatible: The links in this diagram.
 
@@ -1133,7 +1169,7 @@ GoJS-compatible: The links in this diagram.
 
 > **get** **linkTemplate**(): [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
-Defined in: [diagram/Diagram.ts:602](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L602)
+Defined in: [diagram/Diagram.ts:637](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L637)
 
 GoJS-compatible: Get the default link template.
 
@@ -1145,7 +1181,7 @@ GoJS-compatible: Get the default link template.
 
 > **set** **linkTemplate**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:607](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L607)
+Defined in: [diagram/Diagram.ts:642](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L642)
 
 GoJS-compatible: Set the default link template.
 
@@ -1167,7 +1203,7 @@ GoJS-compatible: Set the default link template.
 
 > **get** **linkTemplateMap**(): `Map`\<`string`, [`Panel`](/en/reference/api/graphojs/classes/panel/)\>
 
-Defined in: [diagram/Diagram.ts:631](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L631)
+Defined in: [diagram/Diagram.ts:666](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L666)
 
 GoJS-compatible: Get the link template map.
 
@@ -1183,7 +1219,7 @@ GoJS-compatible: Get the link template map.
 
 > **get** **maxScale**(): `number`
 
-Defined in: [diagram/Diagram.ts:320](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L320)
+Defined in: [diagram/Diagram.ts:348](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L348)
 
 GoJS-compatible: The maximum zoom scale.
 
@@ -1195,7 +1231,7 @@ GoJS-compatible: The maximum zoom scale.
 
 > **set** **maxScale**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:325](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L325)
+Defined in: [diagram/Diagram.ts:353](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L353)
 
 GoJS-compatible: Set the maximum zoom scale.
 
@@ -1217,7 +1253,7 @@ GoJS-compatible: Set the maximum zoom scale.
 
 > **get** **maxSelectionCount**(): `number`
 
-Defined in: [diagram/Diagram.ts:1022](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L1022)
+Defined in: [diagram/Diagram.ts:1057](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1057)
 
 GoJS-compatible: The maximum number of parts that can be selected.
 
@@ -1229,7 +1265,7 @@ GoJS-compatible: The maximum number of parts that can be selected.
 
 > **set** **maxSelectionCount**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:1026](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L1026)
+Defined in: [diagram/Diagram.ts:1061](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1061)
 
 ##### Parameters
 
@@ -1249,7 +1285,7 @@ Defined in: [diagram/Diagram.ts:1026](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **minScale**(): `number`
 
-Defined in: [diagram/Diagram.ts:308](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L308)
+Defined in: [diagram/Diagram.ts:336](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L336)
 
 GoJS-compatible: The minimum zoom scale.
 
@@ -1261,7 +1297,7 @@ GoJS-compatible: The minimum zoom scale.
 
 > **set** **minScale**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:313](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L313)
+Defined in: [diagram/Diagram.ts:341](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L341)
 
 GoJS-compatible: Set the minimum zoom scale.
 
@@ -1283,7 +1319,7 @@ GoJS-compatible: Set the minimum zoom scale.
 
 > **get** **model**(): [`GraphLinksModel`](/en/reference/api/graphojs/classes/graphlinksmodel/)
 
-Defined in: [diagram/Diagram.ts:2601](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2601)
+Defined in: [diagram/Diagram.ts:2833](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2833)
 
 GoJS-compatible: Get the model.
 
@@ -1295,7 +1331,7 @@ GoJS-compatible: Get the model.
 
 > **set** **model**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:2606](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2606)
+Defined in: [diagram/Diagram.ts:2838](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2838)
 
 GoJS-compatible: Set the model.
 
@@ -1317,7 +1353,7 @@ GoJS-compatible: Set the model.
 
 > **get** **modelChanged**(): ((`event`) => `void`) \| `null`
 
-Defined in: [diagram/Diagram.ts:2745](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2745)
+Defined in: [diagram/Diagram.ts:2999](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2999)
 
 ##### Returns
 
@@ -1327,7 +1363,7 @@ Defined in: [diagram/Diagram.ts:2745](https://github.com/rroblf01/graphojs/blob/
 
 > **set** **modelChanged**(`listener`): `void`
 
-Defined in: [diagram/Diagram.ts:2735](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2735)
+Defined in: [diagram/Diagram.ts:2989](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2989)
 
 GoJS-compatible: A listener called when the model changes (single handler).
 
@@ -1349,7 +1385,7 @@ GoJS-compatible: A listener called when the model changes (single handler).
 
 > **get** **nodes**(): `ReadonlyMap`\<[`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/), [`Node`](/en/reference/api/graphojs/classes/node/)\>
 
-Defined in: [diagram/Diagram.ts:2494](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2494)
+Defined in: [diagram/Diagram.ts:2681](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2681)
 
 GoJS-compatible: The nodes in this diagram.
 
@@ -1365,7 +1401,7 @@ GoJS-compatible: The nodes in this diagram.
 
 > **get** **nodeTemplate**(): [`Panel`](/en/reference/api/graphojs/classes/panel/) \| `null`
 
-Defined in: [diagram/Diagram.ts:590](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L590)
+Defined in: [diagram/Diagram.ts:625](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L625)
 
 GoJS-compatible: Get the default node template.
 
@@ -1377,7 +1413,7 @@ GoJS-compatible: Get the default node template.
 
 > **set** **nodeTemplate**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:595](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L595)
+Defined in: [diagram/Diagram.ts:630](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L630)
 
 GoJS-compatible: Set the default node template.
 
@@ -1399,7 +1435,7 @@ GoJS-compatible: Set the default node template.
 
 > **get** **nodeTemplateMap**(): `Map`\<`string`, [`Panel`](/en/reference/api/graphojs/classes/panel/)\>
 
-Defined in: [diagram/Diagram.ts:626](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L626)
+Defined in: [diagram/Diagram.ts:661](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L661)
 
 GoJS-compatible: Get the node template map.
 
@@ -1415,7 +1451,7 @@ GoJS-compatible: Get the node template map.
 
 > **get** **padding**(): `number`
 
-Defined in: [diagram/Diagram.ts:3273](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3273)
+Defined in: [diagram/Diagram.ts:3590](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3590)
 
 GoJS-compatible: The padding around the content.
 
@@ -1427,7 +1463,7 @@ GoJS-compatible: The padding around the content.
 
 > **set** **padding**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:3277](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3277)
+Defined in: [diagram/Diagram.ts:3594](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3594)
 
 ##### Parameters
 
@@ -1441,13 +1477,35 @@ Defined in: [diagram/Diagram.ts:3277](https://github.com/rroblf01/graphojs/blob/
 
 ***
 
+### parts
+
+#### Get Signature
+
+> **get** **parts**(): [`Iterator`](/en/reference/api/graphojs/interfaces/iterator/)\<[`Part`](/en/reference/api/graphojs/classes/part/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/)\>
+
+Defined in: [diagram/Diagram.ts:2704](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2704)
+
+GoJS-compatible: an iterator over all of this diagram's top-level
+Parts (nodes, links, groups, and any bare decorative `Part`s added via
+`add()`), in no particular order — mirrors real GoJS's `Iterator`
+protocol (call `next()` before reading `.value`) and is also a real
+`[Symbol.iterator]`, so `for (const p of diagram.parts)` works too.
+Previously the only way to reach a Part was by already knowing its
+key (`getPart`/`findPartForKey`/`findNodeForKey`/...).
+
+##### Returns
+
+[`Iterator`](/en/reference/api/graphojs/interfaces/iterator/)\<[`Part`](/en/reference/api/graphojs/classes/part/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/)\>
+
+***
+
 ### position
 
 #### Get Signature
 
 > **get** **position**(): `object`
 
-Defined in: [diagram/Diagram.ts:3264](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3264)
+Defined in: [diagram/Diagram.ts:3581](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3581)
 
 GoJS-compatible: The position (top-left of the viewport in diagram coordinates).
 
@@ -1467,7 +1525,7 @@ GoJS-compatible: The position (top-left of the viewport in diagram coordinates).
 
 > **set** **position**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:3268](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3268)
+Defined in: [diagram/Diagram.ts:3585](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3585)
 
 ##### Parameters
 
@@ -1493,7 +1551,7 @@ Defined in: [diagram/Diagram.ts:3268](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **scale**(): `number`
 
-Defined in: [diagram/Diagram.ts:3253](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3253)
+Defined in: [diagram/Diagram.ts:3570](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3570)
 
 GoJS-compatible: The current zoom scale.
 
@@ -1505,7 +1563,7 @@ GoJS-compatible: The current zoom scale.
 
 > **set** **scale**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:3257](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3257)
+Defined in: [diagram/Diagram.ts:3574](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3574)
 
 ##### Parameters
 
@@ -1525,7 +1583,7 @@ Defined in: [diagram/Diagram.ts:3257](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **scrollBehavior**(): `number`
 
-Defined in: [diagram/Diagram.ts:2561](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2561)
+Defined in: [diagram/Diagram.ts:2793](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2793)
 
 GoJS-compatible: How scrolling and scrollbars behave.
 
@@ -1537,7 +1595,7 @@ GoJS-compatible: How scrolling and scrollbars behave.
 
 > **set** **scrollBehavior**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:2565](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2565)
+Defined in: [diagram/Diagram.ts:2797](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2797)
 
 ##### Parameters
 
@@ -1557,7 +1615,7 @@ Defined in: [diagram/Diagram.ts:2565](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **scrollMode**(): `"document"` \| `"infinite"`
 
-Defined in: [diagram/Diagram.ts:923](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L923)
+Defined in: [diagram/Diagram.ts:958](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L958)
 
 GoJS-compatible: The scroll mode ('document' or 'infinite').
 
@@ -1569,7 +1627,7 @@ GoJS-compatible: The scroll mode ('document' or 'infinite').
 
 > **set** **scrollMode**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:927](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L927)
+Defined in: [diagram/Diagram.ts:962](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L962)
 
 ##### Parameters
 
@@ -1587,15 +1645,15 @@ Defined in: [diagram/Diagram.ts:927](https://github.com/rroblf01/graphojs/blob/d
 
 #### Get Signature
 
-> **get** **selection**(): ([`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/))[]
+> **get** **selection**(): ([`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/))[]
 
-Defined in: [diagram/Diagram.ts:2479](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2479)
+Defined in: [diagram/Diagram.ts:2666](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2666)
 
 GoJS-compatible: The set of currently selected parts.
 
 ##### Returns
 
-([`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/))[]
+([`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/))[]
 
 ***
 
@@ -1605,7 +1663,7 @@ GoJS-compatible: The set of currently selected parts.
 
 > **get** **selectionStyle**(): [`SelectionStyle`](/en/reference/api/graphojs/interfaces/selectionstyle/)
 
-Defined in: [diagram/Diagram.ts:2639](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2639)
+Defined in: [diagram/Diagram.ts:2871](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2871)
 
 Colors used for selection highlights and the keyboard focus cursor.
 Defaults to a high-contrast palette when the OS requests more contrast
@@ -1619,7 +1677,7 @@ Defaults to a high-contrast palette when the OS requests more contrast
 
 > **set** **selectionStyle**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:2643](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2643)
+Defined in: [diagram/Diagram.ts:2875](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2875)
 
 ##### Parameters
 
@@ -1633,13 +1691,46 @@ Defined in: [diagram/Diagram.ts:2643](https://github.com/rroblf01/graphojs/blob/
 
 ***
 
+### themeManager
+
+#### Get Signature
+
+> **get** **themeManager**(): [`ThemeManager`](/en/reference/api/graphojs/classes/thememanager/)
+
+Defined in: [diagram/Diagram.ts:3101](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3101)
+
+GoJS-compatible: the `ThemeManager` for this diagram, lazily created
+with the default `light`/`dark` themes on first access.
+
+##### Returns
+
+[`ThemeManager`](/en/reference/api/graphojs/classes/thememanager/)
+
+#### Set Signature
+
+> **set** **themeManager**(`value`): `void`
+
+Defined in: [diagram/Diagram.ts:3109](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3109)
+
+##### Parameters
+
+###### value
+
+[`ThemeManager`](/en/reference/api/graphojs/classes/thememanager/)
+
+##### Returns
+
+`void`
+
+***
+
 ### toolManager
 
 #### Get Signature
 
 > **get** **toolManager**(): [`ToolManager`](/en/reference/api/graphojs/classes/toolmanager/)
 
-Defined in: [diagram/Diagram.ts:555](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L555)
+Defined in: [diagram/Diagram.ts:590](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L590)
 
 GoJS-compatible: The tool manager.
 
@@ -1655,7 +1746,7 @@ GoJS-compatible: The tool manager.
 
 > **get** **undoManager**(): [`UndoManager`](/en/reference/api/graphojs/classes/undomanager/)
 
-Defined in: [diagram/Diagram.ts:565](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L565)
+Defined in: [diagram/Diagram.ts:600](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L600)
 
 GoJS-compatible: The undo manager.
 
@@ -1671,7 +1762,7 @@ GoJS-compatible: The undo manager.
 
 > **get** **verticalScrollPosition**(): `number`
 
-Defined in: [diagram/Diagram.ts:3653](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3653)
+Defined in: [diagram/Diagram.ts:3982](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3982)
 
 GoJS-compatible: The vertical scroll position in document coordinates.
 
@@ -1683,7 +1774,7 @@ GoJS-compatible: The vertical scroll position in document coordinates.
 
 > **set** **verticalScrollPosition**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:3657](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3657)
+Defined in: [diagram/Diagram.ts:3986](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3986)
 
 ##### Parameters
 
@@ -1703,7 +1794,7 @@ Defined in: [diagram/Diagram.ts:3657](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **viewportBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [diagram/Diagram.ts:3629](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3629)
+Defined in: [diagram/Diagram.ts:3958](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3958)
 
 GoJS-compatible: The bounds of the viewport.
 
@@ -1719,7 +1810,7 @@ GoJS-compatible: The bounds of the viewport.
 
 > **get** **zoomFactor**(): `number`
 
-Defined in: [diagram/Diagram.ts:3216](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3216)
+Defined in: [diagram/Diagram.ts:3533](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3533)
 
 GoJS-compatible: The current zoom factor (alias for scale).
 
@@ -1731,7 +1822,7 @@ GoJS-compatible: The current zoom factor (alias for scale).
 
 > **set** **zoomFactor**(`value`): `void`
 
-Defined in: [diagram/Diagram.ts:3220](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3220)
+Defined in: [diagram/Diagram.ts:3537](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3537)
 
 ##### Parameters
 
@@ -1749,7 +1840,7 @@ Defined in: [diagram/Diagram.ts:3220](https://github.com/rroblf01/graphojs/blob/
 
 > **add**(`part`): `void`
 
-Defined in: [diagram/Diagram.ts:3298](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3298)
+Defined in: [diagram/Diagram.ts:3615](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3615)
 
 GoJS-compatible: Add a part directly to the diagram (and its data to the model).
 
@@ -1769,7 +1860,7 @@ GoJS-compatible: Add a part directly to the diagram (and its data to the model).
 
 > **addAnyDiagramListener**(`handler`): `void`
 
-Defined in: [diagram/Diagram.ts:676](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L676)
+Defined in: [diagram/Diagram.ts:711](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L711)
 
 Add a listener for all diagram events.
 
@@ -1789,7 +1880,7 @@ Add a listener for all diagram events.
 
 > **addDiagramListener**(`type`, `handler`): `void`
 
-Defined in: [diagram/Diagram.ts:671](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L671)
+Defined in: [diagram/Diagram.ts:706](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L706)
 
 Add a diagram event listener.
 
@@ -1813,7 +1904,7 @@ Add a diagram event listener.
 
 > **addGroupTemplate**(`category`, `template`): `void`
 
-Defined in: [diagram/Diagram.ts:651](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L651)
+Defined in: [diagram/Diagram.ts:686](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L686)
 
 GoJS-compatible: Add a group template for a category.
 
@@ -1837,7 +1928,7 @@ GoJS-compatible: Add a group template for a category.
 
 > **addLayer**(`layer`): `void`
 
-Defined in: [diagram/Diagram.ts:2760](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2760)
+Defined in: [diagram/Diagram.ts:3014](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3014)
 
 Add a layer.
 
@@ -1857,7 +1948,7 @@ Add a layer.
 
 > **addLinkTemplate**(`category`, `template`): `void`
 
-Defined in: [diagram/Diagram.ts:646](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L646)
+Defined in: [diagram/Diagram.ts:681](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L681)
 
 GoJS-compatible: Add a link template for a category.
 
@@ -1881,7 +1972,7 @@ GoJS-compatible: Add a link template for a category.
 
 > **addModelChangedListener**(`listener`): `void`
 
-Defined in: [diagram/Diagram.ts:2723](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2723)
+Defined in: [diagram/Diagram.ts:2977](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2977)
 
 GoJS-compatible: Register a model changed listener.
 
@@ -1901,7 +1992,7 @@ GoJS-compatible: Register a model changed listener.
 
 > **addNodeTemplate**(`category`, `template`): `void`
 
-Defined in: [diagram/Diagram.ts:641](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L641)
+Defined in: [diagram/Diagram.ts:676](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L676)
 
 GoJS-compatible: Add a node template for a category.
 
@@ -1925,7 +2016,7 @@ GoJS-compatible: Add a node template for a category.
 
 > **addParts**(`parts`): `void`
 
-Defined in: [diagram/Diagram.ts:3333](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3333)
+Defined in: [diagram/Diagram.ts:3656](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3656)
 
 GoJS-compatible: Add multiple parts at once.
 
@@ -1945,7 +2036,7 @@ GoJS-compatible: Add multiple parts at once.
 
 > **announce**(`message`): `void`
 
-Defined in: [diagram/Diagram.ts:2351](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2351)
+Defined in: [diagram/Diagram.ts:2538](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2538)
 
 Accessibility: push a message to the off-screen live region, announced
 to screen readers. Public so tools/command handlers can announce their
@@ -1968,7 +2059,7 @@ own user-initiated actions (see `CommandHandler.deleteSelection` and
 
 > **centerPoint**(`p`): `void`
 
-Defined in: [diagram/Diagram.ts:3584](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3584)
+Defined in: [diagram/Diagram.ts:3913](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3913)
 
 GoJS-compatible: Scroll the view so that a point is centered.
 
@@ -1994,7 +2085,7 @@ GoJS-compatible: Scroll the view so that a point is centered.
 
 > **centerRect**(`rect`): `void`
 
-Defined in: [diagram/Diagram.ts:3579](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3579)
+Defined in: [diagram/Diagram.ts:3908](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3908)
 
 GoJS-compatible: Scroll the view so that a rect is centered.
 
@@ -2014,7 +2105,7 @@ GoJS-compatible: Scroll the view so that a rect is centered.
 
 > **clear**(): `void`
 
-Defined in: [diagram/Diagram.ts:2238](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2238)
+Defined in: [diagram/Diagram.ts:2425](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2425)
 
 GoJS-compatible: Remove all parts and clear the model.
 
@@ -2028,7 +2119,7 @@ GoJS-compatible: Remove all parts and clear the model.
 
 > **clearSelection**(): `void`
 
-Defined in: [diagram/Diagram.ts:2406](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2406)
+Defined in: [diagram/Diagram.ts:2593](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2593)
 
 Clear all selections.
 
@@ -2042,7 +2133,7 @@ Clear all selections.
 
 > **collapseGroup**(`group`): `void`
 
-Defined in: [diagram/Diagram.ts:2452](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2452)
+Defined in: [diagram/Diagram.ts:2639](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2639)
 
 GoJS-compatible: Collapse a group's subgraph, firing SubGraphCollapsed.
 
@@ -2062,7 +2153,7 @@ GoJS-compatible: Collapse a group's subgraph, firing SubGraphCollapsed.
 
 > **collapseTree**(`node`): `void`
 
-Defined in: [diagram/Diagram.ts:3710](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3710)
+Defined in: [diagram/Diagram.ts:4039](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L4039)
 
 GoJS-compatible: collapse a node's tree — hide every descendant reachable
 via findTreeChildrenNodes (and any Link visually connecting them), used by
@@ -2084,7 +2175,7 @@ TreeExpanderButton. Independent of Group.isSubGraphExpanded/collapseGroup.
 
 > **commit**(`fn`, `name?`): `void`
 
-Defined in: [diagram/Diagram.ts:822](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L822)
+Defined in: [diagram/Diagram.ts:857](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L857)
 
 GoJS-compatible: Execute a function within a transaction.
 If the function is provided, it's called and the transaction is committed.
@@ -2115,7 +2206,7 @@ Usage:
 
 > **commitTransaction**(`name?`): `boolean`
 
-Defined in: [diagram/Diagram.ts:797](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L797)
+Defined in: [diagram/Diagram.ts:832](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L832)
 
 GoJS-compatible: Commit the current transaction.
 
@@ -2135,7 +2226,7 @@ GoJS-compatible: Commit the current transaction.
 
 > **computeBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [diagram/Diagram.ts:3634](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3634)
+Defined in: [diagram/Diagram.ts:3963](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3963)
 
 GoJS-compatible: The bounds of all content, including links.
 
@@ -2149,7 +2240,7 @@ GoJS-compatible: The bounds of all content, including links.
 
 > **deselect**(`part`): `void`
 
-Defined in: [diagram/Diagram.ts:2436](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2436)
+Defined in: [diagram/Diagram.ts:2623](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2623)
 
 GoJS-compatible: Deselect a part.
 
@@ -2169,7 +2260,7 @@ GoJS-compatible: Deselect a part.
 
 > **destroy**(): `void`
 
-Defined in: [diagram/Diagram.ts:3763](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3763)
+Defined in: [diagram/Diagram.ts:4092](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L4092)
 
 Destroy the diagram and clean up resources.
 
@@ -2183,9 +2274,23 @@ Destroy the diagram and clean up resources.
 
 > **disableDoubleBuffering**(): `void`
 
-Defined in: [diagram/Diagram.ts:2848](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2848)
+Defined in: [diagram/Diagram.ts:3139](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3139)
 
 Disable double-buffered rendering.
+
+#### Returns
+
+`void`
+
+***
+
+### disableGrid()
+
+> **disableGrid**(): `void`
+
+Defined in: [diagram/Diagram.ts:3208](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3208)
+
+Hide the background grid.
 
 #### Returns
 
@@ -2197,7 +2302,7 @@ Disable double-buffered rendering.
 
 > **disableLayerCaching**(): `void`
 
-Defined in: [diagram/Diagram.ts:2814](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2814)
+Defined in: [diagram/Diagram.ts:3068](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3068)
 
 Disable layer caching.
 
@@ -2211,7 +2316,7 @@ Disable layer caching.
 
 > **disableLOD**(): `void`
 
-Defined in: [diagram/Diagram.ts:2867](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2867)
+Defined in: [diagram/Diagram.ts:3158](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3158)
 
 Disable level-of-detail rendering.
 
@@ -2225,7 +2330,7 @@ Disable level-of-detail rendering.
 
 > **disableSnapToGrid**(): `void`
 
-Defined in: [diagram/Diagram.ts:2894](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2894)
+Defined in: [diagram/Diagram.ts:3185](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3185)
 
 Disable grid snapping.
 
@@ -2239,7 +2344,7 @@ Disable grid snapping.
 
 > **disableTooltips**(): `void`
 
-Defined in: [diagram/Diagram.ts:2831](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2831)
+Defined in: [diagram/Diagram.ts:3085](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3085)
 
 Disable hover tooltips.
 
@@ -2253,7 +2358,7 @@ Disable hover tooltips.
 
 > **disableVirtualization**(): `void`
 
-Defined in: [diagram/Diagram.ts:716](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L716)
+Defined in: [diagram/Diagram.ts:751](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L751)
 
 Disable virtualization.
 
@@ -2267,9 +2372,28 @@ Disable virtualization.
 
 > **enableDoubleBuffering**(): `void`
 
-Defined in: [diagram/Diagram.ts:2842](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2842)
+Defined in: [diagram/Diagram.ts:3133](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3133)
 
 Enable double-buffered rendering (render offscreen then blit).
+
+#### Returns
+
+`void`
+
+***
+
+### enableGrid()
+
+> **enableGrid**(): `void`
+
+Defined in: [diagram/Diagram.ts:3202](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3202)
+
+GoJS-compatible: show the background grid — the closest equivalent of
+real GoJS's `myDiagram.grid.visible = true` (its `Diagram.grid` exists
+by default but starts invisible; here that's `showGrid`, `false` by
+default, toggled through this pair of methods rather than a settable
+property since `enableSnapToGrid`/`disableSnapToGrid` already
+established that shape for the closely-related `snapToGrid`).
 
 #### Returns
 
@@ -2281,7 +2405,7 @@ Enable double-buffered rendering (render offscreen then blit).
 
 > **enableLayerCaching**(`scale?`): `void`
 
-Defined in: [diagram/Diagram.ts:2807](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2807)
+Defined in: [diagram/Diagram.ts:3061](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3061)
 
 Enable layer caching (renders static layers to offscreen canvases).
 
@@ -2301,7 +2425,7 @@ Enable layer caching (renders static layers to offscreen canvases).
 
 > **enableLOD**(`threshold?`): `void`
 
-Defined in: [diagram/Diagram.ts:2860](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2860)
+Defined in: [diagram/Diagram.ts:3151](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3151)
 
 Enable level-of-detail rendering (hides labels when zoomed out).
 
@@ -2321,7 +2445,7 @@ Enable level-of-detail rendering (hides labels when zoomed out).
 
 > **enableSnapToGrid**(): `void`
 
-Defined in: [diagram/Diagram.ts:2889](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2889)
+Defined in: [diagram/Diagram.ts:3180](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3180)
 
 Enable grid snapping for moved parts.
 
@@ -2335,7 +2459,7 @@ Enable grid snapping for moved parts.
 
 > **enableTooltips**(`options?`): `void`
 
-Defined in: [diagram/Diagram.ts:2826](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2826)
+Defined in: [diagram/Diagram.ts:3080](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3080)
 
 Enable hover tooltips for parts with a tooltip text.
 
@@ -2365,7 +2489,7 @@ Enable hover tooltips for parts with a tooltip text.
 
 > **enableVirtualization**(`bounds`): `void`
 
-Defined in: [diagram/Diagram.ts:708](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L708)
+Defined in: [diagram/Diagram.ts:743](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L743)
 
 Enable virtualization (viewport culling) with a world bounds.
 
@@ -2385,7 +2509,7 @@ Enable virtualization (viewport culling) with a world bounds.
 
 > **executeCommand**(`command`): `void`
 
-Defined in: [diagram/Diagram.ts:762](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L762)
+Defined in: [diagram/Diagram.ts:797](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L797)
 
 Execute an undoable command.
 
@@ -2405,7 +2529,7 @@ Execute an undoable command.
 
 > **expandGroup**(`group`): `void`
 
-Defined in: [diagram/Diagram.ts:2460](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2460)
+Defined in: [diagram/Diagram.ts:2647](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2647)
 
 GoJS-compatible: Expand a group's subgraph, firing SubGraphExpanded.
 
@@ -2425,7 +2549,7 @@ GoJS-compatible: Expand a group's subgraph, firing SubGraphExpanded.
 
 > **expandTree**(`node`): `void`
 
-Defined in: [diagram/Diagram.ts:3724](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3724)
+Defined in: [diagram/Diagram.ts:4053](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L4053)
 
 GoJS-compatible: expand a node's tree, showing its direct tree-children.
 A child that is itself collapsed keeps its own descendants hidden.
@@ -2446,7 +2570,7 @@ A child that is itself collapsed keeps its own descendants hidden.
 
 > **findGroupForKey**(`key`): [`Group`](/en/reference/api/graphojs/classes/group/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2447](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2447)
+Defined in: [diagram/Diagram.ts:2634](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2634)
 
 GoJS-compatible: Find a group part by its model key.
 
@@ -2462,11 +2586,45 @@ GoJS-compatible: Find a group part by its model key.
 
 ***
 
+### findHitGraphObject()
+
+> **findHitGraphObject**(`part`, `point`): [`GraphObject`](/en/reference/api/graphojs/classes/graphobject/) \| `null`
+
+Defined in: [diagram/Diagram.ts:1316](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1316)
+
+Find the deepest GraphObject in `part`'s visual tree at the given
+diagram point. Every element's `_position`/`_actualSize` (set during
+`Panel.draw`'s layout passes) is already in absolute diagram
+coordinates, not relative to `part.bounds` — so `point` is passed to
+`panel.hitTest` unchanged.
+
+#### Parameters
+
+##### part
+
+[`Part`](/en/reference/api/graphojs/classes/part/)
+
+##### point
+
+###### x
+
+`number`
+
+###### y
+
+`number`
+
+#### Returns
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/) \| `null`
+
+***
+
 ### findLayer()
 
 > **findLayer**(`name`): [`Layer`](/en/reference/api/graphojs/classes/layer/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2755](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2755)
+Defined in: [diagram/Diagram.ts:3009](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3009)
 
 GoJS-compatible: Find a layer by name.
 
@@ -2486,7 +2644,7 @@ GoJS-compatible: Find a layer by name.
 
 > **findLinkForData**(`data`): [`Link`](/en/reference/api/graphojs/classes/link/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2231](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2231)
+Defined in: [diagram/Diagram.ts:2418](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2418)
 
 GoJS-compatible: Find a link part by its model data object.
 
@@ -2506,7 +2664,7 @@ GoJS-compatible: Find a link part by its model data object.
 
 > **findLinkForKey**(`key`): [`Link`](/en/reference/api/graphojs/classes/link/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2220](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2220)
+Defined in: [diagram/Diagram.ts:2407](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2407)
 
 GoJS-compatible: Find a link part by its model key.
 
@@ -2526,7 +2684,7 @@ GoJS-compatible: Find a link part by its model key.
 
 > **findNodeForData**(`data`): [`Node`](/en/reference/api/graphojs/classes/node/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2225](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2225)
+Defined in: [diagram/Diagram.ts:2412](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2412)
 
 GoJS-compatible: Find a node part by its model data object.
 
@@ -2546,7 +2704,7 @@ GoJS-compatible: Find a node part by its model data object.
 
 > **findNodeForKey**(`key`): [`Node`](/en/reference/api/graphojs/classes/node/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2210](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2210)
+Defined in: [diagram/Diagram.ts:2397](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2397)
 
 GoJS-compatible: Find a node part by its model key.
 
@@ -2564,9 +2722,9 @@ GoJS-compatible: Find a node part by its model key.
 
 ### findPartAt()
 
-> **findPartAt**(`x`, `y`): [`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| `null`
+> **findPartAt**(`x`, `y`): [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2127](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2127)
+Defined in: [diagram/Diagram.ts:2314](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2314)
 
 Find a part at the given diagram coordinates.
 
@@ -2582,7 +2740,7 @@ Find a part at the given diagram coordinates.
 
 #### Returns
 
-[`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| `null`
+[`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/) \| `null`
 
 ***
 
@@ -2590,7 +2748,7 @@ Find a part at the given diagram coordinates.
 
 > **findPartForKey**(`key`): [`Part`](/en/reference/api/graphojs/classes/part/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2215](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2215)
+Defined in: [diagram/Diagram.ts:2402](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2402)
 
 GoJS-compatible: Find a part (node, group, or link) by its model key.
 
@@ -2608,9 +2766,9 @@ GoJS-compatible: Find a part (node, group, or link) by its model key.
 
 ### findPartsInRect()
 
-> **findPartsInRect**(`rect`, `_partialInclusion?`): ([`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/))[]
+> **findPartsInRect**(`rect`, `_partialInclusion?`): ([`Part`](/en/reference/api/graphojs/classes/part/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/))[]
 
-Defined in: [diagram/Diagram.ts:3283](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3283)
+Defined in: [diagram/Diagram.ts:3600](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3600)
 
 GoJS-compatible: Find all parts intersecting a rectangle.
 
@@ -2640,7 +2798,7 @@ GoJS-compatible: Find all parts intersecting a rectangle.
 
 #### Returns
 
-([`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/))[]
+([`Part`](/en/reference/api/graphojs/classes/part/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/))[]
 
 ***
 
@@ -2648,7 +2806,7 @@ GoJS-compatible: Find all parts intersecting a rectangle.
 
 > **findTreeChildren**(`node`): [`Node`](/en/reference/api/graphojs/classes/node/)[]
 
-Defined in: [diagram/Diagram.ts:3674](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3674)
+Defined in: [diagram/Diagram.ts:4003](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L4003)
 
 GoJS-compatible: Find the tree children of a node.
 
@@ -2668,7 +2826,7 @@ GoJS-compatible: Find the tree children of a node.
 
 > **findTreeParent**(`node`): [`Node`](/en/reference/api/graphojs/classes/node/) \| `null`
 
-Defined in: [diagram/Diagram.ts:3686](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3686)
+Defined in: [diagram/Diagram.ts:4015](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L4015)
 
 GoJS-compatible: Find the tree parent of a node, or null.
 
@@ -2688,7 +2846,7 @@ GoJS-compatible: Find the tree parent of a node, or null.
 
 > **findTreeRoots**(): [`Node`](/en/reference/api/graphojs/classes/node/)[]
 
-Defined in: [diagram/Diagram.ts:3662](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3662)
+Defined in: [diagram/Diagram.ts:3991](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3991)
 
 GoJS-compatible: Find all nodes that are tree roots (no parent key).
 
@@ -2702,7 +2860,7 @@ GoJS-compatible: Find all nodes that are tree roots (no parent key).
 
 > **fireDiagramEvent**(`type`, `part?`, `data?`): `void`
 
-Defined in: [diagram/Diagram.ts:696](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L696)
+Defined in: [diagram/Diagram.ts:731](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L731)
 
 Fire a diagram event.
 
@@ -2730,7 +2888,7 @@ Fire a diagram event.
 
 > **focus**(): `void`
 
-Defined in: [diagram/Diagram.ts:2695](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2695)
+Defined in: [diagram/Diagram.ts:2949](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2949)
 
 GoJS-compatible: Give keyboard focus to the diagram's div.
 
@@ -2744,7 +2902,7 @@ GoJS-compatible: Give keyboard focus to the diagram's div.
 
 > **fromJSON**(`json`): `void`
 
-Defined in: [diagram/Diagram.ts:2797](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2797)
+Defined in: [diagram/Diagram.ts:3051](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3051)
 
 Deserialize JSON into the diagram.
 
@@ -2764,7 +2922,7 @@ Deserialize JSON into the diagram.
 
 > **getAlignmentGuidelines**(): `object`[]
 
-Defined in: [diagram/Diagram.ts:2306](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2306)
+Defined in: [diagram/Diagram.ts:2493](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2493)
 
 Get the alignment guideline segments currently shown.
 
@@ -2778,7 +2936,7 @@ Get the alignment guideline segments currently shown.
 
 > **getAnimationManager**(): [`AnimationManager`](/en/reference/api/graphojs/classes/animationmanager/)
 
-Defined in: [diagram/Diagram.ts:570](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L570)
+Defined in: [diagram/Diagram.ts:605](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L605)
 
 Get the animation manager.
 
@@ -2792,7 +2950,7 @@ Get the animation manager.
 
 > **getCanvasBounds**(): `object`
 
-Defined in: [diagram/Diagram.ts:2517](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2517)
+Defined in: [diagram/Diagram.ts:2717](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2717)
 
 GoJS-compatible: Get the bounds of the diagram canvas in page/screen coordinates.
 
@@ -2822,7 +2980,7 @@ GoJS-compatible: Get the bounds of the diagram canvas in page/screen coordinates
 
 > **getCommandHandler**(): [`CommandHandler`](/en/reference/api/graphojs/classes/commandhandler/)
 
-Defined in: [diagram/Diagram.ts:580](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L580)
+Defined in: [diagram/Diagram.ts:615](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L615)
 
 Get the command handler.
 
@@ -2836,7 +2994,7 @@ Get the command handler.
 
 > **getContentBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [diagram/Diagram.ts:3592](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3592)
+Defined in: [diagram/Diagram.ts:3921](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3921)
 
 Get the bounds of all content in the diagram.
 
@@ -2850,7 +3008,7 @@ Get the bounds of all content in the diagram.
 
 > **getContextMenu**(): [`ContextMenu`](/en/reference/api/graphojs/classes/contextmenu/) \| `null`
 
-Defined in: [diagram/Diagram.ts:837](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L837)
+Defined in: [diagram/Diagram.ts:872](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L872)
 
 Get the current context menu.
 
@@ -2862,15 +3020,15 @@ Get the current context menu.
 
 ### getDiagramDiv()
 
-> **getDiagramDiv**(): `HTMLDivElement`
+> **getDiagramDiv**(): `HTMLDivElement` \| `null`
 
-Defined in: [diagram/Diagram.ts:2690](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2690)
+Defined in: [diagram/Diagram.ts:2944](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2944)
 
-GoJS-compatible: Get the HTML element this diagram renders into.
+GoJS-compatible: Get the HTML element this diagram renders into, or `null` if detached.
 
 #### Returns
 
-`HTMLDivElement`
+`HTMLDivElement` \| `null`
 
 ***
 
@@ -2878,7 +3036,7 @@ GoJS-compatible: Get the HTML element this diagram renders into.
 
 > **getDiagramPoint**(`e`): `object`
 
-Defined in: [diagram/Diagram.ts:2335](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2335)
+Defined in: [diagram/Diagram.ts:2522](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2522)
 
 Get mouse position in diagram coordinates.
 
@@ -2906,7 +3064,7 @@ Get mouse position in diagram coordinates.
 
 > **getGridSize**(): `number`
 
-Defined in: [diagram/Diagram.ts:2910](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2910)
+Defined in: [diagram/Diagram.ts:3225](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3225)
 
 Get the grid size.
 
@@ -2920,7 +3078,7 @@ Get the grid size.
 
 > **getLayer**(`name`): [`Layer`](/en/reference/api/graphojs/classes/layer/) \| `undefined`
 
-Defined in: [diagram/Diagram.ts:2750](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2750)
+Defined in: [diagram/Diagram.ts:3004](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3004)
 
 Get a layer by name.
 
@@ -2940,7 +3098,7 @@ Get a layer by name.
 
 > **getLayers**(): readonly [`Layer`](/en/reference/api/graphojs/classes/layer/)[]
 
-Defined in: [diagram/Diagram.ts:2611](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2611)
+Defined in: [diagram/Diagram.ts:2843](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2843)
 
 Get all layers.
 
@@ -2954,7 +3112,7 @@ readonly [`Layer`](/en/reference/api/graphojs/classes/layer/)[]
 
 > **getLODLabelThreshold**(): `number`
 
-Defined in: [diagram/Diagram.ts:2884](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2884)
+Defined in: [diagram/Diagram.ts:3175](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3175)
 
 Get the LOD label threshold.
 
@@ -2968,7 +3126,7 @@ Get the LOD label threshold.
 
 > **getModel**(): [`GraphLinksModel`](/en/reference/api/graphojs/classes/graphlinksmodel/)
 
-Defined in: [diagram/Diagram.ts:3185](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3185)
+Defined in: [diagram/Diagram.ts:3502](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3502)
 
 Get the underlying model.
 
@@ -2980,9 +3138,9 @@ Get the underlying model.
 
 ### getPart()
 
-> **getPart**(`key`): [`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| `undefined`
+> **getPart**(`key`): [`Part`](/en/reference/api/graphojs/classes/part/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/) \| `undefined`
 
-Defined in: [diagram/Diagram.ts:2205](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2205)
+Defined in: [diagram/Diagram.ts:2392](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2392)
 
 Get a part by key.
 
@@ -2994,7 +3152,7 @@ Get a part by key.
 
 #### Returns
 
-[`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| `undefined`
+[`Part`](/en/reference/api/graphojs/classes/part/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/) \| `undefined`
 
 ***
 
@@ -3002,7 +3160,7 @@ Get a part by key.
 
 > **getPartPool**(): [`PartPool`](/en/reference/api/graphojs/classes/partpool/)
 
-Defined in: [diagram/Diagram.ts:732](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L732)
+Defined in: [diagram/Diagram.ts:767](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L767)
 
 Get the part pool.
 
@@ -3016,7 +3174,7 @@ Get the part pool.
 
 > **getRenderer**(): [`Renderer`](/en/reference/api/graphojs/interfaces/renderer/)
 
-Defined in: [diagram/Diagram.ts:3190](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3190)
+Defined in: [diagram/Diagram.ts:3507](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3507)
 
 Get the renderer.
 
@@ -3028,15 +3186,15 @@ Get the renderer.
 
 ### getSelectedParts()
 
-> **getSelectedParts**(): ([`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/))[]
+> **getSelectedParts**(): ([`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/))[]
 
-Defined in: [diagram/Diagram.ts:2468](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2468)
+Defined in: [diagram/Diagram.ts:2655](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2655)
 
 Get selected parts.
 
 #### Returns
 
-([`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/))[]
+([`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/))[]
 
 ***
 
@@ -3044,7 +3202,7 @@ Get selected parts.
 
 > **getSelectionRect**(): \{ `height`: `number`; `width`: `number`; `x`: `number`; `y`: `number`; \} \| `null`
 
-Defined in: [diagram/Diagram.ts:2283](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2283)
+Defined in: [diagram/Diagram.ts:2470](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2470)
 
 Get the current selection rectangle, or null.
 
@@ -3058,7 +3216,7 @@ Get the current selection rectangle, or null.
 
 > **getTempLink**(): \{ `from`: \{ `x`: `number`; `y`: `number`; \}; `to`: \{ `x`: `number`; `y`: `number`; \}; \} \| `null`
 
-Defined in: [diagram/Diagram.ts:2264](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2264)
+Defined in: [diagram/Diagram.ts:2451](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2451)
 
 Get the current temporary link, or null.
 
@@ -3072,7 +3230,7 @@ Get the current temporary link, or null.
 
 > **getToolManager**(): [`ToolManager`](/en/reference/api/graphojs/classes/toolmanager/)
 
-Defined in: [diagram/Diagram.ts:550](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L550)
+Defined in: [diagram/Diagram.ts:585](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L585)
 
 Get the tool manager.
 
@@ -3086,7 +3244,7 @@ Get the tool manager.
 
 > **getTooltipManager**(): [`TooltipManager`](/en/reference/api/graphojs/classes/tooltipmanager/) \| `null`
 
-Defined in: [diagram/Diagram.ts:2837](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2837)
+Defined in: [diagram/Diagram.ts:3091](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3091)
 
 Get the tooltip manager, or null if disabled.
 
@@ -3100,7 +3258,7 @@ Get the tooltip manager, or null if disabled.
 
 > **getUndoManager**(): [`UndoManager`](/en/reference/api/graphojs/classes/undomanager/)
 
-Defined in: [diagram/Diagram.ts:560](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L560)
+Defined in: [diagram/Diagram.ts:595](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L595)
 
 Get the undo manager.
 
@@ -3114,7 +3272,7 @@ Get the undo manager.
 
 > **getViewport**(): `object`
 
-Defined in: [diagram/Diagram.ts:3241](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3241)
+Defined in: [diagram/Diagram.ts:3558](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3558)
 
 Get the current viewport.
 
@@ -3148,7 +3306,7 @@ Get the current viewport.
 
 > **getViewportBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [diagram/Diagram.ts:3613](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3613)
+Defined in: [diagram/Diagram.ts:3942](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3942)
 
 Get the current viewport bounds in diagram coordinates.
 
@@ -3162,7 +3320,7 @@ Get the current viewport bounds in diagram coordinates.
 
 > **getVirtualizationManager**(): [`VirtualizationManager`](/en/reference/api/graphojs/classes/virtualizationmanager/) \| `null`
 
-Defined in: [diagram/Diagram.ts:727](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L727)
+Defined in: [diagram/Diagram.ts:762](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L762)
 
 Get the virtualization manager, or null if disabled.
 
@@ -3176,7 +3334,7 @@ Get the virtualization manager, or null if disabled.
 
 > **hasDiagramListeners**(`type`): `boolean`
 
-Defined in: [diagram/Diagram.ts:691](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L691)
+Defined in: [diagram/Diagram.ts:726](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L726)
 
 Check whether there are listeners for a diagram event type.
 
@@ -3196,7 +3354,7 @@ Check whether there are listeners for a diagram event type.
 
 > **hideAlignmentGuidelines**(): `void`
 
-Defined in: [diagram/Diagram.ts:2298](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2298)
+Defined in: [diagram/Diagram.ts:2485](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2485)
 
 Hide any alignment guidelines currently shown.
 
@@ -3210,7 +3368,7 @@ Hide any alignment guidelines currently shown.
 
 > **hideContextMenu**(): `void`
 
-Defined in: [diagram/Diagram.ts:1096](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L1096)
+Defined in: [diagram/Diagram.ts:1154](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1154)
 
 Hide any floating part context menu.
 
@@ -3224,7 +3382,7 @@ Hide any floating part context menu.
 
 > **hideSelectionRect**(): `void`
 
-Defined in: [diagram/Diagram.ts:2275](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2275)
+Defined in: [diagram/Diagram.ts:2462](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2462)
 
 Hide the temporary selection rectangle.
 
@@ -3238,9 +3396,23 @@ Hide the temporary selection rectangle.
 
 > **hideTempLink**(): `void`
 
-Defined in: [diagram/Diagram.ts:2256](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2256)
+Defined in: [diagram/Diagram.ts:2443](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2443)
 
 Hide the temporary link preview.
+
+#### Returns
+
+`void`
+
+***
+
+### hideToolTip()
+
+> **hideToolTip**(): `void`
+
+Defined in: [diagram/Diagram.ts:1236](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L1236)
+
+GoJS-compatible: hide any floating part `toolTip` and reset hover tracking.
 
 #### Returns
 
@@ -3252,7 +3424,7 @@ Hide the temporary link preview.
 
 > **invalidate**(): `void`
 
-Defined in: [diagram/Diagram.ts:2802](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2802)
+Defined in: [diagram/Diagram.ts:3056](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3056)
 
 Invalidate the diagram (triggers re-render).
 
@@ -3266,7 +3438,7 @@ Invalidate the diagram (triggers re-render).
 
 > **invalidateLinksForNode**(`nodeKey`): `void`
 
-Defined in: [diagram/Diagram.ts:3403](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3403)
+Defined in: [diagram/Diagram.ts:3732](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3732)
 
 Recompute the connection points of links attached to a node from its
 current bounds, and clear the cached paths so the renderer re-routes:
@@ -3291,7 +3463,7 @@ routes are only discarded for links attached to the moved node.
 
 > **isDestroyed**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:3833](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3833)
+Defined in: [diagram/Diagram.ts:4164](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L4164)
 
 Check whether the diagram has been destroyed.
 
@@ -3305,9 +3477,23 @@ Check whether the diagram has been destroyed.
 
 > **isDoubleBufferingEnabled**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:2855](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2855)
+Defined in: [diagram/Diagram.ts:3146](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3146)
 
 Check whether double-buffered rendering is enabled.
+
+#### Returns
+
+`boolean`
+
+***
+
+### isGridEnabled()
+
+> **isGridEnabled**(): `boolean`
+
+Defined in: [diagram/Diagram.ts:3214](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3214)
+
+Check whether the background grid is currently shown.
 
 #### Returns
 
@@ -3319,7 +3505,7 @@ Check whether double-buffered rendering is enabled.
 
 > **isLayerCachingEnabled**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:2821](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2821)
+Defined in: [diagram/Diagram.ts:3075](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3075)
 
 Check whether layer caching is enabled.
 
@@ -3333,7 +3519,7 @@ Check whether layer caching is enabled.
 
 > **isLODEnabled**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:2873](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2873)
+Defined in: [diagram/Diagram.ts:3164](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3164)
 
 Check whether LOD rendering is enabled.
 
@@ -3347,7 +3533,7 @@ Check whether LOD rendering is enabled.
 
 > **isSnapToGridEnabled**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:2899](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2899)
+Defined in: [diagram/Diagram.ts:3190](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3190)
 
 Check whether grid snapping is enabled.
 
@@ -3361,7 +3547,7 @@ Check whether grid snapping is enabled.
 
 > **isTreeExpanded**(`node`): `boolean`
 
-Defined in: [diagram/Diagram.ts:2509](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2509)
+Defined in: [diagram/Diagram.ts:2709](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2709)
 
 GoJS-compatible: Whether a node (group) subgraph is expanded.
 
@@ -3381,7 +3567,7 @@ GoJS-compatible: Whether a node (group) subgraph is expanded.
 
 > **isVirtualizationEnabled**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:722](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L722)
+Defined in: [diagram/Diagram.ts:757](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L757)
 
 Check whether virtualization is enabled.
 
@@ -3395,7 +3581,7 @@ Check whether virtualization is enabled.
 
 > **layoutDiagram**(`layout?`): `void`
 
-Defined in: [diagram/Diagram.ts:2662](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2662)
+Defined in: [diagram/Diagram.ts:2894](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2894)
 
 GoJS-compatible: Run the diagram layout (or the given layout) on all parts.
 
@@ -3415,7 +3601,7 @@ GoJS-compatible: Run the diagram layout (or the given layout) on all parts.
 
 > **layoutParts**(`parts`): `void`
 
-Defined in: [diagram/Diagram.ts:2674](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2674)
+Defined in: [diagram/Diagram.ts:2906](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2906)
 
 GoJS-compatible: Run the layout on the given parts.
 
@@ -3435,7 +3621,7 @@ readonly [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
 > **makeImage**(`options?`): `HTMLCanvasElement`
 
-Defined in: [diagram/Diagram.ts:3197](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3197)
+Defined in: [diagram/Diagram.ts:3514](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3514)
 
 Generate a raster image (canvas) of the diagram content.
 
@@ -3465,7 +3651,7 @@ Generate a raster image (canvas) of the diagram content.
 
 > **makeImageData**(`options?`): `string`
 
-Defined in: [diagram/Diagram.ts:3206](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3206)
+Defined in: [diagram/Diagram.ts:3523](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3523)
 
 GoJS-compatible: Render the diagram as a PNG data URL string.
 
@@ -3495,7 +3681,7 @@ GoJS-compatible: Render the diagram as a PNG data URL string.
 
 > **makeSvg**(): `SVGElement`
 
-Defined in: [diagram/Diagram.ts:3211](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3211)
+Defined in: [diagram/Diagram.ts:3528](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3528)
 
 GoJS-compatible: Render the diagram as an SVGElement.
 
@@ -3509,7 +3695,7 @@ GoJS-compatible: Render the diagram as an SVGElement.
 
 > **moveToLayer**(`part`, `layerName`): `void`
 
-Defined in: [diagram/Diagram.ts:2783](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2783)
+Defined in: [diagram/Diagram.ts:3037](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3037)
 
 Move a part to a layer by name.
 
@@ -3517,7 +3703,7 @@ Move a part to a layer by name.
 
 ##### part
 
-[`Group`](/en/reference/api/graphojs/classes/group/) \| [`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/)
+[`Node`](/en/reference/api/graphojs/classes/node/) \| [`Link`](/en/reference/api/graphojs/classes/link/) \| [`Group`](/en/reference/api/graphojs/classes/group/)
 
 ##### layerName
 
@@ -3533,7 +3719,7 @@ Move a part to a layer by name.
 
 > **print**(`options?`): `void`
 
-Defined in: [diagram/Diagram.ts:3229](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3229)
+Defined in: [diagram/Diagram.ts:3546](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3546)
 
 Print the diagram by opening the browser's print dialog with the
 diagram embedded as vector SVG (default) or a raster PNG image.
@@ -3576,7 +3762,7 @@ diagram embedded as vector SVG (default) or a raster PNG image.
 
 > **redo**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:778](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L778)
+Defined in: [diagram/Diagram.ts:813](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L813)
 
 Redo the last undone command.
 
@@ -3590,7 +3776,7 @@ Redo the last undone command.
 
 > **remove**(`part`): `void`
 
-Defined in: [diagram/Diagram.ts:3343](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3343)
+Defined in: [diagram/Diagram.ts:3666](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3666)
 
 GoJS-compatible: Remove a part directly from the diagram.
 
@@ -3610,7 +3796,7 @@ GoJS-compatible: Remove a part directly from the diagram.
 
 > **removeAnyDiagramListener**(`handler`): `void`
 
-Defined in: [diagram/Diagram.ts:686](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L686)
+Defined in: [diagram/Diagram.ts:721](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L721)
 
 Remove a listener from all diagram events.
 
@@ -3630,7 +3816,7 @@ Remove a listener from all diagram events.
 
 > **removeDiagramListener**(`type`, `handler`): `boolean`
 
-Defined in: [diagram/Diagram.ts:681](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L681)
+Defined in: [diagram/Diagram.ts:716](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L716)
 
 Remove a diagram event listener.
 
@@ -3654,7 +3840,7 @@ Remove a diagram event listener.
 
 > **removeGroupTemplate**(`category`): `boolean`
 
-Defined in: [diagram/Diagram.ts:666](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L666)
+Defined in: [diagram/Diagram.ts:701](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L701)
 
 GoJS-compatible: Remove a group template by category.
 
@@ -3674,7 +3860,7 @@ GoJS-compatible: Remove a group template by category.
 
 > **removeLayer**(`name`): `boolean`
 
-Defined in: [diagram/Diagram.ts:2767](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2767)
+Defined in: [diagram/Diagram.ts:3021](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3021)
 
 Remove a layer by name.
 
@@ -3694,7 +3880,7 @@ Remove a layer by name.
 
 > **removeLinkTemplate**(`category`): `boolean`
 
-Defined in: [diagram/Diagram.ts:661](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L661)
+Defined in: [diagram/Diagram.ts:696](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L696)
 
 GoJS-compatible: Remove a link template by category.
 
@@ -3714,7 +3900,7 @@ GoJS-compatible: Remove a link template by category.
 
 > **removeModelChangedListener**(`listener`): `void`
 
-Defined in: [diagram/Diagram.ts:2728](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2728)
+Defined in: [diagram/Diagram.ts:2982](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2982)
 
 GoJS-compatible: Remove a model changed listener.
 
@@ -3734,7 +3920,7 @@ GoJS-compatible: Remove a model changed listener.
 
 > **removeNodeTemplate**(`category`): `boolean`
 
-Defined in: [diagram/Diagram.ts:656](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L656)
+Defined in: [diagram/Diagram.ts:691](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L691)
 
 GoJS-compatible: Remove a node template by category.
 
@@ -3754,7 +3940,7 @@ GoJS-compatible: Remove a node template by category.
 
 > **removeParts**(`parts`): `void`
 
-Defined in: [diagram/Diagram.ts:3338](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3338)
+Defined in: [diagram/Diagram.ts:3661](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3661)
 
 GoJS-compatible: Remove multiple parts at once.
 
@@ -3774,7 +3960,7 @@ GoJS-compatible: Remove multiple parts at once.
 
 > **requestUpdate**(): `void`
 
-Defined in: [diagram/Diagram.ts:2570](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2570)
+Defined in: [diagram/Diagram.ts:2802](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2802)
 
 GoJS-compatible: Request a redraw of the diagram.
 
@@ -3788,7 +3974,7 @@ GoJS-compatible: Request a redraw of the diagram.
 
 > **scrollToPart**(`part`, `_padding?`): `void`
 
-Defined in: [diagram/Diagram.ts:3532](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3532)
+Defined in: [diagram/Diagram.ts:3861](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3861)
 
 Scroll the viewport to show a specific part.
 
@@ -3812,7 +3998,7 @@ Scroll the viewport to show a specific part.
 
 > **scrollToRect**(`rect`, `center?`): `void`
 
-Defined in: [diagram/Diagram.ts:3556](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3556)
+Defined in: [diagram/Diagram.ts:3885](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3885)
 
 GoJS-compatible: Scroll the view so that a rect is visible (optionally centered).
 
@@ -3836,7 +4022,7 @@ GoJS-compatible: Scroll the view so that a rect is visible (optionally centered)
 
 > **select**(`part`, `addToSelection?`): `boolean`
 
-Defined in: [diagram/Diagram.ts:2418](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2418)
+Defined in: [diagram/Diagram.ts:2605](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2605)
 
 GoJS-compatible: Select a part, adding it to the current selection.
 
@@ -3860,7 +4046,7 @@ GoJS-compatible: Select a part, adding it to the current selection.
 
 > **selectPartsInRect**(`rect`, `partialInclusion?`): `void`
 
-Defined in: [diagram/Diagram.ts:2311](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2311)
+Defined in: [diagram/Diagram.ts:2498](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2498)
 
 Select all parts intersecting a rectangle.
 
@@ -3898,7 +4084,7 @@ Select all parts intersecting a rectangle.
 
 > **setContextMenu**(`menu`): `void`
 
-Defined in: [diagram/Diagram.ts:832](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L832)
+Defined in: [diagram/Diagram.ts:867](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L867)
 
 Set a context menu for this diagram.
 
@@ -3918,7 +4104,7 @@ Set a context menu for this diagram.
 
 > **setGridSize**(`size`): `void`
 
-Defined in: [diagram/Diagram.ts:2904](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2904)
+Defined in: [diagram/Diagram.ts:3219](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3219)
 
 Set the grid size used for snapping.
 
@@ -3938,7 +4124,7 @@ Set the grid size used for snapping.
 
 > **setLODLabelThreshold**(`threshold`): `void`
 
-Defined in: [diagram/Diagram.ts:2878](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2878)
+Defined in: [diagram/Diagram.ts:3169](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3169)
 
 Set the zoom threshold below which labels are hidden.
 
@@ -3958,7 +4144,7 @@ Set the zoom threshold below which labels are hidden.
 
 > **setModel**(`model`): `void`
 
-Defined in: [diagram/Diagram.ts:2575](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2575)
+Defined in: [diagram/Diagram.ts:2807](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2807)
 
 Set the model.
 
@@ -3978,7 +4164,7 @@ Set the model.
 
 > **setViewport**(`x`, `y`, `scale?`): `void`
 
-Defined in: [diagram/Diagram.ts:3364](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3364)
+Defined in: [diagram/Diagram.ts:3693](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3693)
 
 Set the viewport.
 
@@ -4006,7 +4192,7 @@ Set the viewport.
 
 > **showAlignmentGuidelines**(`lines`): `void`
 
-Defined in: [diagram/Diagram.ts:2292](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2292)
+Defined in: [diagram/Diagram.ts:2479](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2479)
 
 GoJS-compatible ("GuidedDraggingTool" extension style): show temporary
 alignment guideline segments while dragging, snapped to the edges/centers
@@ -4028,7 +4214,7 @@ of nearby parts.
 
 > **showSelectionRect**(`rect`): `void`
 
-Defined in: [diagram/Diagram.ts:2269](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2269)
+Defined in: [diagram/Diagram.ts:2456](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2456)
 
 Show a temporary rubber-band selection rectangle.
 
@@ -4062,7 +4248,7 @@ Show a temporary rubber-band selection rectangle.
 
 > **showTempLink**(`from`, `to`): `void`
 
-Defined in: [diagram/Diagram.ts:2250](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2250)
+Defined in: [diagram/Diagram.ts:2437](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L2437)
 
 Show a temporary link preview (used by linking tools).
 
@@ -4098,7 +4284,7 @@ Show a temporary link preview (used by linking tools).
 
 > **snapPoint**(`point`): `object`
 
-Defined in: [diagram/Diagram.ts:2921](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2921)
+Defined in: [diagram/Diagram.ts:3236](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3236)
 
 Snap a coordinate to the nearest grid line.
 
@@ -4132,7 +4318,7 @@ Snap a coordinate to the nearest grid line.
 
 > **snapValue**(`value`): `number`
 
-Defined in: [diagram/Diagram.ts:2915](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2915)
+Defined in: [diagram/Diagram.ts:3230](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3230)
 
 Snap a value to the nearest grid line.
 
@@ -4152,7 +4338,7 @@ Snap a value to the nearest grid line.
 
 > **startTransaction**(`name?`): `boolean`
 
-Defined in: [diagram/Diagram.ts:789](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L789)
+Defined in: [diagram/Diagram.ts:824](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L824)
 
 GoJS-compatible: Begin a transaction. Commands are grouped into one undo unit.
 
@@ -4172,7 +4358,7 @@ GoJS-compatible: Begin a transaction. Commands are grouped into one undo unit.
 
 > **toJSON**(): [`DiagramJSON`](/en/reference/api/graphojs/interfaces/diagramjson/)
 
-Defined in: [diagram/Diagram.ts:2792](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L2792)
+Defined in: [diagram/Diagram.ts:3046](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3046)
 
 Serialize the diagram to JSON.
 
@@ -4186,7 +4372,7 @@ Serialize the diagram to JSON.
 
 > **undo**(): `boolean`
 
-Defined in: [diagram/Diagram.ts:767](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L767)
+Defined in: [diagram/Diagram.ts:802](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L802)
 
 Undo the last command.
 
@@ -4196,11 +4382,28 @@ Undo the last command.
 
 ***
 
+### updateThemeBindings()
+
+> **updateThemeBindings**(): `void`
+
+Defined in: [diagram/Diagram.ts:3122](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3122)
+
+Re-apply every binding (including `ThemeBinding`s) on every part, so
+templates using `GraphObject.theme()`/`themeData()` pick up the
+current theme. Called automatically when `themeManager.currentTheme`
+changes or `themeManager.set(...)` is called.
+
+#### Returns
+
+`void`
+
+***
+
 ### zoomToFit()
 
 > **zoomToFit**(`padding?`): `void`
 
-Defined in: [diagram/Diagram.ts:3487](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3487)
+Defined in: [diagram/Diagram.ts:3816](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3816)
 
 Zoom to fit all content.
 
@@ -4220,7 +4423,7 @@ Zoom to fit all content.
 
 > **zoomToRect**(`rect`, `padding?`): `void`
 
-Defined in: [diagram/Diagram.ts:3517](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L3517)
+Defined in: [diagram/Diagram.ts:3846](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L3846)
 
 GoJS-compatible: Zoom the view so the given rect fills the viewport.
 

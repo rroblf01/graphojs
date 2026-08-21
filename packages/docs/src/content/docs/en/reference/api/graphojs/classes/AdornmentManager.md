@@ -5,7 +5,7 @@ prev: false
 title: "AdornmentManager"
 ---
 
-Defined in: [parts/Adornment.ts:395](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L395)
+Defined in: [parts/Adornment.ts:395](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L395)
 
 Manages adornments for a diagram.
 
@@ -27,7 +27,7 @@ Manages adornments for a diagram.
 
 > **get** **size**(): `number`
 
-Defined in: [parts/Adornment.ts:454](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L454)
+Defined in: [parts/Adornment.ts:454](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L454)
 
 Get the number of adornments.
 
@@ -41,7 +41,7 @@ Get the number of adornments.
 
 > **addAdornment**(`part`, `adornment`): `void`
 
-Defined in: [parts/Adornment.ts:410](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L410)
+Defined in: [parts/Adornment.ts:410](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L410)
 
 Add an adornment for a part.
 
@@ -65,7 +65,7 @@ Add an adornment for a part.
 
 > **clear**(): `void`
 
-Defined in: [parts/Adornment.ts:433](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L433)
+Defined in: [parts/Adornment.ts:433](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L433)
 
 Remove all adornments.
 
@@ -79,7 +79,7 @@ Remove all adornments.
 
 > **clearAdornments**(`part`): `void`
 
-Defined in: [parts/Adornment.ts:428](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L428)
+Defined in: [parts/Adornment.ts:428](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L428)
 
 Remove all adornments for a part.
 
@@ -99,7 +99,7 @@ Remove all adornments for a part.
 
 > **generateKey**(): [`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/)
 
-Defined in: [parts/Adornment.ts:438](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L438)
+Defined in: [parts/Adornment.ts:438](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L438)
 
 Generate a unique key for an adornment.
 
@@ -113,7 +113,7 @@ Generate a unique key for an adornment.
 
 > **getAdornment**(`part`, `name`): [`Adornment`](/en/reference/api/graphojs/classes/adornment/) \| `undefined`
 
-Defined in: [parts/Adornment.ts:405](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L405)
+Defined in: [parts/Adornment.ts:405](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L405)
 
 Get a specific adornment for a part.
 
@@ -137,7 +137,7 @@ Get a specific adornment for a part.
 
 > **getAdornments**(`part`): `Map`\<`string`, [`Adornment`](/en/reference/api/graphojs/classes/adornment/)\>
 
-Defined in: [parts/Adornment.ts:400](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L400)
+Defined in: [parts/Adornment.ts:400](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L400)
 
 Get all adornments for a part.
 
@@ -157,7 +157,7 @@ Get all adornments for a part.
 
 > **getAllAdornments**(): [`Adornment`](/en/reference/api/graphojs/classes/adornment/)[]
 
-Defined in: [parts/Adornment.ts:443](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L443)
+Defined in: [parts/Adornment.ts:443](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L443)
 
 Get all adornments as an array.
 
@@ -171,7 +171,7 @@ Get all adornments as an array.
 
 > **removeAdornment**(`part`, `name`): `boolean`
 
-Defined in: [parts/Adornment.ts:421](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L421)
+Defined in: [parts/Adornment.ts:421](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L421)
 
 Remove an adornment from a part.
 

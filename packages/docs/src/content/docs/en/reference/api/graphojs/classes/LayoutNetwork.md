@@ -5,10 +5,17 @@ prev: false
 title: "LayoutNetwork"
 ---
 
-Defined in: [layout/LayoutNetwork.ts:86](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L86)
+Defined in: [layout/LayoutNetwork.ts:86](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L86)
 
 A network of layout vertices and edges built from the diagram's
 nodes and links. GoJS-compatible.
+
+## Extended by
+
+- [`CircularNetwork`](/en/reference/api/graphojs/classes/circularnetwork/)
+- [`ForceDirectedNetwork`](/en/reference/api/graphojs/classes/forcedirectednetwork/)
+- [`LayeredDigraphNetwork`](/en/reference/api/graphojs/classes/layereddigraphnetwork/)
+- [`TreeNetwork`](/en/reference/api/graphojs/classes/treenetwork/)
 
 ## Constructors
 
@@ -26,7 +33,7 @@ nodes and links. GoJS-compatible.
 
 > **edges**: [`LayoutEdge`](/en/reference/api/graphojs/classes/layoutedge/)[] = `[]`
 
-Defined in: [layout/LayoutNetwork.ts:88](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L88)
+Defined in: [layout/LayoutNetwork.ts:88](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L88)
 
 ***
 
@@ -34,7 +41,7 @@ Defined in: [layout/LayoutNetwork.ts:88](https://github.com/rroblf01/graphojs/bl
 
 > **vertices**: [`LayoutVertex`](/en/reference/api/graphojs/classes/layoutvertex/)[] = `[]`
 
-Defined in: [layout/LayoutNetwork.ts:87](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L87)
+Defined in: [layout/LayoutNetwork.ts:87](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L87)
 
 ## Methods
 
@@ -42,7 +49,7 @@ Defined in: [layout/LayoutNetwork.ts:87](https://github.com/rroblf01/graphojs/bl
 
 > **addEdge**(`edge`, `vertexForNode?`): `void`
 
-Defined in: [layout/LayoutNetwork.ts:118](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L118)
+Defined in: [layout/LayoutNetwork.ts:118](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L118)
 
 Add an edge, connecting the vertices of its link's endpoints.
 
@@ -66,7 +73,7 @@ Add an edge, connecting the vertices of its link's endpoints.
 
 > **addLink**(`link`, `vertexForNode?`): [`LayoutEdge`](/en/reference/api/graphojs/classes/layoutedge/)
 
-Defined in: [layout/LayoutNetwork.ts:111](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L111)
+Defined in: [layout/LayoutNetwork.ts:111](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L111)
 
 Add an edge for a link, connecting the vertices of its endpoints.
 
@@ -90,7 +97,7 @@ Add an edge for a link, connecting the vertices of its endpoints.
 
 > **addNode**(`node`): [`LayoutVertex`](/en/reference/api/graphojs/classes/layoutvertex/)
 
-Defined in: [layout/LayoutNetwork.ts:96](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L96)
+Defined in: [layout/LayoutNetwork.ts:96](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L96)
 
 Add a vertex for a node.
 
@@ -110,7 +117,7 @@ Add a vertex for a node.
 
 > **addVertex**(`vertex`): `void`
 
-Defined in: [layout/LayoutNetwork.ts:103](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L103)
+Defined in: [layout/LayoutNetwork.ts:103](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L103)
 
 Add a vertex.
 
@@ -130,7 +137,7 @@ Add a vertex.
 
 > **clear**(): `void`
 
-Defined in: [layout/LayoutNetwork.ts:165](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L165)
+Defined in: [layout/LayoutNetwork.ts:165](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L165)
 
 Remove all vertices and edges.
 
@@ -144,7 +151,7 @@ Remove all vertices and edges.
 
 > **deleteEdge**(`edge`): `void`
 
-Defined in: [layout/LayoutNetwork.ts:149](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L149)
+Defined in: [layout/LayoutNetwork.ts:149](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L149)
 
 Remove an edge and disconnect it from its vertices.
 
@@ -164,7 +171,7 @@ Remove an edge and disconnect it from its vertices.
 
 > **deleteVertex**(`vertex`): `void`
 
-Defined in: [layout/LayoutNetwork.ts:140](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L140)
+Defined in: [layout/LayoutNetwork.ts:140](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L140)
 
 Remove a vertex and its connected edges.
 
@@ -184,7 +191,7 @@ Remove a vertex and its connected edges.
 
 > **findVertex**(`key`): [`LayoutVertex`](/en/reference/api/graphojs/classes/layoutvertex/) \| `null`
 
-Defined in: [layout/LayoutNetwork.ts:91](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L91)
+Defined in: [layout/LayoutNetwork.ts:91](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L91)
 
 Find a vertex by its node key.
 
@@ -204,7 +211,7 @@ Find a vertex by its node key.
 
 > `static` **fromParts**(`nodes`, `links`): `LayoutNetwork`
 
-Defined in: [layout/LayoutNetwork.ts:171](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/LayoutNetwork.ts#L171)
+Defined in: [layout/LayoutNetwork.ts:171](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/LayoutNetwork.ts#L171)
 
 Build a network from the given nodes and links.
 

@@ -2,14 +2,16 @@ import type { Rect } from '../geometry/Rect.ts';
 
 /**
  * Compute orthogonal (manhattan) path points between two ports.
- * Produces L-shaped or Z-shaped routes with optional corner rounding.
+ * Produces L-shaped or Z-shaped routes; `corner` is accepted only to keep
+ * this signature aligned with the render-side cache key -- the actual
+ * rounding is applied at draw time (see `Canvas2DRenderer.strokePath`).
  */
 export function routeOrthogonal(
   from: { x: number; y: number },
   to: { x: number; y: number },
   fromNode: Rect,
   toNode: Rect,
-  corner: number,
+  _corner: number,
 ): Array<{ x: number; y: number }> {
   // Determine best exit direction from the from-node
   const fromDir = getExitDirection(from, fromNode, to);
@@ -48,11 +50,10 @@ export function routeOrthogonal(
 
   points.push(to);
 
-  // Apply corner rounding if requested
-  if (corner > 0 && points.length > 2) {
-    return roundCorners(points, corner);
-  }
-
+  // Corner rounding (when `corner > 0`) is applied at draw time by the
+  // renderer via `ctx.arcTo`, which produces a real quarter-circle join --
+  // not here, since pre-chamfering the points would only approximate it
+  // with an extra straight segment.
   return points;
 }
 
@@ -247,54 +248,6 @@ function sampleBezier(
   return points;
 }
 
-function roundCorners(
-  points: Array<{ x: number; y: number }>,
-  radius: number,
-): Array<{ x: number; y: number }> {
-  if (points.length < 3) return points;
-
-  const result: Array<{ x: number; y: number }> = [];
-  const first = points[0];
-  if (first) result.push(first);
-
-  for (let i = 1; i < points.length - 1; i++) {
-    const prev = points[i - 1];
-    const curr = points[i];
-    const next = points[i + 1];
-    if (!prev || !curr || !next) continue;
-
-    // Vectors from curr to prev and curr to next
-    const dx1 = prev.x - curr.x;
-    const dy1 = prev.y - curr.y;
-    const dx2 = next.x - curr.x;
-    const dy2 = next.y - curr.y;
-
-    const len1 = Math.hypot(dx1, dy1);
-    const len2 = Math.hypot(dx2, dy2);
-
-    if (len1 === 0 || len2 === 0) {
-      result.push(curr);
-      continue;
-    }
-
-    const r = Math.min(radius, len1 / 2, len2 / 2);
-
-    // Points at distance r from the corner along each leg
-    result.push({
-      x: curr.x + (dx1 / len1) * r,
-      y: curr.y + (dy1 / len1) * r,
-    });
-    result.push({
-      x: curr.x + (dx2 / len2) * r,
-      y: curr.y + (dy2 / len2) * r,
-    });
-  }
-
-  const last = points[points.length - 1];
-  if (last) result.push(last);
-  return result;
-}
-
 // --- Obstacle Avoidance Routing ---
 
 /**
@@ -373,9 +326,6 @@ export function routeOrthogonalAvoidingObstacles(
   if (routes.length > 0) {
     routes.sort((a, b) => a.cost - b.cost);
     const best = routes[0];
-    if (best && corner > 0 && best.points.length > 2) {
-      return roundCorners(best.points, corner);
-    }
     if (best) {
       return best.points;
     }

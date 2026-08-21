@@ -5,7 +5,7 @@ prev: false
 title: "Rect"
 ---
 
-Defined in: [geometry/Rect.ts:7](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L7)
+Defined in: [geometry/Rect.ts:7](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L7)
 
 A 2D rectangle defined by position (x, y) and size (width, height).
 
@@ -15,7 +15,7 @@ A 2D rectangle defined by position (x, y) and size (width, height).
 
 > **new Rect**(`x`, `y`, `width`, `height`): `Rect`
 
-Defined in: [geometry/Rect.ts:13](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L13)
+Defined in: [geometry/Rect.ts:13](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L13)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ Defined in: [geometry/Rect.ts:13](https://github.com/rroblf01/graphojs/blob/da00
 
 > **height**: `number`
 
-Defined in: [geometry/Rect.ts:11](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L11)
+Defined in: [geometry/Rect.ts:11](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L11)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: [geometry/Rect.ts:11](https://github.com/rroblf01/graphojs/blob/da00
 
 > **width**: `number`
 
-Defined in: [geometry/Rect.ts:10](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L10)
+Defined in: [geometry/Rect.ts:10](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L10)
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: [geometry/Rect.ts:10](https://github.com/rroblf01/graphojs/blob/da00
 
 > **x**: `number`
 
-Defined in: [geometry/Rect.ts:8](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L8)
+Defined in: [geometry/Rect.ts:8](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L8)
 
 ***
 
@@ -69,7 +69,7 @@ Defined in: [geometry/Rect.ts:8](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **y**: `number`
 
-Defined in: [geometry/Rect.ts:9](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L9)
+Defined in: [geometry/Rect.ts:9](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L9)
 
 ## Accessors
 
@@ -79,7 +79,7 @@ Defined in: [geometry/Rect.ts:9](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **bottom**(): `number`
 
-Defined in: [geometry/Rect.ts:194](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L194)
+Defined in: [geometry/Rect.ts:194](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L194)
 
 Get the bottom edge y coordinate.
 
@@ -95,7 +95,7 @@ Get the bottom edge y coordinate.
 
 > **get** **bottomLeft**(): `object`
 
-Defined in: [geometry/Rect.ts:134](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L134)
+Defined in: [geometry/Rect.ts:134](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L134)
 
 Get the bottom-left corner.
 
@@ -119,7 +119,7 @@ Get the bottom-left corner.
 
 > **get** **bottomRight**(): `object`
 
-Defined in: [geometry/Rect.ts:139](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L139)
+Defined in: [geometry/Rect.ts:139](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L139)
 
 Get the bottom-right corner.
 
@@ -143,7 +143,7 @@ Get the bottom-right corner.
 
 > **get** **center**(): `object`
 
-Defined in: [geometry/Rect.ts:144](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L144)
+Defined in: [geometry/Rect.ts:144](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L144)
 
 Get the center point.
 
@@ -167,7 +167,7 @@ Get the center point.
 
 > **get** **centerX**(): `number`
 
-Defined in: [geometry/Rect.ts:149](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L149)
+Defined in: [geometry/Rect.ts:149](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L149)
 
 GoJS-compatible: The x coordinate of the center of this rect.
 
@@ -183,7 +183,7 @@ GoJS-compatible: The x coordinate of the center of this rect.
 
 > **get** **centerY**(): `number`
 
-Defined in: [geometry/Rect.ts:154](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L154)
+Defined in: [geometry/Rect.ts:154](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L154)
 
 GoJS-compatible: The y coordinate of the center of this rect.
 
@@ -199,7 +199,7 @@ GoJS-compatible: The y coordinate of the center of this rect.
 
 > **get** **left**(): `number`
 
-Defined in: [geometry/Rect.ts:179](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L179)
+Defined in: [geometry/Rect.ts:179](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L179)
 
 Get the left edge x coordinate.
 
@@ -215,7 +215,7 @@ Get the left edge x coordinate.
 
 > **get** **position**(): [`Point`](/en/reference/api/graphojs/classes/point/)
 
-Defined in: [geometry/Rect.ts:159](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L159)
+Defined in: [geometry/Rect.ts:159](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L159)
 
 GoJS-compatible: The position (top-left) as a Point.
 
@@ -227,7 +227,7 @@ GoJS-compatible: The position (top-left) as a Point.
 
 > **set** **position**(`pos`): `void`
 
-Defined in: [geometry/Rect.ts:163](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L163)
+Defined in: [geometry/Rect.ts:163](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L163)
 
 ##### Parameters
 
@@ -247,7 +247,7 @@ Defined in: [geometry/Rect.ts:163](https://github.com/rroblf01/graphojs/blob/da0
 
 > **get** **right**(): `number`
 
-Defined in: [geometry/Rect.ts:184](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L184)
+Defined in: [geometry/Rect.ts:184](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L184)
 
 Get the right edge x coordinate.
 
@@ -263,7 +263,7 @@ Get the right edge x coordinate.
 
 > **get** **size**(): [`Size`](/en/reference/api/graphojs/classes/size/)
 
-Defined in: [geometry/Rect.ts:169](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L169)
+Defined in: [geometry/Rect.ts:169](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L169)
 
 GoJS-compatible: The size as a Size.
 
@@ -275,7 +275,7 @@ GoJS-compatible: The size as a Size.
 
 > **set** **size**(`size`): `void`
 
-Defined in: [geometry/Rect.ts:173](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L173)
+Defined in: [geometry/Rect.ts:173](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L173)
 
 ##### Parameters
 
@@ -295,7 +295,7 @@ Defined in: [geometry/Rect.ts:173](https://github.com/rroblf01/graphojs/blob/da0
 
 > **get** **top**(): `number`
 
-Defined in: [geometry/Rect.ts:189](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L189)
+Defined in: [geometry/Rect.ts:189](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L189)
 
 Get the top edge y coordinate.
 
@@ -311,7 +311,7 @@ Get the top edge y coordinate.
 
 > **get** **topLeft**(): `object`
 
-Defined in: [geometry/Rect.ts:124](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L124)
+Defined in: [geometry/Rect.ts:124](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L124)
 
 Get the top-left corner.
 
@@ -335,7 +335,7 @@ Get the top-left corner.
 
 > **get** **topRight**(): `object`
 
-Defined in: [geometry/Rect.ts:129](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L129)
+Defined in: [geometry/Rect.ts:129](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L129)
 
 Get the top-right corner.
 
@@ -357,7 +357,7 @@ Get the top-right corner.
 
 > **area**(): `number`
 
-Defined in: [geometry/Rect.ts:199](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L199)
+Defined in: [geometry/Rect.ts:199](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L199)
 
 Get the area.
 
@@ -371,7 +371,7 @@ Get the area.
 
 > **clone**(): `Rect`
 
-Defined in: [geometry/Rect.ts:69](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L69)
+Defined in: [geometry/Rect.ts:69](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L69)
 
 Return a copy of this rect.
 
@@ -385,7 +385,7 @@ Return a copy of this rect.
 
 > **computeSides**(`margin`): `Rect`
 
-Defined in: [geometry/Rect.ts:91](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L91)
+Defined in: [geometry/Rect.ts:91](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L91)
 
 GoJS-compatible: Inset the rect on all sides by a margin value or {left,top,right,bottom}.
 
@@ -405,7 +405,7 @@ GoJS-compatible: Inset the rect on all sides by a margin value or {left,top,righ
 
 > **containsPoint**(`point`): `boolean`
 
-Defined in: [geometry/Rect.ts:214](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L214)
+Defined in: [geometry/Rect.ts:214](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L214)
 
 Check if this rect contains a point.
 
@@ -431,7 +431,7 @@ Check if this rect contains a point.
 
 > **containsRect**(`other`): `boolean`
 
-Defined in: [geometry/Rect.ts:224](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L224)
+Defined in: [geometry/Rect.ts:224](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L224)
 
 Check if this rect contains another rect.
 
@@ -451,7 +451,7 @@ Check if this rect contains another rect.
 
 > **copy**(): `Rect`
 
-Defined in: [geometry/Rect.ts:74](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L74)
+Defined in: [geometry/Rect.ts:74](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L74)
 
 GoJS-compatible: Return a copy of this rect.
 
@@ -465,7 +465,7 @@ GoJS-compatible: Return a copy of this rect.
 
 > **deflate**(`dx`, `dy?`): `Rect`
 
-Defined in: [geometry/Rect.ts:290](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L290)
+Defined in: [geometry/Rect.ts:290](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L290)
 
 Shrink this rect by the given margin on all sides.
 
@@ -489,7 +489,7 @@ Shrink this rect by the given margin on all sides.
 
 > **equals**(`other`): `boolean`
 
-Defined in: [geometry/Rect.ts:49](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L49)
+Defined in: [geometry/Rect.ts:49](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L49)
 
 Check if this rect equals another rect.
 
@@ -509,7 +509,7 @@ Check if this rect equals another rect.
 
 > **equalsApprox**(`other`, `tolerance?`): `boolean`
 
-Defined in: [geometry/Rect.ts:59](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L59)
+Defined in: [geometry/Rect.ts:59](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L59)
 
 Check if this rect is approximately equal to another within a tolerance.
 
@@ -533,7 +533,7 @@ Check if this rect is approximately equal to another within a tolerance.
 
 > **grow**(`s`): `Rect`
 
-Defined in: [geometry/Rect.ts:271](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L271)
+Defined in: [geometry/Rect.ts:271](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L271)
 
 GoJS-compatible: Expand this rect by the given amount on all sides.
 
@@ -553,7 +553,7 @@ GoJS-compatible: Expand this rect by the given amount on all sides.
 
 > **inflate**(`dx`, `dy?`): `Rect`
 
-Defined in: [geometry/Rect.ts:265](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L265)
+Defined in: [geometry/Rect.ts:265](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L265)
 
 Expand this rect by the given margin on all sides.
 
@@ -577,7 +577,7 @@ Expand this rect by the given margin on all sides.
 
 > **intersection**(`other`): `Rect` \| `null`
 
-Defined in: [geometry/Rect.ts:244](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L244)
+Defined in: [geometry/Rect.ts:244](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L244)
 
 Get the intersection of this rect with another rect.
 
@@ -597,7 +597,7 @@ Get the intersection of this rect with another rect.
 
 > **intersects**(`other`): `boolean`
 
-Defined in: [geometry/Rect.ts:234](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L234)
+Defined in: [geometry/Rect.ts:234](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L234)
 
 Check if this rect intersects another rect.
 
@@ -617,7 +617,7 @@ Check if this rect intersects another rect.
 
 > **isEmpty**(): `boolean`
 
-Defined in: [geometry/Rect.ts:209](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L209)
+Defined in: [geometry/Rect.ts:209](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L209)
 
 Check if this rect is empty (zero width or height).
 
@@ -631,7 +631,7 @@ Check if this rect is empty (zero width or height).
 
 > **isReal**(): `boolean`
 
-Defined in: [geometry/Rect.ts:79](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L79)
+Defined in: [geometry/Rect.ts:79](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L79)
 
 GoJS-compatible: Whether the rect has finite, non-negative dimensions.
 
@@ -645,7 +645,7 @@ GoJS-compatible: Whether the rect has finite, non-negative dimensions.
 
 > **offset**(`dx`, `dy`): `Rect`
 
-Defined in: [geometry/Rect.ts:295](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L295)
+Defined in: [geometry/Rect.ts:295](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L295)
 
 Offset this rect by the given amounts.
 
@@ -669,7 +669,7 @@ Offset this rect by the given amounts.
 
 > **perimeter**(): `number`
 
-Defined in: [geometry/Rect.ts:204](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L204)
+Defined in: [geometry/Rect.ts:204](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L204)
 
 Get the perimeter.
 
@@ -683,7 +683,7 @@ Get the perimeter.
 
 > **relativeTo**(`spot`): [`Point`](/en/reference/api/graphojs/classes/point/)
 
-Defined in: [geometry/Rect.ts:107](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L107)
+Defined in: [geometry/Rect.ts:107](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L107)
 
 GoJS-compatible: Compute the point in this rect for the given spot.
 
@@ -717,7 +717,7 @@ GoJS-compatible: Compute the point in this rect for the given spot.
 
 > **setTo**(`x`, `y`, `width`, `height`): `this`
 
-Defined in: [geometry/Rect.ts:115](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L115)
+Defined in: [geometry/Rect.ts:115](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L115)
 
 GoJS-compatible: In-place mutation returning this rect.
 
@@ -749,7 +749,7 @@ GoJS-compatible: In-place mutation returning this rect.
 
 > **setToPosition**(`pos`): `this`
 
-Defined in: [geometry/Rect.ts:276](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L276)
+Defined in: [geometry/Rect.ts:276](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L276)
 
 GoJS-compatible: In-place mutation of position returning this rect.
 
@@ -769,7 +769,7 @@ GoJS-compatible: In-place mutation of position returning this rect.
 
 > **setToSize**(`size`): `this`
 
-Defined in: [geometry/Rect.ts:283](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L283)
+Defined in: [geometry/Rect.ts:283](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L283)
 
 GoJS-compatible: In-place mutation of size returning this rect.
 
@@ -789,7 +789,7 @@ GoJS-compatible: In-place mutation of size returning this rect.
 
 > **toJSON**(): `object`
 
-Defined in: [geometry/Rect.ts:300](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L300)
+Defined in: [geometry/Rect.ts:300](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L300)
 
 Convert to a plain object.
 
@@ -819,7 +819,7 @@ Convert to a plain object.
 
 > **toString**(): `string`
 
-Defined in: [geometry/Rect.ts:310](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L310)
+Defined in: [geometry/Rect.ts:310](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L310)
 
 #### Returns
 
@@ -831,7 +831,7 @@ Defined in: [geometry/Rect.ts:310](https://github.com/rroblf01/graphojs/blob/da0
 
 > **union**(`other`): `Rect`
 
-Defined in: [geometry/Rect.ts:256](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L256)
+Defined in: [geometry/Rect.ts:256](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L256)
 
 Get the smallest rect that contains both rects.
 
@@ -851,7 +851,7 @@ Get the smallest rect that contains both rects.
 
 > `static` **fromCorners**(`a`, `b`): `Rect`
 
-Defined in: [geometry/Rect.ts:26](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L26)
+Defined in: [geometry/Rect.ts:26](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L26)
 
 Create a Rect from two corner points.
 
@@ -875,7 +875,7 @@ Create a Rect from two corner points.
 
 > `static` **fromJSON**(`data`): `Rect`
 
-Defined in: [geometry/Rect.ts:305](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L305)
+Defined in: [geometry/Rect.ts:305](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L305)
 
 Create a Rect from a JSON string or object.
 
@@ -895,7 +895,7 @@ Create a Rect from a JSON string or object.
 
 > `static` **fromPosAndSize**(`pos`, `size`): `Rect`
 
-Defined in: [geometry/Rect.ts:21](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L21)
+Defined in: [geometry/Rect.ts:21](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L21)
 
 Create a Rect from position and size.
 
@@ -919,7 +919,7 @@ Create a Rect from position and size.
 
 > `static` **parse**(`value`): `Rect`
 
-Defined in: [geometry/Rect.ts:40](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L40)
+Defined in: [geometry/Rect.ts:40](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L40)
 
 GoJS-compatible: Parse a string like "x, y, w, h" or "x y w h".
 
@@ -939,7 +939,7 @@ GoJS-compatible: Parse a string like "x, y, w, h" or "x y w h".
 
 > `static` **zero**(): `Rect`
 
-Defined in: [geometry/Rect.ts:35](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Rect.ts#L35)
+Defined in: [geometry/Rect.ts:35](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Rect.ts#L35)
 
 Create a zero rect at origin.
 

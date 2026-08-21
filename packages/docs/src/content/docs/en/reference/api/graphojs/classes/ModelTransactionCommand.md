@@ -5,7 +5,7 @@ prev: false
 title: "ModelTransactionCommand"
 ---
 
-Defined in: [undo/ModelTransactionCommand.ts:9](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/ModelTransactionCommand.ts#L9)
+Defined in: [undo/ModelTransactionCommand.ts:9](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/ModelTransactionCommand.ts#L9)
 
 A command that records model changed events during a transaction and
 reverses them on undo (GoJS-compatible: model edits within a transaction
@@ -21,7 +21,7 @@ are undoable).
 
 > **new ModelTransactionCommand**(`model`, `events`, `name?`): `ModelTransactionCommand`
 
-Defined in: [undo/ModelTransactionCommand.ts:14](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/ModelTransactionCommand.ts#L14)
+Defined in: [undo/ModelTransactionCommand.ts:14](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/ModelTransactionCommand.ts#L14)
 
 #### Parameters
 
@@ -47,7 +47,7 @@ Defined in: [undo/ModelTransactionCommand.ts:14](https://github.com/rroblf01/gra
 
 > **describe**(): `string`
 
-Defined in: [undo/ModelTransactionCommand.ts:135](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/ModelTransactionCommand.ts#L135)
+Defined in: [undo/ModelTransactionCommand.ts:135](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/ModelTransactionCommand.ts#L135)
 
 Get a description of the command.
 
@@ -65,7 +65,7 @@ Get a description of the command.
 
 > **execute**(): `void`
 
-Defined in: [undo/ModelTransactionCommand.ts:20](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/ModelTransactionCommand.ts#L20)
+Defined in: [undo/ModelTransactionCommand.ts:20](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/ModelTransactionCommand.ts#L20)
 
 Execute the command.
 
@@ -83,7 +83,7 @@ Execute the command.
 
 > **undo**(): `void`
 
-Defined in: [undo/ModelTransactionCommand.ts:28](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/ModelTransactionCommand.ts#L28)
+Defined in: [undo/ModelTransactionCommand.ts:28](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/ModelTransactionCommand.ts#L28)
 
 Undo the command.
 

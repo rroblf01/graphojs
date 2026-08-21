@@ -5,7 +5,7 @@ prev: false
 title: "SetLinkLabelPositionCommand"
 ---
 
-Defined in: [undo/commands.ts:405](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L405)
+Defined in: [undo/commands.ts:405](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L405)
 
 Command to persist a manual link-label reposition (from
 LinkLabelDraggingTool). There is no model-data field for a link's label
@@ -22,7 +22,7 @@ position, so this operates directly on the visual Link, like
 
 > **new SetLinkLabelPositionCommand**(`link`, `newPosition`, `oldPosition`): `SetLinkLabelPositionCommand`
 
-Defined in: [undo/commands.ts:410](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L410)
+Defined in: [undo/commands.ts:410](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L410)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: [undo/commands.ts:410](https://github.com/rroblf01/graphojs/blob/da0
 
 > **describe**(): `string`
 
-Defined in: [undo/commands.ts:431](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L431)
+Defined in: [undo/commands.ts:431](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L431)
 
 Get a description of the command.
 
@@ -66,7 +66,7 @@ Get a description of the command.
 
 > **execute**(): `void`
 
-Defined in: [undo/commands.ts:423](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L423)
+Defined in: [undo/commands.ts:423](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L423)
 
 Execute the command.
 
@@ -84,7 +84,7 @@ Execute the command.
 
 > **undo**(): `void`
 
-Defined in: [undo/commands.ts:427](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L427)
+Defined in: [undo/commands.ts:427](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L427)
 
 Undo the command.
 

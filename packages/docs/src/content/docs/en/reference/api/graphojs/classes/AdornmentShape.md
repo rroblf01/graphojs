@@ -5,7 +5,7 @@ prev: false
 title: "AdornmentShape"
 ---
 
-Defined in: [parts/Adornment.ts:134](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L134)
+Defined in: [parts/Adornment.ts:134](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L134)
 
 A shape within an adornment (e.g., a resize handle, rotation handle).
 
@@ -15,7 +15,7 @@ A shape within an adornment (e.g., a resize handle, rotation handle).
 
 > **new AdornmentShape**(`options`): `AdornmentShape`
 
-Defined in: [parts/Adornment.ts:147](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L147)
+Defined in: [parts/Adornment.ts:147](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L147)
 
 #### Parameters
 
@@ -85,7 +85,7 @@ Defined in: [parts/Adornment.ts:147](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **bounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [parts/Adornment.ts:187](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L187)
+Defined in: [parts/Adornment.ts:187](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L187)
 
 ##### Returns
 
@@ -95,7 +95,7 @@ Defined in: [parts/Adornment.ts:187](https://github.com/rroblf01/graphojs/blob/d
 
 > **set** **bounds**(`value`): `void`
 
-Defined in: [parts/Adornment.ts:191](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L191)
+Defined in: [parts/Adornment.ts:191](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L191)
 
 ##### Parameters
 
@@ -115,7 +115,7 @@ Defined in: [parts/Adornment.ts:191](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **cursor**(): `string`
 
-Defined in: [parts/Adornment.ts:219](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L219)
+Defined in: [parts/Adornment.ts:219](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L219)
 
 ##### Returns
 
@@ -125,7 +125,7 @@ Defined in: [parts/Adornment.ts:219](https://github.com/rroblf01/graphojs/blob/d
 
 > **set** **cursor**(`value`): `void`
 
-Defined in: [parts/Adornment.ts:223](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L223)
+Defined in: [parts/Adornment.ts:223](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L223)
 
 ##### Parameters
 
@@ -145,7 +145,7 @@ Defined in: [parts/Adornment.ts:223](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **fill**(): `string`
 
-Defined in: [parts/Adornment.ts:195](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L195)
+Defined in: [parts/Adornment.ts:195](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L195)
 
 ##### Returns
 
@@ -155,7 +155,7 @@ Defined in: [parts/Adornment.ts:195](https://github.com/rroblf01/graphojs/blob/d
 
 > **set** **fill**(`value`): `void`
 
-Defined in: [parts/Adornment.ts:199](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L199)
+Defined in: [parts/Adornment.ts:199](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L199)
 
 ##### Parameters
 
@@ -175,7 +175,7 @@ Defined in: [parts/Adornment.ts:199](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **name**(): `string`
 
-Defined in: [parts/Adornment.ts:183](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L183)
+Defined in: [parts/Adornment.ts:183](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L183)
 
 ##### Returns
 
@@ -189,7 +189,7 @@ Defined in: [parts/Adornment.ts:183](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **stroke**(): `string`
 
-Defined in: [parts/Adornment.ts:203](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L203)
+Defined in: [parts/Adornment.ts:203](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L203)
 
 ##### Returns
 
@@ -199,7 +199,7 @@ Defined in: [parts/Adornment.ts:203](https://github.com/rroblf01/graphojs/blob/d
 
 > **set** **stroke**(`value`): `void`
 
-Defined in: [parts/Adornment.ts:207](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L207)
+Defined in: [parts/Adornment.ts:207](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L207)
 
 ##### Parameters
 
@@ -219,7 +219,7 @@ Defined in: [parts/Adornment.ts:207](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **strokeWidth**(): `number`
 
-Defined in: [parts/Adornment.ts:211](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L211)
+Defined in: [parts/Adornment.ts:211](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L211)
 
 ##### Returns
 
@@ -229,7 +229,7 @@ Defined in: [parts/Adornment.ts:211](https://github.com/rroblf01/graphojs/blob/d
 
 > **set** **strokeWidth**(`value`): `void`
 
-Defined in: [parts/Adornment.ts:215](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L215)
+Defined in: [parts/Adornment.ts:215](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L215)
 
 ##### Parameters
 
@@ -249,7 +249,7 @@ Defined in: [parts/Adornment.ts:215](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **visible**(): `boolean`
 
-Defined in: [parts/Adornment.ts:227](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L227)
+Defined in: [parts/Adornment.ts:227](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L227)
 
 ##### Returns
 
@@ -259,7 +259,7 @@ Defined in: [parts/Adornment.ts:227](https://github.com/rroblf01/graphojs/blob/d
 
 > **set** **visible**(`value`): `void`
 
-Defined in: [parts/Adornment.ts:231](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L231)
+Defined in: [parts/Adornment.ts:231](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L231)
 
 ##### Parameters
 
@@ -277,7 +277,7 @@ Defined in: [parts/Adornment.ts:231](https://github.com/rroblf01/graphojs/blob/d
 
 > **containsPoint**(`point`): `boolean`
 
-Defined in: [parts/Adornment.ts:236](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L236)
+Defined in: [parts/Adornment.ts:236](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L236)
 
 Check if a point is inside this shape.
 
@@ -303,7 +303,7 @@ Check if a point is inside this shape.
 
 > **repositionRelativeTo**(`partBounds`): `void`
 
-Defined in: [parts/Adornment.ts:174](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L174)
+Defined in: [parts/Adornment.ts:174](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L174)
 
 Move this shape so its center sits at its stored relative spot (plus any
 fixed offset) within the given (current) part bounds. A shape created

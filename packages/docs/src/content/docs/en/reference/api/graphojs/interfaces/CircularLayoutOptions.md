@@ -5,7 +5,7 @@ prev: false
 title: "CircularLayoutOptions"
 ---
 
-Defined in: [layout/CircularLayout.ts:8](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/CircularLayout.ts#L8)
+Defined in: [layout/CircularLayout.ts:8](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/CircularLayout.ts#L8)
 
 Options for circular layout.
 
@@ -19,7 +19,7 @@ Options for circular layout.
 
 > `optional` **center?**: `boolean`
 
-Defined in: [layout/Layout.ts:17](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L17)
+Defined in: [layout/Layout.ts:17](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L17)
 
 Whether to center the layout. Default: true
 
@@ -33,7 +33,7 @@ Whether to center the layout. Default: true
 
 > `optional` **concentric?**: `boolean`
 
-Defined in: [layout/CircularLayout.ts:16](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/CircularLayout.ts#L16)
+Defined in: [layout/CircularLayout.ts:16](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/CircularLayout.ts#L16)
 
 Whether to arrange in concentric circles. Default: false
 
@@ -43,7 +43,7 @@ Whether to arrange in concentric circles. Default: false
 
 > `optional` **direction?**: `"horizontal"` \| `"vertical"`
 
-Defined in: [layout/Layout.ts:15](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L15)
+Defined in: [layout/Layout.ts:15](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L15)
 
 Whether to arrange in a specific direction. Default: 'vertical'
 
@@ -57,7 +57,7 @@ Whether to arrange in a specific direction. Default: 'vertical'
 
 > `optional` **padding?**: `number`
 
-Defined in: [layout/Layout.ts:13](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L13)
+Defined in: [layout/Layout.ts:13](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L13)
 
 Border padding. Default: 20
 
@@ -71,7 +71,7 @@ Border padding. Default: 20
 
 > `optional` **radius?**: `number`
 
-Defined in: [layout/CircularLayout.ts:10](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/CircularLayout.ts#L10)
+Defined in: [layout/CircularLayout.ts:10](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/CircularLayout.ts#L10)
 
 Radius of the circle. Default: auto-computed from node count/size.
 
@@ -81,7 +81,7 @@ Radius of the circle. Default: auto-computed from node count/size.
 
 > `optional` **sortByDegree?**: `boolean`
 
-Defined in: [layout/CircularLayout.ts:14](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/CircularLayout.ts#L14)
+Defined in: [layout/CircularLayout.ts:14](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/CircularLayout.ts#L14)
 
 Whether to sort nodes by degree (most-connected first). Default: false
 
@@ -91,7 +91,7 @@ Whether to sort nodes by degree (most-connected first). Default: false
 
 > `optional` **spacing?**: `number`
 
-Defined in: [layout/Layout.ts:11](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L11)
+Defined in: [layout/Layout.ts:11](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L11)
 
 Spacing between nodes. Default: 50
 
@@ -105,6 +105,6 @@ Spacing between nodes. Default: 50
 
 > `optional` **startAngle?**: `number`
 
-Defined in: [layout/CircularLayout.ts:12](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/CircularLayout.ts#L12)
+Defined in: [layout/CircularLayout.ts:12](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/CircularLayout.ts#L12)
 
 Starting angle in degrees. Default: 0

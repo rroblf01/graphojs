@@ -5,7 +5,7 @@ prev: false
 title: "Palette"
 ---
 
-Defined in: [export/Palette.ts:10](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/Palette.ts#L10)
+Defined in: [export/Palette.ts:10](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/Palette.ts#L10)
 
 A palette shows templates that can be dragged onto a diagram.
 Dragging a template item onto the diagram adds a new node.
@@ -16,7 +16,7 @@ Dragging a template item onto the diagram adds a new node.
 
 > **new Palette**(`container`, `diagram?`, `templates?`, `options?`): `Palette`
 
-Defined in: [export/Palette.ts:17](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/Palette.ts#L17)
+Defined in: [export/Palette.ts:17](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/Palette.ts#L17)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: [export/Palette.ts:17](https://github.com/rroblf01/graphojs/blob/da0
 
 > **destroy**(): `void`
 
-Defined in: [export/Palette.ts:170](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/Palette.ts#L170)
+Defined in: [export/Palette.ts:170](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/Palette.ts#L170)
 
 Destroy the palette and clean up.
 
@@ -62,7 +62,7 @@ Destroy the palette and clean up.
 
 > **getDiagram**(): [`Diagram`](/en/reference/api/graphojs/classes/diagram/)
 
-Defined in: [export/Palette.ts:55](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/Palette.ts#L55)
+Defined in: [export/Palette.ts:55](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/Palette.ts#L55)
 
 Get the diagram this palette is connected to.
 
@@ -76,7 +76,7 @@ Get the diagram this palette is connected to.
 
 > **getElement**(): `HTMLDivElement`
 
-Defined in: [export/Palette.ts:50](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/Palette.ts#L50)
+Defined in: [export/Palette.ts:50](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/Palette.ts#L50)
 
 Get the palette DOM element.
 
@@ -90,7 +90,7 @@ Get the palette DOM element.
 
 > **handleDropOnDiagram**(`templateId`, `diagramX`, `diagramY`): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/) \| `null`
 
-Defined in: [export/Palette.ts:157](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/Palette.ts#L157)
+Defined in: [export/Palette.ts:157](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/Palette.ts#L157)
 
 Handle a drop of a template onto the diagram.
 Called externally by the diagram's drop handling.
@@ -119,7 +119,7 @@ Called externally by the diagram's drop handling.
 
 > **setTemplates**(`templates`): `void`
 
-Defined in: [export/Palette.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/Palette.ts#L60)
+Defined in: [export/Palette.ts:60](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/Palette.ts#L60)
 
 Set the templates shown in this palette.
 

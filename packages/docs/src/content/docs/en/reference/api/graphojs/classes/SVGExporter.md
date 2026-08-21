@@ -5,7 +5,7 @@ prev: false
 title: "SVGExporter"
 ---
 
-Defined in: [export/SVGExporter.ts:14](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/SVGExporter.ts#L14)
+Defined in: [export/SVGExporter.ts:14](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/SVGExporter.ts#L14)
 
 SVG exporter for diagrams.
 Generates an SVG string from the current diagram state.
@@ -16,7 +16,7 @@ Generates an SVG string from the current diagram state.
 
 > **new SVGExporter**(`options?`): `SVGExporter`
 
-Defined in: [export/SVGExporter.ts:18](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/SVGExporter.ts#L18)
+Defined in: [export/SVGExporter.ts:18](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/SVGExporter.ts#L18)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: [export/SVGExporter.ts:18](https://github.com/rroblf01/graphojs/blob
 
 > **export**(`diagram`): `string`
 
-Defined in: [export/SVGExporter.ts:26](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/SVGExporter.ts#L26)
+Defined in: [export/SVGExporter.ts:26](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/SVGExporter.ts#L26)
 
 Export a diagram to SVG string.
 
@@ -60,7 +60,7 @@ Export a diagram to SVG string.
 
 > **exportToDataURL**(`diagram`): `string`
 
-Defined in: [export/SVGExporter.ts:94](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/SVGExporter.ts#L94)
+Defined in: [export/SVGExporter.ts:94](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/SVGExporter.ts#L94)
 
 Export as a data URL.
 
@@ -80,7 +80,7 @@ Export as a data URL.
 
 > **exportToFile**(`diagram`, `filename`): `void`
 
-Defined in: [export/SVGExporter.ts:78](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/SVGExporter.ts#L78)
+Defined in: [export/SVGExporter.ts:78](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/SVGExporter.ts#L78)
 
 Export diagram to a downloadable SVG file.
 

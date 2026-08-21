@@ -5,7 +5,7 @@ prev: false
 title: "LinkLabelPosition"
 ---
 
-Defined in: [undo/commands.ts:392](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L392)
+Defined in: [undo/commands.ts:392](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L392)
 
 The label-position fields moved by [SetLinkLabelPositionCommand](/en/reference/api/graphojs/classes/setlinklabelpositioncommand/).
 
@@ -15,7 +15,7 @@ The label-position fields moved by [SetLinkLabelPositionCommand](/en/reference/a
 
 > **offset**: `number`
 
-Defined in: [undo/commands.ts:395](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L395)
+Defined in: [undo/commands.ts:395](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L395)
 
 ***
 
@@ -23,7 +23,7 @@ Defined in: [undo/commands.ts:395](https://github.com/rroblf01/graphojs/blob/da0
 
 > **segmentFraction**: `number`
 
-Defined in: [undo/commands.ts:394](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L394)
+Defined in: [undo/commands.ts:394](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L394)
 
 ***
 
@@ -31,7 +31,7 @@ Defined in: [undo/commands.ts:394](https://github.com/rroblf01/graphojs/blob/da0
 
 > **segmentIndex**: `number`
 
-Defined in: [undo/commands.ts:393](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L393)
+Defined in: [undo/commands.ts:393](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L393)
 
 ***
 
@@ -39,4 +39,4 @@ Defined in: [undo/commands.ts:393](https://github.com/rroblf01/graphojs/blob/da0
 
 > **side**: `"top"` \| `"bottom"` \| `"left"` \| `"right"` \| `"auto"`
 
-Defined in: [undo/commands.ts:396](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L396)
+Defined in: [undo/commands.ts:396](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L396)

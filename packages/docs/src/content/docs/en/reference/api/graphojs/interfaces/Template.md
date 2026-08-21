@@ -5,7 +5,7 @@ prev: false
 title: "Template"
 ---
 
-Defined in: [template/Template.ts:7](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L7)
+Defined in: [template/Template.ts:7](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L7)
 
 A template defines a reusable node configuration.
 
@@ -15,7 +15,7 @@ A template defines a reusable node configuration.
 
 > **category**: `string`
 
-Defined in: [template/Template.ts:13](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L13)
+Defined in: [template/Template.ts:13](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L13)
 
 Category for grouping.
 
@@ -25,7 +25,7 @@ Category for grouping.
 
 > `optional` **cornerRadius?**: `number`
 
-Defined in: [template/Template.ts:35](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L35)
+Defined in: [template/Template.ts:35](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L35)
 
 Corner radius (for roundedRect).
 
@@ -35,7 +35,7 @@ Corner radius (for roundedRect).
 
 > `optional` **description?**: `string`
 
-Defined in: [template/Template.ts:15](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L15)
+Defined in: [template/Template.ts:15](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L15)
 
 Description.
 
@@ -45,7 +45,7 @@ Description.
 
 > **fill**: `string`
 
-Defined in: [template/Template.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L23)
+Defined in: [template/Template.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L23)
 
 Default fill color.
 
@@ -55,7 +55,7 @@ Default fill color.
 
 > **height**: `number`
 
-Defined in: [template/Template.ts:21](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L21)
+Defined in: [template/Template.ts:21](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L21)
 
 Default height.
 
@@ -65,7 +65,7 @@ Default height.
 
 > **id**: `string`
 
-Defined in: [template/Template.ts:9](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L9)
+Defined in: [template/Template.ts:9](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L9)
 
 Unique identifier.
 
@@ -75,7 +75,7 @@ Unique identifier.
 
 > **label**: `string`
 
-Defined in: [template/Template.ts:29](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L29)
+Defined in: [template/Template.ts:29](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L29)
 
 Default label.
 
@@ -85,7 +85,7 @@ Default label.
 
 > **labelColor**: `string`
 
-Defined in: [template/Template.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L31)
+Defined in: [template/Template.ts:31](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L31)
 
 Default label color.
 
@@ -95,7 +95,7 @@ Default label color.
 
 > **labelFont**: `string`
 
-Defined in: [template/Template.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L33)
+Defined in: [template/Template.ts:33](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L33)
 
 Default label font.
 
@@ -105,7 +105,7 @@ Default label font.
 
 > **name**: `string`
 
-Defined in: [template/Template.ts:11](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L11)
+Defined in: [template/Template.ts:11](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L11)
 
 Display name.
 
@@ -115,7 +115,7 @@ Display name.
 
 > `optional` **properties?**: `Record`\<`string`, `unknown`\>
 
-Defined in: [template/Template.ts:37](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L37)
+Defined in: [template/Template.ts:37](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L37)
 
 Additional properties.
 
@@ -125,7 +125,7 @@ Additional properties.
 
 > **shape**: [`ShapeType`](/en/reference/api/graphojs/type-aliases/shapetype/)
 
-Defined in: [template/Template.ts:17](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L17)
+Defined in: [template/Template.ts:17](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L17)
 
 The shape type.
 
@@ -135,7 +135,7 @@ The shape type.
 
 > **stroke**: `string`
 
-Defined in: [template/Template.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L25)
+Defined in: [template/Template.ts:25](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L25)
 
 Default stroke color.
 
@@ -145,7 +145,7 @@ Default stroke color.
 
 > **strokeWidth**: `number`
 
-Defined in: [template/Template.ts:27](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L27)
+Defined in: [template/Template.ts:27](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L27)
 
 Default stroke width.
 
@@ -155,6 +155,6 @@ Default stroke width.
 
 > **width**: `number`
 
-Defined in: [template/Template.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/Template.ts#L19)
+Defined in: [template/Template.ts:19](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/Template.ts#L19)
 
 Default width.

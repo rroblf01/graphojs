@@ -5,7 +5,7 @@ prev: false
 title: "Layer"
 ---
 
-Defined in: [layer/Layer.ts:7](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L7)
+Defined in: [layer/Layer.ts:7](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L7)
 
 A layer controls the z-ordering of parts in a diagram.
 Parts in lower z-order layers are rendered first (behind).
@@ -16,7 +16,7 @@ Parts in lower z-order layers are rendered first (behind).
 
 > **new Layer**(`name`, `zOrder`): `Layer`
 
-Defined in: [layer/Layer.ts:15](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L15)
+Defined in: [layer/Layer.ts:15](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L15)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: [layer/Layer.ts:15](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **isTemporary**(): `boolean`
 
-Defined in: [layer/Layer.ts:36](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L36)
+Defined in: [layer/Layer.ts:36](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L36)
 
 Whether this is a temporary layer (for dragging, etc.).
 
@@ -52,7 +52,7 @@ Whether this is a temporary layer (for dragging, etc.).
 
 > **set** **isTemporary**(`value`): `void`
 
-Defined in: [layer/Layer.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L41)
+Defined in: [layer/Layer.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L41)
 
 Set whether this is a temporary layer.
 
@@ -74,7 +74,7 @@ Set whether this is a temporary layer.
 
 > **get** **name**(): `string`
 
-Defined in: [layer/Layer.ts:21](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L21)
+Defined in: [layer/Layer.ts:21](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L21)
 
 The layer name.
 
@@ -90,7 +90,7 @@ The layer name.
 
 > **get** **opacity**(): `number`
 
-Defined in: [layer/Layer.ts:46](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L46)
+Defined in: [layer/Layer.ts:46](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L46)
 
 The opacity of this layer (0-1).
 
@@ -102,7 +102,7 @@ The opacity of this layer (0-1).
 
 > **set** **opacity**(`value`): `void`
 
-Defined in: [layer/Layer.ts:51](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L51)
+Defined in: [layer/Layer.ts:51](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L51)
 
 Set the opacity.
 
@@ -124,7 +124,7 @@ Set the opacity.
 
 > **get** **partCount**(): `number`
 
-Defined in: [layer/Layer.ts:70](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L70)
+Defined in: [layer/Layer.ts:70](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L70)
 
 Get the number of parts in this layer.
 
@@ -140,7 +140,7 @@ Get the number of parts in this layer.
 
 > **get** **parts**(): readonly [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
-Defined in: [layer/Layer.ts:65](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L65)
+Defined in: [layer/Layer.ts:65](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L65)
 
 Get all parts in this layer.
 
@@ -156,7 +156,7 @@ readonly [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
 > **get** **visible**(): `boolean`
 
-Defined in: [layer/Layer.ts:56](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L56)
+Defined in: [layer/Layer.ts:56](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L56)
 
 GoJS-compatible: Whether this layer is visible.
 
@@ -168,7 +168,7 @@ GoJS-compatible: Whether this layer is visible.
 
 > **set** **visible**(`value`): `void`
 
-Defined in: [layer/Layer.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L60)
+Defined in: [layer/Layer.ts:60](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L60)
 
 ##### Parameters
 
@@ -188,7 +188,7 @@ Defined in: [layer/Layer.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **zOrder**(): `number`
 
-Defined in: [layer/Layer.ts:26](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L26)
+Defined in: [layer/Layer.ts:26](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L26)
 
 The z-order of this layer (lower values rendered first).
 
@@ -200,7 +200,7 @@ The z-order of this layer (lower values rendered first).
 
 > **set** **zOrder**(`value`): `void`
 
-Defined in: [layer/Layer.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L31)
+Defined in: [layer/Layer.ts:31](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L31)
 
 Set the z-order.
 
@@ -220,7 +220,7 @@ Set the z-order.
 
 > **add**(`part`): `void`
 
-Defined in: [layer/Layer.ts:75](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L75)
+Defined in: [layer/Layer.ts:75](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L75)
 
 Add a part to this layer.
 
@@ -240,7 +240,7 @@ Add a part to this layer.
 
 > **clear**(): `void`
 
-Defined in: [layer/Layer.ts:99](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L99)
+Defined in: [layer/Layer.ts:99](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L99)
 
 Remove all parts from this layer.
 
@@ -254,7 +254,7 @@ Remove all parts from this layer.
 
 > **contains**(`part`): `boolean`
 
-Defined in: [layer/Layer.ts:89](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L89)
+Defined in: [layer/Layer.ts:89](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L89)
 
 Check if a part is in this layer.
 
@@ -274,7 +274,7 @@ Check if a part is in this layer.
 
 > **getVisibleParts**(): [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
-Defined in: [layer/Layer.ts:94](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L94)
+Defined in: [layer/Layer.ts:94](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L94)
 
 Get all visible parts in this layer.
 
@@ -288,7 +288,7 @@ Get all visible parts in this layer.
 
 > **remove**(`part`): `boolean`
 
-Defined in: [layer/Layer.ts:81](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layer/Layer.ts#L81)
+Defined in: [layer/Layer.ts:81](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layer/Layer.ts#L81)
 
 Remove a part from this layer.
 

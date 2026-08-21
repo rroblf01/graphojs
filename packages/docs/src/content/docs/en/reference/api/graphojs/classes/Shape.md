@@ -5,7 +5,7 @@ prev: false
 title: "Shape"
 ---
 
-Defined in: [panel/Shape.ts:17](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L17)
+Defined in: [panel/Shape.ts:20](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L20)
 
 A geometric shape element in a panel.
 
@@ -19,7 +19,7 @@ A geometric shape element in a panel.
 
 > **new Shape**(`shape?`): `Shape`
 
-Defined in: [panel/Shape.ts:79](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L79)
+Defined in: [panel/Shape.ts:83](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L83)
 
 #### Parameters
 
@@ -37,11 +37,115 @@ Defined in: [panel/Shape.ts:79](https://github.com/rroblf01/graphojs/blob/da00c0
 
 ## Properties
 
+### actionCancel?
+
+> `optional` **actionCancel?**: (`e`, `obj`) => `void`
+
+Defined in: [panel/GraphObject.ts:86](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L86)
+
+#### Parameters
+
+##### e
+
+[`InputEvent`](/en/reference/api/graphojs/classes/inputevent/)
+
+##### obj
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/)
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`actionCancel`](/en/reference/api/graphojs/classes/graphobject/#actioncancel)
+
+***
+
+### actionDown?
+
+> `optional` **actionDown?**: (`e`, `obj`) => `void`
+
+Defined in: [panel/GraphObject.ts:83](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L83)
+
+#### Parameters
+
+##### e
+
+[`InputEvent`](/en/reference/api/graphojs/classes/inputevent/)
+
+##### obj
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/)
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`actionDown`](/en/reference/api/graphojs/classes/graphobject/#actiondown)
+
+***
+
+### actionMove?
+
+> `optional` **actionMove?**: (`e`, `obj`) => `void`
+
+Defined in: [panel/GraphObject.ts:84](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L84)
+
+#### Parameters
+
+##### e
+
+[`InputEvent`](/en/reference/api/graphojs/classes/inputevent/)
+
+##### obj
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/)
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`actionMove`](/en/reference/api/graphojs/classes/graphobject/#actionmove)
+
+***
+
+### actionUp?
+
+> `optional` **actionUp?**: (`e`, `obj`) => `void`
+
+Defined in: [panel/GraphObject.ts:85](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L85)
+
+#### Parameters
+
+##### e
+
+[`InputEvent`](/en/reference/api/graphojs/classes/inputevent/)
+
+##### obj
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/)
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`actionUp`](/en/reference/api/graphojs/classes/graphobject/#actionup)
+
+***
+
 ### click?
 
 > `optional` **click?**: (`e`, `obj`) => `void`
 
-Defined in: [panel/GraphObject.ts:65](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L65)
+Defined in: [panel/GraphObject.ts:68](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L68)
 
 #### Parameters
 
@@ -67,7 +171,7 @@ Defined in: [panel/GraphObject.ts:65](https://github.com/rroblf01/graphojs/blob/
 
 > `optional` **contextClick?**: (`e`, `obj`) => `void`
 
-Defined in: [panel/GraphObject.ts:67](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L67)
+Defined in: [panel/GraphObject.ts:70](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L70)
 
 #### Parameters
 
@@ -93,7 +197,7 @@ Defined in: [panel/GraphObject.ts:67](https://github.com/rroblf01/graphojs/blob/
 
 > `optional` **doubleClick?**: (`e`, `obj`) => `void`
 
-Defined in: [panel/GraphObject.ts:66](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L66)
+Defined in: [panel/GraphObject.ts:69](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L69)
 
 #### Parameters
 
@@ -119,9 +223,26 @@ Defined in: [panel/GraphObject.ts:66](https://github.com/rroblf01/graphojs/blob/
 
 > **fromArrow**: `string` = `''`
 
-Defined in: [panel/Shape.ts:112](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L112)
+Defined in: [panel/Shape.ts:116](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L116)
 
 GoJS-compatible: Arrowhead figure at the end of a link (e.g. "Triangle", "OpenTriangle").
+
+***
+
+### isActionable
+
+> **isActionable**: `boolean` = `false`
+
+Defined in: [panel/GraphObject.ts:82](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L82)
+
+GoJS-compatible: when true, `ActionTool` dispatches
+`actionDown`/`actionMove`/`actionUp`/`actionCancel` on this object for
+mouse-down-move-up gestures starting on it — for building controls
+(buttons, sliders) that handle their own gesture without a new `Tool`.
+
+#### Inherited from
+
+[`Placeholder`](/en/reference/api/graphojs/classes/placeholder/).[`isActionable`](/en/reference/api/graphojs/classes/placeholder/#isactionable)
 
 ***
 
@@ -129,7 +250,7 @@ GoJS-compatible: Arrowhead figure at the end of a link (e.g. "Triangle", "OpenTr
 
 > **isPanelMain**: `boolean` = `false`
 
-Defined in: [panel/Shape.ts:115](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L115)
+Defined in: [panel/Shape.ts:119](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L119)
 
 GoJS-compatible: Whether to draw this shape even if it has no figure (used as link path).
 
@@ -139,7 +260,7 @@ GoJS-compatible: Whether to draw this shape even if it has no figure (used as li
 
 > `optional` **mouseEnter?**: (`e`, `obj`, `prev`) => `void`
 
-Defined in: [panel/GraphObject.ts:68](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L68)
+Defined in: [panel/GraphObject.ts:71](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L71)
 
 #### Parameters
 
@@ -169,7 +290,7 @@ Defined in: [panel/GraphObject.ts:68](https://github.com/rroblf01/graphojs/blob/
 
 > `optional` **mouseLeave?**: (`e`, `obj`, `prev`) => `void`
 
-Defined in: [panel/GraphObject.ts:69](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L69)
+Defined in: [panel/GraphObject.ts:72](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L72)
 
 #### Parameters
 
@@ -199,7 +320,7 @@ Defined in: [panel/GraphObject.ts:69](https://github.com/rroblf01/graphojs/blob/
 
 > `optional` **mouseOut?**: (`e`, `obj`) => `void`
 
-Defined in: [panel/GraphObject.ts:71](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L71)
+Defined in: [panel/GraphObject.ts:74](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L74)
 
 #### Parameters
 
@@ -225,7 +346,7 @@ Defined in: [panel/GraphObject.ts:71](https://github.com/rroblf01/graphojs/blob/
 
 > `optional` **mouseOver?**: (`e`, `obj`) => `void`
 
-Defined in: [panel/GraphObject.ts:70](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L70)
+Defined in: [panel/GraphObject.ts:73](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L73)
 
 #### Parameters
 
@@ -251,7 +372,7 @@ Defined in: [panel/GraphObject.ts:70](https://github.com/rroblf01/graphojs/blob/
 
 > **parentPanel**: [`GraphObject`](/en/reference/api/graphojs/classes/graphobject/) \| `null` = `null`
 
-Defined in: [panel/GraphObject.ts:74](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L74)
+Defined in: [panel/GraphObject.ts:89](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L89)
 
 The panel this object belongs to (set when added). Used for ofObject resolution.
 
@@ -265,7 +386,7 @@ The panel this object belongs to (set when added). Used for ofObject resolution.
 
 > **portId**: `string` = `''`
 
-Defined in: [panel/GraphObject.ts:77](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L77)
+Defined in: [panel/GraphObject.ts:92](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L92)
 
 GoJS-compatible: If non-empty, this object acts as a port on its part.
 
@@ -279,7 +400,7 @@ GoJS-compatible: If non-empty, this object acts as a port on its part.
 
 > **toArrow**: `string` = `''`
 
-Defined in: [panel/Shape.ts:110](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L110)
+Defined in: [panel/Shape.ts:114](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L114)
 
 GoJS-compatible: Arrowhead figure at the start of a link (e.g. "Triangle", "OpenTriangle").
 
@@ -289,7 +410,7 @@ GoJS-compatible: Arrowhead figure at the start of a link (e.g. "Triangle", "Open
 
 > `readonly` `static` **Arrow**: `"arrow"` = `'arrow'`
 
-Defined in: [panel/Shape.ts:28](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L28)
+Defined in: [panel/Shape.ts:31](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L31)
 
 ***
 
@@ -297,7 +418,7 @@ Defined in: [panel/Shape.ts:28](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Card**: `"card"` = `'card'`
 
-Defined in: [panel/Shape.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L41)
+Defined in: [panel/Shape.ts:44](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L44)
 
 ***
 
@@ -305,7 +426,7 @@ Defined in: [panel/Shape.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Circle**: `"circle"` = `'circle'`
 
-Defined in: [panel/Shape.ts:53](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L53)
+Defined in: [panel/Shape.ts:56](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L56)
 
 ***
 
@@ -313,7 +434,7 @@ Defined in: [panel/Shape.ts:53](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Cloud**: `"cloud"` = `'cloud'`
 
-Defined in: [panel/Shape.ts:29](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L29)
+Defined in: [panel/Shape.ts:32](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L32)
 
 ***
 
@@ -321,7 +442,7 @@ Defined in: [panel/Shape.ts:29](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Club**: `"club"` = `'club'`
 
-Defined in: [panel/Shape.ts:59](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L59)
+Defined in: [panel/Shape.ts:62](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L62)
 
 ***
 
@@ -329,7 +450,7 @@ Defined in: [panel/Shape.ts:59](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Cross**: `"cross"` = `'cross'`
 
-Defined in: [panel/Shape.ts:27](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L27)
+Defined in: [panel/Shape.ts:30](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L30)
 
 ***
 
@@ -337,7 +458,7 @@ Defined in: [panel/Shape.ts:27](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Cylinder**: `"cylinder"` = `'cylinder'`
 
-Defined in: [panel/Shape.ts:34](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L34)
+Defined in: [panel/Shape.ts:37](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L37)
 
 ***
 
@@ -345,7 +466,7 @@ Defined in: [panel/Shape.ts:34](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Database**: `"database"` = `'database'`
 
-Defined in: [panel/Shape.ts:66](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L66)
+Defined in: [panel/Shape.ts:69](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L69)
 
 ***
 
@@ -353,7 +474,7 @@ Defined in: [panel/Shape.ts:66](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Decision**: `"decision"` = `'decision'`
 
-Defined in: [panel/Shape.ts:37](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L37)
+Defined in: [panel/Shape.ts:40](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L40)
 
 ***
 
@@ -361,7 +482,7 @@ Defined in: [panel/Shape.ts:37](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Delay**: `"delay"` = `'delay'`
 
-Defined in: [panel/Shape.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L43)
+Defined in: [panel/Shape.ts:46](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L46)
 
 ***
 
@@ -369,7 +490,7 @@ Defined in: [panel/Shape.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Diamond**: `"diamond"` = `'diamond'`
 
-Defined in: [panel/Shape.ts:22](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L22)
+Defined in: [panel/Shape.ts:25](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L25)
 
 ***
 
@@ -377,7 +498,7 @@ Defined in: [panel/Shape.ts:22](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Display**: `"display"` = `'display'`
 
-Defined in: [panel/Shape.ts:42](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L42)
+Defined in: [panel/Shape.ts:45](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L45)
 
 ***
 
@@ -385,7 +506,7 @@ Defined in: [panel/Shape.ts:42](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Document**: `"document"` = `'document'`
 
-Defined in: [panel/Shape.ts:36](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L36)
+Defined in: [panel/Shape.ts:39](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L39)
 
 ***
 
@@ -393,7 +514,7 @@ Defined in: [panel/Shape.ts:36](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **DoubleArrow**: `"doubleArrow"` = `'doubleArrow'`
 
-Defined in: [panel/Shape.ts:54](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L54)
+Defined in: [panel/Shape.ts:57](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L57)
 
 ***
 
@@ -401,7 +522,7 @@ Defined in: [panel/Shape.ts:54](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **DoubleChevron**: `"doubleChevron"` = `'doubleChevron'`
 
-Defined in: [panel/Shape.ts:68](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L68)
+Defined in: [panel/Shape.ts:71](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L71)
 
 ***
 
@@ -409,7 +530,7 @@ Defined in: [panel/Shape.ts:68](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Ellipse**: `"ellipse"` = `'ellipse'`
 
-Defined in: [panel/Shape.ts:21](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L21)
+Defined in: [panel/Shape.ts:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L24)
 
 ***
 
@@ -417,7 +538,7 @@ Defined in: [panel/Shape.ts:21](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **End**: `"end"` = `'end'`
 
-Defined in: [panel/Shape.ts:39](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L39)
+Defined in: [panel/Shape.ts:42](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L42)
 
 ***
 
@@ -425,7 +546,7 @@ Defined in: [panel/Shape.ts:39](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Extract**: `"extract"` = `'extract'`
 
-Defined in: [panel/Shape.ts:46](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L46)
+Defined in: [panel/Shape.ts:49](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L49)
 
 ***
 
@@ -433,7 +554,7 @@ Defined in: [panel/Shape.ts:46](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **File**: `"file"` = `'file'`
 
-Defined in: [panel/Shape.ts:62](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L62)
+Defined in: [panel/Shape.ts:65](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L65)
 
 ***
 
@@ -441,7 +562,7 @@ Defined in: [panel/Shape.ts:62](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Folder**: `"folder"` = `'folder'`
 
-Defined in: [panel/Shape.ts:63](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L63)
+Defined in: [panel/Shape.ts:66](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L66)
 
 ***
 
@@ -449,7 +570,7 @@ Defined in: [panel/Shape.ts:63](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **HalfCircle**: `"halfCircle"` = `'halfCircle'`
 
-Defined in: [panel/Shape.ts:69](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L69)
+Defined in: [panel/Shape.ts:72](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L72)
 
 ***
 
@@ -457,7 +578,7 @@ Defined in: [panel/Shape.ts:69](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Heart**: `"heart"` = `'heart'`
 
-Defined in: [panel/Shape.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L33)
+Defined in: [panel/Shape.ts:36](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L36)
 
 ***
 
@@ -465,7 +586,7 @@ Defined in: [panel/Shape.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Hexagon**: `"hexagon"` = `'hexagon'`
 
-Defined in: [panel/Shape.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L23)
+Defined in: [panel/Shape.ts:26](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L26)
 
 ***
 
@@ -473,7 +594,7 @@ Defined in: [panel/Shape.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Io**: `"io"` = `'io'`
 
-Defined in: [panel/Shape.ts:40](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L40)
+Defined in: [panel/Shape.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L43)
 
 ***
 
@@ -481,7 +602,7 @@ Defined in: [panel/Shape.ts:40](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Kite**: `"kite"` = `'kite'`
 
-Defined in: [panel/Shape.ts:58](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L58)
+Defined in: [panel/Shape.ts:61](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L61)
 
 ***
 
@@ -489,7 +610,7 @@ Defined in: [panel/Shape.ts:58](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Line**: `"line"` = `'line'`
 
-Defined in: [panel/Shape.ts:52](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L52)
+Defined in: [panel/Shape.ts:55](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L55)
 
 ***
 
@@ -497,7 +618,7 @@ Defined in: [panel/Shape.ts:52](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **ManualOperation**: `"manualOperation"` = `'manualOperation'`
 
-Defined in: [panel/Shape.ts:44](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L44)
+Defined in: [panel/Shape.ts:47](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L47)
 
 ***
 
@@ -505,7 +626,7 @@ Defined in: [panel/Shape.ts:44](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Merge**: `"merge"` = `'merge'`
 
-Defined in: [panel/Shape.ts:45](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L45)
+Defined in: [panel/Shape.ts:48](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L48)
 
 ***
 
@@ -513,7 +634,7 @@ Defined in: [panel/Shape.ts:45](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Minus**: `"minus"` = `'minus'`
 
-Defined in: [panel/Shape.ts:51](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L51)
+Defined in: [panel/Shape.ts:54](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L54)
 
 ***
 
@@ -521,7 +642,7 @@ Defined in: [panel/Shape.ts:51](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Octagon**: `"octagon"` = `'octagon'`
 
-Defined in: [panel/Shape.ts:24](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L24)
+Defined in: [panel/Shape.ts:27](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L27)
 
 ***
 
@@ -529,7 +650,7 @@ Defined in: [panel/Shape.ts:24](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Or**: `"or"` = `'or'`
 
-Defined in: [panel/Shape.ts:47](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L47)
+Defined in: [panel/Shape.ts:50](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L50)
 
 ***
 
@@ -537,7 +658,7 @@ Defined in: [panel/Shape.ts:47](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Parallelogram**: `"parallelogram"` = `'parallelogram'`
 
-Defined in: [panel/Shape.ts:30](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L30)
+Defined in: [panel/Shape.ts:33](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L33)
 
 ***
 
@@ -545,7 +666,7 @@ Defined in: [panel/Shape.ts:30](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Pentagon**: `"pentagon"` = `'pentagon'`
 
-Defined in: [panel/Shape.ts:32](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L32)
+Defined in: [panel/Shape.ts:35](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L35)
 
 ***
 
@@ -553,7 +674,7 @@ Defined in: [panel/Shape.ts:32](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Person**: `"person"` = `'person'`
 
-Defined in: [panel/Shape.ts:55](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L55)
+Defined in: [panel/Shape.ts:58](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L58)
 
 ***
 
@@ -561,7 +682,7 @@ Defined in: [panel/Shape.ts:55](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **PiePiece**: `"piePiece"` = `'piePiece'`
 
-Defined in: [panel/Shape.ts:61](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L61)
+Defined in: [panel/Shape.ts:64](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L64)
 
 ***
 
@@ -569,7 +690,7 @@ Defined in: [panel/Shape.ts:61](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Planner**: `"planner"` = `'planner'`
 
-Defined in: [panel/Shape.ts:65](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L65)
+Defined in: [panel/Shape.ts:68](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L68)
 
 ***
 
@@ -577,7 +698,7 @@ Defined in: [panel/Shape.ts:65](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Plus**: `"plus"` = `'plus'`
 
-Defined in: [panel/Shape.ts:50](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L50)
+Defined in: [panel/Shape.ts:53](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L53)
 
 ***
 
@@ -585,7 +706,7 @@ Defined in: [panel/Shape.ts:50](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Process**: `"process"` = `'process'`
 
-Defined in: [panel/Shape.ts:35](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L35)
+Defined in: [panel/Shape.ts:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L38)
 
 ***
 
@@ -593,7 +714,7 @@ Defined in: [panel/Shape.ts:35](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Rectangle**: `"rect"` = `'rect'`
 
-Defined in: [panel/Shape.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L19)
+Defined in: [panel/Shape.ts:22](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L22)
 
 ***
 
@@ -601,7 +722,7 @@ Defined in: [panel/Shape.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Rhombus**: `"rhombus"` = `'rhombus'`
 
-Defined in: [panel/Shape.ts:57](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L57)
+Defined in: [panel/Shape.ts:60](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L60)
 
 ***
 
@@ -609,7 +730,7 @@ Defined in: [panel/Shape.ts:57](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **RightTriangle**: `"rightTriangle"` = `'rightTriangle'`
 
-Defined in: [panel/Shape.ts:70](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L70)
+Defined in: [panel/Shape.ts:73](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L73)
 
 ***
 
@@ -617,7 +738,7 @@ Defined in: [panel/Shape.ts:70](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Ring**: `"ring"` = `'ring'`
 
-Defined in: [panel/Shape.ts:56](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L56)
+Defined in: [panel/Shape.ts:59](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L59)
 
 ***
 
@@ -625,7 +746,7 @@ Defined in: [panel/Shape.ts:56](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **RoundedRectangle**: `"roundedRect"` = `'roundedRect'`
 
-Defined in: [panel/Shape.ts:20](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L20)
+Defined in: [panel/Shape.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L23)
 
 ***
 
@@ -633,7 +754,7 @@ Defined in: [panel/Shape.ts:20](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Spade**: `"spade"` = `'spade'`
 
-Defined in: [panel/Shape.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L60)
+Defined in: [panel/Shape.ts:63](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L63)
 
 ***
 
@@ -641,7 +762,7 @@ Defined in: [panel/Shape.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Star**: `"star"` = `'star'`
 
-Defined in: [panel/Shape.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L25)
+Defined in: [panel/Shape.ts:28](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L28)
 
 ***
 
@@ -649,7 +770,7 @@ Defined in: [panel/Shape.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Start**: `"start"` = `'start'`
 
-Defined in: [panel/Shape.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L38)
+Defined in: [panel/Shape.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L41)
 
 ***
 
@@ -657,7 +778,7 @@ Defined in: [panel/Shape.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Subroutine**: `"subroutine"` = `'subroutine'`
 
-Defined in: [panel/Shape.ts:67](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L67)
+Defined in: [panel/Shape.ts:70](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L70)
 
 ***
 
@@ -665,7 +786,7 @@ Defined in: [panel/Shape.ts:67](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **SummingJunction**: `"summingJunction"` = `'summingJunction'`
 
-Defined in: [panel/Shape.ts:48](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L48)
+Defined in: [panel/Shape.ts:51](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L51)
 
 ***
 
@@ -673,7 +794,7 @@ Defined in: [panel/Shape.ts:48](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **TabbedRectangle**: `"tabbedRectangle"` = `'tabbedRectangle'`
 
-Defined in: [panel/Shape.ts:71](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L71)
+Defined in: [panel/Shape.ts:74](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L74)
 
 ***
 
@@ -681,7 +802,7 @@ Defined in: [panel/Shape.ts:71](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Terminator**: `"terminator"` = `'terminator'`
 
-Defined in: [panel/Shape.ts:64](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L64)
+Defined in: [panel/Shape.ts:67](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L67)
 
 ***
 
@@ -689,7 +810,7 @@ Defined in: [panel/Shape.ts:64](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Trapezoid**: `"trapezoid"` = `'trapezoid'`
 
-Defined in: [panel/Shape.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L31)
+Defined in: [panel/Shape.ts:34](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L34)
 
 ***
 
@@ -697,7 +818,7 @@ Defined in: [panel/Shape.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **Triangle**: `"triangle"` = `'triangle'`
 
-Defined in: [panel/Shape.ts:26](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L26)
+Defined in: [panel/Shape.ts:29](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L29)
 
 ***
 
@@ -705,7 +826,7 @@ Defined in: [panel/Shape.ts:26](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > `readonly` `static` **X**: `"x"` = `'x'`
 
-Defined in: [panel/Shape.ts:49](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L49)
+Defined in: [panel/Shape.ts:52](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L52)
 
 ## Accessors
 
@@ -715,7 +836,7 @@ Defined in: [panel/Shape.ts:49](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **get** **actualSize**(): [`Size`](/en/reference/api/graphojs/classes/size/)
 
-Defined in: [panel/GraphObject.ts:382](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L382)
+Defined in: [panel/GraphObject.ts:479](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L479)
 
 The actual size computed during layout.
 
@@ -735,7 +856,7 @@ The actual size computed during layout.
 
 > **get** **alignment**(): [`Spot`](/en/reference/api/graphojs/classes/spot/) \| `null`
 
-Defined in: [panel/GraphObject.ts:392](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L392)
+Defined in: [panel/GraphObject.ts:489](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L489)
 
 The alignment spot for Spot panels.
 
@@ -747,7 +868,7 @@ The alignment spot for Spot panels.
 
 > **set** **alignment**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:396](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L396)
+Defined in: [panel/GraphObject.ts:493](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L493)
 
 ##### Parameters
 
@@ -761,7 +882,7 @@ Defined in: [panel/GraphObject.ts:396](https://github.com/rroblf01/graphojs/blob
 
 #### Inherited from
 
-[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`alignment`](/en/reference/api/graphojs/classes/graphobject/#alignment)
+[`Placeholder`](/en/reference/api/graphojs/classes/placeholder/).[`alignment`](/en/reference/api/graphojs/classes/placeholder/#alignment)
 
 ***
 
@@ -771,7 +892,7 @@ Defined in: [panel/GraphObject.ts:396](https://github.com/rroblf01/graphojs/blob
 
 > **get** **alignmentFocus**(): [`Spot`](/en/reference/api/graphojs/classes/spot/) \| `null`
 
-Defined in: [panel/GraphObject.ts:454](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L454)
+Defined in: [panel/GraphObject.ts:551](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L551)
 
 GoJS-compatible: The spot within this object used for alignment/placement.
 
@@ -783,7 +904,7 @@ GoJS-compatible: The spot within this object used for alignment/placement.
 
 > **set** **alignmentFocus**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:458](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L458)
+Defined in: [panel/GraphObject.ts:555](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L555)
 
 ##### Parameters
 
@@ -807,7 +928,7 @@ Defined in: [panel/GraphObject.ts:458](https://github.com/rroblf01/graphojs/blob
 
 > **get** **angle**(): `number`
 
-Defined in: [panel/GraphObject.ts:327](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L327)
+Defined in: [panel/GraphObject.ts:414](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L414)
 
 The rotation angle in degrees.
 
@@ -819,7 +940,7 @@ The rotation angle in degrees.
 
 > **set** **angle**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:331](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L331)
+Defined in: [panel/GraphObject.ts:418](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L418)
 
 ##### Parameters
 
@@ -843,7 +964,7 @@ Defined in: [panel/GraphObject.ts:331](https://github.com/rroblf01/graphojs/blob
 
 > **get** **bindings**(): readonly [`Binding`](/en/reference/api/graphojs/classes/binding/)[]
 
-Defined in: [panel/GraphObject.ts:89](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L89)
+Defined in: [panel/GraphObject.ts:104](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L104)
 
 GoJS-compatible: The bindings attached to this graph object.
 
@@ -863,7 +984,7 @@ readonly [`Binding`](/en/reference/api/graphojs/classes/binding/)[]
 
 > **get** **column**(): `number`
 
-Defined in: [panel/GraphObject.ts:425](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L425)
+Defined in: [panel/GraphObject.ts:522](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L522)
 
 GoJS-compatible: The column index for table panels.
 
@@ -875,7 +996,7 @@ GoJS-compatible: The column index for table panels.
 
 > **set** **column**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:429](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L429)
+Defined in: [panel/GraphObject.ts:526](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L526)
 
 ##### Parameters
 
@@ -899,7 +1020,7 @@ Defined in: [panel/GraphObject.ts:429](https://github.com/rroblf01/graphojs/blob
 
 > **get** **columnSpan**(): `number`
 
-Defined in: [panel/GraphObject.ts:443](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L443)
+Defined in: [panel/GraphObject.ts:540](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L540)
 
 GoJS-compatible: The number of columns this object spans.
 
@@ -911,7 +1032,7 @@ GoJS-compatible: The number of columns this object spans.
 
 > **set** **columnSpan**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:447](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L447)
+Defined in: [panel/GraphObject.ts:544](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L544)
 
 ##### Parameters
 
@@ -935,7 +1056,7 @@ Defined in: [panel/GraphObject.ts:447](https://github.com/rroblf01/graphojs/blob
 
 > **get** **copyable**(): `boolean`
 
-Defined in: [panel/GraphObject.ts:536](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L536)
+Defined in: [panel/GraphObject.ts:633](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L633)
 
 GoJS-compatible: Whether this object is included when copying its part.
 
@@ -947,7 +1068,7 @@ GoJS-compatible: Whether this object is included when copying its part.
 
 > **set** **copyable**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:540](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L540)
+Defined in: [panel/GraphObject.ts:637](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L637)
 
 ##### Parameters
 
@@ -971,7 +1092,7 @@ Defined in: [panel/GraphObject.ts:540](https://github.com/rroblf01/graphojs/blob
 
 > **get** **cornerRadius**(): `number`
 
-Defined in: [panel/Shape.ts:201](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L201)
+Defined in: [panel/Shape.ts:222](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L222)
 
 ##### Returns
 
@@ -981,7 +1102,7 @@ Defined in: [panel/Shape.ts:201](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **set** **cornerRadius**(`value`): `void`
 
-Defined in: [panel/Shape.ts:205](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L205)
+Defined in: [panel/Shape.ts:226](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L226)
 
 ##### Parameters
 
@@ -1001,7 +1122,7 @@ Defined in: [panel/Shape.ts:205](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **cursor**(): `string`
 
-Defined in: [panel/GraphObject.ts:336](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L336)
+Defined in: [panel/GraphObject.ts:423](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L423)
 
 GoJS-compatible: The cursor displayed when hovering over this object.
 
@@ -1013,7 +1134,7 @@ GoJS-compatible: The cursor displayed when hovering over this object.
 
 > **set** **cursor**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:340](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L340)
+Defined in: [panel/GraphObject.ts:427](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L427)
 
 ##### Parameters
 
@@ -1027,7 +1148,7 @@ Defined in: [panel/GraphObject.ts:340](https://github.com/rroblf01/graphojs/blob
 
 #### Inherited from
 
-[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`cursor`](/en/reference/api/graphojs/classes/graphobject/#cursor)
+[`Placeholder`](/en/reference/api/graphojs/classes/placeholder/).[`cursor`](/en/reference/api/graphojs/classes/placeholder/#cursor)
 
 ***
 
@@ -1037,7 +1158,7 @@ Defined in: [panel/GraphObject.ts:340](https://github.com/rroblf01/graphojs/blob
 
 > **get** **desiredSize**(): [`Size`](/en/reference/api/graphojs/classes/size/) \| `null`
 
-Defined in: [panel/GraphObject.ts:345](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L345)
+Defined in: [panel/GraphObject.ts:432](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L432)
 
 The desired size. If null, natural size is used.
 
@@ -1049,7 +1170,7 @@ The desired size. If null, natural size is used.
 
 > **set** **desiredSize**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:349](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L349)
+Defined in: [panel/GraphObject.ts:436](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L436)
 
 ##### Parameters
 
@@ -1073,7 +1194,7 @@ Defined in: [panel/GraphObject.ts:349](https://github.com/rroblf01/graphojs/blob
 
 > **get** **figure**(): [`ShapeType`](/en/reference/api/graphojs/type-aliases/shapetype/)
 
-Defined in: [panel/Shape.ts:93](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L93)
+Defined in: [panel/Shape.ts:97](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L97)
 
 GoJS-compatible: Alias for `shape` (GoJS uses `figure`).
 
@@ -1085,7 +1206,7 @@ GoJS-compatible: Alias for `shape` (GoJS uses `figure`).
 
 > **set** **figure**(`value`): `void`
 
-Defined in: [panel/Shape.ts:97](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L97)
+Defined in: [panel/Shape.ts:101](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L101)
 
 ##### Parameters
 
@@ -1103,25 +1224,25 @@ Defined in: [panel/Shape.ts:97](https://github.com/rroblf01/graphojs/blob/da00c0
 
 #### Get Signature
 
-> **get** **fill**(): `string`
+> **get** **fill**(): [`BrushLike`](/en/reference/api/graphojs/type-aliases/brushlike/)
 
-Defined in: [panel/Shape.ts:101](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L101)
+Defined in: [panel/Shape.ts:105](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L105)
 
 ##### Returns
 
-`string`
+[`BrushLike`](/en/reference/api/graphojs/type-aliases/brushlike/)
 
 #### Set Signature
 
 > **set** **fill**(`value`): `void`
 
-Defined in: [panel/Shape.ts:105](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L105)
+Defined in: [panel/Shape.ts:109](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L109)
 
 ##### Parameters
 
 ###### value
 
-`string`
+[`BrushLike`](/en/reference/api/graphojs/type-aliases/brushlike/)
 
 ##### Returns
 
@@ -1135,7 +1256,7 @@ Defined in: [panel/Shape.ts:105](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **fromGeometry**(): `unknown`
 
-Defined in: [panel/Shape.ts:156](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L156)
+Defined in: [panel/Shape.ts:177](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L177)
 
 GoJS-compatible: Get the geometry as a string (alias of geometryString).
 
@@ -1147,7 +1268,7 @@ GoJS-compatible: Get the geometry as a string (alias of geometryString).
 
 > **set** **fromGeometry**(`value`): `void`
 
-Defined in: [panel/Shape.ts:161](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L161)
+Defined in: [panel/Shape.ts:182](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L182)
 
 GoJS-compatible: Set the geometry from a geometry string or object.
 
@@ -1163,13 +1284,48 @@ GoJS-compatible: Set the geometry from a geometry string or object.
 
 ***
 
+### geometry
+
+#### Get Signature
+
+> **get** **geometry**(): [`Geometry`](/en/reference/api/graphojs/classes/geometry/) \| `null`
+
+Defined in: [panel/Shape.ts:140](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L140)
+
+GoJS-compatible: a programmatically-built [Geometry](/en/reference/api/graphojs/classes/geometry/) for this
+shape's outline (an alternative to setting [geometryString](/en/reference/api/graphojs/classes/shape/#geometrystring)
+directly). Serializes into `geometryString` under the hood via
+`Geometry.stringify`, reusing the same rendering path.
+
+##### Returns
+
+[`Geometry`](/en/reference/api/graphojs/classes/geometry/) \| `null`
+
+#### Set Signature
+
+> **set** **geometry**(`value`): `void`
+
+Defined in: [panel/Shape.ts:144](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L144)
+
+##### Parameters
+
+###### value
+
+[`Geometry`](/en/reference/api/graphojs/classes/geometry/) \| `null`
+
+##### Returns
+
+`void`
+
+***
+
 ### geometryString
 
 #### Get Signature
 
 > **get** **geometryString**(): `string`
 
-Defined in: [panel/Shape.ts:120](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L120)
+Defined in: [panel/Shape.ts:124](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L124)
 
 GoJS-compatible: An SVG path (geometry string) used as this shape's outline.
 
@@ -1181,7 +1337,7 @@ GoJS-compatible: An SVG path (geometry string) used as this shape's outline.
 
 > **set** **geometryString**(`value`): `void`
 
-Defined in: [panel/Shape.ts:124](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L124)
+Defined in: [panel/Shape.ts:128](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L128)
 
 ##### Parameters
 
@@ -1201,9 +1357,9 @@ Defined in: [panel/Shape.ts:124](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **height**(): `number`
 
-Defined in: [panel/GraphObject.ts:363](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L363)
+Defined in: [panel/GraphObject.ts:460](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L460)
 
-The height (from desiredSize or actual size).
+GoJS-compatible: the last explicitly-set desired height, or `NaN` if never set.
 
 ##### Returns
 
@@ -1213,7 +1369,7 @@ The height (from desiredSize or actual size).
 
 > **set** **height**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:367](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L367)
+Defined in: [panel/GraphObject.ts:464](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L464)
 
 ##### Parameters
 
@@ -1227,7 +1383,42 @@ Defined in: [panel/GraphObject.ts:367](https://github.com/rroblf01/graphojs/blob
 
 #### Inherited from
 
-[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`height`](/en/reference/api/graphojs/classes/graphobject/#height)
+[`Placeholder`](/en/reference/api/graphojs/classes/placeholder/).[`height`](/en/reference/api/graphojs/classes/placeholder/#height)
+
+***
+
+### interval
+
+#### Get Signature
+
+> **get** **interval**(): `number`
+
+Defined in: [panel/Shape.ts:236](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L236)
+
+GoJS-compatible: for a `"LineH"`/`"LineV"` `Shape` tiled by a `Panel
+"Grid"`, how often this line is actually drawn — every Nth row/column
+instead of every one. Only consulted by `Panel`'s Grid tiling; a
+plain positive integer, defaulting to 1 (every line).
+
+##### Returns
+
+`number`
+
+#### Set Signature
+
+> **set** **interval**(`value`): `void`
+
+Defined in: [panel/Shape.ts:240](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L240)
+
+##### Parameters
+
+###### value
+
+`number`
+
+##### Returns
+
+`void`
 
 ***
 
@@ -1237,7 +1428,7 @@ Defined in: [panel/GraphObject.ts:367](https://github.com/rroblf01/graphojs/blob
 
 > **get** **isShadowed**(): `boolean`
 
-Defined in: [panel/GraphObject.ts:479](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L479)
+Defined in: [panel/GraphObject.ts:576](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L576)
 
 GoJS-compatible: Whether this object casts a drop shadow.
 
@@ -1249,7 +1440,7 @@ GoJS-compatible: Whether this object casts a drop shadow.
 
 > **set** **isShadowed**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:483](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L483)
+Defined in: [panel/GraphObject.ts:580](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L580)
 
 ##### Parameters
 
@@ -1273,7 +1464,7 @@ Defined in: [panel/GraphObject.ts:483](https://github.com/rroblf01/graphojs/blob
 
 > **get** **isVisibleObject**(): `boolean`
 
-Defined in: [panel/GraphObject.ts:292](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L292)
+Defined in: [panel/GraphObject.ts:379](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L379)
 
 GoJS-compatible: Whether this object and all of its ancestors are visible.
 
@@ -1293,7 +1484,7 @@ GoJS-compatible: Whether this object and all of its ancestors are visible.
 
 > **get** **margin**(): [`Margin`](/en/reference/api/graphojs/classes/margin/) \| `null`
 
-Defined in: [panel/GraphObject.ts:401](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L401)
+Defined in: [panel/GraphObject.ts:498](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L498)
 
 The margin around this object.
 
@@ -1305,7 +1496,7 @@ The margin around this object.
 
 > **set** **margin**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:406](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L406)
+Defined in: [panel/GraphObject.ts:503](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L503)
 
 GoJS-compatible: a plain number sets a uniform margin on all four sides.
 
@@ -1331,7 +1522,7 @@ GoJS-compatible: a plain number sets a uniform margin on all four sides.
 
 > **get** **name**(): `string`
 
-Defined in: [panel/GraphObject.ts:80](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L80)
+Defined in: [panel/GraphObject.ts:95](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L95)
 
 The name of this graph object, used for findObject() lookups.
 
@@ -1343,7 +1534,7 @@ The name of this graph object, used for findObject() lookups.
 
 > **set** **name**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:84](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L84)
+Defined in: [panel/GraphObject.ts:99](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L99)
 
 ##### Parameters
 
@@ -1357,7 +1548,7 @@ Defined in: [panel/GraphObject.ts:84](https://github.com/rroblf01/graphojs/blob/
 
 #### Inherited from
 
-[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`name`](/en/reference/api/graphojs/classes/graphobject/#name)
+[`Placeholder`](/en/reference/api/graphojs/classes/placeholder/).[`name`](/en/reference/api/graphojs/classes/placeholder/#name)
 
 ***
 
@@ -1367,7 +1558,7 @@ Defined in: [panel/GraphObject.ts:84](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **opacity**(): `number`
 
-Defined in: [panel/GraphObject.ts:318](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L318)
+Defined in: [panel/GraphObject.ts:405](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L405)
 
 The opacity of this object (0-1).
 
@@ -1379,7 +1570,7 @@ The opacity of this object (0-1).
 
 > **set** **opacity**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:322](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L322)
+Defined in: [panel/GraphObject.ts:409](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L409)
 
 ##### Parameters
 
@@ -1403,7 +1594,7 @@ Defined in: [panel/GraphObject.ts:322](https://github.com/rroblf01/graphojs/blob
 
 > **get** **parent**(): [`GraphObject`](/en/reference/api/graphojs/classes/graphobject/) \| `null`
 
-Defined in: [panel/GraphObject.ts:302](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L302)
+Defined in: [panel/GraphObject.ts:389](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L389)
 
 GoJS-compatible: The parent panel of this object (or null).
 
@@ -1423,7 +1614,7 @@ GoJS-compatible: The parent panel of this object (or null).
 
 > **get** **part**(): [`Part`](/en/reference/api/graphojs/classes/part/) \| `null`
 
-Defined in: [panel/GraphObject.ts:307](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L307)
+Defined in: [panel/GraphObject.ts:394](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L394)
 
 GoJS-compatible: The Part that contains this object (or null).
 
@@ -1443,7 +1634,7 @@ GoJS-compatible: The Part that contains this object (or null).
 
 > **get** **pickable**(): `boolean`
 
-Defined in: [panel/GraphObject.ts:527](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L527)
+Defined in: [panel/GraphObject.ts:624](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L624)
 
 GoJS-compatible: Whether this object can be hit-tested.
 
@@ -1455,7 +1646,7 @@ GoJS-compatible: Whether this object can be hit-tested.
 
 > **set** **pickable**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:531](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L531)
+Defined in: [panel/GraphObject.ts:628](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L628)
 
 ##### Parameters
 
@@ -1479,7 +1670,7 @@ Defined in: [panel/GraphObject.ts:531](https://github.com/rroblf01/graphojs/blob
 
 > **get** **position**(): `object`
 
-Defined in: [panel/GraphObject.ts:372](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L372)
+Defined in: [panel/GraphObject.ts:469](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L469)
 
 The position within the parent panel.
 
@@ -1507,7 +1698,7 @@ The position within the parent panel.
 
 > **get** **row**(): `number`
 
-Defined in: [panel/GraphObject.ts:416](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L416)
+Defined in: [panel/GraphObject.ts:513](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L513)
 
 GoJS-compatible: The row index for table panels.
 
@@ -1519,7 +1710,7 @@ GoJS-compatible: The row index for table panels.
 
 > **set** **row**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:420](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L420)
+Defined in: [panel/GraphObject.ts:517](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L517)
 
 ##### Parameters
 
@@ -1543,7 +1734,7 @@ Defined in: [panel/GraphObject.ts:420](https://github.com/rroblf01/graphojs/blob
 
 > **get** **rowSpan**(): `number`
 
-Defined in: [panel/GraphObject.ts:434](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L434)
+Defined in: [panel/GraphObject.ts:531](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L531)
 
 GoJS-compatible: The number of rows this object spans.
 
@@ -1555,7 +1746,7 @@ GoJS-compatible: The number of rows this object spans.
 
 > **set** **rowSpan**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:438](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L438)
+Defined in: [panel/GraphObject.ts:535](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L535)
 
 ##### Parameters
 
@@ -1579,7 +1770,7 @@ Defined in: [panel/GraphObject.ts:438](https://github.com/rroblf01/graphojs/blob
 
 > **get** **scale**(): `number`
 
-Defined in: [panel/GraphObject.ts:465](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L465)
+Defined in: [panel/GraphObject.ts:562](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L562)
 
 GoJS-compatible: The scale of this object relative to its normal size.
 
@@ -1591,7 +1782,7 @@ GoJS-compatible: The scale of this object relative to its normal size.
 
 > **set** **scale**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:469](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L469)
+Defined in: [panel/GraphObject.ts:566](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L566)
 
 ##### Parameters
 
@@ -1615,7 +1806,7 @@ Defined in: [panel/GraphObject.ts:469](https://github.com/rroblf01/graphojs/blob
 
 > **get** **shadow**(): `string`
 
-Defined in: [panel/GraphObject.ts:515](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L515)
+Defined in: [panel/GraphObject.ts:612](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L612)
 
 GoJS-compatible: Alias for shadowColor.
 
@@ -1627,7 +1818,7 @@ GoJS-compatible: Alias for shadowColor.
 
 > **set** **shadow**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:519](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L519)
+Defined in: [panel/GraphObject.ts:616](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L616)
 
 ##### Parameters
 
@@ -1651,7 +1842,7 @@ Defined in: [panel/GraphObject.ts:519](https://github.com/rroblf01/graphojs/blob
 
 > **get** **shadowBlur**(): `number`
 
-Defined in: [panel/GraphObject.ts:506](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L506)
+Defined in: [panel/GraphObject.ts:603](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L603)
 
 GoJS-compatible: The drop shadow blur radius.
 
@@ -1663,7 +1854,7 @@ GoJS-compatible: The drop shadow blur radius.
 
 > **set** **shadowBlur**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:510](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L510)
+Defined in: [panel/GraphObject.ts:607](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L607)
 
 ##### Parameters
 
@@ -1687,7 +1878,7 @@ Defined in: [panel/GraphObject.ts:510](https://github.com/rroblf01/graphojs/blob
 
 > **get** **shadowColor**(): `string`
 
-Defined in: [panel/GraphObject.ts:488](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L488)
+Defined in: [panel/GraphObject.ts:585](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L585)
 
 GoJS-compatible: The drop shadow color.
 
@@ -1699,7 +1890,7 @@ GoJS-compatible: The drop shadow color.
 
 > **set** **shadowColor**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:492](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L492)
+Defined in: [panel/GraphObject.ts:589](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L589)
 
 ##### Parameters
 
@@ -1723,7 +1914,7 @@ Defined in: [panel/GraphObject.ts:492](https://github.com/rroblf01/graphojs/blob
 
 > **get** **shadowOffset**(): `object`
 
-Defined in: [panel/GraphObject.ts:497](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L497)
+Defined in: [panel/GraphObject.ts:594](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L594)
 
 GoJS-compatible: The drop shadow offset.
 
@@ -1743,7 +1934,7 @@ GoJS-compatible: The drop shadow offset.
 
 > **set** **shadowOffset**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:501](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L501)
+Defined in: [panel/GraphObject.ts:598](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L598)
 
 ##### Parameters
 
@@ -1773,7 +1964,7 @@ Defined in: [panel/GraphObject.ts:501](https://github.com/rroblf01/graphojs/blob
 
 > **get** **shape**(): [`ShapeType`](/en/reference/api/graphojs/type-aliases/shapetype/)
 
-Defined in: [panel/Shape.ts:84](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L84)
+Defined in: [panel/Shape.ts:88](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L88)
 
 ##### Returns
 
@@ -1783,7 +1974,7 @@ Defined in: [panel/Shape.ts:84](https://github.com/rroblf01/graphojs/blob/da00c0
 
 > **set** **shape**(`value`): `void`
 
-Defined in: [panel/Shape.ts:88](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L88)
+Defined in: [panel/Shape.ts:92](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L92)
 
 ##### Parameters
 
@@ -1801,25 +1992,25 @@ Defined in: [panel/Shape.ts:88](https://github.com/rroblf01/graphojs/blob/da00c0
 
 #### Get Signature
 
-> **get** **stroke**(): `string`
+> **get** **stroke**(): [`BrushLike`](/en/reference/api/graphojs/type-aliases/brushlike/)
 
-Defined in: [panel/Shape.ts:128](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L128)
+Defined in: [panel/Shape.ts:149](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L149)
 
 ##### Returns
 
-`string`
+[`BrushLike`](/en/reference/api/graphojs/type-aliases/brushlike/)
 
 #### Set Signature
 
 > **set** **stroke**(`value`): `void`
 
-Defined in: [panel/Shape.ts:132](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L132)
+Defined in: [panel/Shape.ts:153](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L153)
 
 ##### Parameters
 
 ###### value
 
-`string`
+[`BrushLike`](/en/reference/api/graphojs/type-aliases/brushlike/)
 
 ##### Returns
 
@@ -1831,27 +2022,27 @@ Defined in: [panel/Shape.ts:132](https://github.com/rroblf01/graphojs/blob/da00c
 
 #### Get Signature
 
-> **get** **strokeCap**(): `"butt"` \| `"round"` \| `"square"`
+> **get** **strokeCap**(): `"square"` \| `"butt"` \| `"round"`
 
-Defined in: [panel/Shape.ts:184](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L184)
+Defined in: [panel/Shape.ts:205](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L205)
 
 GoJS-compatible: The cap style for stroking the outline.
 
 ##### Returns
 
-`"butt"` \| `"round"` \| `"square"`
+`"square"` \| `"butt"` \| `"round"`
 
 #### Set Signature
 
 > **set** **strokeCap**(`value`): `void`
 
-Defined in: [panel/Shape.ts:188](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L188)
+Defined in: [panel/Shape.ts:209](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L209)
 
 ##### Parameters
 
 ###### value
 
-`"butt"` \| `"round"` \| `"square"`
+`"square"` \| `"butt"` \| `"round"`
 
 ##### Returns
 
@@ -1865,7 +2056,7 @@ Defined in: [panel/Shape.ts:188](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **strokeDashArray**(): `number`[]
 
-Defined in: [panel/Shape.ts:147](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L147)
+Defined in: [panel/Shape.ts:168](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L168)
 
 GoJS-compatible: The dash pattern for stroking the outline.
 
@@ -1877,7 +2068,7 @@ GoJS-compatible: The dash pattern for stroking the outline.
 
 > **set** **strokeDashArray**(`value`): `void`
 
-Defined in: [panel/Shape.ts:151](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L151)
+Defined in: [panel/Shape.ts:172](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L172)
 
 ##### Parameters
 
@@ -1897,7 +2088,7 @@ Defined in: [panel/Shape.ts:151](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **strokeJoin**(): `"round"` \| `"miter"` \| `"bevel"`
 
-Defined in: [panel/Shape.ts:193](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L193)
+Defined in: [panel/Shape.ts:214](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L214)
 
 GoJS-compatible: The join style for stroking the outline.
 
@@ -1909,7 +2100,7 @@ GoJS-compatible: The join style for stroking the outline.
 
 > **set** **strokeJoin**(`value`): `void`
 
-Defined in: [panel/Shape.ts:197](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L197)
+Defined in: [panel/Shape.ts:218](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L218)
 
 ##### Parameters
 
@@ -1929,7 +2120,7 @@ Defined in: [panel/Shape.ts:197](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **strokeWidth**(): `number`
 
-Defined in: [panel/Shape.ts:136](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L136)
+Defined in: [panel/Shape.ts:157](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L157)
 
 ##### Returns
 
@@ -1939,7 +2130,7 @@ Defined in: [panel/Shape.ts:136](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **set** **strokeWidth**(`value`): `void`
 
-Defined in: [panel/Shape.ts:140](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L140)
+Defined in: [panel/Shape.ts:161](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L161)
 
 ##### Parameters
 
@@ -1959,7 +2150,7 @@ Defined in: [panel/Shape.ts:140](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **toGeometry**(): `unknown`
 
-Defined in: [panel/Shape.ts:171](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L171)
+Defined in: [panel/Shape.ts:192](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L192)
 
 GoJS-compatible: Get the geometry (alias of fromGeometry).
 
@@ -1971,7 +2162,7 @@ GoJS-compatible: Get the geometry (alias of fromGeometry).
 
 > **set** **toGeometry**(`value`): `void`
 
-Defined in: [panel/Shape.ts:176](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L176)
+Defined in: [panel/Shape.ts:197](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L197)
 
 GoJS-compatible: Set the geometry (alias of fromGeometry).
 
@@ -1993,7 +2184,7 @@ GoJS-compatible: Set the geometry (alias of fromGeometry).
 
 > **get** **visible**(): `boolean`
 
-Defined in: [panel/GraphObject.ts:283](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L283)
+Defined in: [panel/GraphObject.ts:370](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L370)
 
 Whether this object is visible.
 
@@ -2005,7 +2196,7 @@ Whether this object is visible.
 
 > **set** **visible**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:287](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L287)
+Defined in: [panel/GraphObject.ts:374](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L374)
 
 ##### Parameters
 
@@ -2029,9 +2220,17 @@ Defined in: [panel/GraphObject.ts:287](https://github.com/rroblf01/graphojs/blob
 
 > **get** **width**(): `number`
 
-Defined in: [panel/GraphObject.ts:354](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L354)
+Defined in: [panel/GraphObject.ts:451](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L451)
 
-The width (from desiredSize or actual size).
+GoJS-compatible: the last explicitly-set desired width, or `NaN` if
+never set — NOT the object's current rendered size. Falling back to
+`_actualSize` here (as this used to) makes every `measure()` override
+(`Shape`/`TextBlock`/`Picture`/`Panel`, which all gate their real
+measurement behind `this.width > 0`) permanently "lock onto" whatever
+size an earlier — possibly premature, e.g. before a data binding
+applied the real text — layout pass happened to produce, since that
+stale actualSize then reads back as "an explicit width was set" on
+every later pass and skips remeasuring for good.
 
 ##### Returns
 
@@ -2041,7 +2240,7 @@ The width (from desiredSize or actual size).
 
 > **set** **width**(`value`): `void`
 
-Defined in: [panel/GraphObject.ts:358](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L358)
+Defined in: [panel/GraphObject.ts:455](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L455)
 
 ##### Parameters
 
@@ -2055,7 +2254,7 @@ Defined in: [panel/GraphObject.ts:358](https://github.com/rroblf01/graphojs/blob
 
 #### Inherited from
 
-[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`width`](/en/reference/api/graphojs/classes/graphobject/#width)
+[`Placeholder`](/en/reference/api/graphojs/classes/placeholder/).[`width`](/en/reference/api/graphojs/classes/placeholder/#width)
 
 ## Methods
 
@@ -2063,7 +2262,7 @@ Defined in: [panel/GraphObject.ts:358](https://github.com/rroblf01/graphojs/blob
 
 > **addBinding**(`binding`): `this`
 
-Defined in: [panel/GraphObject.ts:104](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L104)
+Defined in: [panel/GraphObject.ts:119](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L119)
 
 Add a binding to this graph object (keeps existing bindings).
 
@@ -2087,7 +2286,7 @@ Add a binding to this graph object (keeps existing bindings).
 
 > **applyBindings**(`nodeData`): `number`
 
-Defined in: [panel/GraphObject.ts:118](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L118)
+Defined in: [panel/GraphObject.ts:185](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L185)
 
 Apply all bindings from model data to this graph object.
 
@@ -2111,7 +2310,7 @@ Apply all bindings from model data to this graph object.
 
 > **clone**(): `this`
 
-Defined in: [panel/Shape.ts:234](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L234)
+Defined in: [panel/Shape.ts:269](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L269)
 
 Deep copy of this shape.
 
@@ -2129,7 +2328,7 @@ Deep copy of this shape.
 
 > **containsPoint**(`px`, `py`): `boolean`
 
-Defined in: [panel/GraphObject.ts:576](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L576)
+Defined in: [panel/GraphObject.ts:673](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L673)
 
 Check if a point is inside this object's area (for hit testing).
 
@@ -2157,7 +2356,7 @@ Check if a point is inside this object's area (for hit testing).
 
 > **draw**(`ctx`, `x`, `y`, `width`, `height`): `void`
 
-Defined in: [panel/Shape.ts:270](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L270)
+Defined in: [panel/Shape.ts:307](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L307)
 
 Draw this object at its computed position and size.
 
@@ -2197,7 +2396,7 @@ Draw this object at its computed position and size.
 
 > **getBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [panel/GraphObject.ts:586](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L586)
+Defined in: [panel/GraphObject.ts:683](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L683)
 
 Get the bounds of this object within the panel coordinate space.
 
@@ -2215,7 +2414,7 @@ Get the bounds of this object within the panel coordinate space.
 
 > **getGeometricBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [panel/Shape.ts:257](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L257)
+Defined in: [panel/Shape.ts:294](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L294)
 
 GoJS-compatible: The bounds of this shape's geometry (at its current size).
 
@@ -2229,7 +2428,7 @@ GoJS-compatible: The bounds of this shape's geometry (at its current size).
 
 > **getStrokeBounds**(): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [panel/Shape.ts:264](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L264)
+Defined in: [panel/Shape.ts:301](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L301)
 
 GoJS-compatible: The bounds of this shape's geometry inflated by the stroke width.
 
@@ -2243,7 +2442,7 @@ GoJS-compatible: The bounds of this shape's geometry inflated by the stroke widt
 
 > **measure**(): [`Size`](/en/reference/api/graphojs/classes/size/)
 
-Defined in: [panel/Shape.ts:250](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L250)
+Defined in: [panel/Shape.ts:287](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L287)
 
 Measure the natural size of this object.
 Returns the size this object would like to occupy.
@@ -2262,7 +2461,7 @@ Returns the size this object would like to occupy.
 
 > **measureWithMargin**(): [`Size`](/en/reference/api/graphojs/classes/size/)
 
-Defined in: [panel/GraphObject.ts:564](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L564)
+Defined in: [panel/GraphObject.ts:661](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L661)
 
 Compute the effective size after applying margin.
 
@@ -2280,7 +2479,7 @@ Compute the effective size after applying margin.
 
 > **removeBinding**(`targetProperty`): `boolean`
 
-Defined in: [panel/GraphObject.ts:110](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L110)
+Defined in: [panel/GraphObject.ts:125](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L125)
 
 Remove a binding by target property. Returns true if removed.
 
@@ -2304,7 +2503,7 @@ Remove a binding by target property. Returns true if removed.
 
 > **setActualSize**(`width`, `height`): `void`
 
-Defined in: [panel/GraphObject.ts:387](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L387)
+Defined in: [panel/GraphObject.ts:484](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L484)
 
 Set the actual size during layout.
 
@@ -2332,7 +2531,7 @@ Set the actual size during layout.
 
 > **setBinding**(`binding`): `this`
 
-Defined in: [panel/GraphObject.ts:97](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L97)
+Defined in: [panel/GraphObject.ts:112](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L112)
 
 GoJS-compatible: Set a binding on this graph object, replacing any
 existing binding with the same target property.
@@ -2357,7 +2556,7 @@ existing binding with the same target property.
 
 > **setCornerRadius**(`value`): `this`
 
-Defined in: [panel/Shape.ts:228](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L228)
+Defined in: [panel/Shape.ts:263](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L263)
 
 Fluent setter for corner radius.
 
@@ -2377,7 +2576,7 @@ Fluent setter for corner radius.
 
 > **setFill**(`value`): `this`
 
-Defined in: [panel/Shape.ts:210](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L210)
+Defined in: [panel/Shape.ts:245](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L245)
 
 Fluent setter for fill.
 
@@ -2385,7 +2584,7 @@ Fluent setter for fill.
 
 ##### value
 
-`string`
+[`BrushLike`](/en/reference/api/graphojs/type-aliases/brushlike/)
 
 #### Returns
 
@@ -2397,7 +2596,7 @@ Fluent setter for fill.
 
 > **setPosition**(`x`, `y`): `void`
 
-Defined in: [panel/GraphObject.ts:377](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L377)
+Defined in: [panel/GraphObject.ts:474](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L474)
 
 Set the position within the parent panel.
 
@@ -2425,7 +2624,7 @@ Set the position within the parent panel.
 
 > **setStroke**(`value`): `this`
 
-Defined in: [panel/Shape.ts:216](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L216)
+Defined in: [panel/Shape.ts:251](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L251)
 
 Fluent setter for stroke.
 
@@ -2433,7 +2632,7 @@ Fluent setter for stroke.
 
 ##### value
 
-`string`
+[`BrushLike`](/en/reference/api/graphojs/type-aliases/brushlike/)
 
 #### Returns
 
@@ -2445,7 +2644,7 @@ Fluent setter for stroke.
 
 > **setStrokeWidth**(`value`): `this`
 
-Defined in: [panel/Shape.ts:222](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/Shape.ts#L222)
+Defined in: [panel/Shape.ts:257](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/Shape.ts#L257)
 
 Fluent setter for stroke width.
 
@@ -2461,13 +2660,170 @@ Fluent setter for stroke width.
 
 ***
 
+### theme()
+
+> **theme**(`targetprop`, `sourceprop?`, `themeSource?`, `conv?`, `themeconv?`): `this`
+
+Defined in: [panel/GraphObject.ts:137](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L137)
+
+GoJS-compatible: add a `ThemeBinding` from a literal Theme property
+name to `targetprop`, e.g. `.theme("stroke", "text")` assigns `stroke`
+to the current theme's `colors.text`.
+
+#### Parameters
+
+##### targetprop
+
+`string`
+
+##### sourceprop?
+
+`string`
+
+##### themeSource?
+
+`string` \| `null`
+
+##### conv?
+
+(`value`, `data`) => `unknown`
+
+##### themeconv?
+
+(`value`, `target`) => `unknown`
+
+#### Returns
+
+`this`
+
+#### Inherited from
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`theme`](/en/reference/api/graphojs/classes/graphobject/#theme)
+
+***
+
+### themeData()
+
+> **themeData**(`targetprop`, `sourceprop?`, `themeSource?`, `conv?`, `themeconv?`): `this`
+
+Defined in: [panel/GraphObject.ts:153](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L153)
+
+GoJS-compatible: add a `ThemeBinding` whose theme key comes from a
+data property's value, e.g. `.themeData("fill", "state")` looks up
+`data.state` and uses *that* as the `colors` key.
+
+#### Parameters
+
+##### targetprop
+
+`string`
+
+##### sourceprop?
+
+`string`
+
+##### themeSource?
+
+`string` \| `null`
+
+##### conv?
+
+(`value`, `data`) => `unknown`
+
+##### themeconv?
+
+(`value`, `target`) => `unknown`
+
+#### Returns
+
+`this`
+
+#### Inherited from
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`themeData`](/en/reference/api/graphojs/classes/graphobject/#themedata)
+
+***
+
+### themeModel()
+
+> **themeModel**(`targetprop`, `sourceprop?`, `themeSource?`, `conv?`, `themeconv?`): `this`
+
+Defined in: [panel/GraphObject.ts:171](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L171)
+
+GoJS-compatible: like `themeData`, but sourced from model-wide data.
+graphojs has no `Model.modelData`, so this currently behaves exactly
+like `themeData` (resolved against the part's own data instead).
+
+#### Parameters
+
+##### targetprop
+
+`string`
+
+##### sourceprop?
+
+`string`
+
+##### themeSource?
+
+`string` \| `null`
+
+##### conv?
+
+(`value`, `data`) => `unknown`
+
+##### themeconv?
+
+(`value`, `target`) => `unknown`
+
+#### Returns
+
+`this`
+
+#### Inherited from
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`themeModel`](/en/reference/api/graphojs/classes/graphobject/#thememodel)
+
+***
+
 ### make()
+
+#### Call Signature
+
+> `static` **make**(`builder`, ...`args`): [`Panel`](/en/reference/api/graphojs/classes/panel/)
+
+Defined in: [panel/GraphObject.ts:203](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L203)
+
+GoJS-compatible static factory method.
+
+Usage:
+  const $ = go.GraphObject.make;
+  const shape = $(go.Shape, "RoundedRectangle", { fill: "white", stroke: "gray" });
+  const panel = $(go.Panel, "Auto", shape, $(go.TextBlock, "Hello"));
+
+##### Parameters
+
+###### builder
+
+`string`
+
+###### args
+
+...`unknown`[]
+
+##### Returns
+
+[`Panel`](/en/reference/api/graphojs/classes/panel/)
+
+##### Inherited from
+
+[`GraphObject`](/en/reference/api/graphojs/classes/graphobject/).[`make`](/en/reference/api/graphojs/classes/graphobject/#make)
 
 #### Call Signature
 
 > `static` **make**(`ctor`, ...`args`): [`Panel`](/en/reference/api/graphojs/classes/panel/)
 
-Defined in: [panel/GraphObject.ts:136](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L136)
+Defined in: [panel/GraphObject.ts:204](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L204)
 
 GoJS-compatible static factory method.
 
@@ -2498,7 +2854,7 @@ Usage:
 
 > `static` **make**\<`T`\>(`ctor`, ...`args`): `T`
 
-Defined in: [panel/GraphObject.ts:137](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/panel/GraphObject.ts#L137)
+Defined in: [panel/GraphObject.ts:205](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/panel/GraphObject.ts#L205)
 
 GoJS-compatible static factory method.
 

@@ -5,7 +5,7 @@ prev: false
 title: "UndoManager"
 ---
 
-Defined in: [undo/UndoManager.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L23)
+Defined in: [undo/UndoManager.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L23)
 
 Manages undo/redo history for a diagram.
 
@@ -15,7 +15,7 @@ Manages undo/redo history for a diagram.
 
 > **new UndoManager**(`maxHistorySize?`): `UndoManager`
 
-Defined in: [undo/UndoManager.ts:32](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L32)
+Defined in: [undo/UndoManager.ts:32](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L32)
 
 #### Parameters
 
@@ -35,7 +35,7 @@ Defined in: [undo/UndoManager.ts:32](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **clearsHistory**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:57](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L57)
+Defined in: [undo/UndoManager.ts:57](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L57)
 
 GoJS-compatible: Whether undo/redo history is cleared by non-undoable actions.
 
@@ -47,7 +47,7 @@ GoJS-compatible: Whether undo/redo history is cleared by non-undoable actions.
 
 > **set** **clearsHistory**(`value`): `void`
 
-Defined in: [undo/UndoManager.ts:61](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L61)
+Defined in: [undo/UndoManager.ts:61](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L61)
 
 ##### Parameters
 
@@ -67,7 +67,7 @@ Defined in: [undo/UndoManager.ts:61](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **isEnabled**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:37](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L37)
+Defined in: [undo/UndoManager.ts:37](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L37)
 
 GoJS-compatible: Whether undo/redo is enabled.
 
@@ -79,7 +79,7 @@ GoJS-compatible: Whether undo/redo is enabled.
 
 > **set** **isEnabled**(`value`): `void`
 
-Defined in: [undo/UndoManager.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L41)
+Defined in: [undo/UndoManager.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L41)
 
 ##### Parameters
 
@@ -99,7 +99,7 @@ Defined in: [undo/UndoManager.ts:41](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **isUndoingRedoing**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:84](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L84)
+Defined in: [undo/UndoManager.ts:84](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L84)
 
 GoJS-compatible: Whether the UndoManager is currently undoing or redoing.
 
@@ -115,7 +115,7 @@ GoJS-compatible: Whether the UndoManager is currently undoing or redoing.
 
 > **get** **maxHistoryLength**(): `number`
 
-Defined in: [undo/UndoManager.ts:46](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L46)
+Defined in: [undo/UndoManager.ts:46](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L46)
 
 GoJS-compatible: The maximum number of undo/redo steps kept in history.
 
@@ -127,7 +127,7 @@ GoJS-compatible: The maximum number of undo/redo steps kept in history.
 
 > **set** **maxHistoryLength**(`value`): `void`
 
-Defined in: [undo/UndoManager.ts:50](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L50)
+Defined in: [undo/UndoManager.ts:50](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L50)
 
 ##### Parameters
 
@@ -147,7 +147,7 @@ Defined in: [undo/UndoManager.ts:50](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **skipUndoManager**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:75](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L75)
+Defined in: [undo/UndoManager.ts:75](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L75)
 
 ##### Returns
 
@@ -157,7 +157,7 @@ Defined in: [undo/UndoManager.ts:75](https://github.com/rroblf01/graphojs/blob/d
 
 > **set** **skipUndoManager**(`value`): `void`
 
-Defined in: [undo/UndoManager.ts:79](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L79)
+Defined in: [undo/UndoManager.ts:79](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L79)
 
 ##### Parameters
 
@@ -175,7 +175,7 @@ Defined in: [undo/UndoManager.ts:79](https://github.com/rroblf01/graphojs/blob/d
 
 > **addListener**(`listener`): `void`
 
-Defined in: [undo/UndoManager.ts:258](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L258)
+Defined in: [undo/UndoManager.ts:258](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L258)
 
 Add a change listener.
 
@@ -195,7 +195,7 @@ Add a change listener.
 
 > **beginTransaction**(`name?`): `void`
 
-Defined in: [undo/UndoManager.ts:120](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L120)
+Defined in: [undo/UndoManager.ts:120](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L120)
 
 Begin a transaction. Commands executed afterward are grouped into one undo unit.
 
@@ -215,7 +215,7 @@ Begin a transaction. Commands executed afterward are grouped into one undo unit.
 
 > **canRedo**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:224](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L224)
+Defined in: [undo/UndoManager.ts:224](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L224)
 
 Check if redo is available.
 
@@ -229,7 +229,7 @@ Check if redo is available.
 
 > **canUndo**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:219](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L219)
+Defined in: [undo/UndoManager.ts:219](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L219)
 
 Check if undo is available.
 
@@ -243,7 +243,7 @@ Check if undo is available.
 
 > **clear**(): `void`
 
-Defined in: [undo/UndoManager.ts:251](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L251)
+Defined in: [undo/UndoManager.ts:251](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L251)
 
 Clear all history.
 
@@ -257,7 +257,7 @@ Clear all history.
 
 > **commitTransaction**(): [`Transaction`](/en/reference/api/graphojs/classes/transaction/) \| `null`
 
-Defined in: [undo/UndoManager.ts:128](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L128)
+Defined in: [undo/UndoManager.ts:128](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L128)
 
 Commit the current transaction as a single undoable command.
 Returns the committed transaction, or null if no transaction is open.
@@ -272,7 +272,7 @@ Returns the committed transaction, or null if no transaction is open.
 
 > **execute**(`command`): `void`
 
-Defined in: [undo/UndoManager.ts:89](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L89)
+Defined in: [undo/UndoManager.ts:89](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L89)
 
 Execute a command and add it to the undo stack.
 
@@ -292,7 +292,7 @@ Execute a command and add it to the undo stack.
 
 > **getRedoDescription**(): `string` \| `null`
 
-Defined in: [undo/UndoManager.ts:245](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L245)
+Defined in: [undo/UndoManager.ts:245](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L245)
 
 Get the description of the next redo command.
 
@@ -306,7 +306,7 @@ Get the description of the next redo command.
 
 > **getRedoStack**(): readonly [`Command`](/en/reference/api/graphojs/interfaces/command/)[]
 
-Defined in: [undo/UndoManager.ts:234](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L234)
+Defined in: [undo/UndoManager.ts:234](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L234)
 
 Get the redo stack.
 
@@ -320,7 +320,7 @@ readonly [`Command`](/en/reference/api/graphojs/interfaces/command/)[]
 
 > **getTransactionDepth**(): `number`
 
-Defined in: [undo/UndoManager.ts:178](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L178)
+Defined in: [undo/UndoManager.ts:178](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L178)
 
 Get the depth of open transactions.
 
@@ -334,7 +334,7 @@ Get the depth of open transactions.
 
 > **getUndoDescription**(): `string` \| `null`
 
-Defined in: [undo/UndoManager.ts:239](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L239)
+Defined in: [undo/UndoManager.ts:239](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L239)
 
 Get the description of the next undo command.
 
@@ -348,7 +348,7 @@ Get the description of the next undo command.
 
 > **getUndoStack**(): readonly [`Command`](/en/reference/api/graphojs/interfaces/command/)[]
 
-Defined in: [undo/UndoManager.ts:229](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L229)
+Defined in: [undo/UndoManager.ts:229](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L229)
 
 Get the undo stack.
 
@@ -362,7 +362,7 @@ readonly [`Command`](/en/reference/api/graphojs/interfaces/command/)[]
 
 > **isTransactionOpen**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:173](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L173)
+Defined in: [undo/UndoManager.ts:173](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L173)
 
 Check whether a transaction is currently open.
 
@@ -376,7 +376,7 @@ Check whether a transaction is currently open.
 
 > **redo**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:201](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L201)
+Defined in: [undo/UndoManager.ts:201](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L201)
 
 Redo the last undone command.
 
@@ -390,7 +390,7 @@ Redo the last undone command.
 
 > **removeListener**(`listener`): `void`
 
-Defined in: [undo/UndoManager.ts:263](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L263)
+Defined in: [undo/UndoManager.ts:263](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L263)
 
 Remove a change listener.
 
@@ -410,7 +410,7 @@ Remove a change listener.
 
 > **rollbackTransaction**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:161](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L161)
+Defined in: [undo/UndoManager.ts:161](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L161)
 
 Roll back (cancel) the current transaction, undoing its commands.
 Returns true if a transaction was rolled back.
@@ -425,7 +425,7 @@ Returns true if a transaction was rolled back.
 
 > **setTransactionIsSeparateFromHistory**(): `void`
 
-Defined in: [undo/UndoManager.ts:70](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L70)
+Defined in: [undo/UndoManager.ts:70](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L70)
 
 GoJS-compatible: Mark the current transaction as separate from history.
 No-op: GraphoJS doesn't yet distinguish "separate from history"
@@ -441,7 +441,7 @@ transactions from regular ones.
 
 > **undo**(): `boolean`
 
-Defined in: [undo/UndoManager.ts:183](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/UndoManager.ts#L183)
+Defined in: [undo/UndoManager.ts:183](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/UndoManager.ts#L183)
 
 Undo the last command.
 

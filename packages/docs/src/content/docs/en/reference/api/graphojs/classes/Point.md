@@ -5,7 +5,7 @@ prev: false
 title: "Point"
 ---
 
-Defined in: [geometry/Point.ts:4](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L4)
+Defined in: [geometry/Point.ts:4](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L4)
 
 A 2D point with x and y coordinates.
 
@@ -15,7 +15,7 @@ A 2D point with x and y coordinates.
 
 > **new Point**(`x`, `y`): `Point`
 
-Defined in: [geometry/Point.ts:8](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L8)
+Defined in: [geometry/Point.ts:8](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L8)
 
 #### Parameters
 
@@ -37,7 +37,7 @@ Defined in: [geometry/Point.ts:8](https://github.com/rroblf01/graphojs/blob/da00
 
 > **x**: `number`
 
-Defined in: [geometry/Point.ts:5](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L5)
+Defined in: [geometry/Point.ts:5](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L5)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [geometry/Point.ts:5](https://github.com/rroblf01/graphojs/blob/da00
 
 > **y**: `number`
 
-Defined in: [geometry/Point.ts:6](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L6)
+Defined in: [geometry/Point.ts:6](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L6)
 
 ## Methods
 
@@ -53,7 +53,7 @@ Defined in: [geometry/Point.ts:6](https://github.com/rroblf01/graphojs/blob/da00
 
 > **add**(`other`): `Point`
 
-Defined in: [geometry/Point.ts:102](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L102)
+Defined in: [geometry/Point.ts:102](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L102)
 
 Add another point to this point.
 
@@ -73,7 +73,7 @@ Add another point to this point.
 
 > **angle**(): `number`
 
-Defined in: [geometry/Point.ts:153](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L153)
+Defined in: [geometry/Point.ts:153](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L153)
 
 Calculate the angle in radians from the positive x-axis.
 
@@ -87,7 +87,7 @@ Calculate the angle in radians from the positive x-axis.
 
 > **clone**(): `Point`
 
-Defined in: [geometry/Point.ts:48](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L48)
+Defined in: [geometry/Point.ts:48](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L48)
 
 Return a copy of this point.
 
@@ -101,7 +101,7 @@ Return a copy of this point.
 
 > **copy**(): `Point`
 
-Defined in: [geometry/Point.ts:53](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L53)
+Defined in: [geometry/Point.ts:53](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L53)
 
 GoJS-compatible: Return a copy of this point.
 
@@ -115,7 +115,7 @@ GoJS-compatible: Return a copy of this point.
 
 > **cross**(`other`): `number`
 
-Defined in: [geometry/Point.ts:97](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L97)
+Defined in: [geometry/Point.ts:97](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L97)
 
 GoJS-compatible: The cross product with another point (x1*y2 - y1*x2).
 
@@ -135,7 +135,7 @@ GoJS-compatible: The cross product with another point (x1*y2 - y1*x2).
 
 > **distance**(`other`): `number`
 
-Defined in: [geometry/Point.ts:70](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L70)
+Defined in: [geometry/Point.ts:70](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L70)
 
 GoJS-compatible: The distance to another point.
 
@@ -155,7 +155,7 @@ GoJS-compatible: The distance to another point.
 
 > **distanceSquared**(`other`): `number`
 
-Defined in: [geometry/Point.ts:63](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L63)
+Defined in: [geometry/Point.ts:63](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L63)
 
 GoJS-compatible: The squared distance to another point.
 
@@ -175,7 +175,7 @@ GoJS-compatible: The squared distance to another point.
 
 > **distanceSquaredTo**(`other`): `number`
 
-Defined in: [geometry/Point.ts:124](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L124)
+Defined in: [geometry/Point.ts:124](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L124)
 
 Calculate the squared distance to another point (faster, no sqrt).
 
@@ -195,7 +195,7 @@ Calculate the squared distance to another point (faster, no sqrt).
 
 > **distanceTo**(`other`): `number`
 
-Defined in: [geometry/Point.ts:117](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L117)
+Defined in: [geometry/Point.ts:117](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L117)
 
 Calculate the distance to another point.
 
@@ -215,7 +215,7 @@ Calculate the distance to another point.
 
 > **dot**(`other`): `number`
 
-Defined in: [geometry/Point.ts:148](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L148)
+Defined in: [geometry/Point.ts:148](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L148)
 
 Calculate the dot product with another point.
 
@@ -235,7 +235,7 @@ Calculate the dot product with another point.
 
 > **equals**(`other`): `boolean`
 
-Defined in: [geometry/Point.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L38)
+Defined in: [geometry/Point.ts:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L38)
 
 Check if this point equals another point.
 
@@ -255,7 +255,7 @@ Check if this point equals another point.
 
 > **equalsApprox**(`other`, `tolerance?`): `boolean`
 
-Defined in: [geometry/Point.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L43)
+Defined in: [geometry/Point.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L43)
 
 Check if this point is approximately equal to another within a tolerance.
 
@@ -279,7 +279,7 @@ Check if this point is approximately equal to another within a tolerance.
 
 > **isFinite**(): `boolean`
 
-Defined in: [geometry/Point.ts:165](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L165)
+Defined in: [geometry/Point.ts:165](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L165)
 
 Check if this point is finite.
 
@@ -293,7 +293,7 @@ Check if this point is finite.
 
 > **isNaN**(): `boolean`
 
-Defined in: [geometry/Point.ts:82](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L82)
+Defined in: [geometry/Point.ts:82](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L82)
 
 GoJS-compatible: Whether either coordinate is NaN.
 
@@ -307,7 +307,7 @@ GoJS-compatible: Whether either coordinate is NaN.
 
 > **isZero**(): `boolean`
 
-Defined in: [geometry/Point.ts:170](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L170)
+Defined in: [geometry/Point.ts:170](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L170)
 
 Check if this point is the zero point.
 
@@ -321,7 +321,7 @@ Check if this point is the zero point.
 
 > **length**(): `number`
 
-Defined in: [geometry/Point.ts:131](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L131)
+Defined in: [geometry/Point.ts:131](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L131)
 
 Calculate the length (magnitude) of this point as a vector.
 
@@ -335,7 +335,7 @@ Calculate the length (magnitude) of this point as a vector.
 
 > **lengthSquared**(): `number`
 
-Defined in: [geometry/Point.ts:136](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L136)
+Defined in: [geometry/Point.ts:136](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L136)
 
 Calculate the squared length of this point as a vector.
 
@@ -349,7 +349,7 @@ Calculate the squared length of this point as a vector.
 
 > **multiply**(`other`): `Point`
 
-Defined in: [geometry/Point.ts:77](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L77)
+Defined in: [geometry/Point.ts:77](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L77)
 
 GoJS-compatible: Component-wise multiply (x*p.x, y*p.y).
 
@@ -369,7 +369,7 @@ GoJS-compatible: Component-wise multiply (x*p.x, y*p.y).
 
 > **normalize**(): `Point`
 
-Defined in: [geometry/Point.ts:141](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L141)
+Defined in: [geometry/Point.ts:141](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L141)
 
 Normalize this point to unit length.
 
@@ -383,7 +383,7 @@ Normalize this point to unit length.
 
 > **offset**(`dx`, `dy`): `Point`
 
-Defined in: [geometry/Point.ts:58](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L58)
+Defined in: [geometry/Point.ts:58](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L58)
 
 GoJS-compatible: Return a new point offset by (dx, dy).
 
@@ -407,7 +407,7 @@ GoJS-compatible: Return a new point offset by (dx, dy).
 
 > **rotate**(`angle`): `Point`
 
-Defined in: [geometry/Point.ts:158](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L158)
+Defined in: [geometry/Point.ts:158](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L158)
 
 Rotate this point around the origin by the given angle in radians.
 
@@ -427,7 +427,7 @@ Rotate this point around the origin by the given angle in radians.
 
 > **scale**(`factor`): `Point`
 
-Defined in: [geometry/Point.ts:112](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L112)
+Defined in: [geometry/Point.ts:112](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L112)
 
 Scale this point by a factor.
 
@@ -447,7 +447,7 @@ Scale this point by a factor.
 
 > **subtract**(`other`): `Point`
 
-Defined in: [geometry/Point.ts:107](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L107)
+Defined in: [geometry/Point.ts:107](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L107)
 
 Subtract another point from this point.
 
@@ -467,7 +467,7 @@ Subtract another point from this point.
 
 > **toJSON**(): `object`
 
-Defined in: [geometry/Point.ts:175](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L175)
+Defined in: [geometry/Point.ts:175](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L175)
 
 Convert to a plain object.
 
@@ -489,7 +489,7 @@ Convert to a plain object.
 
 > **toString**(): `string`
 
-Defined in: [geometry/Point.ts:185](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L185)
+Defined in: [geometry/Point.ts:185](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L185)
 
 #### Returns
 
@@ -501,7 +501,7 @@ Defined in: [geometry/Point.ts:185](https://github.com/rroblf01/graphojs/blob/da
 
 > `static` **from**(`obj`): `Point`
 
-Defined in: [geometry/Point.ts:14](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L14)
+Defined in: [geometry/Point.ts:14](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L14)
 
 Create a Point from an object with x and y properties.
 
@@ -527,7 +527,7 @@ Create a Point from an object with x and y properties.
 
 > `static` **fromJSON**(`data`): `Point`
 
-Defined in: [geometry/Point.ts:180](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L180)
+Defined in: [geometry/Point.ts:180](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L180)
 
 Create a Point from a JSON string or object.
 
@@ -547,7 +547,7 @@ Create a Point from a JSON string or object.
 
 > `static` **of**(`value`): `Point`
 
-Defined in: [geometry/Point.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L33)
+Defined in: [geometry/Point.ts:33](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L33)
 
 Create a point where x === y.
 
@@ -567,7 +567,7 @@ Create a point where x === y.
 
 > `static` **parse**(`value`): `Point`
 
-Defined in: [geometry/Point.ts:24](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L24)
+Defined in: [geometry/Point.ts:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L24)
 
 GoJS-compatible: Parse a string like "100, 200" or "100 200".
 
@@ -587,7 +587,7 @@ GoJS-compatible: Parse a string like "100, 200" or "100 200".
 
 > `static` **polar**(`length`, `angle`): `Point`
 
-Defined in: [geometry/Point.ts:87](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L87)
+Defined in: [geometry/Point.ts:87](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L87)
 
 GoJS-compatible: Create a point on a circle of the given radius at the given angle (radians).
 
@@ -611,7 +611,7 @@ GoJS-compatible: Create a point on a circle of the given radius at the given ang
 
 > `static` **random**(): `Point`
 
-Defined in: [geometry/Point.ts:92](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L92)
+Defined in: [geometry/Point.ts:92](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L92)
 
 GoJS-compatible: Create a random point with coordinates in [0, 1).
 
@@ -625,7 +625,7 @@ GoJS-compatible: Create a random point with coordinates in [0, 1).
 
 > `static` **zero**(): `Point`
 
-Defined in: [geometry/Point.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Point.ts#L19)
+Defined in: [geometry/Point.ts:19](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Point.ts#L19)
 
 Create a zero point (0, 0).
 

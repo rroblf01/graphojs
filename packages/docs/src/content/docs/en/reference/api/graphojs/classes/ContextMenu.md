@@ -5,7 +5,7 @@ prev: false
 title: "ContextMenu"
 ---
 
-Defined in: [export/ContextMenu.ts:32](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ContextMenu.ts#L32)
+Defined in: [export/ContextMenu.ts:32](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ContextMenu.ts#L32)
 
 A context menu for a diagram.
 Right-clicking on a part or the background opens a menu with items.
@@ -16,7 +16,7 @@ Right-clicking on a part or the background opens a menu with items.
 
 > **new ContextMenu**(`diagram`, `options`): `ContextMenu`
 
-Defined in: [export/ContextMenu.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ContextMenu.ts#L43)
+Defined in: [export/ContextMenu.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ContextMenu.ts#L43)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: [export/ContextMenu.ts:43](https://github.com/rroblf01/graphojs/blob
 
 > **get** **isMenuOpen**(): `boolean`
 
-Defined in: [export/ContextMenu.ts:67](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ContextMenu.ts#L67)
+Defined in: [export/ContextMenu.ts:67](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ContextMenu.ts#L67)
 
 Check if the menu is open.
 
@@ -54,7 +54,7 @@ Check if the menu is open.
 
 > **close**(): `void`
 
-Defined in: [export/ContextMenu.ts:119](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ContextMenu.ts#L119)
+Defined in: [export/ContextMenu.ts:119](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ContextMenu.ts#L119)
 
 Close the context menu.
 
@@ -68,7 +68,7 @@ Close the context menu.
 
 > **destroy**(): `void`
 
-Defined in: [export/ContextMenu.ts:218](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ContextMenu.ts#L218)
+Defined in: [export/ContextMenu.ts:218](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ContextMenu.ts#L218)
 
 Destroy the context menu and clean up.
 
@@ -82,7 +82,7 @@ Destroy the context menu and clean up.
 
 > **getElement**(): `HTMLDivElement`
 
-Defined in: [export/ContextMenu.ts:62](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ContextMenu.ts#L62)
+Defined in: [export/ContextMenu.ts:62](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ContextMenu.ts#L62)
 
 Get the menu DOM element.
 
@@ -96,7 +96,7 @@ Get the menu DOM element.
 
 > **getMenuPart**(): [`Part`](/en/reference/api/graphojs/classes/part/) \| `null`
 
-Defined in: [export/ContextMenu.ts:72](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ContextMenu.ts#L72)
+Defined in: [export/ContextMenu.ts:72](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ContextMenu.ts#L72)
 
 Get the part the menu was opened on.
 
@@ -110,7 +110,7 @@ Get the part the menu was opened on.
 
 > **handleContextMenu**(`e`): `void`
 
-Defined in: [export/ContextMenu.ts:210](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ContextMenu.ts#L210)
+Defined in: [export/ContextMenu.ts:210](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ContextMenu.ts#L210)
 
 Handle a right-click (contextmenu) event.
 
@@ -130,7 +130,7 @@ Handle a right-click (contextmenu) event.
 
 > **open**(`x`, `y`, `part`): `void`
 
-Defined in: [export/ContextMenu.ts:95](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ContextMenu.ts#L95)
+Defined in: [export/ContextMenu.ts:95](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ContextMenu.ts#L95)
 
 Open the context menu at a screen position.
 

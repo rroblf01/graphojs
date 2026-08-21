@@ -5,7 +5,7 @@ prev: false
 title: "LinkPathCache"
 ---
 
-Defined in: [render/PerformanceCache.ts:5](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L5)
+Defined in: [render/PerformanceCache.ts:5](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L5)
 
 Cache for computed link paths.
 Avoids recomputing routing when endpoints haven't moved.
@@ -28,7 +28,7 @@ Avoids recomputing routing when endpoints haven't moved.
 
 > **get** **size**(): `number`
 
-Defined in: [render/PerformanceCache.ts:108](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L108)
+Defined in: [render/PerformanceCache.ts:108](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L108)
 
 Get the number of cached entries.
 
@@ -42,7 +42,7 @@ Get the number of cached entries.
 
 > **get**(`fromKey`, `toKey`, `routing`, `corner`, `fromPort`, `toPort`, `avoidObstacles?`, `jumpOver?`, `obstacles?`): `object`[] \| `null`
 
-Defined in: [render/PerformanceCache.ts:35](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L35)
+Defined in: [render/PerformanceCache.ts:35](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L35)
 
 Get a cached path if available.
 
@@ -106,7 +106,7 @@ Get a cached path if available.
 
 > **getVersion**(): `number`
 
-Defined in: [render/PerformanceCache.ts:101](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L101)
+Defined in: [render/PerformanceCache.ts:101](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L101)
 
 Get the current cache version (increments on changes).
 
@@ -120,7 +120,7 @@ Get the current cache version (increments on changes).
 
 > **invalidate**(): `void`
 
-Defined in: [render/PerformanceCache.ts:93](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L93)
+Defined in: [render/PerformanceCache.ts:93](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L93)
 
 Invalidate the entire cache.
 
@@ -134,7 +134,7 @@ Invalidate the entire cache.
 
 > **set**(`fromKey`, `toKey`, `routing`, `corner`, `fromPort`, `toPort`, `points`, `avoidObstacles?`, `jumpOver?`, `obstacles?`): `void`
 
-Defined in: [render/PerformanceCache.ts:63](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L63)
+Defined in: [render/PerformanceCache.ts:63](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L63)
 
 Store a computed path in the cache.
 

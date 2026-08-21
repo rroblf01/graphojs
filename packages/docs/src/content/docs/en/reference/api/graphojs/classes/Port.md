@@ -5,7 +5,7 @@ prev: false
 title: "Port"
 ---
 
-Defined in: [parts/Port.ts:10](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L10)
+Defined in: [parts/Port.ts:10](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L10)
 
 A connection point on a Node where Links can attach.
 Ports can be positioned by an alignment or a Spot.
@@ -16,7 +16,7 @@ Ports can be positioned by an alignment or a Spot.
 
 > **new Port**(`name`): `Port`
 
-Defined in: [parts/Port.ts:17](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L17)
+Defined in: [parts/Port.ts:17](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L17)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: [parts/Port.ts:17](https://github.com/rroblf01/graphojs/blob/da00c05
 
 > **get** **alignment**(): [`PortAlignment`](/en/reference/api/graphojs/type-aliases/portalignment/)
 
-Defined in: [parts/Port.ts:27](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L27)
+Defined in: [parts/Port.ts:27](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L27)
 
 The alignment of this port on its node.
 
@@ -48,7 +48,7 @@ The alignment of this port on its node.
 
 > **set** **alignment**(`value`): `void`
 
-Defined in: [parts/Port.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L31)
+Defined in: [parts/Port.ts:31](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L31)
 
 ##### Parameters
 
@@ -68,7 +68,7 @@ Defined in: [parts/Port.ts:31](https://github.com/rroblf01/graphojs/blob/da00c05
 
 > **get** **name**(): `string`
 
-Defined in: [parts/Port.ts:22](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L22)
+Defined in: [parts/Port.ts:22](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L22)
 
 The port name (used to reference it from link data).
 
@@ -84,7 +84,7 @@ The port name (used to reference it from link data).
 
 > **get** **size**(): [`Size`](/en/reference/api/graphojs/classes/size/) \| `null`
 
-Defined in: [parts/Port.ts:46](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L46)
+Defined in: [parts/Port.ts:46](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L46)
 
 The size of this port (for rendering).
 
@@ -96,7 +96,7 @@ The size of this port (for rendering).
 
 > **set** **size**(`value`): `void`
 
-Defined in: [parts/Port.ts:50](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L50)
+Defined in: [parts/Port.ts:50](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L50)
 
 ##### Parameters
 
@@ -116,7 +116,7 @@ Defined in: [parts/Port.ts:50](https://github.com/rroblf01/graphojs/blob/da00c05
 
 > **get** **spot**(): [`Spot`](/en/reference/api/graphojs/classes/spot/) \| `null`
 
-Defined in: [parts/Port.ts:36](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L36)
+Defined in: [parts/Port.ts:36](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L36)
 
 A custom Spot for precise positioning. Overrides alignment.
 
@@ -128,7 +128,7 @@ A custom Spot for precise positioning. Overrides alignment.
 
 > **set** **spot**(`value`): `void`
 
-Defined in: [parts/Port.ts:40](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L40)
+Defined in: [parts/Port.ts:40](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L40)
 
 ##### Parameters
 
@@ -148,7 +148,7 @@ Defined in: [parts/Port.ts:40](https://github.com/rroblf01/graphojs/blob/da00c05
 
 > **get** **visible**(): `boolean`
 
-Defined in: [parts/Port.ts:55](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L55)
+Defined in: [parts/Port.ts:55](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L55)
 
 Whether this port is visible.
 
@@ -160,7 +160,7 @@ Whether this port is visible.
 
 > **set** **visible**(`value`): `void`
 
-Defined in: [parts/Port.ts:59](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L59)
+Defined in: [parts/Port.ts:59](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L59)
 
 ##### Parameters
 
@@ -178,7 +178,7 @@ Defined in: [parts/Port.ts:59](https://github.com/rroblf01/graphojs/blob/da00c05
 
 > **computePoint**(`x`, `y`, `width`, `height`): `object`
 
-Defined in: [parts/Port.ts:66](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Port.ts#L66)
+Defined in: [parts/Port.ts:66](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Port.ts#L66)
 
 Compute the point of this port on a node bounds.
 

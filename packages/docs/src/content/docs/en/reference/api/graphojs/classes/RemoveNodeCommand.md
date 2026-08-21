@@ -5,7 +5,7 @@ prev: false
 title: "RemoveNodeCommand"
 ---
 
-Defined in: [undo/commands.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L43)
+Defined in: [undo/commands.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L43)
 
 Command to remove a node from the model.
 
@@ -19,7 +19,7 @@ Command to remove a node from the model.
 
 > **new RemoveNodeCommand**(`model`, `nodeKey`): `RemoveNodeCommand`
 
-Defined in: [undo/commands.ts:49](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L49)
+Defined in: [undo/commands.ts:49](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L49)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ Defined in: [undo/commands.ts:49](https://github.com/rroblf01/graphojs/blob/da00
 
 > **describe**(): `string`
 
-Defined in: [undo/commands.ts:84](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L84)
+Defined in: [undo/commands.ts:84](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L84)
 
 Get a description of the command.
 
@@ -59,7 +59,7 @@ Get a description of the command.
 
 > **execute**(): `void`
 
-Defined in: [undo/commands.ts:54](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L54)
+Defined in: [undo/commands.ts:54](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L54)
 
 Execute the command.
 
@@ -77,7 +77,7 @@ Execute the command.
 
 > **undo**(): `void`
 
-Defined in: [undo/commands.ts:64](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L64)
+Defined in: [undo/commands.ts:64](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L64)
 
 Undo the command.
 

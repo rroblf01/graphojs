@@ -5,7 +5,7 @@ prev: false
 title: "TreeModel"
 ---
 
-Defined in: [model/TreeModel.ts:12](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L12)
+Defined in: [model/TreeModel.ts:12](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L12)
 
 A model for tree-structured diagrams.
 Each node data has an optional `parent` property referencing its parent key.
@@ -20,7 +20,7 @@ Each node data has an optional `parent` property referencing its parent key.
 
 > **new TreeModel**(`options?`): `TreeModel`
 
-Defined in: [model/TreeModel.ts:18](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L18)
+Defined in: [model/TreeModel.ts:18](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L18)
 
 GoJS-compatible: options object.
 
@@ -54,7 +54,7 @@ GoJS-compatible: options object.
 
 > **changedEventLog**: [`ChangedEvent`](/en/reference/api/graphojs/interfaces/changedevent/)[] = `[]`
 
-Defined in: [model/Model.ts:402](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L402)
+Defined in: [model/Model.ts:402](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L402)
 
 GoJS-compatible: The log of changed events since the last clear.
 
@@ -70,7 +70,7 @@ GoJS-compatible: The log of changed events since the last clear.
 
 > **get** **isModified**(): `boolean`
 
-Defined in: [model/Model.ts:245](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L245)
+Defined in: [model/Model.ts:245](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L245)
 
 ##### Returns
 
@@ -80,7 +80,7 @@ Defined in: [model/Model.ts:245](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **set** **isModified**(`value`): `void`
 
-Defined in: [model/Model.ts:249](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L249)
+Defined in: [model/Model.ts:249](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L249)
 
 ##### Parameters
 
@@ -104,7 +104,7 @@ Defined in: [model/Model.ts:249](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **isReadOnly**(): `boolean`
 
-Defined in: [model/Model.ts:515](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L515)
+Defined in: [model/Model.ts:515](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L515)
 
 GoJS-compatible: Whether this model is read-only.
 
@@ -116,7 +116,7 @@ GoJS-compatible: Whether this model is read-only.
 
 > **set** **isReadOnly**(`value`): `void`
 
-Defined in: [model/Model.ts:519](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L519)
+Defined in: [model/Model.ts:519](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L519)
 
 ##### Parameters
 
@@ -140,7 +140,7 @@ Defined in: [model/Model.ts:519](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **isValidNode**(): [`NodeValidationCallback`](/en/reference/api/graphojs/type-aliases/nodevalidationcallback/) \| `null`
 
-Defined in: [model/Model.ts:533](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L533)
+Defined in: [model/Model.ts:533](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L533)
 
 Get the node validation callback.
 
@@ -152,7 +152,7 @@ Get the node validation callback.
 
 > **set** **isValidNode**(`callback`): `void`
 
-Defined in: [model/Model.ts:528](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L528)
+Defined in: [model/Model.ts:528](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L528)
 
 Set a callback to validate node data before adding.
 
@@ -178,7 +178,7 @@ Set a callback to validate node data before adding.
 
 > **get** **isValidNodeRemoval**(): [`NodeValidationCallback`](/en/reference/api/graphojs/type-aliases/nodevalidationcallback/) \| `null`
 
-Defined in: [model/Model.ts:543](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L543)
+Defined in: [model/Model.ts:543](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L543)
 
 Get the node removal validation callback.
 
@@ -190,7 +190,7 @@ Get the node removal validation callback.
 
 > **set** **isValidNodeRemoval**(`callback`): `void`
 
-Defined in: [model/Model.ts:538](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L538)
+Defined in: [model/Model.ts:538](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L538)
 
 Set a callback to validate node data before removal.
 
@@ -216,7 +216,7 @@ Set a callback to validate node data before removal.
 
 > **get** **nodeCategoryProperty**(): `string`
 
-Defined in: [model/Model.ts:193](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L193)
+Defined in: [model/Model.ts:193](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L193)
 
 GoJS-compatible: Get or set the node category property name.
 
@@ -228,7 +228,7 @@ GoJS-compatible: Get or set the node category property name.
 
 > **set** **nodeCategoryProperty**(`value`): `void`
 
-Defined in: [model/Model.ts:197](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L197)
+Defined in: [model/Model.ts:197](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L197)
 
 ##### Parameters
 
@@ -252,7 +252,7 @@ Defined in: [model/Model.ts:197](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **get** **nodeDataArray**(): readonly [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)[]
 
-Defined in: [model/Model.ts:104](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L104)
+Defined in: [model/Model.ts:104](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L104)
 
 GoJS-compatible: Get the node data array.
 
@@ -264,7 +264,7 @@ readonly [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)[]
 
 > **set** **nodeDataArray**(`value`): `void`
 
-Defined in: [model/Model.ts:109](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L109)
+Defined in: [model/Model.ts:109](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L109)
 
 GoJS-compatible: Set the node data array, assigning keys and emitting events.
 
@@ -290,7 +290,7 @@ GoJS-compatible: Set the node data array, assigning keys and emitting events.
 
 > **get** **usesUndoManager**(): `boolean`
 
-Defined in: [model/Model.ts:224](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L224)
+Defined in: [model/Model.ts:224](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L224)
 
 GoJS-compatible: Whether this model supports undo/redo.
 
@@ -302,7 +302,7 @@ GoJS-compatible: Whether this model supports undo/redo.
 
 > **set** **usesUndoManager**(`value`): `void`
 
-Defined in: [model/Model.ts:228](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L228)
+Defined in: [model/Model.ts:228](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L228)
 
 ##### Parameters
 
@@ -324,7 +324,7 @@ Defined in: [model/Model.ts:228](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **addChangedListener**(`listener`): `void`
 
-Defined in: [model/Model.ts:375](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L375)
+Defined in: [model/Model.ts:375](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L375)
 
 Add a change listener.
 
@@ -348,7 +348,7 @@ Add a change listener.
 
 > **addNode**(`nodeData`): [`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/)
 
-Defined in: [model/TreeModel.ts:136](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L136)
+Defined in: [model/TreeModel.ts:136](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L136)
 
 Add a node. Returns the generated key if none provided.
 
@@ -372,7 +372,7 @@ Add a node. Returns the generated key if none provided.
 
 > **addNodeData**(`nodeData`): `void`
 
-Defined in: [model/Model.ts:326](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L326)
+Defined in: [model/Model.ts:326](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L326)
 
 GoJS-compatible: Add a node data object to the model.
 
@@ -396,7 +396,7 @@ GoJS-compatible: Add a node data object to the model.
 
 > **clearChangedEventLog**(): `void`
 
-Defined in: [model/Model.ts:405](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L405)
+Defined in: [model/Model.ts:405](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L405)
 
 GoJS-compatible: Clear the changed event log.
 
@@ -414,7 +414,7 @@ GoJS-compatible: Clear the changed event log.
 
 > **clearIsModified**(): `void`
 
-Defined in: [model/Model.ts:254](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L254)
+Defined in: [model/Model.ts:254](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L254)
 
 GoJS-compatible: Clear the modified flag.
 
@@ -432,7 +432,7 @@ GoJS-compatible: Clear the modified flag.
 
 > **commitTransaction**(`_name?`): `boolean`
 
-Defined in: [model/Model.ts:471](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L471)
+Defined in: [model/Model.ts:471](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L471)
 
 GoJS-compatible: Commit the current transaction, flushing buffered events.
 
@@ -456,7 +456,7 @@ GoJS-compatible: Commit the current transaction, flushing buffered events.
 
 > **containsNode**(`key`): `boolean`
 
-Defined in: [model/Model.ts:153](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L153)
+Defined in: [model/Model.ts:153](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L153)
 
 Check if a node exists.
 
@@ -480,7 +480,7 @@ Check if a node exists.
 
 > **copy**(): `TreeModel`
 
-Defined in: [model/TreeModel.ts:273](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L273)
+Defined in: [model/TreeModel.ts:273](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L273)
 
 Create a deep copy of this model.
 
@@ -498,7 +498,7 @@ Create a deep copy of this model.
 
 > **copyNodeData**(`nodeData`): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)
 
-Defined in: [model/Model.ts:178](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L178)
+Defined in: [model/Model.ts:178](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L178)
 
 GoJS-compatible: Copy a node data object.
 
@@ -522,7 +522,7 @@ GoJS-compatible: Copy a node data object.
 
 > **equals**(`other`): `boolean`
 
-Defined in: [model/Model.ts:588](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L588)
+Defined in: [model/Model.ts:588](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L588)
 
 Check if this model equals another model.
 
@@ -546,7 +546,7 @@ Check if this model equals another model.
 
 > **findNodeDataForKey**(`key`): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/) \| `undefined`
 
-Defined in: [model/Model.ts:163](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L163)
+Defined in: [model/Model.ts:163](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L163)
 
 GoJS-compatible: Find node data by key (alias).
 
@@ -570,7 +570,7 @@ GoJS-compatible: Find node data by key (alias).
 
 > **findNodeDataForPart**(`partKey`): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/) \| `undefined`
 
-Defined in: [model/Model.ts:188](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L188)
+Defined in: [model/Model.ts:188](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L188)
 
 GoJS-compatible: Find the node data that corresponds to a part (by key).
 
@@ -594,7 +594,7 @@ GoJS-compatible: Find the node data that corresponds to a part (by key).
 
 > **generateKey**(): [`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/)
 
-Defined in: [model/Model.ts:90](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L90)
+Defined in: [model/Model.ts:90](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L90)
 
 Generate a unique key that is not already in use.
 
@@ -612,7 +612,7 @@ Generate a unique key that is not already in use.
 
 > **getCategoryForNodeData**(`nodeData`): `string`
 
-Defined in: [model/Model.ts:202](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L202)
+Defined in: [model/Model.ts:202](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L202)
 
 GoJS-compatible: Get the category of a node data object.
 
@@ -636,7 +636,7 @@ GoJS-compatible: Get the category of a node data object.
 
 > **getChildCount**(`key`): `number`
 
-Defined in: [model/TreeModel.ts:98](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L98)
+Defined in: [model/TreeModel.ts:98](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L98)
 
 Get the number of children of a node.
 
@@ -656,7 +656,7 @@ Get the number of children of a node.
 
 > **getChildKeys**(`key`): [`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/)[]
 
-Defined in: [model/TreeModel.ts:82](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L82)
+Defined in: [model/TreeModel.ts:82](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L82)
 
 Get the child keys of a node.
 
@@ -676,7 +676,7 @@ Get the child keys of a node.
 
 > **getChildNodes**(`key`): readonly [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)[]
 
-Defined in: [model/TreeModel.ts:77](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L77)
+Defined in: [model/TreeModel.ts:77](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L77)
 
 Get the direct children of a node.
 
@@ -696,7 +696,7 @@ readonly [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)[]
 
 > **getDepth**(`key`): `number`
 
-Defined in: [model/TreeModel.ts:123](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L123)
+Defined in: [model/TreeModel.ts:123](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L123)
 
 Get the depth (level) of a node. Root = 0.
 
@@ -716,7 +716,7 @@ Get the depth (level) of a node. Root = 0.
 
 > **getDescendants**(`key`): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)[]
 
-Defined in: [model/TreeModel.ts:103](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L103)
+Defined in: [model/TreeModel.ts:103](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L103)
 
 Get the descendants (recursively) of a node.
 
@@ -736,7 +736,7 @@ Get the descendants (recursively) of a node.
 
 > **getKeyProperty**(): `string`
 
-Defined in: [model/Model.ts:212](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L212)
+Defined in: [model/Model.ts:212](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L212)
 
 GoJS-compatible: Get or set the key property (GoJS name).
 
@@ -754,7 +754,7 @@ GoJS-compatible: Get or set the key property (GoJS name).
 
 > **getNodeCount**(): `number`
 
-Defined in: [model/Model.ts:148](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L148)
+Defined in: [model/Model.ts:148](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L148)
 
 Get the number of nodes.
 
@@ -772,7 +772,7 @@ Get the number of nodes.
 
 > **getNodeData**(`key`): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/) \| `undefined`
 
-Defined in: [model/Model.ts:158](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L158)
+Defined in: [model/Model.ts:158](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L158)
 
 Get node data by key.
 
@@ -796,7 +796,7 @@ Get node data by key.
 
 > **getNodeDataArray**(): readonly [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)[]
 
-Defined in: [model/Model.ts:99](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L99)
+Defined in: [model/Model.ts:99](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L99)
 
 Get all node data.
 
@@ -814,7 +814,7 @@ readonly [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)[]
 
 > **getNodeDataForKey**(`key`): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/) \| `undefined`
 
-Defined in: [model/Model.ts:168](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L168)
+Defined in: [model/Model.ts:168](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L168)
 
 GoJS-compatible: Find node data by key (alias).
 
@@ -838,7 +838,7 @@ GoJS-compatible: Find node data by key (alias).
 
 > **getNodeKey**(`nodeData`): [`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/)
 
-Defined in: [model/Model.ts:80](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L80)
+Defined in: [model/Model.ts:80](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L80)
 
 Get the key of a node data object.
 
@@ -862,7 +862,7 @@ Get the key of a node data object.
 
 > **getNodeKeyProperty**(): `string`
 
-Defined in: [model/Model.ts:70](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L70)
+Defined in: [model/Model.ts:70](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L70)
 
 Get the node key property name.
 
@@ -880,7 +880,7 @@ Get the node key property name.
 
 > **getNodeProperty**(`key`, `propertyName`): `unknown`
 
-Defined in: [model/Model.ts:368](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L368)
+Defined in: [model/Model.ts:368](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L368)
 
 Get a property from a node.
 
@@ -908,7 +908,7 @@ Get a property from a node.
 
 > **getParentKey**(`nodeData`): [`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/) \| `undefined`
 
-Defined in: [model/TreeModel.ts:46](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L46)
+Defined in: [model/TreeModel.ts:46](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L46)
 
 Get the parent key of a node. Returns undefined for root nodes.
 
@@ -928,7 +928,7 @@ Get the parent key of a node. Returns undefined for root nodes.
 
 > **getParentKeyForNode**(`key`): [`NodeKey`](/en/reference/api/graphojs/type-aliases/nodekey/) \| `undefined`
 
-Defined in: [model/TreeModel.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L60)
+Defined in: [model/TreeModel.ts:60](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L60)
 
 Get the parent key of a node by node key.
 
@@ -948,7 +948,7 @@ Get the parent key of a node by node key.
 
 > **getParentKeyProperty**(): `string`
 
-Defined in: [model/TreeModel.ts:36](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L36)
+Defined in: [model/TreeModel.ts:36](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L36)
 
 Get the parent key property name.
 
@@ -962,7 +962,7 @@ Get the parent key property name.
 
 > **getParentNode**(`key`): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/) \| `undefined`
 
-Defined in: [model/TreeModel.ts:87](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L87)
+Defined in: [model/TreeModel.ts:87](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L87)
 
 Get the direct parent node data of a node.
 
@@ -982,7 +982,7 @@ Get the direct parent node data of a node.
 
 > **getRootNodes**(): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)[]
 
-Defined in: [model/TreeModel.ts:118](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L118)
+Defined in: [model/TreeModel.ts:118](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L118)
 
 Get the root nodes (nodes without a parent).
 
@@ -996,7 +996,7 @@ Get the root nodes (nodes without a parent).
 
 > **getUndoManager**(): `unknown`
 
-Defined in: [model/Model.ts:233](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L233)
+Defined in: [model/Model.ts:233](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L233)
 
 GoJS-compatible: Get the associated UndoManager.
 
@@ -1014,7 +1014,7 @@ GoJS-compatible: Get the associated UndoManager.
 
 > **hasChildren**(`key`): `boolean`
 
-Defined in: [model/TreeModel.ts:93](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L93)
+Defined in: [model/TreeModel.ts:93](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L93)
 
 Check if a node has children.
 
@@ -1034,7 +1034,7 @@ Check if a node has children.
 
 > **isRoot**(`key`): `boolean`
 
-Defined in: [model/TreeModel.ts:66](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L66)
+Defined in: [model/TreeModel.ts:66](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L66)
 
 Check if a node is a root (has no parent).
 
@@ -1054,7 +1054,7 @@ Check if a node is a root (has no parent).
 
 > **isTransactionInProgress**(): `boolean`
 
-Defined in: [model/Model.ts:501](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L501)
+Defined in: [model/Model.ts:501](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L501)
 
 GoJS-compatible: Whether a transaction is currently in progress.
 
@@ -1072,7 +1072,7 @@ GoJS-compatible: Whether a transaction is currently in progress.
 
 > **makeNodeData**(`value?`): [`NodeData`](/en/reference/api/graphojs/interfaces/nodedata/)
 
-Defined in: [model/Model.ts:173](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L173)
+Defined in: [model/Model.ts:173](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L173)
 
 GoJS-compatible: Make a new node data object from a prototype.
 
@@ -1096,7 +1096,7 @@ GoJS-compatible: Make a new node data object from a prototype.
 
 > **mergeChanges**(`changes`): `void`
 
-Defined in: [model/Model.ts:413](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L413)
+Defined in: [model/Model.ts:413](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L413)
 
 GoJS-compatible: Merge the changed events recorded by another model
 (or by this model's change log) into this model.
@@ -1121,7 +1121,7 @@ GoJS-compatible: Merge the changed events recorded by another model
 
 > **mergeNodeData**(`nodeData`, `newData`): `void`
 
-Defined in: [model/Model.ts:183](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L183)
+Defined in: [model/Model.ts:183](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L183)
 
 GoJS-compatible: Merge new data into an existing node data object.
 
@@ -1149,7 +1149,7 @@ GoJS-compatible: Merge new data into an existing node data object.
 
 > **removeChangedListener**(`listener`): `void`
 
-Defined in: [model/Model.ts:380](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L380)
+Defined in: [model/Model.ts:380](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L380)
 
 Remove a change listener.
 
@@ -1173,7 +1173,7 @@ Remove a change listener.
 
 > **removeNode**(`key`): `boolean`
 
-Defined in: [model/TreeModel.ts:174](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L174)
+Defined in: [model/TreeModel.ts:174](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L174)
 
 Remove a node and all its descendants.
 
@@ -1197,7 +1197,7 @@ Remove a node and all its descendants.
 
 > **removeNodeData**(`key`): `boolean`
 
-Defined in: [model/Model.ts:331](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L331)
+Defined in: [model/Model.ts:331](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L331)
 
 GoJS-compatible: Remove a node data object (or its key) from the model.
 
@@ -1221,7 +1221,7 @@ GoJS-compatible: Remove a node data object (or its key) from the model.
 
 > **rollbackTransaction**(): `boolean`
 
-Defined in: [model/Model.ts:486](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L486)
+Defined in: [model/Model.ts:486](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L486)
 
 GoJS-compatible: Roll back the current transaction, undoing its mutations.
 
@@ -1239,7 +1239,7 @@ GoJS-compatible: Roll back the current transaction, undoing its mutations.
 
 > **setCategoryForNodeData**(`nodeData`, `category`): `void`
 
-Defined in: [model/Model.ts:207](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L207)
+Defined in: [model/Model.ts:207](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L207)
 
 GoJS-compatible: Set the category of a node data object.
 
@@ -1267,7 +1267,7 @@ GoJS-compatible: Set the category of a node data object.
 
 > **setDataProperty**(`data`, `propertyName`, `value`): `void`
 
-Defined in: [model/Model.ts:600](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L600)
+Defined in: [model/Model.ts:600](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L600)
 
 Set a property on any data object (node or link) with change event.
 
@@ -1299,7 +1299,7 @@ Set a property on any data object (node or link) with change event.
 
 > **setKeyProperty**(`value`): `void`
 
-Defined in: [model/Model.ts:216](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L216)
+Defined in: [model/Model.ts:216](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L216)
 
 #### Parameters
 
@@ -1321,7 +1321,7 @@ Defined in: [model/Model.ts:216](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **setNodeDataArray**(`value`): `void`
 
-Defined in: [model/Model.ts:114](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L114)
+Defined in: [model/Model.ts:114](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L114)
 
 Set all node data, assigning missing keys and emitting add/remove events.
 
@@ -1345,7 +1345,7 @@ Set all node data, assigning missing keys and emitting add/remove events.
 
 > **setNodeKey**(`nodeData`, `key`): `void`
 
-Defined in: [model/Model.ts:85](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L85)
+Defined in: [model/Model.ts:85](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L85)
 
 Set the key of a node data object.
 
@@ -1373,7 +1373,7 @@ Set the key of a node data object.
 
 > **setNodeKeyProperty**(`property`): `void`
 
-Defined in: [model/Model.ts:75](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L75)
+Defined in: [model/Model.ts:75](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L75)
 
 Set the node key property name.
 
@@ -1397,7 +1397,7 @@ Set the node key property name.
 
 > **setNodeProperty**(`key`, `propertyName`, `value`): `void`
 
-Defined in: [model/Model.ts:337](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L337)
+Defined in: [model/Model.ts:337](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L337)
 
 Set a property on a node.
 
@@ -1429,7 +1429,7 @@ Set a property on a node.
 
 > **setParent**(`key`, `newParentKey`): `void`
 
-Defined in: [model/TreeModel.ts:216](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L216)
+Defined in: [model/TreeModel.ts:216](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L216)
 
 Set the parent of a node.
 
@@ -1453,7 +1453,7 @@ Set the parent of a node.
 
 > **setParentKey**(`nodeData`, `key`): `void`
 
-Defined in: [model/TreeModel.ts:51](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L51)
+Defined in: [model/TreeModel.ts:51](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L51)
 
 Set the parent key of a node.
 
@@ -1477,7 +1477,7 @@ Set the parent key of a node.
 
 > **setParentKeyProperty**(`property`): `void`
 
-Defined in: [model/TreeModel.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L41)
+Defined in: [model/TreeModel.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L41)
 
 Set the parent key property name.
 
@@ -1497,7 +1497,7 @@ Set the parent key property name.
 
 > **setUndoManager**(`undoManager`): `void`
 
-Defined in: [model/Model.ts:238](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L238)
+Defined in: [model/Model.ts:238](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L238)
 
 GoJS-compatible: Set the associated UndoManager.
 
@@ -1521,7 +1521,7 @@ GoJS-compatible: Set the associated UndoManager.
 
 > **startTransaction**(`_name?`): `boolean`
 
-Defined in: [model/Model.ts:465](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L465)
+Defined in: [model/Model.ts:465](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L465)
 
 GoJS-compatible: Begin a transaction; changed events are buffered until commit.
 
@@ -1545,7 +1545,7 @@ GoJS-compatible: Begin a transaction; changed events are buffered until commit.
 
 > **toJson**(): [`ModelJSON`](/en/reference/api/graphojs/interfaces/modeljson/)
 
-Defined in: [model/Model.ts:578](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L578)
+Defined in: [model/Model.ts:578](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L578)
 
 GoJS-compatible: Alias for toJSON (GoJS uses toJson).
 
@@ -1563,7 +1563,7 @@ GoJS-compatible: Alias for toJSON (GoJS uses toJson).
 
 > **toJSON**(): [`TreeModelJSON`](/en/reference/api/graphojs/interfaces/treemodeljson/)
 
-Defined in: [model/TreeModel.ts:252](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L252)
+Defined in: [model/TreeModel.ts:252](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L252)
 
 Convert to JSON.
 
@@ -1581,7 +1581,7 @@ Convert to JSON.
 
 > **validateNode**(`nodeData`): `boolean`
 
-Defined in: [model/Model.ts:551](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L551)
+Defined in: [model/Model.ts:551](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L551)
 
 Validate a node before it is added.
 Returns true if valid (allows insertion).
@@ -1606,7 +1606,7 @@ Returns true if valid (allows insertion).
 
 > **validateNodeRemoval**(`nodeData`): `boolean`
 
-Defined in: [model/Model.ts:567](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/Model.ts#L567)
+Defined in: [model/Model.ts:567](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/Model.ts#L567)
 
 Validate a node before it is removed.
 Returns true if valid (allows removal).
@@ -1631,7 +1631,7 @@ Returns true if valid (allows removal).
 
 > `static` **fromJSON**(`json`): `TreeModel`
 
-Defined in: [model/TreeModel.ts:262](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/model/TreeModel.ts#L262)
+Defined in: [model/TreeModel.ts:262](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/model/TreeModel.ts#L262)
 
 Create from JSON.
 

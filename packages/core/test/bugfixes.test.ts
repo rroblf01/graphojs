@@ -3999,3 +3999,132 @@ describe('O46: a Node ignored its template content size, always defaulting to 10
     expect(node.bounds.height).toBe(50);
   });
 });
+
+describe('O47: a shown Part.toolTip/contextMenu drew an empty box -- its own Bindings were never applied', () => {
+  it("showPartToolTip applies the toolTip template's bindings against the part's data before rendering", () => {
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      { toolTip: $('ToolTip', $(TextBlock, { name: 'TIP' }, new Binding('text', 'tip'))) },
+      $(Shape, 'RoundedRectangle', { width: 60, height: 30 }),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 60, height: 30, tip: 'Design task' }],
+    });
+    d.toolTipDelay = 0;
+
+    const node = d.findNodeForKey(1) as Node;
+    // @ts-expect-error -- private, exercised directly like the surrounding suite already does
+    d.showPartToolTip(node, { clientX: 10, clientY: 10 });
+
+    const textBlock = (node.toolTip as Panel).findElement('TIP') as TextBlock;
+    expect(textBlock.text).toBe('Design task');
+  });
+
+  it("showPartContextMenu applies the contextMenu template's bindings against the part's data before rendering", () => {
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      {
+        contextMenu: $(
+          'ContextMenu',
+          $(TextBlock, { name: 'LABEL' }, new Binding('text', 'label')),
+        ),
+      },
+      $(Shape, 'RoundedRectangle', { width: 60, height: 30 }),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 60, height: 30, label: 'Delete task' }],
+    });
+
+    const node = d.findNodeForKey(1) as Node;
+    // @ts-expect-error -- private, exercised directly like the surrounding suite already does
+    d.showPartContextMenu(node, { clientX: 10, clientY: 10 });
+
+    const textBlock = (node.contextMenu as Panel).findElement('LABEL') as TextBlock;
+    expect(textBlock.text).toBe('Delete task');
+  });
+});
+
+describe('O48: Link.corner rounded with a straight-segment chamfer instead of a real arc, and the arrowhead overlapped the stroked line', () => {
+  it('link.corner > 0 draws real ctx.arcTo joins at each interior vertex, not straight lineTo segments', () => {
+    const canvas = document.createElement('canvas');
+    const renderer = new Canvas2DRenderer(canvas);
+    const ctx = mockContext();
+    // @ts-expect-error -- swap in the mock ctx for this assertion-only render
+    renderer.ctx = ctx;
+
+    const link = new Link(1, 2, 3);
+    link.corner = 8;
+    link.arrowhead = 'none';
+    link.setPathPoints([
+      { x: 0, y: 0 },
+      { x: 0, y: 50 },
+      { x: 100, y: 50 },
+      { x: 100, y: 100 },
+    ]);
+
+    renderer.renderLink(link);
+
+    expect(ctx.arcTo).toHaveBeenCalledTimes(2);
+    expect(ctx.arcTo).toHaveBeenNthCalledWith(1, 0, 50, 100, 50, 8);
+    expect(ctx.arcTo).toHaveBeenNthCalledWith(2, 100, 50, 100, 100, 8);
+  });
+
+  it('link.corner === 0 (the default) draws plain straight segments, no arcTo', () => {
+    const canvas = document.createElement('canvas');
+    const renderer = new Canvas2DRenderer(canvas);
+    const ctx = mockContext();
+    // @ts-expect-error -- swap in the mock ctx for this assertion-only render
+    renderer.ctx = ctx;
+
+    const link = new Link(1, 2, 3);
+    link.arrowhead = 'none';
+    link.setPathPoints([
+      { x: 0, y: 0 },
+      { x: 0, y: 50 },
+      { x: 100, y: 50 },
+      { x: 100, y: 100 },
+    ]);
+
+    renderer.renderLink(link);
+
+    expect(ctx.arcTo).not.toHaveBeenCalled();
+  });
+
+  it("a solid arrowhead's round line cap no longer pokes out past the tip -- the stroked line is shortened by arrowheadSize first", () => {
+    const canvas = document.createElement('canvas');
+    const renderer = new Canvas2DRenderer(canvas);
+    const ctx = mockContext();
+    // @ts-expect-error -- swap in the mock ctx for this assertion-only render
+    renderer.ctx = ctx;
+
+    const link = new Link(1, 2, 3);
+    link.arrowhead = 'triangle';
+    link.arrowheadSize = 10;
+    link.setPathPoints([
+      { x: 0, y: 0 },
+      { x: 0, y: 100 },
+    ]);
+
+    renderer.renderLink(link);
+
+    // strokePath's lineTo call happens before renderArrowhead's own
+    // moveTo/lineTo calls for the triangle shape.
+    const firstLineTo = (ctx.lineTo as unknown as { mock: { calls: number[][] } }).mock.calls[0];
+    expect(firstLineTo).toEqual([0, 90]);
+  });
+});
+
+describe('O49: Panel had no findObject (real GoJS name), only findElement', () => {
+  it('Panel.findObject is a GoJS-compatible alias for findElement', () => {
+    const $ = GraphObject.make;
+    const panel = $(Panel, 'Auto', $(Shape, 'Rectangle', { name: 'BG' }));
+    expect(panel.findObject('BG')).toBe(panel.findElement('BG'));
+    expect(panel.findObject('missing')).toBeNull();
+  });
+});

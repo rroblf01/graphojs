@@ -7,7 +7,7 @@ title: "createTooltipAdornment"
 
 > **createTooltipAdornment**(`key`, `adornedPart`, `tooltipText`): [`Adornment`](/en/reference/api/graphojs/classes/adornment/)
 
-Defined in: [parts/Adornment.ts:329](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/parts/Adornment.ts#L329)
+Defined in: [parts/Adornment.ts:329](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/parts/Adornment.ts#L329)
 
 Create a tooltip adornment.
 

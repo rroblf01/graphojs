@@ -56,7 +56,7 @@ function renderStateful<P>(
 
 describe('graphojs/react', () => {
   it('exposes a version', () => {
-    expect(version).toBe('1.6.0');
+    expect(version).toBe('1.7.0');
   });
 
   it('renders a Diagram component and initializes the diagram', async () => {

@@ -7,7 +7,7 @@ title: "throttle"
 
 > **throttle**\<`T`\>(`fn`, `delay`): (...`args`) => `void`
 
-Defined in: [render/PerformanceCache.ts:199](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L199)
+Defined in: [render/PerformanceCache.ts:199](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L199)
 
 Throttle function calls to limit execution rate.
 

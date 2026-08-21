@@ -5,7 +5,7 @@ prev: false
 title: "RectPool"
 ---
 
-Defined in: [spatial/RectPool.ts:7](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/RectPool.ts#L7)
+Defined in: [spatial/RectPool.ts:7](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/RectPool.ts#L7)
 
 A pool for reusable Rect objects to reduce garbage collection pressure
 during rendering and layout operations.
@@ -16,7 +16,7 @@ during rendering and layout operations.
 
 > **new RectPool**(`maxPoolSize?`): `RectPool`
 
-Defined in: [spatial/RectPool.ts:11](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/RectPool.ts#L11)
+Defined in: [spatial/RectPool.ts:11](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/RectPool.ts#L11)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: [spatial/RectPool.ts:11](https://github.com/rroblf01/graphojs/blob/d
 
 > **get** **size**(): `number`
 
-Defined in: [spatial/RectPool.ts:16](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/RectPool.ts#L16)
+Defined in: [spatial/RectPool.ts:16](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/RectPool.ts#L16)
 
 Get the number of pooled rects.
 
@@ -50,7 +50,7 @@ Get the number of pooled rects.
 
 > **acquire**(`x`, `y`, `width`, `height`): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [spatial/RectPool.ts:24](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/RectPool.ts#L24)
+Defined in: [spatial/RectPool.ts:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/RectPool.ts#L24)
 
 Acquire a Rect from the pool (or allocate a new one).
 Must be released with release() when no longer needed.
@@ -83,7 +83,7 @@ Must be released with release() when no longer needed.
 
 > **clear**(): `void`
 
-Defined in: [spatial/RectPool.ts:45](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/RectPool.ts#L45)
+Defined in: [spatial/RectPool.ts:45](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/RectPool.ts#L45)
 
 Clear the pool.
 
@@ -97,7 +97,7 @@ Clear the pool.
 
 > **release**(`rect`): `void`
 
-Defined in: [spatial/RectPool.ts:39](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/RectPool.ts#L39)
+Defined in: [spatial/RectPool.ts:39](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/RectPool.ts#L39)
 
 Release a Rect back to the pool for reuse.
 

@@ -5,6 +5,45 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-08-21
+
+Follow-up to 1.6.0, from a seventh round of the same migration report plus
+two additional visual differences the reporter spotted directly in the
+Gantt screenshot (an empty tooltip box, and dependency lines that render
+differently from GoJS's). No breaking changes.
+
+### Fixed
+
+- **A `Part.toolTip`/`contextMenu` template's own `Binding`s never
+  resolved — the box was drawn, but any bound text (or other property)
+  stayed at its unbound default.** `showPartToolTip`/`showPartContextMenu`
+  rendered the floating panel via `renderFloatingPanel(...)` without ever
+  calling `template.applyBindings(part.data)` first, unlike every other
+  part-bound Panel in the diagram (nodes/links are always synced through
+  `applyBindings` before they're drawn). Reported as: hovering a Gantt bar
+  showed the tooltip's chrome (background + border) but an empty box where
+  `new go.Binding("text", "tip")` should have put the task's label.
+- **`Link.corner` rounded orthogonal paths with a straight-segment
+  chamfer instead of a real arc**, and a solid arrowhead's stroked line
+  extended all the way to the tip underneath it (visible as a small round
+  nub poking out of the triangle, from the line's `round` cap). Together
+  these made a Gantt chart's dependency lines visibly different from
+  GoJS's smooth quarter-circle elbows and clean triangular arrowheads —
+  a difference the reporter could see directly in the screenshot
+  comparison. `Canvas2DRenderer`'s link stroking now uses `ctx.arcTo` at
+  each interior route vertex when `corner > 0` (a real rounded join, not
+  an approximation), and shortens the stroked line by `arrowheadSize`
+  before a solid arrowhead so the line no longer renders underneath it.
+
+### Added
+
+- `Panel.findObject` — real GoJS names this method `findObject`;
+  graphojs's `Panel` only had `findElement` (a `Part`/`Node` already
+  exposed `findObject` as a delegating alias, but a `Panel` reached via a
+  template's own nested structure did not). Ported code that calls
+  `panel.findObject(...)` directly on a `Panel` no longer needs a
+  rename.
+
 ## [1.6.0] - 2026-08-21
 
 Follow-up to 1.5.0, from a sixth round of the same migration report (a
@@ -674,6 +713,7 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.7.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.7.0
 [1.6.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.6.0
 [1.5.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.5.0
 [1.4.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.4.0

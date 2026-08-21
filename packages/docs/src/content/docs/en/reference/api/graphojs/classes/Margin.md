@@ -5,7 +5,7 @@ prev: false
 title: "Margin"
 ---
 
-Defined in: [geometry/Margin.ts:4](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L4)
+Defined in: [geometry/Margin.ts:4](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L4)
 
 A margin with top, right, bottom, and left values.
 
@@ -15,7 +15,7 @@ A margin with top, right, bottom, and left values.
 
 > **new Margin**(`top`, `right`, `bottom`, `left`): `Margin`
 
-Defined in: [geometry/Margin.ts:10](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L10)
+Defined in: [geometry/Margin.ts:10](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L10)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ Defined in: [geometry/Margin.ts:10](https://github.com/rroblf01/graphojs/blob/da
 
 > **bottom**: `number`
 
-Defined in: [geometry/Margin.ts:7](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L7)
+Defined in: [geometry/Margin.ts:7](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L7)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: [geometry/Margin.ts:7](https://github.com/rroblf01/graphojs/blob/da0
 
 > **left**: `number`
 
-Defined in: [geometry/Margin.ts:8](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L8)
+Defined in: [geometry/Margin.ts:8](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L8)
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: [geometry/Margin.ts:8](https://github.com/rroblf01/graphojs/blob/da0
 
 > **right**: `number`
 
-Defined in: [geometry/Margin.ts:6](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L6)
+Defined in: [geometry/Margin.ts:6](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L6)
 
 ***
 
@@ -69,7 +69,7 @@ Defined in: [geometry/Margin.ts:6](https://github.com/rroblf01/graphojs/blob/da0
 
 > **top**: `number`
 
-Defined in: [geometry/Margin.ts:5](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L5)
+Defined in: [geometry/Margin.ts:5](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L5)
 
 ## Accessors
 
@@ -79,7 +79,7 @@ Defined in: [geometry/Margin.ts:5](https://github.com/rroblf01/graphojs/blob/da0
 
 > **get** **horizontal**(): `number`
 
-Defined in: [geometry/Margin.ts:87](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L87)
+Defined in: [geometry/Margin.ts:87](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L87)
 
 Get the total horizontal margin (left + right).
 
@@ -95,7 +95,7 @@ Get the total horizontal margin (left + right).
 
 > **get** **vertical**(): `number`
 
-Defined in: [geometry/Margin.ts:92](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L92)
+Defined in: [geometry/Margin.ts:92](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L92)
 
 Get the total vertical margin (top + bottom).
 
@@ -109,7 +109,7 @@ Get the total vertical margin (top + bottom).
 
 > **add**(`other`): `Margin`
 
-Defined in: [geometry/Margin.ts:107](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L107)
+Defined in: [geometry/Margin.ts:107](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L107)
 
 Add another margin to this margin.
 
@@ -129,7 +129,7 @@ Add another margin to this margin.
 
 > **clone**(): `Margin`
 
-Defined in: [geometry/Margin.ts:77](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L77)
+Defined in: [geometry/Margin.ts:77](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L77)
 
 Return a copy of this margin.
 
@@ -143,7 +143,7 @@ Return a copy of this margin.
 
 > **copy**(): `Margin`
 
-Defined in: [geometry/Margin.ts:82](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L82)
+Defined in: [geometry/Margin.ts:82](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L82)
 
 GoJS-compatible: Return a copy of this margin.
 
@@ -157,7 +157,7 @@ GoJS-compatible: Return a copy of this margin.
 
 > **equals**(`other`): `boolean`
 
-Defined in: [geometry/Margin.ts:57](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L57)
+Defined in: [geometry/Margin.ts:57](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L57)
 
 Check if this margin equals another margin.
 
@@ -177,7 +177,7 @@ Check if this margin equals another margin.
 
 > **equalsApprox**(`other`, `tolerance?`): `boolean`
 
-Defined in: [geometry/Margin.ts:67](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L67)
+Defined in: [geometry/Margin.ts:67](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L67)
 
 Check if this margin is approximately equal to another within a tolerance.
 
@@ -201,7 +201,7 @@ Check if this margin is approximately equal to another within a tolerance.
 
 > **isUniform**(): `boolean`
 
-Defined in: [geometry/Margin.ts:102](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L102)
+Defined in: [geometry/Margin.ts:102](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L102)
 
 Check if this margin is uniform (same value on all sides).
 
@@ -215,7 +215,7 @@ Check if this margin is uniform (same value on all sides).
 
 > **isZero**(): `boolean`
 
-Defined in: [geometry/Margin.ts:97](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L97)
+Defined in: [geometry/Margin.ts:97](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L97)
 
 Check if this margin is zero.
 
@@ -229,7 +229,7 @@ Check if this margin is zero.
 
 > **scale**(`factor`): `Margin`
 
-Defined in: [geometry/Margin.ts:127](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L127)
+Defined in: [geometry/Margin.ts:127](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L127)
 
 Scale this margin by a factor.
 
@@ -249,7 +249,7 @@ Scale this margin by a factor.
 
 > **subtract**(`other`): `Margin`
 
-Defined in: [geometry/Margin.ts:117](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L117)
+Defined in: [geometry/Margin.ts:117](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L117)
 
 Subtract another margin from this margin.
 
@@ -269,7 +269,7 @@ Subtract another margin from this margin.
 
 > **toJSON**(): `object`
 
-Defined in: [geometry/Margin.ts:137](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L137)
+Defined in: [geometry/Margin.ts:137](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L137)
 
 Convert to a plain object.
 
@@ -299,7 +299,7 @@ Convert to a plain object.
 
 > **toString**(): `string`
 
-Defined in: [geometry/Margin.ts:149](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L149)
+Defined in: [geometry/Margin.ts:149](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L149)
 
 #### Returns
 
@@ -311,7 +311,7 @@ Defined in: [geometry/Margin.ts:149](https://github.com/rroblf01/graphojs/blob/d
 
 > `static` **from**(`obj`): `Margin`
 
-Defined in: [geometry/Margin.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L33)
+Defined in: [geometry/Margin.ts:33](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L33)
 
 Create a Margin from an object with top, right, bottom, left properties.
 
@@ -345,7 +345,7 @@ Create a Margin from an object with top, right, bottom, left properties.
 
 > `static` **fromJSON**(`data`): `Margin`
 
-Defined in: [geometry/Margin.ts:142](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L142)
+Defined in: [geometry/Margin.ts:142](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L142)
 
 Create a Margin from a JSON string or object.
 
@@ -365,7 +365,7 @@ Create a Margin from a JSON string or object.
 
 > `static` **parse**(`value`): `Margin`
 
-Defined in: [geometry/Margin.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L41)
+Defined in: [geometry/Margin.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L41)
 
 GoJS-compatible: Parse a string of 1, 2, or 4 numbers.
 1 value = all sides; 2 values = vertical, horizontal; 4 values = top, right, bottom, left.
@@ -386,7 +386,7 @@ GoJS-compatible: Parse a string of 1, 2, or 4 numbers.
 
 > `static` **symmetric**(`vertical`, `horizontal`): `Margin`
 
-Defined in: [geometry/Margin.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L23)
+Defined in: [geometry/Margin.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L23)
 
 Create a Margin with vertical and horizontal values.
 
@@ -410,7 +410,7 @@ Create a Margin with vertical and horizontal values.
 
 > `static` **uniform**(`value`): `Margin`
 
-Defined in: [geometry/Margin.ts:18](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L18)
+Defined in: [geometry/Margin.ts:18](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L18)
 
 Create a Margin with the same value on all sides.
 
@@ -430,7 +430,7 @@ Create a Margin with the same value on all sides.
 
 > `static` **zero**(): `Margin`
 
-Defined in: [geometry/Margin.ts:28](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Margin.ts#L28)
+Defined in: [geometry/Margin.ts:28](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Margin.ts#L28)
 
 Create a zero margin.
 

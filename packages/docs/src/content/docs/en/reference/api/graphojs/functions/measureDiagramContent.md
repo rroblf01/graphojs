@@ -7,7 +7,7 @@ title: "measureDiagramContent"
 
 > **measureDiagramContent**(`diagram`): `object`
 
-Defined in: [export/ServerRenderer.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ServerRenderer.ts#L38)
+Defined in: [export/ServerRenderer.ts:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ServerRenderer.ts#L38)
 
 Bounding box of all visible content in `diagram`, ignoring the grid layer.
 

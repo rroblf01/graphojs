@@ -5,7 +5,7 @@ prev: false
 title: "LayerCache"
 ---
 
-Defined in: [render/LayerCache.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L19)
+Defined in: [render/LayerCache.ts:19](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L19)
 
 Caches layer rendering to offscreen canvases so static content
 does not need to be redrawn every frame. Only dirty layers are redrawn.
@@ -16,7 +16,7 @@ does not need to be redrawn every frame. Only dirty layers are redrawn.
 
 > **new LayerCache**(`scale?`): `LayerCache`
 
-Defined in: [render/LayerCache.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L23)
+Defined in: [render/LayerCache.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L23)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: [render/LayerCache.ts:23](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **size**(): `number`
 
-Defined in: [render/LayerCache.ts:56](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L56)
+Defined in: [render/LayerCache.ts:56](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L56)
 
 Get the number of cached layers.
 
@@ -50,7 +50,7 @@ Get the number of cached layers.
 
 > **clear**(): `void`
 
-Defined in: [render/LayerCache.ts:222](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L222)
+Defined in: [render/LayerCache.ts:222](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L222)
 
 Clear the cache.
 
@@ -64,7 +64,7 @@ Clear the cache.
 
 > **getLayer**(`layer`): `CachedLayer` \| `null`
 
-Defined in: [render/LayerCache.ts:65](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L65)
+Defined in: [render/LayerCache.ts:65](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L65)
 
 Get a cached rendering for a layer.
 If the layer is dirty or not cached, it is re-rendered.
@@ -86,7 +86,7 @@ Returns null if the layer has no visible parts.
 
 > **getScale**(): `number`
 
-Defined in: [render/LayerCache.ts:34](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L34)
+Defined in: [render/LayerCache.ts:34](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L34)
 
 Get the current scale.
 
@@ -100,7 +100,7 @@ Get the current scale.
 
 > **isDirty**(`layerName`): `boolean`
 
-Defined in: [render/LayerCache.ts:51](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L51)
+Defined in: [render/LayerCache.ts:51](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L51)
 
 Check if a layer is dirty.
 
@@ -120,7 +120,7 @@ Check if a layer is dirty.
 
 > **markAllDirty**(): `void`
 
-Defined in: [render/LayerCache.ts:44](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L44)
+Defined in: [render/LayerCache.ts:44](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L44)
 
 Mark all layers as dirty.
 
@@ -134,7 +134,7 @@ Mark all layers as dirty.
 
 > **markDirty**(`layerName`): `void`
 
-Defined in: [render/LayerCache.ts:39](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L39)
+Defined in: [render/LayerCache.ts:39](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L39)
 
 Mark a layer as dirty (needs redraw).
 
@@ -154,7 +154,7 @@ Mark a layer as dirty (needs redraw).
 
 > **removeLayer**(`name`): `void`
 
-Defined in: [render/LayerCache.ts:228](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L228)
+Defined in: [render/LayerCache.ts:228](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L228)
 
 Remove a specific layer from the cache.
 
@@ -174,7 +174,7 @@ Remove a specific layer from the cache.
 
 > **setScale**(`scale`): `void`
 
-Defined in: [render/LayerCache.ts:26](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/LayerCache.ts#L26)
+Defined in: [render/LayerCache.ts:26](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/LayerCache.ts#L26)
 
 Set the device scale for cached rendering.
 

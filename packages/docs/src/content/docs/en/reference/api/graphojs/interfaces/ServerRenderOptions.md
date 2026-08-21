@@ -5,7 +5,7 @@ prev: false
 title: "ServerRenderOptions"
 ---
 
-Defined in: [export/ServerRenderer.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ServerRenderer.ts#L19)
+Defined in: [export/ServerRenderer.ts:19](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ServerRenderer.ts#L19)
 
 ## Properties
 
@@ -13,7 +13,7 @@ Defined in: [export/ServerRenderer.ts:19](https://github.com/rroblf01/graphojs/b
 
 > `optional` **background?**: `string`
 
-Defined in: [export/ServerRenderer.ts:21](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ServerRenderer.ts#L21)
+Defined in: [export/ServerRenderer.ts:21](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ServerRenderer.ts#L21)
 
 Background color. Default: '#ffffff'
 
@@ -23,7 +23,7 @@ Background color. Default: '#ffffff'
 
 > `optional` **maxHeight?**: `number`
 
-Defined in: [export/ServerRenderer.ts:29](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ServerRenderer.ts#L29)
+Defined in: [export/ServerRenderer.ts:29](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ServerRenderer.ts#L29)
 
 Maximum output height in pixels.
 
@@ -33,7 +33,7 @@ Maximum output height in pixels.
 
 > `optional` **maxWidth?**: `number`
 
-Defined in: [export/ServerRenderer.ts:27](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ServerRenderer.ts#L27)
+Defined in: [export/ServerRenderer.ts:27](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ServerRenderer.ts#L27)
 
 Maximum output width in pixels.
 
@@ -43,7 +43,7 @@ Maximum output width in pixels.
 
 > `optional` **padding?**: `number`
 
-Defined in: [export/ServerRenderer.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ServerRenderer.ts#L23)
+Defined in: [export/ServerRenderer.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ServerRenderer.ts#L23)
 
 Padding around the content. Default: 20
 
@@ -53,6 +53,6 @@ Padding around the content. Default: 20
 
 > `optional` **scale?**: `number`
 
-Defined in: [export/ServerRenderer.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/ServerRenderer.ts#L25)
+Defined in: [export/ServerRenderer.ts:25](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/ServerRenderer.ts#L25)
 
 Scale factor for the output resolution. Default: 1

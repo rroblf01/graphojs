@@ -5,7 +5,7 @@ prev: false
 title: "VirtualizationManager"
 ---
 
-Defined in: [spatial/VirtualizationManager.ts:10](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L10)
+Defined in: [spatial/VirtualizationManager.ts:10](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L10)
 
 Manages viewport culling and spatial indexing for a diagram.
 Only parts intersecting the visible viewport are considered "in view".
@@ -16,7 +16,7 @@ Only parts intersecting the visible viewport are considered "in view".
 
 > **new VirtualizationManager**(`bounds`, `options?`): `VirtualizationManager`
 
-Defined in: [spatial/VirtualizationManager.ts:15](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L15)
+Defined in: [spatial/VirtualizationManager.ts:15](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L15)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: [spatial/VirtualizationManager.ts:15](https://github.com/rroblf01/gr
 
 > **get** **culledCount**(): `number`
 
-Defined in: [spatial/VirtualizationManager.ts:30](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L30)
+Defined in: [spatial/VirtualizationManager.ts:30](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L30)
 
 Get the number of parts currently culled (hidden).
 
@@ -62,7 +62,7 @@ Get the number of parts currently culled (hidden).
 
 > **get** **isEnabled**(): `boolean`
 
-Defined in: [spatial/VirtualizationManager.ts:20](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L20)
+Defined in: [spatial/VirtualizationManager.ts:20](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L20)
 
 Whether virtualization is enabled.
 
@@ -74,7 +74,7 @@ Whether virtualization is enabled.
 
 > **set** **isEnabled**(`value`): `void`
 
-Defined in: [spatial/VirtualizationManager.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L25)
+Defined in: [spatial/VirtualizationManager.ts:25](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L25)
 
 Set whether virtualization is enabled.
 
@@ -96,7 +96,7 @@ Set whether virtualization is enabled.
 
 > **get** **itemCount**(): `number`
 
-Defined in: [spatial/VirtualizationManager.ts:35](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L35)
+Defined in: [spatial/VirtualizationManager.ts:35](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L35)
 
 Get the total number of indexed parts.
 
@@ -110,7 +110,7 @@ Get the total number of indexed parts.
 
 > **clear**(): `void`
 
-Defined in: [spatial/VirtualizationManager.ts:101](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L101)
+Defined in: [spatial/VirtualizationManager.ts:101](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L101)
 
 Clear the spatial index.
 
@@ -124,7 +124,7 @@ Clear the spatial index.
 
 > **cull**(`viewport`, `allParts?`): [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
-Defined in: [spatial/VirtualizationManager.ts:72](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L72)
+Defined in: [spatial/VirtualizationManager.ts:72](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L72)
 
 Cull parts based on the current viewport.
 When enabled, returns only parts within the viewport.
@@ -150,7 +150,7 @@ When disabled, returns all provided parts (no culling).
 
 > **getIndex**(): [`QuadTree`](/en/reference/api/graphojs/classes/quadtree/)\<[`Part`](/en/reference/api/graphojs/classes/part/)\>
 
-Defined in: [spatial/VirtualizationManager.ts:40](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L40)
+Defined in: [spatial/VirtualizationManager.ts:40](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L40)
 
 Get the underlying spatial index.
 
@@ -164,7 +164,7 @@ Get the underlying spatial index.
 
 > **insert**(`part`): `void`
 
-Defined in: [spatial/VirtualizationManager.ts:45](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L45)
+Defined in: [spatial/VirtualizationManager.ts:45](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L45)
 
 Insert a part into the spatial index.
 
@@ -184,7 +184,7 @@ Insert a part into the spatial index.
 
 > **insertAt**(`x`, `y`, `part`): `void`
 
-Defined in: [spatial/VirtualizationManager.ts:50](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L50)
+Defined in: [spatial/VirtualizationManager.ts:50](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L50)
 
 Insert a part at explicit coordinates.
 
@@ -212,7 +212,7 @@ Insert a part at explicit coordinates.
 
 > **queryCircle**(`cx`, `cy`, `radius`): [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
-Defined in: [spatial/VirtualizationManager.ts:91](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L91)
+Defined in: [spatial/VirtualizationManager.ts:91](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L91)
 
 Query parts within a circle.
 
@@ -240,7 +240,7 @@ Query parts within a circle.
 
 > **queryNearest**(`x`, `y`, `maxDistance`): [`Part`](/en/reference/api/graphojs/classes/part/) \| `null`
 
-Defined in: [spatial/VirtualizationManager.ts:96](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L96)
+Defined in: [spatial/VirtualizationManager.ts:96](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L96)
 
 Query the nearest part to a point within a maximum distance.
 
@@ -268,7 +268,7 @@ Query the nearest part to a point within a maximum distance.
 
 > **queryRegion**(`bounds`): [`Part`](/en/reference/api/graphojs/classes/part/)[]
 
-Defined in: [spatial/VirtualizationManager.ts:86](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L86)
+Defined in: [spatial/VirtualizationManager.ts:86](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L86)
 
 Query parts intersecting a region.
 
@@ -288,7 +288,7 @@ Query parts intersecting a region.
 
 > **rebuild**(`parts`, `bounds`): `void`
 
-Defined in: [spatial/VirtualizationManager.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L60)
+Defined in: [spatial/VirtualizationManager.ts:60](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L60)
 
 Rebuild the spatial index from a list of parts.
 
@@ -312,7 +312,7 @@ Rebuild the spatial index from a list of parts.
 
 > **remove**(`part`): `boolean`
 
-Defined in: [spatial/VirtualizationManager.ts:55](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L55)
+Defined in: [spatial/VirtualizationManager.ts:55](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L55)
 
 Remove a part from the spatial index.
 
@@ -332,7 +332,7 @@ Remove a part from the spatial index.
 
 > `static` **createViewport**(`x`, `y`, `width`, `height`, `padding?`): [`Rect`](/en/reference/api/graphojs/classes/rect/)
 
-Defined in: [spatial/VirtualizationManager.ts:107](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/spatial/VirtualizationManager.ts#L107)
+Defined in: [spatial/VirtualizationManager.ts:107](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/spatial/VirtualizationManager.ts#L107)
 
 Create a viewport rect from diagram coordinates.
 

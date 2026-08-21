@@ -5,7 +5,7 @@ prev: false
 title: "CanvasPool"
 ---
 
-Defined in: [render/PerformanceCache.ts:116](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L116)
+Defined in: [render/PerformanceCache.ts:116](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L116)
 
 Pool for offscreen canvases to avoid frequent allocation.
 
@@ -15,7 +15,7 @@ Pool for offscreen canvases to avoid frequent allocation.
 
 > **new CanvasPool**(`maxSize?`, `maxWidth?`, `maxHeight?`): `CanvasPool`
 
-Defined in: [render/PerformanceCache.ts:122](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L122)
+Defined in: [render/PerformanceCache.ts:122](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L122)
 
 #### Parameters
 
@@ -43,7 +43,7 @@ Defined in: [render/PerformanceCache.ts:122](https://github.com/rroblf01/graphoj
 
 > **get** **available**(): `number`
 
-Defined in: [render/PerformanceCache.ts:177](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L177)
+Defined in: [render/PerformanceCache.ts:177](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L177)
 
 Get the number of available canvases.
 
@@ -59,7 +59,7 @@ Get the number of available canvases.
 
 > **get** **used**(): `number`
 
-Defined in: [render/PerformanceCache.ts:184](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L184)
+Defined in: [render/PerformanceCache.ts:184](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L184)
 
 Get the number of canvases in use.
 
@@ -73,7 +73,7 @@ Get the number of canvases in use.
 
 > **acquire**(`width`, `height`): `HTMLCanvasElement`
 
-Defined in: [render/PerformanceCache.ts:135](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L135)
+Defined in: [render/PerformanceCache.ts:135](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L135)
 
 Get a canvas from the pool.
 
@@ -97,7 +97,7 @@ Get a canvas from the pool.
 
 > **release**(`canvas`): `void`
 
-Defined in: [render/PerformanceCache.ts:149](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L149)
+Defined in: [render/PerformanceCache.ts:149](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L149)
 
 Release a canvas back to the pool.
 
@@ -117,7 +117,7 @@ Release a canvas back to the pool.
 
 > **releaseAll**(): `void`
 
-Defined in: [render/PerformanceCache.ts:163](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/PerformanceCache.ts#L163)
+Defined in: [render/PerformanceCache.ts:163](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/PerformanceCache.ts#L163)
 
 Release all canvases back to the pool.
 

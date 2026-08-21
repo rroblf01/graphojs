@@ -7,7 +7,7 @@ title: "bind"
 
 > **bind**(`targetProperty`, `sourceProperty`): [`Binding`](/en/reference/api/graphojs/classes/binding/)
 
-Defined in: [binding/Binding.ts:254](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/binding/Binding.ts#L254)
+Defined in: [binding/Binding.ts:258](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/binding/Binding.ts#L258)
 
 Helper to create a Binding.
 

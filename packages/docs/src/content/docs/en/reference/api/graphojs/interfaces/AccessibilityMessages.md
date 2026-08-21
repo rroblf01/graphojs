@@ -5,7 +5,7 @@ prev: false
 title: "AccessibilityMessages"
 ---
 
-Defined in: [diagram/Diagram.ts:131](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L131)
+Defined in: [diagram/Diagram.ts:150](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L150)
 
 Message formatters for the diagram's accessibility features: the canvas
 `aria-label` and the off-screen `aria-live` region announcements (see the
@@ -26,7 +26,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **ariaLabel**(`counts`): `string`
 
-Defined in: [diagram/Diagram.ts:135](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L135)
+Defined in: [diagram/Diagram.ts:154](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L154)
 
 The canvas `aria-label`, given the current content/selection counts.
 
@@ -64,7 +64,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **describePart**(`part`): `string`
 
-Defined in: [diagram/Diagram.ts:133](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L133)
+Defined in: [diagram/Diagram.ts:152](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L152)
 
 Short description of a part, e.g. `Node "Alpha"` — used by the other messages below.
 
@@ -88,7 +88,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **focusMoved**(`description`): `string`
 
-Defined in: [diagram/Diagram.ts:143](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L143)
+Defined in: [diagram/Diagram.ts:162](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L162)
 
 Announcement when the keyboard focus cursor moves (`description` from `describePart`).
 
@@ -112,7 +112,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **multipleSelected**(`count`): `string`
 
-Defined in: [diagram/Diagram.ts:141](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L141)
+Defined in: [diagram/Diagram.ts:160](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L160)
 
 Announcement when more than one part is selected.
 
@@ -136,7 +136,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **partAdded**(`description`): `string`
 
-Defined in: [diagram/Diagram.ts:145](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L145)
+Defined in: [diagram/Diagram.ts:164](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L164)
 
 Announcement when a single part is added (e.g. via `ClickCreatingTool`).
 
@@ -160,7 +160,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **partsDeleted**(`count`): `string`
 
-Defined in: [diagram/Diagram.ts:147](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L147)
+Defined in: [diagram/Diagram.ts:166](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L166)
 
 Announcement when one or more parts are deleted (e.g. via `CommandHandler.deleteSelection`).
 
@@ -184,7 +184,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **redoPerformed**(`description`): `string`
 
-Defined in: [diagram/Diagram.ts:151](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L151)
+Defined in: [diagram/Diagram.ts:170](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L170)
 
 Announcement after a redo (`description` from the redone command's `describe()`).
 
@@ -208,7 +208,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **selectionCleared**(): `string`
 
-Defined in: [diagram/Diagram.ts:137](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L137)
+Defined in: [diagram/Diagram.ts:156](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L156)
 
 Announcement when the selection becomes empty.
 
@@ -226,7 +226,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **singleSelected**(`description`): `string`
 
-Defined in: [diagram/Diagram.ts:139](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L139)
+Defined in: [diagram/Diagram.ts:158](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L158)
 
 Announcement when exactly one part is selected (`description` from `describePart`).
 
@@ -250,7 +250,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **treeCollapsed**(`description`): `string`
 
-Defined in: [diagram/Diagram.ts:153](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L153)
+Defined in: [diagram/Diagram.ts:172](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L172)
 
 Announcement when a node's tree is collapsed (`description` from `describePart`).
 
@@ -274,7 +274,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **treeExpanded**(`description`): `string`
 
-Defined in: [diagram/Diagram.ts:155](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L155)
+Defined in: [diagram/Diagram.ts:174](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L174)
 
 Announcement when a node's tree is expanded (`description` from `describePart`).
 
@@ -298,7 +298,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **undoPerformed**(`description`): `string`
 
-Defined in: [diagram/Diagram.ts:149](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/Diagram.ts#L149)
+Defined in: [diagram/Diagram.ts:168](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/Diagram.ts#L168)
 
 Announcement after an undo (`description` from the undone command's `describe()`).
 

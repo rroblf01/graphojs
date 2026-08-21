@@ -405,10 +405,14 @@ export class Canvas2DRenderer implements Renderer {
       link.setPathPoints(points);
     }
 
-    this.strokePath(points);
+    const hasArrowhead = link.arrowhead !== 'none' && points.length >= 2;
+    const strokePoints = hasArrowhead
+      ? this.shortenPathForArrowhead(points, link.arrowheadSize)
+      : points;
+    this.strokePath(strokePoints, link.corner);
 
     // Arrowhead at the target end
-    if (link.arrowhead !== 'none' && points.length >= 2) {
+    if (hasArrowhead) {
       this.renderArrowhead(link, points);
     }
 
@@ -417,7 +421,7 @@ export class Canvas2DRenderer implements Renderer {
       this.ctx.strokeStyle = this.selectionStyle.selectionColor;
       this.ctx.lineWidth = link.strokeWidth + 2;
       this.ctx.setLineDash([4, 4]);
-      this.strokePath(points);
+      this.strokePath(strokePoints, link.corner);
       this.ctx.setLineDash([]);
     }
 
@@ -539,18 +543,62 @@ export class Canvas2DRenderer implements Renderer {
     this.ctx.restore();
   }
 
-  private strokePath(points: Array<{ x: number; y: number }>): void {
+  private strokePath(points: Array<{ x: number; y: number }>, cornerRadius = 0): void {
     if (points.length === 0) return;
     const first = points[0];
     if (!first) return;
 
     this.ctx.beginPath();
     this.ctx.moveTo(first.x, first.y);
-    for (let i = 1; i < points.length; i++) {
-      const p = points[i];
-      if (p) this.ctx.lineTo(p.x, p.y);
+    const last = points[points.length - 1];
+    if (cornerRadius > 0 && points.length > 2) {
+      // ctx.arcTo draws the line up to the tangent point near each interior
+      // vertex plus the rounding arc itself, chaining naturally between
+      // consecutive corners -- a real quarter-circle join (GoJS's `corner`),
+      // not the straight-segment chamfer this used to approximate.
+      for (let i = 1; i < points.length - 1; i++) {
+        const prev = points[i - 1];
+        const curr = points[i];
+        const next = points[i + 1];
+        if (!prev || !curr || !next) continue;
+        const legLen1 = Math.hypot(curr.x - prev.x, curr.y - prev.y);
+        const legLen2 = Math.hypot(next.x - curr.x, next.y - curr.y);
+        const radius = Math.min(cornerRadius, legLen1 / 2, legLen2 / 2);
+        this.ctx.arcTo(curr.x, curr.y, next.x, next.y, radius);
+      }
+      if (last) this.ctx.lineTo(last.x, last.y);
+    } else {
+      for (let i = 1; i < points.length; i++) {
+        const p = points[i];
+        if (p) this.ctx.lineTo(p.x, p.y);
+      }
     }
     this.ctx.stroke();
+  }
+
+  /**
+   * Shortens the final segment of a link's path by `size` so the stroked
+   * line doesn't extend under a solid arrowhead (its round line cap would
+   * otherwise poke out past the arrowhead's tip).
+   */
+  private shortenPathForArrowhead(
+    points: Array<{ x: number; y: number }>,
+    size: number,
+  ): Array<{ x: number; y: number }> {
+    if (points.length < 2 || size <= 0) return points;
+    const last = points[points.length - 1];
+    const prev = points[points.length - 2];
+    if (!last || !prev) return points;
+
+    const dx = last.x - prev.x;
+    const dy = last.y - prev.y;
+    const len = Math.hypot(dx, dy);
+    if (len === 0) return points;
+
+    const trim = Math.min(size, len);
+    const shortened = points.slice(0, -1);
+    shortened.push({ x: last.x - (dx / len) * trim, y: last.y - (dy / len) * trim });
+    return shortened;
   }
 
   renderGroup(group: Group): void {

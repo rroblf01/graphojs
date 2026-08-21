@@ -1138,6 +1138,7 @@ export class Diagram {
       return;
     }
 
+    if (part.data) template.applyBindings(part.data);
     this._contextMenuEl = this.renderFloatingPanel(template, e.clientX, e.clientY);
 
     const dismiss = (): void => {
@@ -1203,6 +1204,7 @@ export class Diagram {
       return;
     }
 
+    if (part.data) template.applyBindings(part.data);
     const size = template.measureWithMargin();
     this._toolTipEl = this.renderFloatingPanel(
       template,

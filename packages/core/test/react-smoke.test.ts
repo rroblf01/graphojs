@@ -3,6 +3,6 @@ import { version } from '../src/react/index.tsx';
 
 describe('graphojs/react', () => {
   it('exposes a version', () => {
-    expect(version).toBe('1.6.0');
+    expect(version).toBe('1.7.0');
   });
 });

@@ -5,7 +5,7 @@ prev: false
 title: "GridLayout"
 ---
 
-Defined in: [layout/GridLayout.ts:24](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L24)
+Defined in: [layout/GridLayout.ts:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L24)
 
 Grid layout arranges nodes in a grid pattern.
 
@@ -19,7 +19,7 @@ Grid layout arranges nodes in a grid pattern.
 
 > **new GridLayout**(`options?`): `GridLayout`
 
-Defined in: [layout/GridLayout.ts:31](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L31)
+Defined in: [layout/GridLayout.ts:31](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L31)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ Defined in: [layout/GridLayout.ts:31](https://github.com/rroblf01/graphojs/blob/
 
 > **diagram**: [`Diagram`](/en/reference/api/graphojs/classes/diagram/) \| `null` = `null`
 
-Defined in: [layout/Layout.ts:34](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L34)
+Defined in: [layout/Layout.ts:34](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L34)
 
 GoJS-compatible: the Diagram this layout is assigned to (set by
 `Diagram.layout = ...`), used by `doLayout()` when called with no
@@ -59,7 +59,7 @@ explicit collection.
 
 > **get** **columnSpacing**(): `number`
 
-Defined in: [layout/GridLayout.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L41)
+Defined in: [layout/GridLayout.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L41)
 
 GoJS-compatible: Horizontal spacing between cells.
 
@@ -71,7 +71,7 @@ GoJS-compatible: Horizontal spacing between cells.
 
 > **set** **columnSpacing**(`value`): `void`
 
-Defined in: [layout/GridLayout.ts:45](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L45)
+Defined in: [layout/GridLayout.ts:45](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L45)
 
 ##### Parameters
 
@@ -91,7 +91,7 @@ Defined in: [layout/GridLayout.ts:45](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **isFinal**(): `boolean`
 
-Defined in: [layout/Layout.ts:234](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L234)
+Defined in: [layout/Layout.ts:234](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L234)
 
 GoJS-compatible: Whether this is the final layout of a cycle.
 
@@ -103,7 +103,7 @@ GoJS-compatible: Whether this is the final layout of a cycle.
 
 > **set** **isFinal**(`value`): `void`
 
-Defined in: [layout/Layout.ts:238](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L238)
+Defined in: [layout/Layout.ts:238](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L238)
 
 ##### Parameters
 
@@ -127,7 +127,7 @@ Defined in: [layout/Layout.ts:238](https://github.com/rroblf01/graphojs/blob/da0
 
 > **get** **isInitial**(): `boolean`
 
-Defined in: [layout/Layout.ts:225](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L225)
+Defined in: [layout/Layout.ts:225](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L225)
 
 GoJS-compatible: Whether this is the initial layout of the diagram.
 
@@ -139,7 +139,7 @@ GoJS-compatible: Whether this is the initial layout of the diagram.
 
 > **set** **isInitial**(`value`): `void`
 
-Defined in: [layout/Layout.ts:229](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L229)
+Defined in: [layout/Layout.ts:229](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L229)
 
 ##### Parameters
 
@@ -163,7 +163,7 @@ Defined in: [layout/Layout.ts:229](https://github.com/rroblf01/graphojs/blob/da0
 
 > **get** **isOngoing**(): `boolean`
 
-Defined in: [layout/Layout.ts:243](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L243)
+Defined in: [layout/Layout.ts:243](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L243)
 
 GoJS-compatible: Whether the layout is ongoing (auto-layout is active).
 
@@ -175,7 +175,7 @@ GoJS-compatible: Whether the layout is ongoing (auto-layout is active).
 
 > **set** **isOngoing**(`value`): `void`
 
-Defined in: [layout/Layout.ts:247](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L247)
+Defined in: [layout/Layout.ts:247](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L247)
 
 ##### Parameters
 
@@ -199,7 +199,7 @@ Defined in: [layout/Layout.ts:247](https://github.com/rroblf01/graphojs/blob/da0
 
 > **get** **network**(): [`LayoutNetwork`](/en/reference/api/graphojs/classes/layoutnetwork/) \| `null`
 
-Defined in: [layout/Layout.ts:200](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L200)
+Defined in: [layout/Layout.ts:200](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L200)
 
 GoJS-compatible: The current layout network (or null).
 
@@ -211,7 +211,7 @@ GoJS-compatible: The current layout network (or null).
 
 > **set** **network**(`value`): `void`
 
-Defined in: [layout/Layout.ts:204](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L204)
+Defined in: [layout/Layout.ts:204](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L204)
 
 ##### Parameters
 
@@ -235,7 +235,7 @@ Defined in: [layout/Layout.ts:204](https://github.com/rroblf01/graphojs/blob/da0
 
 > **get** **rowSpacing**(): `number`
 
-Defined in: [layout/GridLayout.ts:50](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L50)
+Defined in: [layout/GridLayout.ts:50](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L50)
 
 GoJS-compatible: Vertical spacing between cells.
 
@@ -247,7 +247,7 @@ GoJS-compatible: Vertical spacing between cells.
 
 > **set** **rowSpacing**(`value`): `void`
 
-Defined in: [layout/GridLayout.ts:54](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L54)
+Defined in: [layout/GridLayout.ts:54](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L54)
 
 ##### Parameters
 
@@ -267,7 +267,7 @@ Defined in: [layout/GridLayout.ts:54](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **wrappingColumn**(): `number` \| `undefined`
 
-Defined in: [layout/GridLayout.ts:71](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L71)
+Defined in: [layout/GridLayout.ts:71](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L71)
 
 GoJS-compatible: The maximum number of cells in a row before wrapping.
 
@@ -279,7 +279,7 @@ GoJS-compatible: The maximum number of cells in a row before wrapping.
 
 > **set** **wrappingColumn**(`value`): `void`
 
-Defined in: [layout/GridLayout.ts:75](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L75)
+Defined in: [layout/GridLayout.ts:75](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L75)
 
 ##### Parameters
 
@@ -299,7 +299,7 @@ Defined in: [layout/GridLayout.ts:75](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **wrappingWidth**(): `number`
 
-Defined in: [layout/GridLayout.ts:62](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L62)
+Defined in: [layout/GridLayout.ts:62](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L62)
 
 GoJS-compatible: The maximum width of a row of cells before wrapping.
 
@@ -311,7 +311,7 @@ GoJS-compatible: The maximum width of a row of cells before wrapping.
 
 > **set** **wrappingWidth**(`value`): `void`
 
-Defined in: [layout/GridLayout.ts:66](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L66)
+Defined in: [layout/GridLayout.ts:66](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L66)
 
 ##### Parameters
 
@@ -329,7 +329,7 @@ Defined in: [layout/GridLayout.ts:66](https://github.com/rroblf01/graphojs/blob/
 
 > **apply**(`nodes`, `_links`): `void`
 
-Defined in: [layout/GridLayout.ts:90](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L90)
+Defined in: [layout/GridLayout.ts:90](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L90)
 
 Apply the layout to the given nodes and links.
 
@@ -357,7 +357,7 @@ Apply the layout to the given nodes and links.
 
 > **doLayout**(`collection?`): `void`
 
-Defined in: [layout/Layout.ts:176](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L176)
+Defined in: [layout/Layout.ts:176](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L176)
 
 GoJS-compatible: Perform the layout on a collection of parts (or this diagram's parts).
 
@@ -387,7 +387,7 @@ readonly [`Node`](/en/reference/api/graphojs/classes/node/)[]
 
 > **layoutParts**(`parts`): `void`
 
-Defined in: [layout/Layout.ts:183](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L183)
+Defined in: [layout/Layout.ts:183](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L183)
 
 GoJS-compatible: Perform the layout on the given parts.
 

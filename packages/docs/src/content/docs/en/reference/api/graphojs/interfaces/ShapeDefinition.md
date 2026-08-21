@@ -5,7 +5,7 @@ prev: false
 title: "ShapeDefinition"
 ---
 
-Defined in: [shapes/ShapeTypes.ts:84](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeTypes.ts#L84)
+Defined in: [shapes/ShapeTypes.ts:104](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeTypes.ts#L104)
 
 Shape definition with drawing instructions.
 
@@ -15,7 +15,7 @@ Shape definition with drawing instructions.
 
 > **defaultHeight**: `number`
 
-Defined in: [shapes/ShapeTypes.ts:92](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeTypes.ts#L92)
+Defined in: [shapes/ShapeTypes.ts:112](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeTypes.ts#L112)
 
 Default height.
 
@@ -25,7 +25,7 @@ Default height.
 
 > **defaultWidth**: `number`
 
-Defined in: [shapes/ShapeTypes.ts:90](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeTypes.ts#L90)
+Defined in: [shapes/ShapeTypes.ts:110](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeTypes.ts#L110)
 
 Default width.
 
@@ -35,7 +35,7 @@ Default width.
 
 > **hasPorts**: `boolean`
 
-Defined in: [shapes/ShapeTypes.ts:96](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeTypes.ts#L96)
+Defined in: [shapes/ShapeTypes.ts:116](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeTypes.ts#L116)
 
 Whether the shape has ports.
 
@@ -45,7 +45,7 @@ Whether the shape has ports.
 
 > **name**: `string`
 
-Defined in: [shapes/ShapeTypes.ts:88](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeTypes.ts#L88)
+Defined in: [shapes/ShapeTypes.ts:108](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeTypes.ts#L108)
 
 Display name.
 
@@ -55,7 +55,7 @@ Display name.
 
 > **resizable**: `boolean`
 
-Defined in: [shapes/ShapeTypes.ts:94](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeTypes.ts#L94)
+Defined in: [shapes/ShapeTypes.ts:114](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeTypes.ts#L114)
 
 Whether the shape can be resized.
 
@@ -65,6 +65,6 @@ Whether the shape can be resized.
 
 > **type**: [`ShapeType`](/en/reference/api/graphojs/type-aliases/shapetype/)
 
-Defined in: [shapes/ShapeTypes.ts:86](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/shapes/ShapeTypes.ts#L86)
+Defined in: [shapes/ShapeTypes.ts:106](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/shapes/ShapeTypes.ts#L106)
 
 The shape type identifier.

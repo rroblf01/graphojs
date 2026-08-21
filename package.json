@@ -1,6 +1,6 @@
 {
   "name": "graphojs",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "An open-source, MIT-licensed alternative to GoJS: interactive diagramming for the web.",
   "license": "MIT",
   "author": "Ricardo Robles Fernandez",

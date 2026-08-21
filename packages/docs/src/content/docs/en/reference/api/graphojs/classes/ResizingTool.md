@@ -5,7 +5,7 @@ prev: false
 title: "ResizingTool"
 ---
 
-Defined in: [tool/ResizingTool.ts:10](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L10)
+Defined in: [tool/ResizingTool.ts:10](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L10)
 
 Tool for resizing nodes by dragging their edge/corner handles.
 
@@ -35,7 +35,7 @@ Tool for resizing nodes by dragging their edge/corner handles.
 
 > **get** **diagram**(): [`Diagram`](/en/reference/api/graphojs/classes/diagram/) \| `null`
 
-Defined in: [tool/Tool.ts:13](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L13)
+Defined in: [tool/Tool.ts:13](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L13)
 
 Get the diagram this tool belongs to.
 
@@ -47,7 +47,7 @@ Get the diagram this tool belongs to.
 
 > **set** **diagram**(`value`): `void`
 
-Defined in: [tool/Tool.ts:18](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L18)
+Defined in: [tool/Tool.ts:18](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L18)
 
 Set the diagram this tool belongs to.
 
@@ -73,7 +73,7 @@ Set the diagram this tool belongs to.
 
 > **get** **handle**(): [`ResizeHandle`](/en/reference/api/graphojs/type-aliases/resizehandle/) \| `null`
 
-Defined in: [tool/ResizingTool.ts:30](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L30)
+Defined in: [tool/ResizingTool.ts:30](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L30)
 
 The handle being dragged.
 
@@ -89,7 +89,7 @@ The handle being dragged.
 
 > **get** **isActive**(): `boolean`
 
-Defined in: [tool/Tool.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L23)
+Defined in: [tool/Tool.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L23)
 
 Check if this tool is currently active.
 
@@ -109,7 +109,7 @@ Check if this tool is currently active.
 
 > **get** **isEnabled**(): `boolean`
 
-Defined in: [tool/Tool.ts:28](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L28)
+Defined in: [tool/Tool.ts:28](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L28)
 
 Check if this tool is enabled.
 
@@ -121,7 +121,7 @@ Check if this tool is enabled.
 
 > **set** **isEnabled**(`value`): `void`
 
-Defined in: [tool/Tool.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L33)
+Defined in: [tool/Tool.ts:33](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L33)
 
 Enable or disable this tool.
 
@@ -147,7 +147,7 @@ Enable or disable this tool.
 
 > **get** **isResizing**(): `boolean`
 
-Defined in: [tool/ResizingTool.ts:20](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L20)
+Defined in: [tool/ResizingTool.ts:20](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L20)
 
 Whether a resize drag is in progress.
 
@@ -163,7 +163,7 @@ Whether a resize drag is in progress.
 
 > **get** **maxSize**(): `object`
 
-Defined in: [tool/ResizingTool.ts:66](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L66)
+Defined in: [tool/ResizingTool.ts:66](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L66)
 
 GoJS-compatible: The maximum size for resized parts.
 
@@ -183,7 +183,7 @@ GoJS-compatible: The maximum size for resized parts.
 
 > **set** **maxSize**(`value`): `void`
 
-Defined in: [tool/ResizingTool.ts:70](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L70)
+Defined in: [tool/ResizingTool.ts:70](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L70)
 
 ##### Parameters
 
@@ -209,7 +209,7 @@ Defined in: [tool/ResizingTool.ts:70](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **minHeight**(): `number`
 
-Defined in: [tool/ResizingTool.ts:44](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L44)
+Defined in: [tool/ResizingTool.ts:44](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L44)
 
 The minimum height for resized nodes.
 
@@ -221,7 +221,7 @@ The minimum height for resized nodes.
 
 > **set** **minHeight**(`value`): `void`
 
-Defined in: [tool/ResizingTool.ts:48](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L48)
+Defined in: [tool/ResizingTool.ts:48](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L48)
 
 ##### Parameters
 
@@ -241,7 +241,7 @@ Defined in: [tool/ResizingTool.ts:48](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **minSize**(): `object`
 
-Defined in: [tool/ResizingTool.ts:53](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L53)
+Defined in: [tool/ResizingTool.ts:53](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L53)
 
 GoJS-compatible: The minimum size for resized parts.
 
@@ -261,7 +261,7 @@ GoJS-compatible: The minimum size for resized parts.
 
 > **set** **minSize**(`value`): `void`
 
-Defined in: [tool/ResizingTool.ts:57](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L57)
+Defined in: [tool/ResizingTool.ts:57](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L57)
 
 ##### Parameters
 
@@ -287,7 +287,7 @@ Defined in: [tool/ResizingTool.ts:57](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **minWidth**(): `number`
 
-Defined in: [tool/ResizingTool.ts:35](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L35)
+Defined in: [tool/ResizingTool.ts:35](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L35)
 
 The minimum width for resized nodes.
 
@@ -299,7 +299,7 @@ The minimum width for resized nodes.
 
 > **set** **minWidth**(`value`): `void`
 
-Defined in: [tool/ResizingTool.ts:39](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L39)
+Defined in: [tool/ResizingTool.ts:39](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L39)
 
 ##### Parameters
 
@@ -319,7 +319,7 @@ Defined in: [tool/ResizingTool.ts:39](https://github.com/rroblf01/graphojs/blob/
 
 > **get** **resizingNode**(): [`Node`](/en/reference/api/graphojs/classes/node/) \| `null`
 
-Defined in: [tool/ResizingTool.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L25)
+Defined in: [tool/ResizingTool.ts:25](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L25)
 
 The node being resized.
 
@@ -333,7 +333,7 @@ The node being resized.
 
 > **canStart**(`_toolName`, `e`): `boolean`
 
-Defined in: [tool/ResizingTool.ts:143](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L143)
+Defined in: [tool/ResizingTool.ts:143](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L143)
 
 GoJS-compatible: start resizing when pressing on a resize handle of a selected node.
 
@@ -361,7 +361,7 @@ GoJS-compatible: start resizing when pressing on a resize handle of a selected n
 
 > **doActivate**(): `void`
 
-Defined in: [tool/Tool.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L38)
+Defined in: [tool/Tool.ts:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L38)
 
 Called when the tool becomes the active tool.
 
@@ -379,7 +379,7 @@ Called when the tool becomes the active tool.
 
 > **doClick**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:78](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L78)
+Defined in: [tool/Tool.ts:78](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L78)
 
 Called when a click event occurs.
 
@@ -403,7 +403,7 @@ Called when a click event occurs.
 
 > **doDeactivate**(): `void`
 
-Defined in: [tool/Tool.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L43)
+Defined in: [tool/Tool.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L43)
 
 Called when the tool is deactivated.
 
@@ -421,7 +421,7 @@ Called when the tool is deactivated.
 
 > **doDoubleClick**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:83](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L83)
+Defined in: [tool/Tool.ts:83](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L83)
 
 Called when a double click event occurs.
 
@@ -445,7 +445,7 @@ Called when a double click event occurs.
 
 > **doKeyDown**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:68](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L68)
+Defined in: [tool/Tool.ts:68](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L68)
 
 Called when a key down event occurs.
 
@@ -469,7 +469,7 @@ Called when a key down event occurs.
 
 > **doKeyUp**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:73](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L73)
+Defined in: [tool/Tool.ts:73](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L73)
 
 Called when a key up event occurs.
 
@@ -493,7 +493,7 @@ Called when a key up event occurs.
 
 > **doMouseDown**(`e`): `void`
 
-Defined in: [tool/ResizingTool.ts:162](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L162)
+Defined in: [tool/ResizingTool.ts:162](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L162)
 
 Called when a mouse down event occurs.
 
@@ -517,7 +517,7 @@ Called when a mouse down event occurs.
 
 > **doMouseMove**(`e`): `void`
 
-Defined in: [tool/ResizingTool.ts:192](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L192)
+Defined in: [tool/ResizingTool.ts:192](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L192)
 
 Called when a mouse move event occurs.
 
@@ -541,7 +541,7 @@ Called when a mouse move event occurs.
 
 > **doMouseUp**(`_e`): `void`
 
-Defined in: [tool/ResizingTool.ts:236](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L236)
+Defined in: [tool/ResizingTool.ts:236](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L236)
 
 Called when a mouse up event occurs.
 
@@ -565,7 +565,7 @@ Called when a mouse up event occurs.
 
 > **doMouseWheel**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:63](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L63)
+Defined in: [tool/Tool.ts:63](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L63)
 
 Called when a mouse wheel event occurs.
 
@@ -589,7 +589,7 @@ Called when a mouse wheel event occurs.
 
 > **doStart**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:90](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L90)
+Defined in: [tool/Tool.ts:90](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L90)
 
 GoJS-compatible: Called when a tool operation starts (after canStart returns true).
 
@@ -613,7 +613,7 @@ GoJS-compatible: Called when a tool operation starts (after canStart returns tru
 
 > **doStop**(): `void`
 
-Defined in: [tool/Tool.ts:97](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L97)
+Defined in: [tool/Tool.ts:97](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L97)
 
 GoJS-compatible: Called when a tool operation stops.
 
@@ -631,7 +631,7 @@ GoJS-compatible: Called when a tool operation stops.
 
 > **findPartAt**(`x`, `y`): [`Part`](/en/reference/api/graphojs/classes/part/) \| `null`
 
-Defined in: [tool/Tool.ts:110](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L110)
+Defined in: [tool/Tool.ts:110](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L110)
 
 Find a part at the given diagram coordinates.
 
@@ -659,7 +659,7 @@ Find a part at the given diagram coordinates.
 
 > **getDiagramPoint**(`e`): `object`
 
-Defined in: [tool/Tool.ts:116](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L116)
+Defined in: [tool/Tool.ts:116](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L116)
 
 Get the mouse position in diagram coordinates.
 
@@ -691,7 +691,7 @@ Get the mouse position in diagram coordinates.
 
 > **getHandleAt**(`node`, `rawPoint`): [`ResizeHandle`](/en/reference/api/graphojs/type-aliases/resizehandle/) \| `null`
 
-Defined in: [tool/ResizingTool.ts:98](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/ResizingTool.ts#L98)
+Defined in: [tool/ResizingTool.ts:98](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/ResizingTool.ts#L98)
 
 Find which resize handle (if any) is under a point for a selected node.
 

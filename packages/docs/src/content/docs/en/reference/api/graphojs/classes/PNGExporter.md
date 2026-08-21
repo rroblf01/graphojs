@@ -5,7 +5,7 @@ prev: false
 title: "PNGExporter"
 ---
 
-Defined in: [export/PNGExporter.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/PNGExporter.ts#L25)
+Defined in: [export/PNGExporter.ts:25](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/PNGExporter.ts#L25)
 
 Exports a diagram to a raster image (PNG).
 Renders the diagram content to an offscreen canvas.
@@ -16,7 +16,7 @@ Renders the diagram content to an offscreen canvas.
 
 > **new PNGExporter**(`options?`): `PNGExporter`
 
-Defined in: [export/PNGExporter.ts:28](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/PNGExporter.ts#L28)
+Defined in: [export/PNGExporter.ts:28](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/PNGExporter.ts#L28)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [export/PNGExporter.ts:28](https://github.com/rroblf01/graphojs/blob
 
 > **exportToFile**(`diagram`, `filename`): `void`
 
-Defined in: [export/PNGExporter.ts:208](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/PNGExporter.ts#L208)
+Defined in: [export/PNGExporter.ts:208](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/PNGExporter.ts#L208)
 
 Download the diagram as a PNG file.
 
@@ -58,7 +58,7 @@ Download the diagram as a PNG file.
 
 > **makeBlob**(`diagram`): `Promise`\<`Blob`\>
 
-Defined in: [export/PNGExporter.ts:195](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/PNGExporter.ts#L195)
+Defined in: [export/PNGExporter.ts:195](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/PNGExporter.ts#L195)
 
 Export the diagram to a PNG Blob.
 
@@ -78,7 +78,7 @@ Export the diagram to a PNG Blob.
 
 > **makeCanvas**(`diagram`): `HTMLCanvasElement`
 
-Defined in: [export/PNGExporter.ts:41](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/PNGExporter.ts#L41)
+Defined in: [export/PNGExporter.ts:41](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/PNGExporter.ts#L41)
 
 Render the diagram content to an offscreen canvas.
 
@@ -98,7 +98,7 @@ Render the diagram content to an offscreen canvas.
 
 > **makeDataURL**(`diagram`): `string`
 
-Defined in: [export/PNGExporter.ts:188](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/PNGExporter.ts#L188)
+Defined in: [export/PNGExporter.ts:188](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/PNGExporter.ts#L188)
 
 Export the diagram to a PNG data URL.
 

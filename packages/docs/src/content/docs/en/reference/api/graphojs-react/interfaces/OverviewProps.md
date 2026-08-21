@@ -5,7 +5,7 @@ prev: false
 title: "OverviewProps"
 ---
 
-Defined in: [react/index.tsx:204](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L204)
+Defined in: [react/index.tsx:211](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L211)
 
 ## Properties
 
@@ -13,7 +13,7 @@ Defined in: [react/index.tsx:204](https://github.com/rroblf01/graphojs/blob/da00
 
 > `optional` **className?**: `string`
 
-Defined in: [react/index.tsx:207](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L207)
+Defined in: [react/index.tsx:214](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L214)
 
 ***
 
@@ -21,7 +21,7 @@ Defined in: [react/index.tsx:207](https://github.com/rroblf01/graphojs/blob/da00
 
 > **observed**: [`Diagram`](/en/reference/api/graphojs/classes/diagram/)
 
-Defined in: [react/index.tsx:206](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L206)
+Defined in: [react/index.tsx:213](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L213)
 
 GoJS-compatible: the diagram this overview observes.
 
@@ -31,4 +31,4 @@ GoJS-compatible: the diagram this overview observes.
 
 > `optional` **style?**: `CSSProperties`
 
-Defined in: [react/index.tsx:208](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/react/index.tsx#L208)
+Defined in: [react/index.tsx:215](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/react/index.tsx#L215)

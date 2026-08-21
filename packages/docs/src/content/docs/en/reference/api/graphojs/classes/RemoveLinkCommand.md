@@ -5,7 +5,7 @@ prev: false
 title: "RemoveLinkCommand"
 ---
 
-Defined in: [undo/commands.ts:157](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L157)
+Defined in: [undo/commands.ts:157](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L157)
 
 Command to remove a link from the model.
 
@@ -19,7 +19,7 @@ Command to remove a link from the model.
 
 > **new RemoveLinkCommand**(`model`, `linkKey`): `RemoveLinkCommand`
 
-Defined in: [undo/commands.ts:162](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L162)
+Defined in: [undo/commands.ts:162](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L162)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ Defined in: [undo/commands.ts:162](https://github.com/rroblf01/graphojs/blob/da0
 
 > **describe**(): `string`
 
-Defined in: [undo/commands.ts:184](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L184)
+Defined in: [undo/commands.ts:184](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L184)
 
 Get a description of the command.
 
@@ -59,7 +59,7 @@ Get a description of the command.
 
 > **execute**(): `void`
 
-Defined in: [undo/commands.ts:167](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L167)
+Defined in: [undo/commands.ts:167](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L167)
 
 Execute the command.
 
@@ -77,7 +77,7 @@ Execute the command.
 
 > **undo**(): `void`
 
-Defined in: [undo/commands.ts:178](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L178)
+Defined in: [undo/commands.ts:178](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L178)
 
 Undo the command.
 

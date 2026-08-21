@@ -5,7 +5,7 @@ prev: false
 title: "TextMeasureCache"
 ---
 
-Defined in: [render/RenderCache.ts:122](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/RenderCache.ts#L122)
+Defined in: [render/RenderCache.ts:122](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/RenderCache.ts#L122)
 
 A cache for text width measurements.
 Measuring text is expensive; cache widths per (text, font) pair.
@@ -28,7 +28,7 @@ Measuring text is expensive; cache widths per (text, font) pair.
 
 > **get** **size**(): `number`
 
-Defined in: [render/RenderCache.ts:127](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/RenderCache.ts#L127)
+Defined in: [render/RenderCache.ts:127](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/RenderCache.ts#L127)
 
 Get the number of cached measurements.
 
@@ -42,7 +42,7 @@ Get the number of cached measurements.
 
 > **clear**(): `void`
 
-Defined in: [render/RenderCache.ts:146](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/RenderCache.ts#L146)
+Defined in: [render/RenderCache.ts:146](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/RenderCache.ts#L146)
 
 Clear the measurement cache.
 
@@ -56,7 +56,7 @@ Clear the measurement cache.
 
 > **measure**(`ctx`, `text`, `font`): `number`
 
-Defined in: [render/RenderCache.ts:134](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/RenderCache.ts#L134)
+Defined in: [render/RenderCache.ts:134](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/RenderCache.ts#L134)
 
 Measure text width, caching by (text, font).
 

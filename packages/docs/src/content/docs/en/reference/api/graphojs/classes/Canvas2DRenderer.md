@@ -5,7 +5,7 @@ prev: false
 title: "Canvas2DRenderer"
 ---
 
-Defined in: [render/Canvas2DRenderer.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L23)
+Defined in: [render/Canvas2DRenderer.ts:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L24)
 
 Canvas 2D renderer for diagram parts.
 
@@ -19,7 +19,7 @@ Canvas 2D renderer for diagram parts.
 
 > **new Canvas2DRenderer**(`canvas`): `Canvas2DRenderer`
 
-Defined in: [render/Canvas2DRenderer.ts:74](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L74)
+Defined in: [render/Canvas2DRenderer.ts:75](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L75)
 
 #### Parameters
 
@@ -39,7 +39,7 @@ Defined in: [render/Canvas2DRenderer.ts:74](https://github.com/rroblf01/graphojs
 
 > **get** **dirtyRectCount**(): `number`
 
-Defined in: [render/Canvas2DRenderer.ts:166](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L166)
+Defined in: [render/Canvas2DRenderer.ts:167](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L167)
 
 Get the number of pending dirty rectangles.
 
@@ -53,7 +53,7 @@ Get the number of pending dirty rectangles.
 
 > **clear**(): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:118](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L118)
+Defined in: [render/Canvas2DRenderer.ts:119](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L119)
 
 Clear the entire canvas.
 
@@ -71,7 +71,7 @@ Clear the entire canvas.
 
 > **clearDirtyRects**(): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:171](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L171)
+Defined in: [render/Canvas2DRenderer.ts:172](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L172)
 
 Clear all pending dirty rectangles without clearing the canvas.
 
@@ -85,7 +85,7 @@ Clear all pending dirty rectangles without clearing the canvas.
 
 > **clearNodeBounds**(): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:65](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L65)
+Defined in: [render/Canvas2DRenderer.ts:66](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L66)
 
 Clear all registered node bounds.
 
@@ -103,7 +103,7 @@ Clear all registered node bounds.
 
 > **diagramToScreen**(`diagramX`, `diagramY`): `object`
 
-Defined in: [render/Canvas2DRenderer.ts:663](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L663)
+Defined in: [render/Canvas2DRenderer.ts:750](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L750)
 
 Convert diagram coordinates to screen coordinates.
 
@@ -139,7 +139,7 @@ Convert diagram coordinates to screen coordinates.
 
 > **disableDirtyRects**(): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:137](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L137)
+Defined in: [render/Canvas2DRenderer.ts:138](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L138)
 
 Disable dirty-rectangle rendering (full clear each frame).
 
@@ -153,7 +153,7 @@ Disable dirty-rectangle rendering (full clear each frame).
 
 > **enableDirtyRects**(): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:132](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L132)
+Defined in: [render/Canvas2DRenderer.ts:133](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L133)
 
 Enable dirty-rectangle rendering.
 
@@ -167,7 +167,7 @@ Enable dirty-rectangle rendering.
 
 > **getCanvas**(): `HTMLCanvasElement`
 
-Defined in: [render/Canvas2DRenderer.ts:99](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L99)
+Defined in: [render/Canvas2DRenderer.ts:100](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L100)
 
 Get the canvas element.
 
@@ -185,7 +185,7 @@ Get the canvas element.
 
 > **getContext**(): `CanvasRenderingContext2D`
 
-Defined in: [render/Canvas2DRenderer.ts:104](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L104)
+Defined in: [render/Canvas2DRenderer.ts:105](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L105)
 
 Get the rendering context.
 
@@ -199,7 +199,7 @@ Get the rendering context.
 
 > **getLabelsVisible**(): `boolean`
 
-Defined in: [render/Canvas2DRenderer.ts:50](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L50)
+Defined in: [render/Canvas2DRenderer.ts:51](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L51)
 
 Check whether labels are currently visible.
 
@@ -213,7 +213,7 @@ Check whether labels are currently visible.
 
 > **getOffset**(): `object`
 
-Defined in: [render/Canvas2DRenderer.ts:652](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L652)
+Defined in: [render/Canvas2DRenderer.ts:739](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L739)
 
 Get the current offset.
 
@@ -239,7 +239,7 @@ Get the current offset.
 
 > **getPathCache**(): [`PathCache`](/en/reference/api/graphojs/classes/pathcache/)
 
-Defined in: [render/Canvas2DRenderer.ts:109](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L109)
+Defined in: [render/Canvas2DRenderer.ts:110](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L110)
 
 Get the path cache.
 
@@ -253,7 +253,7 @@ Get the path cache.
 
 > **getScale**(): `number`
 
-Defined in: [render/Canvas2DRenderer.ts:648](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L648)
+Defined in: [render/Canvas2DRenderer.ts:735](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L735)
 
 Get the current scale.
 
@@ -271,7 +271,7 @@ Get the current scale.
 
 > **getTextMeasureCache**(): [`TextMeasureCache`](/en/reference/api/graphojs/classes/textmeasurecache/)
 
-Defined in: [render/Canvas2DRenderer.ts:114](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L114)
+Defined in: [render/Canvas2DRenderer.ts:115](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L115)
 
 Get the text measure cache.
 
@@ -285,7 +285,7 @@ Get the text measure cache.
 
 > **invalidateLinkPaths**(): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:37](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L37)
+Defined in: [render/Canvas2DRenderer.ts:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L38)
 
 Invalidate all cached link paths (e.g. when nodes move).
 
@@ -299,7 +299,7 @@ Invalidate all cached link paths (e.g. when nodes move).
 
 > **isDirtyRectEnabled**(): `boolean`
 
-Defined in: [render/Canvas2DRenderer.ts:143](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L143)
+Defined in: [render/Canvas2DRenderer.ts:144](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L144)
 
 Check whether dirty-rectangle rendering is enabled.
 
@@ -313,7 +313,7 @@ Check whether dirty-rectangle rendering is enabled.
 
 > **markDirty**(`x`, `y`, `width`, `height`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:148](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L148)
+Defined in: [render/Canvas2DRenderer.ts:149](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L149)
 
 Add a dirty rectangle in diagram coordinates (converted to screen space).
 
@@ -345,7 +345,7 @@ Add a dirty rectangle in diagram coordinates (converted to screen space).
 
 > **markDirtyRect**(`bounds`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:161](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L161)
+Defined in: [render/Canvas2DRenderer.ts:162](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L162)
 
 Mark an entire part's bounds as dirty.
 
@@ -363,11 +363,11 @@ Mark an entire part's bounds as dirty.
 
 ### renderGrid()
 
-> **renderGrid**(`viewport`, `gridSize`): `void`
+> **renderGrid**(`viewport`, `gridSize`, `pattern?`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:603](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L603)
+Defined in: [render/Canvas2DRenderer.ts:683](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L683)
 
-Render a grid background.
+Render a grid background, optionally styled by a `diagram.grid` pattern.
 
 #### Parameters
 
@@ -378,6 +378,10 @@ Render a grid background.
 ##### gridSize
 
 `number`
+
+##### pattern?
+
+[`GridPatternStyle`](/en/reference/api/graphojs/interfaces/gridpatternstyle/)
 
 #### Returns
 
@@ -393,7 +397,7 @@ Render a grid background.
 
 > **renderGroup**(`group`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:555](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L555)
+Defined in: [render/Canvas2DRenderer.ts:604](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L604)
 
 Render a group (background bounds).
 
@@ -417,7 +421,7 @@ Render a group (background bounds).
 
 > **renderLink**(`link`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:325](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L325)
+Defined in: [render/Canvas2DRenderer.ts:326](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L326)
 
 Render a link.
 
@@ -441,7 +445,7 @@ Render a link.
 
 > **renderNode**(`node`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:175](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L175)
+Defined in: [render/Canvas2DRenderer.ts:176](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L176)
 
 Render a node.
 
@@ -465,7 +469,7 @@ Render a node.
 
 > **renderPanel**(`panel`, `x`, `y`, `width`, `height`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:291](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L291)
+Defined in: [render/Canvas2DRenderer.ts:292](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L292)
 
 Render a panel at the given position and size.
 
@@ -497,11 +501,38 @@ Render a panel at the given position and size.
 
 ***
 
+### renderPart()
+
+> **renderPart**(`part`): `void`
+
+Defined in: [render/Canvas2DRenderer.ts:646](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L646)
+
+GoJS-compatible: render a bare decorative `Part` (not a Node/Link/
+Group) — e.g. a frame or watermark added via `Diagram.add()` outside
+the model. Only draws if it has a `panel` (from a template); a
+decorative Part with no panel has nothing to render.
+
+#### Parameters
+
+##### part
+
+[`Part`](/en/reference/api/graphojs/classes/part/)
+
+#### Returns
+
+`void`
+
+#### Implementation of
+
+[`Renderer`](/en/reference/api/graphojs/interfaces/renderer/).[`renderPart`](/en/reference/api/graphojs/interfaces/renderer/#renderpart)
+
+***
+
 ### renderSelectionHandles()
 
 > **renderSelectionHandles**(`x`, `y`, `width`, `height`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:245](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L245)
+Defined in: [render/Canvas2DRenderer.ts:246](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L246)
 
 Render resize handles and rotation handle for a selected node.
 
@@ -533,7 +564,7 @@ Render resize handles and rotation handle for a selected node.
 
 > **renderSelectionRect**(`rect`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:591](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L591)
+Defined in: [render/Canvas2DRenderer.ts:671](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L671)
 
 Render a selection rectangle.
 
@@ -557,7 +588,7 @@ Render a selection rectangle.
 
 > **resize**(): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:94](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L94)
+Defined in: [render/Canvas2DRenderer.ts:95](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L95)
 
 Resize the canvas to fit its container.
 
@@ -575,7 +606,7 @@ Resize the canvas to fit its container.
 
 > **restore**(): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:634](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L634)
+Defined in: [render/Canvas2DRenderer.ts:721](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L721)
 
 Restore the previously saved canvas state.
 
@@ -593,7 +624,7 @@ Restore the previously saved canvas state.
 
 > **save**(): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:630](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L630)
+Defined in: [render/Canvas2DRenderer.ts:717](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L717)
 
 Save the current canvas state.
 
@@ -611,7 +642,7 @@ Save the current canvas state.
 
 > **screenToDiagram**(`screenX`, `screenY`): `object`
 
-Defined in: [render/Canvas2DRenderer.ts:656](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L656)
+Defined in: [render/Canvas2DRenderer.ts:743](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L743)
 
 Convert screen coordinates to diagram coordinates.
 
@@ -647,7 +678,7 @@ Convert screen coordinates to diagram coordinates.
 
 > **setLabelsVisible**(`value`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:45](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L45)
+Defined in: [render/Canvas2DRenderer.ts:46](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L46)
 
 Set whether node labels should be rendered (used for LOD).
 
@@ -667,7 +698,7 @@ Set whether node labels should be rendered (used for LOD).
 
 > **setNodeBounds**(`key`, `bounds`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:60](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L60)
+Defined in: [render/Canvas2DRenderer.ts:61](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L61)
 
 Register a node's bounds for link routing computation.
 
@@ -695,7 +726,7 @@ Register a node's bounds for link routing computation.
 
 > **setSelectionStyle**(`style`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:55](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L55)
+Defined in: [render/Canvas2DRenderer.ts:56](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L56)
 
 Set the colors used for selection highlights and resize handles.
 
@@ -715,7 +746,7 @@ Set the colors used for selection highlights and resize handles.
 
 > **setViewport**(`x`, `y`, `scale`): `void`
 
-Defined in: [render/Canvas2DRenderer.ts:638](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/render/Canvas2DRenderer.ts#L638)
+Defined in: [render/Canvas2DRenderer.ts:725](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/render/Canvas2DRenderer.ts#L725)
 
 Set the viewport (pan/zoom).
 

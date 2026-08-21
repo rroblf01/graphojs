@@ -5,7 +5,7 @@ prev: false
 title: "DiagramEvents"
 ---
 
-Defined in: [diagram/DiagramEvents.ts:77](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/DiagramEvents.ts#L77)
+Defined in: [diagram/DiagramEvents.ts:77](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/DiagramEvents.ts#L77)
 
 Manages diagram-level events.
 
@@ -25,7 +25,7 @@ Manages diagram-level events.
 
 > **addAnyListener**(`handler`): `void`
 
-Defined in: [diagram/DiagramEvents.ts:88](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/DiagramEvents.ts#L88)
+Defined in: [diagram/DiagramEvents.ts:88](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/DiagramEvents.ts#L88)
 
 Add a listener for all event types.
 
@@ -45,7 +45,7 @@ Add a listener for all event types.
 
 > **addListener**(`type`, `handler`): `void`
 
-Defined in: [diagram/DiagramEvents.ts:81](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/DiagramEvents.ts#L81)
+Defined in: [diagram/DiagramEvents.ts:81](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/DiagramEvents.ts#L81)
 
 Add a listener for a specific event type.
 
@@ -69,7 +69,7 @@ Add a listener for a specific event type.
 
 > **clear**(): `void`
 
-Defined in: [diagram/DiagramEvents.ts:122](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/DiagramEvents.ts#L122)
+Defined in: [diagram/DiagramEvents.ts:122](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/DiagramEvents.ts#L122)
 
 Remove all listeners.
 
@@ -83,7 +83,7 @@ Remove all listeners.
 
 > **fire**(`diagram`, `type`, `part?`, `data?`): `void`
 
-Defined in: [diagram/DiagramEvents.ts:129](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/DiagramEvents.ts#L129)
+Defined in: [diagram/DiagramEvents.ts:129](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/DiagramEvents.ts#L129)
 
 Fire an event to all registered listeners.
 
@@ -115,7 +115,7 @@ Fire an event to all registered listeners.
 
 > **hasListeners**(`type`): `boolean`
 
-Defined in: [diagram/DiagramEvents.ts:112](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/DiagramEvents.ts#L112)
+Defined in: [diagram/DiagramEvents.ts:112](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/DiagramEvents.ts#L112)
 
 Check if there are listeners for an event type.
 
@@ -135,7 +135,7 @@ Check if there are listeners for an event type.
 
 > **listenerCount**(`type`): `number`
 
-Defined in: [diagram/DiagramEvents.ts:117](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/DiagramEvents.ts#L117)
+Defined in: [diagram/DiagramEvents.ts:117](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/DiagramEvents.ts#L117)
 
 Get the number of listeners for an event type.
 
@@ -155,7 +155,7 @@ Get the number of listeners for an event type.
 
 > **removeAnyListener**(`handler`): `void`
 
-Defined in: [diagram/DiagramEvents.ts:105](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/DiagramEvents.ts#L105)
+Defined in: [diagram/DiagramEvents.ts:105](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/DiagramEvents.ts#L105)
 
 Remove a listener from all event types.
 
@@ -175,7 +175,7 @@ Remove a listener from all event types.
 
 > **removeListener**(`type`, `handler`): `boolean`
 
-Defined in: [diagram/DiagramEvents.ts:95](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/diagram/DiagramEvents.ts#L95)
+Defined in: [diagram/DiagramEvents.ts:95](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/diagram/DiagramEvents.ts#L95)
 
 Remove a listener for a specific event type.
 

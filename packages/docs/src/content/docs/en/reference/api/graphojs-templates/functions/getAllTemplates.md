@@ -7,7 +7,7 @@ title: "getAllTemplates"
 
 > **getAllTemplates**(): [`Template`](/en/reference/api/graphojs/interfaces/template/)[]
 
-Defined in: [template/TemplateCollection.ts:291](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/template/TemplateCollection.ts#L291)
+Defined in: [template/TemplateCollection.ts:291](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/template/TemplateCollection.ts#L291)
 
 Get all predefined templates.
 

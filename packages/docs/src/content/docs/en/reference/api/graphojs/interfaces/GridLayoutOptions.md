@@ -5,7 +5,7 @@ prev: false
 title: "GridLayoutOptions"
 ---
 
-Defined in: [layout/GridLayout.ts:8](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L8)
+Defined in: [layout/GridLayout.ts:8](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L8)
 
 Options for grid layout.
 
@@ -19,7 +19,7 @@ Options for grid layout.
 
 > `optional` **center?**: `boolean`
 
-Defined in: [layout/Layout.ts:17](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L17)
+Defined in: [layout/Layout.ts:17](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L17)
 
 Whether to center the layout. Default: true
 
@@ -33,7 +33,7 @@ Whether to center the layout. Default: true
 
 > `optional` **columns?**: `number`
 
-Defined in: [layout/GridLayout.ts:10](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L10)
+Defined in: [layout/GridLayout.ts:10](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L10)
 
 Number of columns. If not set, calculated from node count and rows.
 
@@ -43,7 +43,7 @@ Number of columns. If not set, calculated from node count and rows.
 
 > `optional` **direction?**: `"horizontal"` \| `"vertical"`
 
-Defined in: [layout/Layout.ts:15](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L15)
+Defined in: [layout/Layout.ts:15](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L15)
 
 Whether to arrange in a specific direction. Default: 'vertical'
 
@@ -57,7 +57,7 @@ Whether to arrange in a specific direction. Default: 'vertical'
 
 > `optional` **padding?**: `number`
 
-Defined in: [layout/Layout.ts:13](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L13)
+Defined in: [layout/Layout.ts:13](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L13)
 
 Border padding. Default: 20
 
@@ -71,7 +71,7 @@ Border padding. Default: 20
 
 > `optional` **rows?**: `number`
 
-Defined in: [layout/GridLayout.ts:12](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L12)
+Defined in: [layout/GridLayout.ts:12](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L12)
 
 Number of rows. If not set, calculated from node count and columns.
 
@@ -81,7 +81,7 @@ Number of rows. If not set, calculated from node count and columns.
 
 > `optional` **spacing?**: `number`
 
-Defined in: [layout/Layout.ts:11](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/Layout.ts#L11)
+Defined in: [layout/Layout.ts:11](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/Layout.ts#L11)
 
 Spacing between nodes. Default: 50
 
@@ -95,7 +95,7 @@ Spacing between nodes. Default: 50
 
 > `optional` **spacingX?**: `number`
 
-Defined in: [layout/GridLayout.ts:14](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L14)
+Defined in: [layout/GridLayout.ts:14](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L14)
 
 Horizontal spacing between cells. Default: 20
 
@@ -105,7 +105,7 @@ Horizontal spacing between cells. Default: 20
 
 > `optional` **spacingY?**: `number`
 
-Defined in: [layout/GridLayout.ts:16](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L16)
+Defined in: [layout/GridLayout.ts:16](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L16)
 
 Vertical spacing between cells. Default: 20
 
@@ -115,7 +115,7 @@ Vertical spacing between cells. Default: 20
 
 > `optional` **startingPosition?**: `object`
 
-Defined in: [layout/GridLayout.ts:18](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/layout/GridLayout.ts#L18)
+Defined in: [layout/GridLayout.ts:18](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/layout/GridLayout.ts#L18)
 
 Starting position. Default: { x: 0, y: 0 }
 

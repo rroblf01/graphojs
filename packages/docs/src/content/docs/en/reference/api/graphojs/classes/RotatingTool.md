@@ -5,7 +5,7 @@ prev: false
 title: "RotatingTool"
 ---
 
-Defined in: [tool/RotatingTool.ts:8](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/RotatingTool.ts#L8)
+Defined in: [tool/RotatingTool.ts:8](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/RotatingTool.ts#L8)
 
 Tool for rotating nodes around their center via the rotation handle.
 
@@ -35,7 +35,7 @@ Tool for rotating nodes around their center via the rotation handle.
 
 > **get** **diagram**(): [`Diagram`](/en/reference/api/graphojs/classes/diagram/) \| `null`
 
-Defined in: [tool/Tool.ts:13](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L13)
+Defined in: [tool/Tool.ts:13](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L13)
 
 Get the diagram this tool belongs to.
 
@@ -47,7 +47,7 @@ Get the diagram this tool belongs to.
 
 > **set** **diagram**(`value`): `void`
 
-Defined in: [tool/Tool.ts:18](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L18)
+Defined in: [tool/Tool.ts:18](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L18)
 
 Set the diagram this tool belongs to.
 
@@ -73,7 +73,7 @@ Set the diagram this tool belongs to.
 
 > **get** **isActive**(): `boolean`
 
-Defined in: [tool/Tool.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L23)
+Defined in: [tool/Tool.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L23)
 
 Check if this tool is currently active.
 
@@ -93,7 +93,7 @@ Check if this tool is currently active.
 
 > **get** **isEnabled**(): `boolean`
 
-Defined in: [tool/Tool.ts:28](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L28)
+Defined in: [tool/Tool.ts:28](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L28)
 
 Check if this tool is enabled.
 
@@ -105,7 +105,7 @@ Check if this tool is enabled.
 
 > **set** **isEnabled**(`value`): `void`
 
-Defined in: [tool/Tool.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L33)
+Defined in: [tool/Tool.ts:33](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L33)
 
 Enable or disable this tool.
 
@@ -131,7 +131,7 @@ Enable or disable this tool.
 
 > **get** **isRotating**(): `boolean`
 
-Defined in: [tool/RotatingTool.ts:15](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/RotatingTool.ts#L15)
+Defined in: [tool/RotatingTool.ts:15](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/RotatingTool.ts#L15)
 
 Whether a rotation drag is in progress.
 
@@ -147,7 +147,7 @@ Whether a rotation drag is in progress.
 
 > **get** **rotatingNode**(): [`Node`](/en/reference/api/graphojs/classes/node/) \| `null`
 
-Defined in: [tool/RotatingTool.ts:20](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/RotatingTool.ts#L20)
+Defined in: [tool/RotatingTool.ts:20](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/RotatingTool.ts#L20)
 
 The node being rotated.
 
@@ -161,7 +161,7 @@ The node being rotated.
 
 > **canStart**(`_toolName`, `e`): `boolean`
 
-Defined in: [tool/RotatingTool.ts:65](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/RotatingTool.ts#L65)
+Defined in: [tool/RotatingTool.ts:65](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/RotatingTool.ts#L65)
 
 GoJS-compatible: start rotating when pressing on the rotation handle of a selected node.
 
@@ -189,7 +189,7 @@ GoJS-compatible: start rotating when pressing on the rotation handle of a select
 
 > **doActivate**(): `void`
 
-Defined in: [tool/Tool.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L38)
+Defined in: [tool/Tool.ts:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L38)
 
 Called when the tool becomes the active tool.
 
@@ -207,7 +207,7 @@ Called when the tool becomes the active tool.
 
 > **doClick**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:78](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L78)
+Defined in: [tool/Tool.ts:78](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L78)
 
 Called when a click event occurs.
 
@@ -231,7 +231,7 @@ Called when a click event occurs.
 
 > **doDeactivate**(): `void`
 
-Defined in: [tool/Tool.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L43)
+Defined in: [tool/Tool.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L43)
 
 Called when the tool is deactivated.
 
@@ -249,7 +249,7 @@ Called when the tool is deactivated.
 
 > **doDoubleClick**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:83](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L83)
+Defined in: [tool/Tool.ts:83](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L83)
 
 Called when a double click event occurs.
 
@@ -273,7 +273,7 @@ Called when a double click event occurs.
 
 > **doKeyDown**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:68](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L68)
+Defined in: [tool/Tool.ts:68](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L68)
 
 Called when a key down event occurs.
 
@@ -297,7 +297,7 @@ Called when a key down event occurs.
 
 > **doKeyUp**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:73](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L73)
+Defined in: [tool/Tool.ts:73](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L73)
 
 Called when a key up event occurs.
 
@@ -321,7 +321,7 @@ Called when a key up event occurs.
 
 > **doMouseDown**(`e`): `void`
 
-Defined in: [tool/RotatingTool.ts:77](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/RotatingTool.ts#L77)
+Defined in: [tool/RotatingTool.ts:77](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/RotatingTool.ts#L77)
 
 Called when a mouse down event occurs.
 
@@ -345,7 +345,7 @@ Called when a mouse down event occurs.
 
 > **doMouseMove**(`e`): `void`
 
-Defined in: [tool/RotatingTool.ts:98](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/RotatingTool.ts#L98)
+Defined in: [tool/RotatingTool.ts:98](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/RotatingTool.ts#L98)
 
 Called when a mouse move event occurs.
 
@@ -369,7 +369,7 @@ Called when a mouse move event occurs.
 
 > **doMouseUp**(`_e`): `void`
 
-Defined in: [tool/RotatingTool.ts:112](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/RotatingTool.ts#L112)
+Defined in: [tool/RotatingTool.ts:112](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/RotatingTool.ts#L112)
 
 Called when a mouse up event occurs.
 
@@ -393,7 +393,7 @@ Called when a mouse up event occurs.
 
 > **doMouseWheel**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:63](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L63)
+Defined in: [tool/Tool.ts:63](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L63)
 
 Called when a mouse wheel event occurs.
 
@@ -417,7 +417,7 @@ Called when a mouse wheel event occurs.
 
 > **doStart**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:90](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L90)
+Defined in: [tool/Tool.ts:90](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L90)
 
 GoJS-compatible: Called when a tool operation starts (after canStart returns true).
 
@@ -441,7 +441,7 @@ GoJS-compatible: Called when a tool operation starts (after canStart returns tru
 
 > **doStop**(): `void`
 
-Defined in: [tool/Tool.ts:97](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L97)
+Defined in: [tool/Tool.ts:97](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L97)
 
 GoJS-compatible: Called when a tool operation stops.
 
@@ -459,7 +459,7 @@ GoJS-compatible: Called when a tool operation stops.
 
 > **findPartAt**(`x`, `y`): [`Part`](/en/reference/api/graphojs/classes/part/) \| `null`
 
-Defined in: [tool/Tool.ts:110](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L110)
+Defined in: [tool/Tool.ts:110](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L110)
 
 Find a part at the given diagram coordinates.
 
@@ -487,7 +487,7 @@ Find a part at the given diagram coordinates.
 
 > **getDiagramPoint**(`e`): `object`
 
-Defined in: [tool/Tool.ts:116](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L116)
+Defined in: [tool/Tool.ts:116](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L116)
 
 Get the mouse position in diagram coordinates.
 
@@ -519,7 +519,7 @@ Get the mouse position in diagram coordinates.
 
 > **getRotationHandlePoint**(`node`): `object`
 
-Defined in: [tool/RotatingTool.ts:29](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/RotatingTool.ts#L29)
+Defined in: [tool/RotatingTool.ts:29](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/RotatingTool.ts#L29)
 
 Find the rotation handle's actual screen (diagram-space) position for a
 node — above its top-center, then rotated around the node's center by
@@ -549,7 +549,7 @@ its current angle, matching how the renderer draws the handle.
 
 > **isOnRotationHandle**(`node`, `point`): `boolean`
 
-Defined in: [tool/RotatingTool.ts:46](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/RotatingTool.ts#L46)
+Defined in: [tool/RotatingTool.ts:46](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/RotatingTool.ts#L46)
 
 Check if a point is on the rotation handle of a node.
 

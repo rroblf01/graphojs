@@ -5,7 +5,7 @@ prev: false
 title: "TooltipManager"
 ---
 
-Defined in: [export/TooltipManager.ts:17](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/TooltipManager.ts#L17)
+Defined in: [export/TooltipManager.ts:17](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/TooltipManager.ts#L17)
 
 Shows HTML tooltips for parts when hovering over them.
 A part shows its tooltip when it has a non-empty `tooltip` text.
@@ -16,7 +16,7 @@ A part shows its tooltip when it has a non-empty `tooltip` text.
 
 > **new TooltipManager**(`diagram`, `options?`): `TooltipManager`
 
-Defined in: [export/TooltipManager.ts:25](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/TooltipManager.ts#L25)
+Defined in: [export/TooltipManager.ts:25](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/TooltipManager.ts#L25)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: [export/TooltipManager.ts:25](https://github.com/rroblf01/graphojs/b
 
 > **get** **isTooltipVisible**(): `boolean`
 
-Defined in: [export/TooltipManager.ts:53](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/TooltipManager.ts#L53)
+Defined in: [export/TooltipManager.ts:53](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/TooltipManager.ts#L53)
 
 Check whether a tooltip is currently visible.
 
@@ -54,7 +54,7 @@ Check whether a tooltip is currently visible.
 
 > **destroy**(): `void`
 
-Defined in: [export/TooltipManager.ts:134](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/TooltipManager.ts#L134)
+Defined in: [export/TooltipManager.ts:134](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/TooltipManager.ts#L134)
 
 Destroy the tooltip manager.
 
@@ -68,7 +68,7 @@ Destroy the tooltip manager.
 
 > **getCurrentPart**(): [`Part`](/en/reference/api/graphojs/classes/part/) \| `null`
 
-Defined in: [export/TooltipManager.ts:48](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/TooltipManager.ts#L48)
+Defined in: [export/TooltipManager.ts:48](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/TooltipManager.ts#L48)
 
 Get the part currently showing a tooltip, or null.
 
@@ -82,7 +82,7 @@ Get the part currently showing a tooltip, or null.
 
 > **getElement**(): `HTMLDivElement`
 
-Defined in: [export/TooltipManager.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/TooltipManager.ts#L43)
+Defined in: [export/TooltipManager.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/TooltipManager.ts#L43)
 
 Get the tooltip DOM element.
 
@@ -96,7 +96,7 @@ Get the tooltip DOM element.
 
 > **handleMouseLeave**(): `void`
 
-Defined in: [export/TooltipManager.ts:88](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/TooltipManager.ts#L88)
+Defined in: [export/TooltipManager.ts:88](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/TooltipManager.ts#L88)
 
 Called when the mouse leaves the canvas.
 
@@ -110,7 +110,7 @@ Called when the mouse leaves the canvas.
 
 > **handleMouseMove**(`e`): `void`
 
-Defined in: [export/TooltipManager.ts:61](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/TooltipManager.ts#L61)
+Defined in: [export/TooltipManager.ts:61](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/TooltipManager.ts#L61)
 
 Called on mouse move: decides whether to show a tooltip for the
 part under the cursor.
@@ -131,7 +131,7 @@ part under the cursor.
 
 > **hide**(): `void`
 
-Defined in: [export/TooltipManager.ts:118](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/export/TooltipManager.ts#L118)
+Defined in: [export/TooltipManager.ts:118](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/export/TooltipManager.ts#L118)
 
 Hide the tooltip.
 

@@ -5,7 +5,7 @@ prev: false
 title: "TextEditingTool"
 ---
 
-Defined in: [tool/TextEditingTool.ts:12](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L12)
+Defined in: [tool/TextEditingTool.ts:12](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L12)
 
 Tool for editing text in place (GoJS-compatible).
 Double-clicking a node with an `editable` TextBlock in its visual tree
@@ -37,7 +37,7 @@ shows an HTML input overlay for editing that TextBlock's text.
 
 > **get** **diagram**(): [`Diagram`](/en/reference/api/graphojs/classes/diagram/) \| `null`
 
-Defined in: [tool/Tool.ts:13](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L13)
+Defined in: [tool/Tool.ts:13](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L13)
 
 Get the diagram this tool belongs to.
 
@@ -49,7 +49,7 @@ Get the diagram this tool belongs to.
 
 > **set** **diagram**(`value`): `void`
 
-Defined in: [tool/Tool.ts:18](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L18)
+Defined in: [tool/Tool.ts:18](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L18)
 
 Set the diagram this tool belongs to.
 
@@ -75,7 +75,7 @@ Set the diagram this tool belongs to.
 
 > **get** **editingNode**(): [`Node`](/en/reference/api/graphojs/classes/node/) \| `null`
 
-Defined in: [tool/TextEditingTool.ts:24](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L24)
+Defined in: [tool/TextEditingTool.ts:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L24)
 
 Get the node currently being edited.
 
@@ -91,7 +91,7 @@ Get the node currently being edited.
 
 > **get** **editingTextBlock**(): [`TextBlock`](/en/reference/api/graphojs/classes/textblock/) \| `null`
 
-Defined in: [tool/TextEditingTool.ts:29](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L29)
+Defined in: [tool/TextEditingTool.ts:29](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L29)
 
 Get the TextBlock currently being edited, or null.
 
@@ -107,7 +107,7 @@ Get the TextBlock currently being edited, or null.
 
 > **get** **isActive**(): `boolean`
 
-Defined in: [tool/Tool.ts:23](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L23)
+Defined in: [tool/Tool.ts:23](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L23)
 
 Check if this tool is currently active.
 
@@ -127,7 +127,7 @@ Check if this tool is currently active.
 
 > **get** **isEditing**(): `boolean`
 
-Defined in: [tool/TextEditingTool.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L19)
+Defined in: [tool/TextEditingTool.ts:19](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L19)
 
 Whether text editing is currently active.
 
@@ -143,7 +143,7 @@ Whether text editing is currently active.
 
 > **get** **isEnabled**(): `boolean`
 
-Defined in: [tool/Tool.ts:28](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L28)
+Defined in: [tool/Tool.ts:28](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L28)
 
 Check if this tool is enabled.
 
@@ -155,7 +155,7 @@ Check if this tool is enabled.
 
 > **set** **isEnabled**(`value`): `void`
 
-Defined in: [tool/Tool.ts:33](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L33)
+Defined in: [tool/Tool.ts:33](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L33)
 
 Enable or disable this tool.
 
@@ -181,7 +181,7 @@ Enable or disable this tool.
 
 > **get** **textBlock**(): [`TextBlock`](/en/reference/api/graphojs/classes/textblock/) \| `null`
 
-Defined in: [tool/TextEditingTool.ts:34](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L34)
+Defined in: [tool/TextEditingTool.ts:34](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L34)
 
 GoJS-compatible: The TextBlock currently being edited, or null.
 
@@ -195,7 +195,7 @@ GoJS-compatible: The TextBlock currently being edited, or null.
 
 > **cancelEditing**(): `void`
 
-Defined in: [tool/TextEditingTool.ts:148](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L148)
+Defined in: [tool/TextEditingTool.ts:148](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L148)
 
 Cancel editing without committing.
 
@@ -209,7 +209,7 @@ Cancel editing without committing.
 
 > **canStart**(`_toolName`, `_e`): `boolean`
 
-Defined in: [tool/Tool.ts:105](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L105)
+Defined in: [tool/Tool.ts:105](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L105)
 
 GoJS-compatible: Determines whether this tool should start given the current event.
 Override in subclasses to return true when this tool should handle the event.
@@ -238,7 +238,7 @@ Override in subclasses to return true when this tool should handle the event.
 
 > **doActivate**(): `void`
 
-Defined in: [tool/Tool.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L38)
+Defined in: [tool/Tool.ts:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L38)
 
 Called when the tool becomes the active tool.
 
@@ -256,7 +256,7 @@ Called when the tool becomes the active tool.
 
 > **doClick**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:78](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L78)
+Defined in: [tool/Tool.ts:78](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L78)
 
 Called when a click event occurs.
 
@@ -280,7 +280,7 @@ Called when a click event occurs.
 
 > **doDeactivate**(): `void`
 
-Defined in: [tool/TextEditingTool.ts:231](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L231)
+Defined in: [tool/TextEditingTool.ts:231](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L231)
 
 Called when the tool is deactivated.
 
@@ -298,7 +298,7 @@ Called when the tool is deactivated.
 
 > **doDoubleClick**(`e`): `void`
 
-Defined in: [tool/TextEditingTool.ts:222](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L222)
+Defined in: [tool/TextEditingTool.ts:222](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L222)
 
 Begin editing the node under the cursor on double-click.
 
@@ -322,7 +322,7 @@ Begin editing the node under the cursor on double-click.
 
 > **doKeyDown**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:68](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L68)
+Defined in: [tool/Tool.ts:68](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L68)
 
 Called when a key down event occurs.
 
@@ -346,7 +346,7 @@ Called when a key down event occurs.
 
 > **doKeyUp**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:73](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L73)
+Defined in: [tool/Tool.ts:73](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L73)
 
 Called when a key up event occurs.
 
@@ -370,7 +370,7 @@ Called when a key up event occurs.
 
 > **doMouseDown**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:48](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L48)
+Defined in: [tool/Tool.ts:48](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L48)
 
 Called when a mouse down event occurs.
 
@@ -394,7 +394,7 @@ Called when a mouse down event occurs.
 
 > **doMouseMove**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:53](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L53)
+Defined in: [tool/Tool.ts:53](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L53)
 
 Called when a mouse move event occurs.
 
@@ -418,7 +418,7 @@ Called when a mouse move event occurs.
 
 > **doMouseUp**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:58](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L58)
+Defined in: [tool/Tool.ts:58](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L58)
 
 Called when a mouse up event occurs.
 
@@ -442,7 +442,7 @@ Called when a mouse up event occurs.
 
 > **doMouseWheel**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:63](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L63)
+Defined in: [tool/Tool.ts:63](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L63)
 
 Called when a mouse wheel event occurs.
 
@@ -466,7 +466,7 @@ Called when a mouse wheel event occurs.
 
 > **doStart**(`_e`): `void`
 
-Defined in: [tool/Tool.ts:90](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L90)
+Defined in: [tool/Tool.ts:90](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L90)
 
 GoJS-compatible: Called when a tool operation starts (after canStart returns true).
 
@@ -490,7 +490,7 @@ GoJS-compatible: Called when a tool operation starts (after canStart returns tru
 
 > **doStop**(): `void`
 
-Defined in: [tool/Tool.ts:97](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L97)
+Defined in: [tool/Tool.ts:97](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L97)
 
 GoJS-compatible: Called when a tool operation stops.
 
@@ -508,7 +508,7 @@ GoJS-compatible: Called when a tool operation stops.
 
 > **editNode**(`node`): `void`
 
-Defined in: [tool/TextEditingTool.ts:59](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L59)
+Defined in: [tool/TextEditingTool.ts:59](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L59)
 
 Start editing the text of a node (its editable TextBlock or its label).
 
@@ -528,7 +528,7 @@ Start editing the text of a node (its editable TextBlock or its label).
 
 > **findEditableTextBlock**(`node`): [`TextBlock`](/en/reference/api/graphojs/classes/textblock/) \| `null`
 
-Defined in: [tool/TextEditingTool.ts:39](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L39)
+Defined in: [tool/TextEditingTool.ts:39](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L39)
 
 Find the first editable TextBlock in a node's visual tree.
 
@@ -548,7 +548,7 @@ Find the first editable TextBlock in a node's visual tree.
 
 > **findPartAt**(`x`, `y`): [`Part`](/en/reference/api/graphojs/classes/part/) \| `null`
 
-Defined in: [tool/Tool.ts:110](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L110)
+Defined in: [tool/Tool.ts:110](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L110)
 
 Find a part at the given diagram coordinates.
 
@@ -576,7 +576,7 @@ Find a part at the given diagram coordinates.
 
 > **getDiagramPoint**(`e`): `object`
 
-Defined in: [tool/Tool.ts:116](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/Tool.ts#L116)
+Defined in: [tool/Tool.ts:116](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/Tool.ts#L116)
 
 Get the mouse position in diagram coordinates.
 
@@ -608,7 +608,7 @@ Get the mouse position in diagram coordinates.
 
 > **stopEditing**(`commit?`): `void`
 
-Defined in: [tool/TextEditingTool.ts:80](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/tool/TextEditingTool.ts#L80)
+Defined in: [tool/TextEditingTool.ts:80](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/tool/TextEditingTool.ts#L80)
 
 Stop editing and commit the current value.
 

@@ -5,7 +5,7 @@ prev: false
 title: "Size"
 ---
 
-Defined in: [geometry/Size.ts:4](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L4)
+Defined in: [geometry/Size.ts:4](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L4)
 
 A 2D size with width and height.
 
@@ -15,7 +15,7 @@ A 2D size with width and height.
 
 > **new Size**(`width`, `height`): `Size`
 
-Defined in: [geometry/Size.ts:8](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L8)
+Defined in: [geometry/Size.ts:8](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L8)
 
 #### Parameters
 
@@ -37,7 +37,7 @@ Defined in: [geometry/Size.ts:8](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **height**: `number`
 
-Defined in: [geometry/Size.ts:6](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L6)
+Defined in: [geometry/Size.ts:6](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L6)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [geometry/Size.ts:6](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **width**: `number`
 
-Defined in: [geometry/Size.ts:5](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L5)
+Defined in: [geometry/Size.ts:5](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L5)
 
 ## Methods
 
@@ -53,7 +53,7 @@ Defined in: [geometry/Size.ts:5](https://github.com/rroblf01/graphojs/blob/da00c
 
 > **area**(): `number`
 
-Defined in: [geometry/Size.ts:86](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L86)
+Defined in: [geometry/Size.ts:86](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L86)
 
 Get the area of this size.
 
@@ -67,7 +67,7 @@ Get the area of this size.
 
 > **aspectRatio**(): `number`
 
-Defined in: [geometry/Size.ts:96](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L96)
+Defined in: [geometry/Size.ts:96](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L96)
 
 Get the aspect ratio (width / height). Returns Infinity if height is 0.
 
@@ -81,7 +81,7 @@ Get the aspect ratio (width / height). Returns Infinity if height is 0.
 
 > **clone**(): `Size`
 
-Defined in: [geometry/Size.ts:51](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L51)
+Defined in: [geometry/Size.ts:51](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L51)
 
 Return a copy of this size.
 
@@ -95,7 +95,7 @@ Return a copy of this size.
 
 > **contains**(`other`): `boolean`
 
-Defined in: [geometry/Size.ts:102](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L102)
+Defined in: [geometry/Size.ts:102](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L102)
 
 Check if this size contains another size.
 
@@ -115,7 +115,7 @@ Check if this size contains another size.
 
 > **copy**(): `Size`
 
-Defined in: [geometry/Size.ts:56](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L56)
+Defined in: [geometry/Size.ts:56](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L56)
 
 GoJS-compatible: Return a copy of this size.
 
@@ -129,7 +129,7 @@ GoJS-compatible: Return a copy of this size.
 
 > **equals**(`other`): `boolean`
 
-Defined in: [geometry/Size.ts:38](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L38)
+Defined in: [geometry/Size.ts:38](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L38)
 
 Check if this size equals another size.
 
@@ -149,7 +149,7 @@ Check if this size equals another size.
 
 > **equalsApprox**(`other`, `tolerance?`): `boolean`
 
-Defined in: [geometry/Size.ts:43](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L43)
+Defined in: [geometry/Size.ts:43](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L43)
 
 Check if this size is approximately equal to another within a tolerance.
 
@@ -173,7 +173,7 @@ Check if this size is approximately equal to another within a tolerance.
 
 > **intersection**(`other`): `Size`
 
-Defined in: [geometry/Size.ts:112](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L112)
+Defined in: [geometry/Size.ts:112](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L112)
 
 Get the maximum size that fits within both sizes.
 
@@ -193,7 +193,7 @@ Get the maximum size that fits within both sizes.
 
 > **isEmpty**(): `boolean`
 
-Defined in: [geometry/Size.ts:76](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L76)
+Defined in: [geometry/Size.ts:76](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L76)
 
 Check if this size is empty (width or height is 0).
 
@@ -207,7 +207,7 @@ Check if this size is empty (width or height is 0).
 
 > **isSquare**(): `boolean`
 
-Defined in: [geometry/Size.ts:81](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L81)
+Defined in: [geometry/Size.ts:81](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L81)
 
 Check if this size is a square.
 
@@ -221,7 +221,7 @@ Check if this size is a square.
 
 > **isValid**(): `boolean`
 
-Defined in: [geometry/Size.ts:66](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L66)
+Defined in: [geometry/Size.ts:66](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L66)
 
 Check if this size is valid (non-negative).
 
@@ -235,7 +235,7 @@ Check if this size is valid (non-negative).
 
 > **isZero**(): `boolean`
 
-Defined in: [geometry/Size.ts:71](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L71)
+Defined in: [geometry/Size.ts:71](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L71)
 
 Check if this size is the zero size.
 
@@ -249,7 +249,7 @@ Check if this size is the zero size.
 
 > **perimeter**(): `number`
 
-Defined in: [geometry/Size.ts:91](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L91)
+Defined in: [geometry/Size.ts:91](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L91)
 
 Get the perimeter of this size.
 
@@ -263,7 +263,7 @@ Get the perimeter of this size.
 
 > **scale**(`factor`): `Size`
 
-Defined in: [geometry/Size.ts:61](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L61)
+Defined in: [geometry/Size.ts:61](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L61)
 
 Scale this size by a factor.
 
@@ -283,7 +283,7 @@ Scale this size by a factor.
 
 > **toJSON**(): `object`
 
-Defined in: [geometry/Size.ts:117](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L117)
+Defined in: [geometry/Size.ts:117](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L117)
 
 Convert to a plain object.
 
@@ -305,7 +305,7 @@ Convert to a plain object.
 
 > **toString**(): `string`
 
-Defined in: [geometry/Size.ts:127](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L127)
+Defined in: [geometry/Size.ts:127](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L127)
 
 #### Returns
 
@@ -317,7 +317,7 @@ Defined in: [geometry/Size.ts:127](https://github.com/rroblf01/graphojs/blob/da0
 
 > **union**(`other`): `Size`
 
-Defined in: [geometry/Size.ts:107](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L107)
+Defined in: [geometry/Size.ts:107](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L107)
 
 Get the minimum size that contains both sizes.
 
@@ -337,7 +337,7 @@ Get the minimum size that contains both sizes.
 
 > `static` **from**(`obj`): `Size`
 
-Defined in: [geometry/Size.ts:14](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L14)
+Defined in: [geometry/Size.ts:14](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L14)
 
 Create a Size from an object with width and height properties.
 
@@ -363,7 +363,7 @@ Create a Size from an object with width and height properties.
 
 > `static` **fromJSON**(`data`): `Size`
 
-Defined in: [geometry/Size.ts:122](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L122)
+Defined in: [geometry/Size.ts:122](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L122)
 
 Create a Size from a JSON string or object.
 
@@ -383,7 +383,7 @@ Create a Size from a JSON string or object.
 
 > `static` **of**(`value`): `Size`
 
-Defined in: [geometry/Size.ts:24](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L24)
+Defined in: [geometry/Size.ts:24](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L24)
 
 Create a square size where width === height.
 
@@ -403,7 +403,7 @@ Create a square size where width === height.
 
 > `static` **parse**(`value`): `Size`
 
-Defined in: [geometry/Size.ts:29](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L29)
+Defined in: [geometry/Size.ts:29](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L29)
 
 GoJS-compatible: Parse a string like "100, 200" or "100 200".
 
@@ -423,7 +423,7 @@ GoJS-compatible: Parse a string like "100, 200" or "100 200".
 
 > `static` **zero**(): `Size`
 
-Defined in: [geometry/Size.ts:19](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/geometry/Size.ts#L19)
+Defined in: [geometry/Size.ts:19](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/geometry/Size.ts#L19)
 
 Create a zero size (0, 0).
 

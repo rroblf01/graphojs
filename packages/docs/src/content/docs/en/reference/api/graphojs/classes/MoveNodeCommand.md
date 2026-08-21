@@ -5,7 +5,7 @@ prev: false
 title: "MoveNodeCommand"
 ---
 
-Defined in: [undo/commands.ts:192](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L192)
+Defined in: [undo/commands.ts:192](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L192)
 
 Command to move a node (batch property changes).
 
@@ -19,7 +19,7 @@ Command to move a node (batch property changes).
 
 > **new MoveNodeCommand**(`model`, `nodeKey`, `newX`, `newY`): `MoveNodeCommand`
 
-Defined in: [undo/commands.ts:201](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L201)
+Defined in: [undo/commands.ts:201](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L201)
 
 #### Parameters
 
@@ -49,7 +49,7 @@ Defined in: [undo/commands.ts:201](https://github.com/rroblf01/graphojs/blob/da0
 
 > **describe**(): `string`
 
-Defined in: [undo/commands.ts:223](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L223)
+Defined in: [undo/commands.ts:223](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L223)
 
 Get a description of the command.
 
@@ -67,7 +67,7 @@ Get a description of the command.
 
 > **execute**(): `void`
 
-Defined in: [undo/commands.ts:208](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L208)
+Defined in: [undo/commands.ts:208](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L208)
 
 Execute the command.
 
@@ -85,7 +85,7 @@ Execute the command.
 
 > **undo**(): `void`
 
-Defined in: [undo/commands.ts:218](https://github.com/rroblf01/graphojs/blob/da00c0557b629182a306e06cb15ac4040763a706/packages/core/src/undo/commands.ts#L218)
+Defined in: [undo/commands.ts:218](https://github.com/rroblf01/graphojs/blob/aa122e30a116d47c3df4e406066e615bceb89e4e/packages/core/src/undo/commands.ts#L218)
 
 Undo the command.
 

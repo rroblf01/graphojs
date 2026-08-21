@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { List } from '../../src/collections/List.ts';
-import { Set as GoSet } from '../../src/collections/Set.ts';
 import { Map as GoMap } from '../../src/collections/Map.ts';
+import { Set as GoSet } from '../../src/collections/Set.ts';
 
 describe('List', () => {
   it('constructs from an iterable and supports basic access', () => {

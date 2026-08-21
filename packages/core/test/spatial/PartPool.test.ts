@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { PartPool } from '../../src/spatial/PartPool.ts';
-import { VirtualizationManager } from '../../src/spatial/VirtualizationManager.ts';
+import { describe, expect, it } from 'vitest';
 import { Rect } from '../../src/geometry/Rect.ts';
 import { Node } from '../../src/parts/Node.ts';
+import { PartPool } from '../../src/spatial/PartPool.ts';
+import { VirtualizationManager } from '../../src/spatial/VirtualizationManager.ts';
 
 describe('PartPool', () => {
   it('should create with defaults', () => {

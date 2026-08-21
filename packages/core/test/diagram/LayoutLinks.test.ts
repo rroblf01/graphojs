@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
 import { CircularLayout } from '../../src/layout/CircularLayout.ts';
 import { GridLayout } from '../../src/layout/GridLayout.ts';

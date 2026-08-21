@@ -1,6 +1,7 @@
 // GraphoJS: organigrama con TreeLayout y botones para colapsar/expandir ramas.
-import * as go from 'graphojs/go';
+
 import { TreeExpanderButton } from 'graphojs';
+import * as go from 'graphojs/go';
 
 const $ = go.GraphObject.make;
 

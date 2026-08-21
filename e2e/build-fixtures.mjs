@@ -1,5 +1,5 @@
-import { fileURLToPath } from 'node:url';
 import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const esbuild = (

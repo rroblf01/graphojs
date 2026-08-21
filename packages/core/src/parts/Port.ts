@@ -1,5 +1,5 @@
-import type { Spot } from '../geometry/Spot.ts';
 import type { Size } from '../geometry/Size.ts';
+import type { Spot } from '../geometry/Spot.ts';
 
 export type PortAlignment = 'left' | 'right' | 'top' | 'bottom' | 'center' | 'custom';
 

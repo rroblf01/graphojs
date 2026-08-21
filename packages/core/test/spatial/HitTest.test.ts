@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
 
 function mockContext() {

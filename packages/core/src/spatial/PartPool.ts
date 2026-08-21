@@ -1,7 +1,7 @@
-import { Node } from '../parts/Node.ts';
-import { Link } from '../parts/Link.ts';
-import { Group } from '../parts/Group.ts';
 import type { Rect } from '../geometry/Rect.ts';
+import { Group } from '../parts/Group.ts';
+import { Link } from '../parts/Link.ts';
+import { Node } from '../parts/Node.ts';
 
 /**
  * A pool of reusable parts for off-screen rendering virtualization.

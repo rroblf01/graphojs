@@ -1,7 +1,7 @@
 import type { Rect } from '../geometry/Rect.ts';
 import { Rect as RectClass } from '../geometry/Rect.ts';
-import { QuadTree } from './QuadTree.ts';
 import type { Part } from '../parts/Part.ts';
+import { QuadTree } from './QuadTree.ts';
 
 /**
  * Manages viewport culling and spatial indexing for a diagram.

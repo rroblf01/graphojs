@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { Port, Ports } from '../../src/parts/Port.ts';
-import { Node } from '../../src/parts/Node.ts';
-import { Link } from '../../src/parts/Link.ts';
+import { describe, expect, it } from 'vitest';
 import { Spot } from '../../src/geometry/Spot.ts';
+import { Link } from '../../src/parts/Link.ts';
+import { Node } from '../../src/parts/Node.ts';
+import { Port, Ports } from '../../src/parts/Port.ts';
 
 describe('Port', () => {
   it('should create with name', () => {

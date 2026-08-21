@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
-import { VirtualizationManager } from '../../src/spatial/VirtualizationManager.ts';
 import { Rect } from '../../src/geometry/Rect.ts';
 import { Node } from '../../src/parts/Node.ts';
+import { VirtualizationManager } from '../../src/spatial/VirtualizationManager.ts';
 
 function mockContext() {
   return {

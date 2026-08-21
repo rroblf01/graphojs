@@ -89,7 +89,13 @@ test('ActionTool actually fires on a real mouse click (dispatch wiring)', async 
   );
 
   const box = await page.evaluate(() => {
-    const d = (window as unknown as { __diagram: any }).__diagram;
+    interface MinimalDiagram {
+      findNodeForKey(key: number): {
+        bounds: { x: number; y: number; width: number; height: number };
+      };
+      getViewport(): { x: number; y: number; scale: number };
+    }
+    const d = (window as unknown as { __diagram: MinimalDiagram }).__diagram;
     const node = d.findNodeForKey(1);
     const v = d.getViewport();
     const rect = document.querySelector('#actionDiv canvas')!.getBoundingClientRect();

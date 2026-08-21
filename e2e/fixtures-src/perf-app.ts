@@ -1,10 +1,10 @@
 import {
-  GraphObject,
-  GraphLinksModel,
   Diagram as GoDiagram,
+  GraphLinksModel,
+  GraphObject,
+  Panel,
   Shape,
   TextBlock,
-  Panel,
 } from 'graphojs';
 
 const $ = GraphObject.make;

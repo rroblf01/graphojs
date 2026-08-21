@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
-import { ContextMenu, createDefaultContextMenu } from '../../src/export/ContextMenu.ts';
-import type { ContextMenuItem } from '../../src/export/ContextMenu.ts';
+import { describe, expect, it, vi } from 'vitest';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import type { ContextMenuItem } from '../../src/export/ContextMenu.ts';
+import { ContextMenu, createDefaultContextMenu } from '../../src/export/ContextMenu.ts';
 import { Node } from '../../src/parts/Node.ts';
 
 function createMockDiagram(): Diagram {

@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
-import { DiagramEvents, createDiagramEvents } from '../../src/diagram/DiagramEvents.ts';
-import type { DiagramEvent, DiagramEventType } from '../../src/diagram/DiagramEvents.ts';
+import { describe, expect, it, vi } from 'vitest';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import type { DiagramEvent, DiagramEventType } from '../../src/diagram/DiagramEvents.ts';
+import { createDiagramEvents, DiagramEvents } from '../../src/diagram/DiagramEvents.ts';
 import { Node } from '../../src/parts/Node.ts';
 
 function mockDiagram(): Diagram {

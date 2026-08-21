@@ -37,9 +37,11 @@ export class Panel extends GraphObject {
   private _elements: GraphObject[] = [];
   private _padding: Margin | null = null;
   /**
-   * GoJS-compatible: the cell size for a `'Grid'`-type panel (e.g.
-   * `diagram.grid`). Only meaningful on a Grid pattern panel — never laid
-   * out or drawn as part of a normal visual tree.
+   * GoJS-compatible: the tile size for a `'Grid'`-type panel — how often
+   * its children repeat, whether used standalone (nested in a template,
+   * needs an explicit `width`/`height` to know how large an area to tile)
+   * or as `diagram.grid` (read by `Diagram.getGridPatternStyle` instead of
+   * tiled directly). Defaults to 10x10 when unset.
    */
   gridCellSize: Size | null = null;
   private _spacing = 0;
@@ -366,9 +368,10 @@ export class Panel extends GraphObject {
       case 'Table':
         return this.measureTable(padW, padH);
       case 'Grid':
-        // A Grid panel (e.g. diagram.grid) is a pattern read for its Shape
-        // children's styling — it's never actually laid out or drawn as
-        // part of a normal visual tree, so it has no real measured size.
+        // A tiled pattern has no natural content size to measure — a
+        // standalone Grid panel needs an explicit width/height (handled by
+        // the `measure()` override above) to know how large an area to
+        // tile across.
         return new SizeClass(padW, padH);
       default:
         return new SizeClass(padW, padH);
@@ -498,6 +501,53 @@ export class Panel extends GraphObject {
       case 'Table':
         this.layoutTable(ctx, contentX, contentY, contentW, contentH);
         break;
+      case 'Grid':
+        this.layoutGrid(ctx, contentX, contentY, contentW, contentH);
+        break;
+    }
+  }
+
+  /**
+   * GoJS-compatible: a `'Grid'` panel tiles its children across its own
+   * area at intervals of `gridCellSize` — used both standalone (e.g. as a
+   * decorative background nested in a template) and as the pattern read by
+   * `Diagram.grid` (see `Diagram.getGridPatternStyle`, which extracts this
+   * same styling without going through this tiling path, since the
+   * diagram background is rendered as a repeating canvas pattern instead).
+   * `Shape "LineH"`/`"LineV"` children tile as full-span lines repeating
+   * down/across; any other child tiles as a repeated stamp at its own
+   * natural size, one per cell.
+   */
+  private layoutGrid(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    const cellWidth = this.gridCellSize?.width ?? 10;
+    const cellHeight = this.gridCellSize?.height ?? 10;
+    if (cellWidth <= 0 || cellHeight <= 0) return;
+
+    for (const el of this._elements) {
+      if (el instanceof Shape && el.shape === 'lineH') {
+        for (let ty = y; ty <= y + height; ty += cellHeight) {
+          el.draw(ctx, x, ty, width, 0);
+        }
+      } else if (el instanceof Shape && el.shape === 'lineV') {
+        for (let tx = x; tx <= x + width; tx += cellWidth) {
+          el.draw(ctx, tx, y, 0, height);
+        }
+      } else {
+        const s = el.measureWithMargin();
+        for (let ty = y; ty < y + height; ty += cellHeight) {
+          for (let tx = x; tx < x + width; tx += cellWidth) {
+            el.setPosition(tx, ty);
+            el.setActualSize(s.width, s.height);
+            el.draw(ctx, tx, ty, s.width, s.height);
+          }
+        }
+      }
     }
   }
 

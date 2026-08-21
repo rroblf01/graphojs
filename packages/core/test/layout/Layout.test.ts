@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { ForceDirectedLayout } from '../../src/layout/ForceDirectedLayout.ts';
-import { TreeLayout } from '../../src/layout/TreeLayout.ts';
+import { describe, expect, it } from 'vitest';
 import { CircularLayout } from '../../src/layout/CircularLayout.ts';
+import { ForceDirectedLayout } from '../../src/layout/ForceDirectedLayout.ts';
 import { GridLayout } from '../../src/layout/GridLayout.ts';
-import { Node } from '../../src/parts/Node.ts';
+import { TreeLayout } from '../../src/layout/TreeLayout.ts';
 import { Link } from '../../src/parts/Link.ts';
+import { Node } from '../../src/parts/Node.ts';
 
 describe('ForceDirectedLayout', () => {
   it('should create with default options', () => {

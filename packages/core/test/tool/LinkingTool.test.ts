@@ -1,12 +1,12 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
+import { Link } from '../../src/parts/Link.ts';
+import { Node } from '../../src/parts/Node.ts';
 import { LinkingTool } from '../../src/tool/LinkingTool.ts';
 import { RelinkingTool } from '../../src/tool/RelinkingTool.ts';
-import { Node } from '../../src/parts/Node.ts';
-import { Link } from '../../src/parts/Link.ts';
-import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
 import { UndoManager } from '../../src/undo/UndoManager.ts';
-import type { Diagram } from '../../src/diagram/Diagram.ts';
 
 function createMockDiagram(): Diagram {
   const model = new GraphLinksModel();

@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Tool } from '../../src/tool/Tool.ts';
-import { ToolManager } from '../../src/tool/ToolManager.ts';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClickSelectingTool } from '../../src/tool/ClickSelectingTool.ts';
 import { ContextMenuTool } from '../../src/tool/ContextMenuTool.ts';
 import { DraggingTool } from '../../src/tool/DraggingTool.ts';
 import { PanningTool } from '../../src/tool/PanningTool.ts';
+import { Tool } from '../../src/tool/Tool.ts';
+import { ToolManager } from '../../src/tool/ToolManager.ts';
 import { ZoomingTool } from '../../src/tool/ZoomingTool.ts';
 
 /** A minimal Diagram double exposing exactly what these three tools call. */

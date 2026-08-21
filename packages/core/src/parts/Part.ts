@@ -1,7 +1,7 @@
 import type { Binding } from '../binding/Binding.ts';
 import type { Diagram } from '../diagram/Diagram.ts';
 import { Point } from '../geometry/Point.ts';
-import type { Rect } from '../geometry/Rect.ts';
+import { Rect } from '../geometry/Rect.ts';
 import type { Size } from '../geometry/Size.ts';
 import type { Layer } from '../layer/Layer.ts';
 import { LayerNames } from '../layer/Layer.ts';
@@ -12,10 +12,17 @@ import { Panel } from '../panel/Panel.ts';
 import type { Adornment, AdornmentName } from './Adornment.ts';
 import type { Group } from './Group.ts';
 
+let nextAutoKey = 0;
+
 /**
- * Base class for all visual parts in a diagram.
+ * Base class for all visual parts in a diagram (`Node`/`Link`/`Group`
+ * specialize it, but it's directly instantiable too — GoJS-compatible: a
+ * bare `new go.Part()` is a decoration outside the model, e.g. a frame or
+ * watermark, added with `Diagram.add()` and never appearing in
+ * `model.nodeDataArray`. `key` auto-assigns a unique negative number when
+ * omitted, since a loose Part has no model row to key off of.
  */
-export abstract class Part {
+export class Part {
   private _key: NodeKey;
   private _bounds: Rect;
   private _visible = true;
@@ -57,9 +64,9 @@ export abstract class Part {
   private _maxSize = { width: Infinity, height: Infinity };
   private _desiredSize: { width: number; height: number } | null = null;
 
-  constructor(key: NodeKey, bounds: Rect) {
-    this._key = key;
-    this._bounds = bounds;
+  constructor(key?: NodeKey, bounds?: Rect) {
+    this._key = key ?? `__part${nextAutoKey++}`;
+    this._bounds = bounds ?? Rect.zero();
   }
 
   get key(): NodeKey {

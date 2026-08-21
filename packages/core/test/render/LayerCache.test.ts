@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll } from 'vitest';
-import { LayerCache, createLayerCache } from '../../src/render/LayerCache.ts';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { Layer, LayerNames } from '../../src/layer/Layer.ts';
-import { Node } from '../../src/parts/Node.ts';
-import { Link } from '../../src/parts/Link.ts';
 import { Group } from '../../src/parts/Group.ts';
+import { Link } from '../../src/parts/Link.ts';
+import { Node } from '../../src/parts/Node.ts';
+import { createLayerCache, LayerCache } from '../../src/render/LayerCache.ts';
 
 function mockContext() {
   return {

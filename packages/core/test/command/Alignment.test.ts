@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { CommandHandler } from '../../src/command/CommandHandler.ts';
-import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
-import { UndoManager } from '../../src/undo/UndoManager.ts';
-import { Node } from '../../src/parts/Node.ts';
-import type { Link } from '../../src/parts/Link.ts';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
+import type { Link } from '../../src/parts/Link.ts';
+import { Node } from '../../src/parts/Node.ts';
+import { UndoManager } from '../../src/undo/UndoManager.ts';
 
 function createMockDiagram(): Diagram {
   const model = new GraphLinksModel();

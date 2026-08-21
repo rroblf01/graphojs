@@ -1,16 +1,16 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import {
-  linear,
-  easeInQuad,
-  easeOutQuad,
-  easeInOutQuad,
-  easeInCubic,
-  easeOutCubic,
-  easeInOutCubic,
-  getEasing,
-} from '../../src/animation/Easing.ts';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Animation } from '../../src/animation/Animation.ts';
 import { AnimationManager, tween } from '../../src/animation/AnimationManager.ts';
+import {
+  easeInCubic,
+  easeInOutCubic,
+  easeInOutQuad,
+  easeInQuad,
+  easeOutCubic,
+  easeOutQuad,
+  getEasing,
+  linear,
+} from '../../src/animation/Easing.ts';
 
 const rafCallbacks = new Map<number, FrameRequestCallback>();
 let rafId = 0;

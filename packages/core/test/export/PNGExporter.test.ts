@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll } from 'vitest';
-import { PNGExporter, createPNGExporter, exportToPNG } from '../../src/export/PNGExporter.ts';
-import { Node } from '../../src/parts/Node.ts';
-import { Layer, LayerNames } from '../../src/layer/Layer.ts';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { createPNGExporter, exportToPNG, PNGExporter } from '../../src/export/PNGExporter.ts';
+import { Layer, LayerNames } from '../../src/layer/Layer.ts';
+import { Node } from '../../src/parts/Node.ts';
 
 function mockContext() {
   return {

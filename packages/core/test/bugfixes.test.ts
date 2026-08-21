@@ -19,6 +19,7 @@ import {
   LinkReshapingTool,
   Node,
   Panel,
+  Part,
   Picture,
   Point,
   Rect as RectClass,
@@ -3633,5 +3634,142 @@ describe('O36: GraphObject.width/height fell back to actualSize instead of NaN w
     // The label's real measured width must reflect the actual string, not
     // the tiny floor value a stale, locked-in actualSize would produce.
     expect(label.measure().width).toBeGreaterThan(40);
+  });
+});
+
+describe('O37: standalone Panel "Grid" never tiled its children (only diagram.grid styling read it)', () => {
+  it('tiles a Shape "LineH" child across the panel height at gridCellSize intervals', () => {
+    const $ = GraphObject.make;
+    const grid = $(Panel, 'Grid', { gridCellSize: new Size(10, 10) }, $(Shape, 'LineH'));
+    grid.width = 40;
+    grid.height = 30;
+    const ctx = mockContext();
+    grid.draw(ctx, 0, 0, 40, 30);
+    // One horizontal line per 10px row across a 30px-tall panel: y=0,10,20,30 -> 4 calls.
+    expect((ctx.moveTo as ReturnType<typeof vi.fn>).mock.calls.length).toBe(4);
+  });
+
+  it('tiles a Shape "LineV" child across the panel width at gridCellSize intervals', () => {
+    const $ = GraphObject.make;
+    const grid = $(Panel, 'Grid', { gridCellSize: new Size(10, 10) }, $(Shape, 'LineV'));
+    grid.width = 40;
+    grid.height = 30;
+    const ctx = mockContext();
+    grid.draw(ctx, 0, 0, 40, 30);
+    // One vertical line per 10px column across a 40px-wide panel: x=0,10,20,30,40 -> 5 calls.
+    expect((ctx.moveTo as ReturnType<typeof vi.fn>).mock.calls.length).toBe(5);
+  });
+
+  it('a non-line child tiles as a repeated stamp, one per cell', () => {
+    const $ = GraphObject.make;
+    const grid = $(Panel, 'Grid', { gridCellSize: new Size(10, 10) }, $(Shape, 'Circle'));
+    grid.width = 20;
+    grid.height = 20;
+    const ctx = mockContext();
+    grid.draw(ctx, 0, 0, 20, 20);
+    // 2x2 grid of cells -> the circle's ellipse() path call happens 4 times.
+    expect((ctx.ellipse as ReturnType<typeof vi.fn>).mock.calls.length).toBe(4);
+  });
+});
+
+describe('O38: Diagram.div was read-only, forcing destroy()+recreate to reparent', () => {
+  it('reparents the same diagram (model/selection intact) into a new div', () => {
+    const divA = document.createElement('div');
+    const divB = document.createElement('div');
+    document.body.appendChild(divA);
+    document.body.appendChild(divB);
+
+    const d = new Diagram({ div: divA });
+    diagrams.push(d);
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const node = d.findNodeForKey(1) as Node;
+    d.select(node);
+
+    expect(d.div).toBe(divA);
+    expect(divA.querySelector('canvas')).not.toBeNull();
+
+    d.div = divB;
+
+    expect(d.div).toBe(divB);
+    expect(divA.querySelector('canvas')).toBeNull();
+    expect(divB.querySelector('canvas')).not.toBeNull();
+    // Same instance, same model/selection state -- not recreated.
+    expect(d.findNodeForKey(1)).toBe(node);
+    expect(node.isSelected).toBe(true);
+
+    document.body.removeChild(divA);
+    document.body.removeChild(divB);
+  });
+
+  it('detaches from the DOM with div = null without destroying the diagram', () => {
+    const div = document.createElement('div');
+    document.body.appendChild(div);
+    const d = new Diagram({ div });
+    diagrams.push(d);
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+
+    d.div = null;
+
+    expect(d.div).toBeNull();
+    expect(div.querySelector('canvas')).toBeNull();
+    expect(d.isDestroyed()).toBe(false);
+    expect(d.findNodeForKey(1)).not.toBeNull();
+    expect(() => d.getCanvasBounds()).not.toThrow();
+
+    // Reattaching later still works.
+    d.div = div;
+    expect(div.querySelector('canvas')).not.toBeNull();
+
+    document.body.removeChild(div);
+  });
+});
+
+describe('O39: go.Part was abstract, forcing a go.Node workaround for decorative parts', () => {
+  it('a bare Part can be constructed directly, with an auto-assigned key', () => {
+    const p1 = new Part();
+    const p2 = new Part();
+    expect(p1.key).not.toBe(p2.key);
+    expect(p1.bounds).toEqual(new RectClass(0, 0, 0, 0));
+  });
+
+  it('Diagram.add() tracks a bare Part without touching the model', () => {
+    const d = createDiagram();
+    const part = new Part();
+    const nodeCountBefore = d.model.nodeDataArray.length;
+
+    d.add(part);
+
+    expect(d.getPart(part.key)).toBe(part);
+    expect(d.model.nodeDataArray.length).toBe(nodeCountBefore); // never entered the model
+
+    d.remove(part);
+    expect(d.getPart(part.key)).toBeUndefined();
+  });
+
+  it("Canvas2DRenderer.renderPart draws a bare Part's panel like a Node's", () => {
+    const $ = GraphObject.make;
+    const part = new Part();
+    part.bounds = new RectClass(5, 5, 40, 20);
+    part.panel = $(Panel, 'Auto', $(Shape, 'Rectangle', { fill: 'red' }));
+
+    const canvas = document.createElement('canvas');
+    const renderer = new Canvas2DRenderer(canvas);
+    const ctx = mockContext();
+    // @ts-expect-error -- swap in the mock ctx for this assertion-only render
+    renderer.ctx = ctx;
+
+    renderer.renderPart(part);
+
+    expect(ctx.fillRect).toHaveBeenCalled();
+  });
+
+  it('two decorative Parts added without an explicit key get distinct auto-keys', () => {
+    const d = createDiagram();
+    const a = new Part();
+    const b = new Part();
+    d.add(a);
+    d.add(b);
+    expect(d.getPart(a.key)).toBe(a);
+    expect(d.getPart(b.key)).toBe(b);
   });
 });

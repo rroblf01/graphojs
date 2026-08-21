@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from 'vitest';
-import { TooltipManager, createTooltipManager } from '../../src/export/TooltipManager.ts';
-import { Node } from '../../src/parts/Node.ts';
+import { describe, expect, it } from 'vitest';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { createTooltipManager, TooltipManager } from '../../src/export/TooltipManager.ts';
+import { Node } from '../../src/parts/Node.ts';
 
 function createMockDiagram(part: Node | null): Diagram {
   return {

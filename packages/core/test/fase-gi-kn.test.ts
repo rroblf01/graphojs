@@ -1,19 +1,19 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import {
-  Adornment,
-  AdornmentShape,
-  AdornmentManager,
-  createSelectionAdornment,
-  createRotationAdornment,
-} from '../src/parts/Adornment.ts';
-import { Node } from '../src/parts/Node.ts';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Rect } from '../src/geometry/Rect.ts';
 import { GridLayout } from '../src/layout/GridLayout.ts';
 import { SpotLayout } from '../src/layout/SpotLayout.ts';
 import { GraphLinksModel } from '../src/model/GraphLinksModel.ts';
 import { TreeModel } from '../src/model/TreeModel.ts';
-import { LinkPathCache, CanvasPool, throttle, debounce } from '../src/render/PerformanceCache.ts';
+import {
+  Adornment,
+  AdornmentManager,
+  AdornmentShape,
+  createRotationAdornment,
+  createSelectionAdornment,
+} from '../src/parts/Adornment.ts';
+import { Node } from '../src/parts/Node.ts';
+import { CanvasPool, debounce, LinkPathCache, throttle } from '../src/render/PerformanceCache.ts';
 
 function mockContext() {
   return {

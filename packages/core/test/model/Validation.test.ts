@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
-import type { NodeData, LinkData } from '../../src/model/Model.ts';
+import type { LinkData, NodeData } from '../../src/model/Model.ts';
 
 describe('Model validation', () => {
   it('should validate node before adding', () => {

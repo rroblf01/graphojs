@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { Margin } from '../../src/geometry/Margin.ts';
+import { Size } from '../../src/geometry/Size.ts';
+import { Spot } from '../../src/geometry/Spot.ts';
 import { Panel, panel, shape } from '../../src/panel/Panel.ts';
 import { Shape } from '../../src/panel/Shape.ts';
 import { TextBlock } from '../../src/panel/TextBlock.ts';
-import { Spot } from '../../src/geometry/Spot.ts';
-import { Size } from '../../src/geometry/Size.ts';
-import { Margin } from '../../src/geometry/Margin.ts';
 import { Node } from '../../src/parts/Node.ts';
 
 function mockContext() {

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest';
-import { Diagram, GraphLinksModel, GraphObject, Shape, TextBlock, Panel } from '../src/index.ts';
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { Diagram, GraphLinksModel, GraphObject, Panel, Shape, TextBlock } from '../src/index.ts';
 
 const diagrams: Diagram[] = [];
 

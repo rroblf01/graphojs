@@ -1,12 +1,12 @@
+import type { Diagram } from '../diagram/Diagram.ts';
 import { Rect } from '../geometry/Rect.ts';
 import { Spot } from '../geometry/Spot.ts';
 import type { NodeKey } from '../model/Model.ts';
-import { Part } from './Part.ts';
-import { Panel } from '../panel/Panel.ts';
-import { Port } from './Port.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
+import { Panel } from '../panel/Panel.ts';
 import type { Link } from './Link.ts';
-import type { Diagram } from '../diagram/Diagram.ts';
+import { Part } from './Part.ts';
+import { Port } from './Port.ts';
 
 export type NodeShape = 'rect' | 'ellipse' | 'roundedRect';
 
@@ -418,4 +418,5 @@ function pointInRoundedRect(
 }
 
 import { registerPartCtor } from '../panel/PartRegistry.ts';
+
 registerPartCtor(Node);

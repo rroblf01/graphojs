@@ -5,6 +5,8 @@
  *
  * @module graphojs-templates
  */
+
+export type { Template } from './template/Template.ts';
 export {
   basicShapes,
   dataFlowShapes,
@@ -14,4 +16,3 @@ export {
   getTemplateCategories,
   getTemplatesByCategory,
 } from './template/TemplateCollection.ts';
-export type { Template } from './template/Template.ts';

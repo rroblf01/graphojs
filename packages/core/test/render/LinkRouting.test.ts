@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
 import {
-  routeOrthogonal,
-  routeCurved,
-  routeStraight,
   computeLabelPosition,
+  routeCurved,
+  routeOrthogonal,
+  routeStraight,
 } from '../../src/render/LinkRouter.ts';
 
 function mockContext() {

@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeAll } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import {
-  PathCache,
-  TextMeasureCache,
   createPathCache,
   createTextMeasureCache,
+  PathCache,
+  TextMeasureCache,
 } from '../../src/render/RenderCache.ts';
 
 function mockContext() {

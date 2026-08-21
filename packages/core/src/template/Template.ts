@@ -1,5 +1,5 @@
-import type { ShapeType } from '../shapes/ShapeTypes.ts';
 import type { NodeData } from '../model/Model.ts';
+import type { ShapeType } from '../shapes/ShapeTypes.ts';
 
 /**
  * A template defines a reusable node configuration.

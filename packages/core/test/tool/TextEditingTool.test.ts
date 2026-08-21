@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll } from 'vitest';
-import { TextEditingTool } from '../../src/tool/TextEditingTool.ts';
-import { Node } from '../../src/parts/Node.ts';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { Node } from '../../src/parts/Node.ts';
+import { TextEditingTool } from '../../src/tool/TextEditingTool.ts';
 
 function createMockDiagram(node: Node): Diagram {
   const nodeDataArray = [{ key: node.key, label: node.label }];

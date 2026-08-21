@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../src/diagram/Diagram.ts';
-import { LinkingBaseTool } from '../src/tool/LinkingBaseTool.ts';
 import type { Node } from '../src/parts/Node.ts';
+import { LinkingBaseTool } from '../src/tool/LinkingBaseTool.ts';
 
 function mockContext() {
   return {

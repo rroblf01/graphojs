@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { Link } from '../../src/parts/Link.ts';
 import { Node } from '../../src/parts/Node.ts';
 import { Ports } from '../../src/parts/Port.ts';

@@ -1,16 +1,16 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll } from 'vitest';
-import { ActionTool } from '../../src/tool/ActionTool.ts';
-import { DraggingInfo, DraggingOptions } from '../../src/tool/DraggingOptions.ts';
-import { RowColumnDefinition } from '../../src/panel/RowColumnDefinition.ts';
-import { PositionArray } from '../../src/layout/PositionArray.ts';
-import { Size } from '../../src/geometry/Size.ts';
-import { Point } from '../../src/geometry/Point.ts';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
+import { Point } from '../../src/geometry/Point.ts';
+import { Size } from '../../src/geometry/Size.ts';
+import { PositionArray } from '../../src/layout/PositionArray.ts';
 import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
 import { Panel } from '../../src/panel/Panel.ts';
+import { RowColumnDefinition } from '../../src/panel/RowColumnDefinition.ts';
 import { Shape } from '../../src/panel/Shape.ts';
 import type { Node } from '../../src/parts/Node.ts';
+import { ActionTool } from '../../src/tool/ActionTool.ts';
+import { DraggingInfo, DraggingOptions } from '../../src/tool/DraggingOptions.ts';
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = vi.fn(

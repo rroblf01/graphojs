@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { Placeholder } from '../../src/panel/Placeholder.ts';
+import { describe, expect, it } from 'vitest';
 import { Panel } from '../../src/panel/Panel.ts';
+import { Placeholder } from '../../src/panel/Placeholder.ts';
 import { Group } from '../../src/parts/Group.ts';
 import { Node } from '../../src/parts/Node.ts';
 

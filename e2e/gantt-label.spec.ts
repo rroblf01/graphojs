@@ -23,7 +23,10 @@ test('a Gantt-bar-style left-aligned label keeps its full text (no leading-chara
   expect(errors, `page errors: ${errors.join('\n')}`).toEqual([]);
 
   const result = await page.evaluate(() => {
-    const w = window as unknown as { __diagram: any };
+    interface MinimalDiagram {
+      findNodeForKey(key: number): { findObject(name: string): { measure(): { width: number } } };
+    }
+    const w = window as unknown as { __diagram: MinimalDiagram };
     const d = w.__diagram;
 
     const canvas = document.querySelector('#ganttDiv canvas') as HTMLCanvasElement;

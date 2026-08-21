@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { Transaction, createTransaction } from '../../src/undo/Transaction.ts';
-import { UndoManager } from '../../src/undo/UndoManager.ts';
+import { describe, expect, it } from 'vitest';
 import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
 import { AddNodeCommand } from '../../src/undo/commands.ts';
+import { createTransaction, Transaction } from '../../src/undo/Transaction.ts';
+import { UndoManager } from '../../src/undo/UndoManager.ts';
 
 describe('Transaction', () => {
   it('should create with name and default size', () => {

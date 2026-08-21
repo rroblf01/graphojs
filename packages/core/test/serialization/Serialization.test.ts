@@ -1,14 +1,14 @@
-import { describe, it, expect } from 'vitest';
-import { UndoManager } from '../../src/undo/UndoManager.ts';
+import { describe, expect, it } from 'vitest';
+import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
 import {
+  AddLinkCommand,
   AddNodeCommand,
+  MoveNodeCommand,
+  RemoveLinkCommand,
   RemoveNodeCommand,
   SetNodePropertyCommand,
-  AddLinkCommand,
-  RemoveLinkCommand,
-  MoveNodeCommand,
 } from '../../src/undo/commands.ts';
-import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
+import { UndoManager } from '../../src/undo/UndoManager.ts';
 
 describe('UndoManager', () => {
   it('should start with empty stacks', () => {

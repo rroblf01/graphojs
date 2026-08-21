@@ -5,6 +5,45 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-08-21
+
+Follow-up to 1.3.0, from a fourth round of the same GoJS-to-graphojs Gantt
+migration report (which also covered the project's Vue renderer for the
+first time, and confirmed 1.3.0's text-clipping fix). No breaking changes.
+
+### Added
+
+- A standalone `Panel "Grid"` now actually tiles its children — previously
+  it only had a real effect as `diagram.grid` (read for its `Shape`
+  children's styling by `Diagram.getGridPatternStyle`); used as a normal
+  panel nested in a template, it measured to nothing and its children were
+  never laid out or drawn at all. `Shape "LineH"`/`"LineV"` children now
+  tile as full-span lines repeating at `gridCellSize` intervals (the same
+  pattern used for `diagram.grid`, now also usable as a plain decorative
+  element elsewhere in a template); any other child tiles as a repeated
+  stamp, one per cell. Requires an explicit `width`/`height` on the panel
+  (a repeating pattern has no content size of its own to auto-measure).
+- `Diagram.div` is now read/write, matching real GoJS: setting it moves
+  the same diagram instance — model, undo history, selection, viewport —
+  into a different container, or detaches it entirely with `null` (the
+  canvas and accessibility live region are removed from the DOM but the
+  diagram itself isn't destroyed and can be reattached later). Previously
+  `div` was read-only, forcing callers that need to reparent (e.g. a
+  Vue/React component remounting its host element) to `destroy()` and
+  construct a whole new `Diagram` instead.
+- `Part` is no longer `abstract` — GoJS-compatible: `new go.Part()` (with
+  an optional `key`; a unique one auto-assigns when omitted, since a loose
+  Part has no model row to key off) constructs a decorative part outside
+  the model, e.g. a frame or watermark, added with `Diagram.add()` and
+  never appearing in `model.nodeDataArray`. Previously the only way to add
+  a diagram-level decoration was to construct a `Node` and never give it
+  to the model — a working but non-obvious workaround, since `Part` had no
+  concrete use of its own. `Canvas2DRenderer` gained a matching
+  `renderPart()` (draws the Part's own `panel`, same as a Node's, minus
+  the Node-only flat-shape fallback and port-spot bookkeeping); hit-testing
+  and dragging are not wired up for bare Parts, matching their intended
+  use as static decorations.
+
 ## [1.3.0] - 2026-08-21
 
 Follow-up to 1.2.0, from the same GoJS-to-graphojs Gantt migration report,
@@ -529,6 +568,7 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.4.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.4.0
 [1.3.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.3.0
 [1.2.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.2.0
 [1.1.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.1.0

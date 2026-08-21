@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Palette drag-and-drop and Overview', () => {
   test('palette item can be dropped onto the diagram and overview renders', async ({ page }) => {

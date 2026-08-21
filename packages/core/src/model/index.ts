@@ -1,11 +1,11 @@
-export { Model } from './Model.ts';
+export type { GraphLinksModelJSON } from './GraphLinksModel.ts';
 export { GraphLinksModel } from './GraphLinksModel.ts';
 export type {
-  NodeKey,
-  NodeData,
-  LinkData,
   ChangedEvent,
   ChangedEventHandler,
+  LinkData,
   ModelJSON,
+  NodeData,
+  NodeKey,
 } from './Model.ts';
-export type { GraphLinksModelJSON } from './GraphLinksModel.ts';
+export { Model } from './Model.ts';

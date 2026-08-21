@@ -1,13 +1,13 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import {
-  routeOrthogonalAvoidingObstacles,
-  computeJumpoverPoints,
-  splitPathAtJumps,
-  type RoutingObstacle,
-} from '../../src/render/LinkRouter.ts';
-import { Rect } from '../../src/geometry/Rect.ts';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Diagram } from '../../src/diagram/Diagram.ts';
+import { Rect } from '../../src/geometry/Rect.ts';
+import {
+  computeJumpoverPoints,
+  type RoutingObstacle,
+  routeOrthogonalAvoidingObstacles,
+  splitPathAtJumps,
+} from '../../src/render/LinkRouter.ts';
 
 function mockContext() {
   return {

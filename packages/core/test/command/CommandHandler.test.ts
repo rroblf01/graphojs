@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CommandHandler, createCommandHandler } from '../../src/command/CommandHandler.ts';
-import { defaultAccessibilityMessages, type Diagram } from '../../src/diagram/Diagram.ts';
+import { type Diagram, defaultAccessibilityMessages } from '../../src/diagram/Diagram.ts';
 import { GraphLinksModel } from '../../src/model/GraphLinksModel.ts';
 import type { Link } from '../../src/parts/Link.ts';
 import { Node } from '../../src/parts/Node.ts';

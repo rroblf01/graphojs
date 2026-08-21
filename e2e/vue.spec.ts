@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('graphojs/vue mounts Diagram/Palette/Overview in a real browser', async ({ page }) => {
   const errors: string[] = [];

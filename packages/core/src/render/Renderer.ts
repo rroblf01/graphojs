@@ -2,6 +2,7 @@ import type { Rect } from '../geometry/Rect.ts';
 import type { Group } from '../parts/Group.ts';
 import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
+import type { Part } from '../parts/Part.ts';
 
 /** Line styling extracted from a `diagram.grid` pattern Panel's `Shape` children. */
 export interface GridPatternStyle {
@@ -29,6 +30,9 @@ export interface Renderer {
 
   /** Render a group (background bounds). */
   renderGroup(group: Group): void;
+
+  /** Render a bare decorative Part (not a Node/Link/Group) via its panel. */
+  renderPart(part: Part): void;
 
   /** Render a selection rectangle. */
   renderSelectionRect(rect: Rect): void;

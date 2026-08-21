@@ -4,6 +4,7 @@ import type { Panel } from '../panel/Panel.ts';
 import type { Group } from '../parts/Group.ts';
 import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
+import type { Part } from '../parts/Part.ts';
 import {
   computeLabelPosition,
   type RoutingObstacle,
@@ -584,6 +585,37 @@ export class Canvas2DRenderer implements Renderer {
       this.ctx.strokeRect(x - 2, y - 2, width + 4, height + 4);
       this.ctx.setLineDash([]);
     }
+
+    this.ctx.restore();
+  }
+
+  /**
+   * GoJS-compatible: render a bare decorative `Part` (not a Node/Link/
+   * Group) — e.g. a frame or watermark added via `Diagram.add()` outside
+   * the model. Only draws if it has a `panel` (from a template); a
+   * decorative Part with no panel has nothing to render.
+   */
+  renderPart(part: Part): void {
+    if (!part.visible) return;
+
+    const { x, y, width, height } = part.bounds;
+    const panel = part.panel;
+    if (!panel) return;
+
+    this.ctx.save();
+    this.ctx.globalAlpha = part.opacity;
+
+    if (part.angle !== 0) {
+      const cx = x + width / 2;
+      const cy = y + height / 2;
+      this.ctx.translate(cx, cy);
+      this.ctx.rotate((part.angle * Math.PI) / 180);
+      this.ctx.translate(-cx, -cy);
+    }
+
+    panel.setPosition(0, 0);
+    panel.setActualSize(width, height);
+    panel.draw(this.ctx, x, y, width, height);
 
     this.ctx.restore();
   }

@@ -4,9 +4,9 @@
  * official GoJS "Getting Started" tutorial, but imports from graphojs.
  * If this passes, GoJS code can migrate with only the import path changed.
  */
-import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest';
-import * as go from '../src/go.ts';
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { Diagram } from '../src/go.ts';
+import * as go from '../src/go.ts';
 
 const diagrams: Diagram[] = [];
 

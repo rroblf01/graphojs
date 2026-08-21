@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('large graph (5000 nodes) performance in a real browser', async ({ page }) => {
   const errors: string[] = [];

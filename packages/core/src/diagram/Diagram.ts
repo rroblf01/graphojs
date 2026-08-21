@@ -218,11 +218,12 @@ export class Diagram {
   static readonly AlignScale = 'Scale';
   static readonly AlignFill = 'Fill';
 
-  private container: HTMLDivElement;
+  private container: HTMLDivElement | null;
   private canvas: HTMLCanvasElement;
   private renderer: Renderer;
   private _model: GraphLinksModel;
-  private parts: Map<NodeKey, Node | Link | Group> = new Map();
+  private parts: Map<NodeKey, Node | Link | Group | Part> = new Map();
+  private _looseParts: Map<NodeKey, Part> = new Map();
   private _nodes: Map<NodeKey, Node> = new Map();
   private _groups: Map<NodeKey, Group> = new Map();
   private _links: Map<NodeKey, Link> = new Map();
@@ -1541,7 +1542,7 @@ export class Diagram {
       this.renderer.resize();
       this.invalidate();
     });
-    this.resizeObserver.observe(this.container);
+    if (this.container) this.resizeObserver.observe(this.container);
 
     // Native palette drag-and-drop
     this.addCanvasListener('dragover', (e) => {
@@ -1780,7 +1781,7 @@ export class Diagram {
    * Link keys live in a separate namespace (prefixed) to avoid colliding
    * with node keys.
    */
-  private getPartByKey(key: NodeKey): Node | Link | Group | undefined {
+  private getPartByKey(key: NodeKey): Node | Link | Group | Part | undefined {
     return this.parts.get(key) ?? this.parts.get(this.linkPartKey(key));
   }
 
@@ -2201,15 +2202,17 @@ export class Diagram {
     }
   }
 
-  private removePartByKey(key: NodeKey, type?: 'node' | 'link' | 'group'): void {
+  private removePartByKey(key: NodeKey, type?: 'node' | 'link' | 'group' | 'part'): void {
     // Resolve by type to avoid node/link key namespace collisions
-    let part: Node | Link | Group | undefined;
+    let part: Node | Link | Group | Part | undefined;
     if (type === 'link') {
       part = this._links.get(key) ?? (this.parts.get(this.linkPartKey(key)) as Link | undefined);
     } else if (type === 'group') {
       part = this._groups.get(key);
     } else if (type === 'node') {
       part = this._nodes.get(key);
+    } else if (type === 'part') {
+      part = this._looseParts.get(key);
     } else {
       part = this.getPartByKey(key);
     }
@@ -2235,6 +2238,8 @@ export class Diagram {
       this.fireDiagramEvent('PartRemoved', part);
       this.markHitIndexDirty();
       return;
+    } else {
+      this._looseParts.delete(key);
     }
     this.parts.delete(key);
     this.selectedParts.delete(part);
@@ -2335,7 +2340,7 @@ export class Diagram {
   }
 
   /** Get a part by key. */
-  getPart(key: NodeKey): Node | Link | Group | undefined {
+  getPart(key: NodeKey): Node | Link | Group | Part | undefined {
     return this.getPartByKey(key);
   }
 
@@ -2648,6 +2653,7 @@ export class Diagram {
 
   /** GoJS-compatible: Get the bounds of the diagram canvas in page/screen coordinates. */
   getCanvasBounds(): { x: number; y: number; width: number; height: number } {
+    if (!this.container) return { x: 0, y: 0, width: 0, height: 0 };
     const rect = this.container.getBoundingClientRect();
     return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
   }
@@ -2845,13 +2851,35 @@ export class Diagram {
     this.invalidate();
   }
 
-  /** GoJS-compatible: The HTML element this diagram renders into. */
-  get div(): HTMLDivElement {
+  /** GoJS-compatible: The HTML element this diagram renders into, or `null` if detached. */
+  get div(): HTMLDivElement | null {
     return this.container;
   }
 
-  /** GoJS-compatible: Get the HTML element this diagram renders into. */
-  getDiagramDiv(): HTMLDivElement {
+  /**
+   * GoJS-compatible: reparent this diagram (the same instance, model, undo
+   * history, selection, and viewport) into a different div, or detach it
+   * from the DOM entirely with `null`. Real GoJS's `div` is read/write for
+   * exactly this: moving a diagram between containers (e.g. a framework
+   * remounting its host element) without recreating it.
+   */
+  set div(value: HTMLDivElement | null) {
+    if (value === this.container) return;
+    this.resizeObserver?.disconnect();
+    this.canvas.remove();
+    this.liveRegion?.remove();
+    this.container = value;
+    if (value) {
+      value.appendChild(this.canvas);
+      if (this.liveRegion) value.appendChild(this.liveRegion);
+      this.renderer.resize();
+      this.resizeObserver?.observe(value);
+      this.invalidate();
+    }
+  }
+
+  /** GoJS-compatible: Get the HTML element this diagram renders into, or `null` if detached. */
+  getDiagramDiv(): HTMLDivElement | null {
     return this.container;
   }
 
@@ -3317,6 +3345,8 @@ export class Diagram {
           target.renderLink(part);
         } else if (part instanceof Node) {
           target.renderNode(part);
+        } else {
+          target.renderPart(part);
         }
       }
 
@@ -3484,8 +3514,8 @@ export class Diagram {
   findPartsInRect(
     rect: { x: number; y: number; width: number; height: number },
     _partialInclusion = true,
-  ): (Node | Link | Group)[] {
-    const result: (Node | Link | Group)[] = [];
+  ): (Node | Link | Group | Part)[] {
+    const result: (Node | Link | Group | Part)[] = [];
     const r = new RectClass(rect.x, rect.y, rect.width, rect.height);
     for (const part of this.parts.values()) {
       if (part.bounds.intersects(r)) {
@@ -3520,6 +3550,12 @@ export class Diagram {
       if (linkData && !this.getLinkKeyOf(linkData)) {
         this.getLinksArray();
       }
+    } else {
+      // GoJS-compatible: a bare decorative Part (e.g. a frame or watermark)
+      // never enters the model — it's tracked and rendered, but has no
+      // node/link data to sync.
+      this._looseParts.set(key, part);
+      this.parts.set(key, part);
     }
     const layer =
       this.getLayer(part.layerName ?? LayerNames.Default) ?? this.getLayer(LayerNames.Default);
@@ -3557,7 +3593,13 @@ export class Diagram {
     }
     this.removePartByKey(
       key,
-      part instanceof Link ? 'link' : part instanceof Group ? 'group' : 'node',
+      part instanceof Link
+        ? 'link'
+        : part instanceof Group
+          ? 'group'
+          : part instanceof Node
+            ? 'node'
+            : 'part',
     );
   }
 
@@ -4025,7 +4067,7 @@ export class Diagram {
     this.layerCache = null;
 
     // Remove canvas and accessibility live region from DOM
-    this.container.removeChild(this.canvas);
+    this.canvas.remove();
     if (this.liveRegion) {
       this.liveRegion.remove();
       this.liveRegion = null;

@@ -1,5 +1,5 @@
-import type { ShapeType } from '../shapes/ShapeTypes.ts';
 import { ShapeRenderer } from '../shapes/ShapeRenderer.ts';
+import type { ShapeType } from '../shapes/ShapeTypes.ts';
 
 /**
  * A cache for complex shape paths as Path2D objects.

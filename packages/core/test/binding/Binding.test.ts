@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { Binding, bind } from '../../src/binding/Binding.ts';
-import { Node } from '../../src/parts/Node.ts';
 import type { NodeData } from '../../src/model/Model.ts';
+import { Node } from '../../src/parts/Node.ts';
 
 describe('Binding', () => {
   it('should create with target and source properties', () => {

@@ -1,5 +1,5 @@
-import { Node } from '../parts/Node.ts';
 import { Link } from '../parts/Link.ts';
+import { Node } from '../parts/Node.ts';
 import { SetLinkPropertyCommand } from '../undo/commands.ts';
 import { LinkingBaseTool } from './LinkingBaseTool.ts';
 

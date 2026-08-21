@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { RectPool, createRectPool } from '../../src/spatial/RectPool.ts';
+import { describe, expect, it } from 'vitest';
 import { Rect } from '../../src/geometry/Rect.ts';
+import { createRectPool, RectPool } from '../../src/spatial/RectPool.ts';
 
 describe('RectPool', () => {
   it('should create with defaults', () => {

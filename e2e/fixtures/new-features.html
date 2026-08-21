@@ -24,7 +24,7 @@
         try {
           out[name] = fn();
         } catch (e) {
-          errors.push(`${name}: ${e && e.stack ? e.stack : e}`);
+          errors.push(`${name}: ${e?.stack ? e.stack : e}`);
         }
       }
 
@@ -89,7 +89,7 @@
       const tooltipDiv = document.createElement('div');
       tooltipDiv.textContent = 'tip';
       const myHtmlInfo = new go.HTMLInfo();
-      myHtmlInfo.show = (obj, diagram, tt) => {
+      myHtmlInfo.show = (_obj, _diagram, _tt) => {
         document.body.appendChild(tooltipDiv);
       };
       myHtmlInfo.hide = () => {
@@ -168,7 +168,7 @@
         const tm = myDiagram.themeManager;
         tm.currentTheme = 'dark';
         const shape = node1.findObject('shape');
-        shape.theme('stroke', 'shape-stroke', go.Themes.Dark.colors['text']);
+        shape.theme('stroke', 'shape-stroke', go.Themes.Dark.colors.text);
         myDiagram.updateThemeBindings();
         return tm.currentTheme === 'dark';
       });

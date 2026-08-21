@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
-import { DragSelectingTool } from '../../src/tool/DragSelectingTool.ts';
-import { Node } from '../../src/parts/Node.ts';
+import { describe, expect, it, vi } from 'vitest';
 import type { Diagram } from '../../src/diagram/Diagram.ts';
+import { Node } from '../../src/parts/Node.ts';
+import { DragSelectingTool } from '../../src/tool/DragSelectingTool.ts';
 
 function createMockDiagram(): Diagram {
   const node1 = Node.fromPosAndSize(1, 0, 0, 100, 50);

@@ -144,7 +144,7 @@ export class ThemeManager {
       if (this.changesDivBackground) {
         const theme = this.findTheme(this._currentTheme) ?? this.findTheme(this._defaultTheme);
         const divColor = theme?.colors?.div;
-        if (divColor) diagram.div.style.backgroundColor = divColor;
+        if (divColor && diagram.div) diagram.div.style.backgroundColor = divColor;
       }
     }
   }

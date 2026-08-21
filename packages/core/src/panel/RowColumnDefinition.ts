@@ -39,11 +39,17 @@ export class RowColumnDefinition {
   }
 
   computeEffectiveSpacingTop(_first: number): number {
-    return (Number.isFinite(this.separatorStrokeWidth) ? this.separatorStrokeWidth : 0) + this.separatorPadding;
+    return (
+      (Number.isFinite(this.separatorStrokeWidth) ? this.separatorStrokeWidth : 0) +
+      this.separatorPadding
+    );
   }
 
   computeEffectiveSpacing(): number {
-    return (Number.isFinite(this.separatorStrokeWidth) ? this.separatorStrokeWidth : 0) + this.separatorPadding * 2;
+    return (
+      (Number.isFinite(this.separatorStrokeWidth) ? this.separatorStrokeWidth : 0) +
+      this.separatorPadding * 2
+    );
   }
 
   get panel(): Panel | null {

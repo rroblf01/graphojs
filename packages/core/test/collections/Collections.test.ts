@@ -140,8 +140,18 @@ describe('Set (GoJS-compatible, aliased to avoid shadowing the native Set)', () 
 
   it('map/filter/toList/toArray/copy', () => {
     const set = new GoSet([1, 2, 3]);
-    expect(set.map((n) => n * 10).toArray().sort()).toEqual([10, 20, 30]);
-    expect(set.filter((n) => n > 1).toArray().sort()).toEqual([2, 3]);
+    expect(
+      set
+        .map((n) => n * 10)
+        .toArray()
+        .sort(),
+    ).toEqual([10, 20, 30]);
+    expect(
+      set
+        .filter((n) => n > 1)
+        .toArray()
+        .sort(),
+    ).toEqual([2, 3]);
     expect(set.toList().count).toBe(3);
     const copy = set.copy();
     copy.add(99);
@@ -174,7 +184,10 @@ describe('Map (GoJS-compatible, aliased to avoid shadowing the native Map)', () 
   });
 
   it('delete/remove/clear/count', () => {
-    const map = new GoMap<string, number>([['a', 1], ['b', 2]]);
+    const map = new GoMap<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
     expect(map.count).toBe(2);
     expect(map.delete('a')).toBe(true);
     expect(map.remove('z')).toBe(false);
@@ -184,7 +197,10 @@ describe('Map (GoJS-compatible, aliased to avoid shadowing the native Map)', () 
   });
 
   it('each/map/filter/toArray operate on key/value pairs', () => {
-    const map = new GoMap<string, number>([['a', 1], ['b', 2]]);
+    const map = new GoMap<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
     const pairs: string[] = [];
     map.each(({ key, value }) => pairs.push(`${key}=${value}`));
     expect(pairs.sort()).toEqual(['a=1', 'b=2']);
@@ -198,7 +214,10 @@ describe('Map (GoJS-compatible, aliased to avoid shadowing the native Map)', () 
   });
 
   it('toKeySet/keys/values', () => {
-    const map = new GoMap<string, number>([['a', 1], ['b', 2]]);
+    const map = new GoMap<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
     expect(map.toKeySet().toArray().sort()).toEqual(['a', 'b']);
     expect([...map.keys()].sort()).toEqual(['a', 'b']);
     expect([...map.values()].sort()).toEqual([1, 2]);

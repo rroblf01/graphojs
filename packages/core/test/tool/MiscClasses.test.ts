@@ -13,29 +13,30 @@ import { Shape } from '../../src/panel/Shape.ts';
 import type { Node } from '../../src/parts/Node.ts';
 
 beforeAll(() => {
-  HTMLCanvasElement.prototype.getContext = vi.fn(() =>
-    ({
-      save: vi.fn(),
-      restore: vi.fn(),
-      scale: vi.fn(),
-      translate: vi.fn(),
-      setTransform: vi.fn(),
-      clearRect: vi.fn(),
-      fillRect: vi.fn(),
-      strokeRect: vi.fn(),
-      beginPath: vi.fn(),
-      moveTo: vi.fn(),
-      lineTo: vi.fn(),
-      rect: vi.fn(),
-      stroke: vi.fn(),
-      fill: vi.fn(),
-      setLineDash: vi.fn(),
-      drawImage: vi.fn(),
-      fillStyle: '',
-      strokeStyle: '',
-      lineWidth: 1,
-      globalAlpha: 1,
-    }) as unknown as CanvasRenderingContext2D,
+  HTMLCanvasElement.prototype.getContext = vi.fn(
+    () =>
+      ({
+        save: vi.fn(),
+        restore: vi.fn(),
+        scale: vi.fn(),
+        translate: vi.fn(),
+        setTransform: vi.fn(),
+        clearRect: vi.fn(),
+        fillRect: vi.fn(),
+        strokeRect: vi.fn(),
+        beginPath: vi.fn(),
+        moveTo: vi.fn(),
+        lineTo: vi.fn(),
+        rect: vi.fn(),
+        stroke: vi.fn(),
+        fill: vi.fn(),
+        setLineDash: vi.fn(),
+        drawImage: vi.fn(),
+        fillStyle: '',
+        strokeStyle: '',
+        lineWidth: 1,
+        globalAlpha: 1,
+      }) as unknown as CanvasRenderingContext2D,
   ) as unknown as typeof HTMLCanvasElement.prototype.getContext;
   HTMLCanvasElement.prototype.getBoundingClientRect = vi.fn(() => ({
     x: 0,

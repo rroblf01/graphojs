@@ -436,22 +436,32 @@ export abstract class GraphObject {
     this._desiredSize = value;
   }
 
-  /** The width (from desiredSize or actual size). */
+  /**
+   * GoJS-compatible: the last explicitly-set desired width, or `NaN` if
+   * never set — NOT the object's current rendered size. Falling back to
+   * `_actualSize` here (as this used to) makes every `measure()` override
+   * (`Shape`/`TextBlock`/`Picture`/`Panel`, which all gate their real
+   * measurement behind `this.width > 0`) permanently "lock onto" whatever
+   * size an earlier — possibly premature, e.g. before a data binding
+   * applied the real text — layout pass happened to produce, since that
+   * stale actualSize then reads back as "an explicit width was set" on
+   * every later pass and skips remeasuring for good.
+   */
   get width(): number {
-    return this._desiredSize?.width ?? this._actualSize.width;
+    return this._desiredSize?.width ?? Number.NaN;
   }
 
   set width(value: number) {
-    this._desiredSize = new SizeClass(value, this._desiredSize?.height ?? this._actualSize.height);
+    this._desiredSize = new SizeClass(value, this._desiredSize?.height ?? Number.NaN);
   }
 
-  /** The height (from desiredSize or actual size). */
+  /** GoJS-compatible: the last explicitly-set desired height, or `NaN` if never set. */
   get height(): number {
-    return this._desiredSize?.height ?? this._actualSize.height;
+    return this._desiredSize?.height ?? Number.NaN;
   }
 
   set height(value: number) {
-    this._desiredSize = new SizeClass(this._desiredSize?.width ?? this._actualSize.width, value);
+    this._desiredSize = new SizeClass(this._desiredSize?.width ?? Number.NaN, value);
   }
 
   /** The position within the parent panel. */

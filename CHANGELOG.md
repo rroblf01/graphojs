@@ -5,6 +5,45 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-08-21
+
+Follow-up to 1.2.0, from the same GoJS-to-graphojs Gantt migration report,
+re-tested against the published 1.2.0 package. No breaking changes.
+
+### Fixed
+
+- `TextBlock.measure()` guessed a line's width as `0.6 * fontSize` per
+  character instead of measuring real glyph metrics. Wired `measure()` up
+  to the real canvas `measureText`, via the `TextMeasureCache` in
+  `render/RenderCache.ts` that already existed and was already tested, but
+  that nothing had ever called. Falls back to the old per-character guess
+  only when no canvas is available at all (SSR). This alone wasn't the fix
+  for the bug below, but it's what made that bug's actual cause visible
+  and diagnosable in the first place.
+- **A left-aligned, auto-sized `TextBlock` (or `Shape`/`Picture`/`Panel`)
+  could lose its leading character(s), worse the longer the string** —
+  reported as a real GoJS-to-graphojs Gantt chart port rendering `"Design"`
+  as `"esign"` and `"QA & launch"` as `"& launch"`. Root cause:
+  `GraphObject.width`/`height` fell back to `_actualSize` (the last
+  *rendered* size) when no explicit size had been set, instead of `NaN` as
+  real GoJS documents. Every `measure()` override (`Shape`, `TextBlock`,
+  `Picture`, `Panel`) gates its real measurement behind `this.width > 0`,
+  intending "has an explicit size ever been set" — but reading back a
+  previous *actualSize* made that check true after the first render
+  regardless, so whatever size an early, possibly-premature layout pass
+  produced (e.g. before a `Binding` had applied the real `text`) got
+  permanently locked in and never re-measured again, even once real data
+  arrived. In a `Panel "Spot"` with a data-bound-width bar `Shape` and a
+  sibling left-aligned label (a standard Gantt-bar template), this
+  surfaced as the label's default (empty-string) width getting baked in
+  first, then reused forever once real text was bound — and because the
+  label's own default `textAlign` is `"center"`, drawing the full real
+  string centered within that too-small locked-in box shifted its start
+  left of where the box (and the bar) actually began, rendering the
+  leading characters in white over the diagram's white background —
+  invisible, not clipped. Fixed by making `width`/`height` report `NaN`
+  until explicitly set, matching real GoJS.
+
 ## [1.2.0] - 2026-08-20
 
 Further GoJS compatibility work on top of 1.1.0, from the same migration
@@ -490,6 +529,7 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.3.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.3.0
 [1.2.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.2.0
 [1.1.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.1.0
 [1.0.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.0.0

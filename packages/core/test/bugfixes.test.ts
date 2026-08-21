@@ -3565,3 +3565,73 @@ describe('O35: Diagram.findHitGraphObject used absolute-vs-relative coordinates 
     expect(hit).toBe(shape);
   });
 });
+
+describe('O36: GraphObject.width/height fell back to actualSize instead of NaN when unset', () => {
+  it('reports NaN (not the last-rendered size) until explicitly set', () => {
+    const tb = new TextBlock('hi');
+    expect(Number.isNaN(tb.width)).toBe(true);
+    expect(Number.isNaN(tb.height)).toBe(true);
+    // Layout writes actualSize during every render; that must not make width/height "explicit".
+    tb.setActualSize(123, 45);
+    expect(Number.isNaN(tb.width)).toBe(true);
+    tb.width = 50;
+    expect(tb.width).toBe(50);
+  });
+
+  it('a TextBlock re-measures its real text on every layout pass instead of locking onto a stale size', () => {
+    // Reproduces the exact failure mode: measure() was called once while the
+    // clone still had the template's default text (before the model's text
+    // Binding applied), producing a tiny width that got baked into
+    // actualSize via setActualSize() — and because width/height then read
+    // back from that actualSize as if a real size had been set, every later
+    // measure() call short-circuited to that stale, wrong value forever,
+    // even once the real "Design"/"QA & launch" text was bound.
+    const tb = new TextBlock(''); // template default: no text yet
+    tb.font = '600 12px ui-sans-serif, system-ui, sans-serif';
+    const beforeBinding = tb.measure();
+    tb.setActualSize(beforeBinding.width, beforeBinding.height);
+
+    tb.text = 'QA & launch'; // the Binding applying the real data
+    const afterBinding = tb.measure();
+
+    expect(afterBinding.width).toBeGreaterThan(beforeBinding.width);
+  });
+
+  it('a left-aligned, margined Gantt-bar-style label no longer loses its leading characters', async () => {
+    // The exact template structure from the migration report: a Panel
+    // "Spot" with a data-bound-width bar Shape (no alignment -> Spot.Center
+    // default) and a TextBlock (alignment: Spot.Left) as siblings, with no
+    // explicit width bound on the Node itself.
+    const { Margin: MarginClass } = await import('../src/geometry/Margin.ts');
+    const d = createDiagram();
+    const $ = GraphObject.make;
+    d.nodeTemplate = $(
+      Node,
+      $(
+        Panel,
+        'Spot',
+        $(Shape, 'RoundedRectangle', { name: 'BAR', height: 26, strokeWidth: 0 }),
+        $(TextBlock, {
+          name: 'label',
+          alignment: Spot.Left,
+          alignmentFocus: Spot.Left,
+          margin: new MarginClass(0, 6, 0, 8),
+          font: '600 12px ui-sans-serif, system-ui, sans-serif',
+        }),
+      ),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 20, y: 20 }],
+    });
+    const node = d.findNodeForKey(1) as Node;
+    const bar = node.findObject('BAR') as Shape;
+    bar.width = 168; // barWidth, set directly (no Binding machinery needed for this check)
+    const label = node.findObject('label') as TextBlock;
+    label.text = 'QA & launch';
+    d.invalidate();
+
+    // The label's real measured width must reflect the actual string, not
+    // the tiny floor value a stale, locked-in actualSize would produce.
+    expect(label.measure().width).toBeGreaterThan(40);
+  });
+});

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphoJS Gantt Bar Label E2E</title>
+    <style>
+      #ganttDiv {
+        width: 700px;
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ganttDiv"></div>
+    <div id="result"></div>
+    <script type="module">
+      import * as go from '../../packages/core/dist/go.js';
+
+      const $ = go.GraphObject.make;
+      const diagram = new go.Diagram('ganttDiv');
+      const BAR_HEIGHT = 26;
+      const LABEL_INSET = 14;
+
+      // Verbatim structure reported against a real GoJS-to-graphojs Gantt
+      // port: a Panel "Spot" with a data-bound-width bar Shape (no alignment
+      // -> defaults to Spot.Center) plus a progress overlay and a TextBlock,
+      // both left-aligned, as direct siblings -- no explicit width bound on
+      // the Node itself, so the Node/Panel auto-measures from its children.
+      diagram.nodeTemplate = $(
+        go.Node,
+        $(
+          go.Panel,
+          'Spot',
+          $(
+            go.Shape,
+            'RoundedRectangle',
+            { name: 'BAR', height: BAR_HEIGHT, strokeWidth: 0 },
+            new go.Binding('width', 'barWidth'),
+            new go.Binding('fill', 'color'),
+          ),
+          $(
+            go.Shape,
+            'RoundedRectangle',
+            {
+              height: BAR_HEIGHT,
+              strokeWidth: 0,
+              alignment: go.Spot.Left,
+              alignmentFocus: go.Spot.Left,
+              fill: 'rgba(0, 0, 0, 0.28)',
+            },
+            new go.Binding('width', 'progressWidth'),
+            new go.Binding('visible', 'progress', (p) => p > 0),
+          ),
+          $(
+            go.TextBlock,
+            {
+              name: 'label',
+              alignment: go.Spot.Left,
+              alignmentFocus: go.Spot.Left,
+              margin: new go.Margin(0, 6, 0, 8),
+              stroke: 'white',
+              font: '600 12px ui-sans-serif, system-ui, sans-serif',
+              overflow: 'ellipsis',
+              maxLines: 1,
+            },
+            new go.Binding('text', 'text'),
+            new go.Binding('maxSize', 'labelMax', (m) => new go.Size(m, Number.NaN)),
+          ),
+        ),
+      );
+
+      const dayWidth = 21;
+      diagram.model = new go.GraphLinksModel({
+        nodeDataArray: [
+          {
+            key: 1,
+            x: 20,
+            y: 20,
+            text: 'Design',
+            color: '#2f5fd6',
+            barWidth: 5 * dayWidth,
+            progress: 0,
+            progressWidth: 0,
+            labelMax: Math.max(0, 5 * dayWidth - LABEL_INSET),
+          },
+          {
+            key: 2,
+            x: 20,
+            y: 70,
+            text: 'QA & launch',
+            color: '#17825a',
+            barWidth: 8 * dayWidth,
+            progress: 0,
+            progressWidth: 0,
+            labelMax: Math.max(0, 8 * dayWidth - LABEL_INSET),
+          },
+        ],
+      });
+
+      window.__diagram = diagram;
+      document.getElementById('result').textContent = 'ready';
+    </script>
+  </body>
+</html>

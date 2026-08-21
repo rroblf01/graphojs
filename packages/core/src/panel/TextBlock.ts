@@ -1,6 +1,26 @@
 import type { Size } from '../geometry/Size.ts';
 import { Size as SizeClass } from '../geometry/Size.ts';
+import { TextMeasureCache } from '../render/RenderCache.ts';
 import { GraphObject } from './GraphObject.ts';
+
+/** Shared across all TextBlocks: real glyph widths instead of a per-character guess. */
+const sharedTextMeasureCache = new TextMeasureCache();
+
+let measureCtx: CanvasRenderingContext2D | null | undefined;
+
+/**
+ * Lazily create a detached canvas purely for `ctx.measureText` — real font
+ * metrics instead of the `0.6 * fontSize` guess GoJS doesn't need (it
+ * measures with the DOM). `undefined` means "not yet resolved", `null` means
+ * "resolved, unavailable" (SSR, or a canvas mock without `measureText`).
+ */
+function getMeasureContext(): CanvasRenderingContext2D | null {
+  if (measureCtx !== undefined) return measureCtx;
+  const ctx =
+    typeof document === 'undefined' ? null : document.createElement('canvas').getContext('2d');
+  measureCtx = ctx && typeof ctx.measureText === 'function' ? ctx : null;
+  return measureCtx;
+}
 
 /**
  * A text element in a panel.
@@ -232,12 +252,24 @@ export class TextBlock extends GraphObject {
       return new SizeClass(this.width, this.height);
     }
 
-    // Estimate size based on text length (approximation without DOM measurement)
     const lines = this._text.split('\n');
     const fontSize = this.estimateFontSize(this._font);
-    const maxLineLength = Math.max(1, ...lines.map((l) => l.length));
     const lineHeight = fontSize * 1.4;
-    const width = this.width > 0 ? this.width : Math.max(10, maxLineLength * fontSize * 0.6);
+    const ctx = getMeasureContext();
+
+    // Real glyph widths via canvas measureText when available; falls back to
+    // a per-character guess only where no canvas exists at all (SSR).
+    const maxLineWidth = ctx
+      ? Math.max(
+          1,
+          ...lines.map((l) => {
+            ctx.font = this._font;
+            return sharedTextMeasureCache.measure(ctx, l, this._font);
+          }),
+        )
+      : Math.max(1, ...lines.map((l) => l.length * fontSize * 0.6));
+
+    const width = this.width > 0 ? this.width : Math.max(10, maxLineWidth);
     const height = this.height > 0 ? this.height : Math.max(10, lines.length * lineHeight);
 
     return new SizeClass(width, height);

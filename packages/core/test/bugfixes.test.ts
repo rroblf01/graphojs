@@ -3461,3 +3461,107 @@ describe('O31: Panel Auto/Spot/Position/Table layouts respect element margin', (
     expect(label.position.x).toBeCloseTo(bg.position.x + 10, 5);
   });
 });
+
+describe('O32: GoJS 4.0-style typed constants (Figures/Arrowheads/PanelTypes/ToolNames/Builders)', () => {
+  it('Figures/PanelTypes/ToolNames/Builders values equal their own key names', async () => {
+    const { Figures, PanelTypes, ToolNames, Builders } = await import('../src/index.ts');
+    expect(Figures.RoundedRectangle).toBe('RoundedRectangle');
+    expect(Figures.TriangleDown).toBe('TriangleDown');
+    expect(PanelTypes.Auto).toBe('Auto');
+    expect(ToolNames.Dragging).toBe('Dragging');
+    expect(Builders.ToolTip).toBe('ToolTip');
+  });
+
+  it('Figures values resolve through normalizeShapeType to a real ShapeType', async () => {
+    const { Figures, normalizeShapeType } = await import('../src/index.ts');
+    expect(normalizeShapeType(Figures.RoundedRectangle)).toBe('roundedRect');
+    expect(normalizeShapeType(Figures.Square)).toBe('square');
+    expect(normalizeShapeType(Figures.TriangleDown)).toBe('triangleDown');
+    expect(normalizeShapeType(Figures.Capsule)).toBe('capsule');
+    expect(normalizeShapeType(Figures.LineH)).toBe('lineH');
+  });
+});
+
+describe('O33: new Shape figures added for GoJS 4.0 Figures parity', () => {
+  it('registers None, Capsule, BarH/BarV, and the 4 partial-rounded rectangles', async () => {
+    const { getAllShapeTypes, normalizeShapeType } = await import('../src/shapes/ShapeTypes.ts');
+    const shapeTypes = getAllShapeTypes();
+    for (const type of [
+      'none',
+      'capsule',
+      'barH',
+      'barV',
+      'roundedTopRect',
+      'roundedBottomRect',
+      'roundedLeftRect',
+      'roundedRightRect',
+    ]) {
+      expect(shapeTypes).toContain(type);
+    }
+    expect(normalizeShapeType('RoundedTopRectangle')).toBe('roundedTopRect');
+    expect(normalizeShapeType('Capsule')).toBe('capsule');
+  });
+
+  it('renders every new figure type without throwing', async () => {
+    const { ShapeRenderer } = await import('../src/shapes/ShapeRenderer.ts');
+    const { getAllShapeTypes } = await import('../src/shapes/ShapeTypes.ts');
+    const noop = () => {};
+    const ctx = {
+      beginPath: noop,
+      closePath: noop,
+      moveTo: noop,
+      lineTo: noop,
+      rect: noop,
+      arc: noop,
+      ellipse: noop,
+      quadraticCurveTo: noop,
+      bezierCurveTo: noop,
+      roundRect: noop,
+      fill: noop,
+      stroke: noop,
+    } as unknown as CanvasRenderingContext2D;
+    const renderer = new ShapeRenderer(ctx);
+    for (const type of getAllShapeTypes()) {
+      expect(() => renderer.renderShape(type, 0, 0, 100, 80)).not.toThrow();
+    }
+  });
+});
+
+describe('O34: LayerNames.Default is the empty string, matching real GoJS', () => {
+  it('a Part with no explicit layer reports layerName === "" (not "Default")', () => {
+    const d = createDiagram();
+    const model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 100, height: 50 }],
+    });
+    d.model = model;
+    const node = d.findNodeForKey(1);
+    expect(node?.layerName).toBe('');
+  });
+});
+
+describe('O35: Diagram.findHitGraphObject used absolute-vs-relative coordinates inconsistently', () => {
+  it('finds the sub-object at a diagram point instead of always returning null', () => {
+    // Every element's _position/_actualSize (set during Panel.draw's layout
+    // passes) is already in absolute diagram coordinates, not relative to
+    // the containing Part's bounds — findHitGraphObject used to subtract
+    // part.bounds.x/y before hit-testing, so it always missed and this
+    // silently broke GraphObject.click/doubleClick/contextClick handlers,
+    // ActionTool, and any other consumer of this method.
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(Shape, 'RoundedRectangle', { name: 'shape', width: 60, height: 30 }),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 50, y: 50, width: 60, height: 30 }],
+    });
+    const node = d.findNodeForKey(1);
+    const shape = node?.findObject('shape');
+    const point = { x: 80, y: 65 }; // node's center in diagram space
+
+    const hit = node ? d.findHitGraphObject(node, point) : null;
+    expect(hit).toBe(shape);
+  });
+});

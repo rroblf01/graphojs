@@ -1,5 +1,6 @@
-import type { Binding } from '../binding/Binding.ts';
+import type { Binding, BindingTarget } from '../binding/Binding.ts';
 import { Binding as BindingClass } from '../binding/Binding.ts';
+import { ThemeBinding as ThemeBindingClass } from '../binding/ThemeBinding.ts';
 import type { InputEvent } from '../events/InputEvent.ts';
 import type { Margin } from '../geometry/Margin.ts';
 import { Margin as MarginClass } from '../geometry/Margin.ts';
@@ -12,6 +13,7 @@ import type { Group } from '../parts/Group.ts';
 import type { Link } from '../parts/Link.ts';
 import type { Node } from '../parts/Node.ts';
 import type { Part } from '../parts/Part.ts';
+import { getBuilder } from './BuilderRegistry.ts';
 import { isDomComponent } from './ComponentRegistry.ts';
 import type { Panel } from './Panel.ts';
 import { getPanelFactory } from './PanelRegistry.ts';
@@ -70,6 +72,18 @@ export abstract class GraphObject {
   mouseOver?: (e: InputEvent, obj: GraphObject) => void;
   mouseOut?: (e: InputEvent, obj: GraphObject) => void;
 
+  /**
+   * GoJS-compatible: when true, `ActionTool` dispatches
+   * `actionDown`/`actionMove`/`actionUp`/`actionCancel` on this object for
+   * mouse-down-move-up gestures starting on it — for building controls
+   * (buttons, sliders) that handle their own gesture without a new `Tool`.
+   */
+  isActionable = false;
+  actionDown?: (e: InputEvent, obj: GraphObject) => void;
+  actionMove?: (e: InputEvent, obj: GraphObject) => void;
+  actionUp?: (e: InputEvent, obj: GraphObject) => void;
+  actionCancel?: (e: InputEvent, obj: GraphObject) => void;
+
   /** The panel this object belongs to (set when added). Used for ofObject resolution. */
   parentPanel: GraphObject | null = null;
 
@@ -114,6 +128,58 @@ export abstract class GraphObject {
     return true;
   }
 
+  /**
+   * GoJS-compatible: add a `ThemeBinding` from a literal Theme property
+   * name to `targetprop`, e.g. `.theme("stroke", "text")` assigns `stroke`
+   * to the current theme's `colors.text`.
+   */
+  theme(
+    targetprop: string,
+    sourceprop?: string,
+    themeSource?: string | null,
+    conv?: (value: unknown, data: NodeData) => unknown,
+    themeconv?: (value: unknown, target: BindingTarget) => unknown,
+  ): this {
+    this.setBinding(new ThemeBindingClass(targetprop, sourceprop, themeSource, conv, themeconv));
+    return this;
+  }
+
+  /**
+   * GoJS-compatible: add a `ThemeBinding` whose theme key comes from a
+   * data property's value, e.g. `.themeData("fill", "state")` looks up
+   * `data.state` and uses *that* as the `colors` key.
+   */
+  themeData(
+    targetprop: string,
+    sourceprop?: string,
+    themeSource?: string | null,
+    conv?: (value: unknown, data: NodeData) => unknown,
+    themeconv?: (value: unknown, target: BindingTarget) => unknown,
+  ): this {
+    this.setBinding(
+      new ThemeBindingClass(targetprop, sourceprop, themeSource, conv, themeconv).ofData(),
+    );
+    return this;
+  }
+
+  /**
+   * GoJS-compatible: like `themeData`, but sourced from model-wide data.
+   * graphojs has no `Model.modelData`, so this currently behaves exactly
+   * like `themeData` (resolved against the part's own data instead).
+   */
+  themeModel(
+    targetprop: string,
+    sourceprop?: string,
+    themeSource?: string | null,
+    conv?: (value: unknown, data: NodeData) => unknown,
+    themeconv?: (value: unknown, target: BindingTarget) => unknown,
+  ): this {
+    this.setBinding(
+      new ThemeBindingClass(targetprop, sourceprop, themeSource, conv, themeconv).ofModel(),
+    );
+    return this;
+  }
+
   /** Apply all bindings from model data to this graph object. */
   applyBindings(nodeData: NodeData): number {
     let count = 0;
@@ -133,9 +199,22 @@ export abstract class GraphObject {
    *   const shape = $(go.Shape, "RoundedRectangle", { fill: "white", stroke: "gray" });
    *   const panel = $(go.Panel, "Auto", shape, $(go.TextBlock, "Hello"));
    */
+  static make(builder: string, ...args: unknown[]): Panel;
   static make(ctor: typeof Node | typeof Link | typeof Group, ...args: unknown[]): Panel;
   static make<T>(ctor: new (...args: never[]) => T, ...args: unknown[]): T;
-  static make<T>(ctor: new (...args: never[]) => T, ...args: unknown[]): T {
+  static make<T>(ctor: (new (...args: never[]) => T) | string, ...args: unknown[]): T {
+    // GoJS-compatible: $("Button", ...)/$(go.Builders.Button, ...) constructs
+    // a pre-fab widget (Button/CheckBox/ToolTip/...) by registered name.
+    if (typeof ctor === 'string') {
+      const builder = getBuilder(ctor);
+      if (!builder) {
+        throw new Error(`GraphObject.make: no constructor or registered builder named "${ctor}"`);
+      }
+      const widget = builder(args);
+      GraphObject.applyArgs(widget as unknown as object, args);
+      return widget as unknown as T;
+    }
+
     // GoJS-compatible: $(go.Node/'go.Link'/'go.Group', panelType, ...children, props)
     // builds a template Panel carrying the part properties to apply on instantiation.
     if (isPartCtor(ctor)) {
@@ -149,8 +228,17 @@ export abstract class GraphObject {
     }
 
     const obj = new ctor();
-    const objAny = obj as unknown as object;
+    GraphObject.applyArgs(obj as unknown as object, args);
 
+    return obj;
+  }
+
+  /**
+   * Shared by `make`'s plain-constructor and named-builder paths: attach
+   * Bindings, add child GraphObjects, apply the first string arg to
+   * whichever of shape/type/text/source exists, and apply property maps.
+   */
+  private static applyArgs(objAny: object, args: unknown[]): void {
     for (const arg of args) {
       if (arg === null || arg === undefined) continue;
 
@@ -186,8 +274,6 @@ export abstract class GraphObject {
         }
       }
     }
-
-    return obj;
   }
 
   /**
@@ -624,6 +710,11 @@ export abstract class GraphObject {
     this.mouseLeave = source.mouseLeave;
     this.mouseOver = source.mouseOver;
     this.mouseOut = source.mouseOut;
+    this.isActionable = source.isActionable;
+    this.actionDown = source.actionDown;
+    this.actionMove = source.actionMove;
+    this.actionUp = source.actionUp;
+    this.actionCancel = source.actionCancel;
   }
 
   /**

@@ -1,6 +1,6 @@
-import type { Node } from '../parts/Node.ts';
-import type { Link } from '../parts/Link.ts';
 import type { Rect } from '../geometry/Rect.ts';
+import type { Link } from '../parts/Link.ts';
+import type { Node } from '../parts/Node.ts';
 
 /**
  * A vertex in a layout network, representing a node.

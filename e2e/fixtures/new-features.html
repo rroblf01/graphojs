@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphoJS 1.2.0 New Features E2E</title>
+    <style>
+      #diagramDiv {
+        width: 800px;
+        height: 600px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="diagramDiv"></div>
+    <div id="result"></div>
+    <script type="module">
+      import * as go from '../../packages/core/dist/go.js';
+
+      const out = {};
+      const errors = [];
+      function check(name, fn) {
+        try {
+          out[name] = fn();
+        } catch (e) {
+          errors.push(`${name}: ${e && e.stack ? e.stack : e}`);
+        }
+      }
+
+      // --- Constants ---
+      check(
+        'figures',
+        () => go.Figures.Rectangle === 'Rectangle' && go.Figures.Ellipse === 'Ellipse',
+      );
+      check('arrowheads', () => typeof go.Arrowheads.Triangle === 'string');
+      check('panelTypes', () => go.PanelTypes.Auto === 'Auto');
+      check('toolNames', () => typeof go.ToolNames.Dragging === 'string');
+      check('builders', () => typeof go.Builders.Button === 'string');
+
+      // --- Collections ---
+      check('list', () => {
+        const l = new go.List();
+        l.add(1);
+        l.add(2);
+        l.insertAt(1, 99);
+        const arr = l.toArray();
+        return arr.length === 3 && arr[1] === 99;
+      });
+      check('set', () => {
+        const s = new go.Set();
+        s.add('a');
+        s.add('a');
+        s.add('b');
+        return s.count === 2;
+      });
+      check('map', () => {
+        const m = new go.Map();
+        m.add('k', 'v');
+        return m.get('k') === 'v';
+      });
+
+      // --- Geometry / Brush ---
+      check('geometry', () => {
+        const geo = new go.Geometry();
+        const fig = new go.PathFigure(0, 0, true);
+        fig.add(new go.PathSegment(go.SegmentType.Line, 50, 0));
+        fig.add(new go.PathSegment(go.SegmentType.Line, 50, 50));
+        geo.add(fig);
+        const str = go.Geometry.stringify(geo);
+        return typeof str === 'string' && str.length > 0;
+      });
+      check('brush', () => {
+        const b = new go.Brush(go.BrushType.Linear, { 0: 'red', 1: 'blue' });
+        return b.type === go.BrushType.Linear;
+      });
+
+      // --- Router ---
+      check('router', () => {
+        const r = new go.AvoidsNodesRouter({ name: 'myRouter' });
+        return r instanceof go.Router && r.name === 'myRouter';
+      });
+
+      const $ = go.GraphObject.make;
+
+      const myDiagram = new go.Diagram('diagramDiv');
+
+      // --- HTMLInfo (tooltip) ---
+      const tooltipDiv = document.createElement('div');
+      tooltipDiv.textContent = 'tip';
+      const myHtmlInfo = new go.HTMLInfo();
+      myHtmlInfo.show = (obj, diagram, tt) => {
+        document.body.appendChild(tooltipDiv);
+      };
+      myHtmlInfo.hide = () => {
+        tooltipDiv.remove();
+      };
+
+      myDiagram.nodeTemplate = $(
+        go.Node,
+        'Auto',
+        { toolTip: myHtmlInfo },
+        $(go.Shape, 'RoundedRectangle', { name: 'shape', fill: 'white', stroke: 'gray' }),
+        $(go.TextBlock, 'Default Text', { name: 'label', margin: 12 }, new go.Binding('text', 'name')),
+      );
+
+      myDiagram.linkTemplate = $(
+        go.Link,
+        { routing: go.Link.Orthogonal },
+        $(go.Shape, { strokeWidth: 3 }),
+        $(go.Shape, 'Arrow', { toArrow: 'Triangle' }),
+      );
+
+      myDiagram.model = new go.GraphLinksModel({
+        nodeDataArray: [
+          { key: 1, name: 'Alpha', x: 0, y: 0, width: 100, height: 50 },
+          { key: 2, name: 'Beta', x: 200, y: 0, width: 100, height: 50 },
+        ],
+        linkDataArray: [{ from: 1, to: 2 }],
+      });
+
+      const node1 = myDiagram.findNodeForKey(1);
+
+      // --- Brush actually rendered on a Shape ---
+      check('shapeGradientFill', () => {
+        const shape = node1.findObject('shape');
+        shape.fill = new go.Brush(go.BrushType.Linear, { 0: '#ff0000', 1: '#0000ff' });
+        myDiagram.invalidate();
+        return shape.fill instanceof go.Brush;
+      });
+
+      // --- Builder widgets ---
+      check('buildButton', () => {
+        const btn = $('Button', $(go.TextBlock, 'Click'));
+        return btn instanceof go.Panel;
+      });
+
+      // --- ActionTool ---
+      check('actionTool', () => {
+        const tool = myDiagram.toolManager.mouseDownTools.find(
+          (t) => t.name === 'Action' || t instanceof go.ActionTool,
+        );
+        return !!tool;
+      });
+
+      // --- Layout subclasses ---
+      check('layoutSubclasses', () => {
+        const v = new go.CircularVertex();
+        const e = new go.CircularEdge();
+        const n = new go.CircularNetwork();
+        return v instanceof go.LayoutVertex && e instanceof go.LayoutEdge && n instanceof go.LayoutNetwork;
+      });
+
+      // --- RowColumnDefinition / PositionArray ---
+      check('rowColumnDefinition', () => {
+        const rc = new go.RowColumnDefinition({ row: 0 });
+        rc.height = 40;
+        return rc.height === 40;
+      });
+      check('positionArray', () => {
+        const pa = new go.PositionArray(new go.Size(10, 10));
+        pa.occupy(20, 30, 10, 10);
+        return !pa.isUnoccupied(20, 30, 10, 10);
+      });
+
+      // --- Theming ---
+      check('theming', () => {
+        const tm = myDiagram.themeManager;
+        tm.currentTheme = 'dark';
+        const shape = node1.findObject('shape');
+        shape.theme('stroke', 'shape-stroke', go.Themes.Dark.colors['text']);
+        myDiagram.updateThemeBindings();
+        return tm.currentTheme === 'dark';
+      });
+
+      window.__diagram = myDiagram;
+      window.__errors = errors;
+      document.getElementById('result').textContent = JSON.stringify({ out, errors });
+    </script>
+  </body>
+</html>

@@ -4,8 +4,10 @@ import { Point } from '../geometry/Point.ts';
 import type { Rect } from '../geometry/Rect.ts';
 import type { Size } from '../geometry/Size.ts';
 import type { Layer } from '../layer/Layer.ts';
+import { LayerNames } from '../layer/Layer.ts';
 import type { NodeData, NodeKey } from '../model/Model.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
+import type { HTMLInfo } from '../panel/HTMLInfo.ts';
 import { Panel } from '../panel/Panel.ts';
 import type { Adornment, AdornmentName } from './Adornment.ts';
 import type { Group } from './Group.ts';
@@ -30,8 +32,8 @@ export abstract class Part {
   private _layer: Layer | null = null;
   private _tooltip: string = '';
   private _tooltipVisible = false;
-  private _toolTip: Panel | null = null;
-  private _contextMenu: Panel | null = null;
+  private _toolTip: Panel | HTMLInfo | null = null;
+  private _contextMenu: Panel | HTMLInfo | null = null;
   private _adornments: Map<AdornmentName, Adornment> = new Map();
   private _draggable = true;
   private _resizable = true;
@@ -365,7 +367,7 @@ export abstract class Part {
 
   /** GoJS-compatible: The name of the layer this part belongs to. */
   get layerName(): string {
-    return this._layer?.name ?? 'Default';
+    return this._layer?.name ?? LayerNames.Default;
   }
 
   set layerName(_value: string) {
@@ -440,21 +442,28 @@ export abstract class Part {
     this._tooltip = value;
   }
 
-  /** GoJS-compatible: A tooltip template (Panel) shown on hover. */
-  get toolTip(): Panel | null {
+  /**
+   * GoJS-compatible: a tooltip shown on hover — a Panel template drawn to
+   * canvas, or an {@link HTMLInfo} for full control over an HTML element.
+   */
+  get toolTip(): Panel | HTMLInfo | null {
     return this._toolTip;
   }
 
-  set toolTip(value: Panel | null) {
+  set toolTip(value: Panel | HTMLInfo | null) {
     this._toolTip = value;
   }
 
-  /** GoJS-compatible: A context menu template (Panel) shown on right-click. */
-  get contextMenu(): Panel | null {
+  /**
+   * GoJS-compatible: a context menu shown on right-click — a Panel
+   * template drawn to canvas, or an {@link HTMLInfo} for full control over
+   * an HTML element.
+   */
+  get contextMenu(): Panel | HTMLInfo | null {
     return this._contextMenu;
   }
 
-  set contextMenu(value: Panel | null) {
+  set contextMenu(value: Panel | HTMLInfo | null) {
     this._contextMenu = value;
   }
 

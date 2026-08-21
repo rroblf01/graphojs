@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { Layer, LayerNames, LayerDefaults, createDefaultLayers } from '../../src/layer/Layer.ts';
+import { describe, expect, it } from 'vitest';
+import { createDefaultLayers, Layer, LayerDefaults, LayerNames } from '../../src/layer/Layer.ts';
 import { Node } from '../../src/parts/Node.ts';
 
 describe('Layer', () => {
@@ -101,34 +101,54 @@ describe('Layer', () => {
 describe('LayerNames', () => {
   it('should have built-in layer names', () => {
     expect(LayerNames.Grid).toBe('Grid');
+    expect(LayerNames.ViewportBackground).toBe('ViewportBackground');
     expect(LayerNames.Background).toBe('Background');
-    expect(LayerNames.Default).toBe('Default');
     expect(LayerNames.Foreground).toBe('Foreground');
+    expect(LayerNames.ViewportForeground).toBe('ViewportForeground');
+    expect(LayerNames.Adornment).toBe('Adornment');
+    expect(LayerNames.Tool).toBe('Tool');
+  });
+
+  it('Default is the empty string, matching real GoJS (not the literal name "Default")', () => {
+    expect(LayerNames.Default).toBe('');
   });
 });
 
 describe('LayerDefaults', () => {
   it('should have default z-orders', () => {
     expect(LayerDefaults.Grid).toBe(-100);
+    expect(LayerDefaults.ViewportBackground).toBe(-30);
     expect(LayerDefaults.Background).toBe(-10);
     expect(LayerDefaults.Default).toBe(0);
     expect(LayerDefaults.Foreground).toBe(10);
+    expect(LayerDefaults.ViewportForeground).toBe(30);
+    expect(LayerDefaults.Adornment).toBe(50);
+    expect(LayerDefaults.Tool).toBe(100);
   });
 });
 
 describe('createDefaultLayers', () => {
-  it('should create 4 default layers', () => {
+  it('should create the 8 standard GoJS-compatible layers', () => {
     const layers = createDefaultLayers();
-    expect(layers).toHaveLength(4);
+    expect(layers).toHaveLength(8);
   });
 
   it('should have correct names and z-orders', () => {
     const layers = createDefaultLayers();
     const names = layers.map((l) => l.name);
-    expect(names).toEqual(['Grid', 'Background', 'Default', 'Foreground']);
+    expect(names).toEqual([
+      'Grid',
+      'ViewportBackground',
+      'Background',
+      '',
+      'Foreground',
+      'ViewportForeground',
+      'Adornment',
+      'Tool',
+    ]);
 
     const zOrders = layers.map((l) => l.zOrder);
-    expect(zOrders).toEqual([-100, -10, 0, 10]);
+    expect(zOrders).toEqual([-100, -30, -10, 0, 10, 30, 50, 100]);
   });
 
   it('should be sorted by z-order', () => {

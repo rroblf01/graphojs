@@ -1,5 +1,5 @@
-import type { Node } from '../parts/Node.ts';
 import type { Link } from '../parts/Link.ts';
+import type { Node } from '../parts/Node.ts';
 import { Layout, type LayoutOptions } from './Layout.ts';
 
 /**

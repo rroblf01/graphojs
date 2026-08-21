@@ -31,6 +31,105 @@ exercise. No breaking changes.
   mirroring the existing `hideContextMenu()`. This is independent of the
   simpler, graphojs-only plain-text `part.tooltip` (`TooltipManager`) — if a
   part sets both, both are still handled by their own separate mechanisms.
+- GoJS 4.0-style typed constants: `Figures`, `Arrowheads`, `PanelTypes`,
+  `ToolNames`, `Builders`, all sitting on top of the same strings graphojs
+  already accepted. 17 more `Shape` figures for `Figures` parity (`None`,
+  `Border(s)`, 4 partial-rounded rectangles, `Capsule`, `BarH`/`BarV`,
+  `LineRight`/`Left`/`Up`/`Down`, plus aliases for `MinusLine`/`PlusLine`/
+  `XLine`).
+- `List`, `Set`, `Map` — GoJS's own collection classes (distinct from the
+  native globals; import them aliased, e.g. `import { Set as GoSet }`).
+  graphojs's own internals still use plain arrays/native collections; these
+  are for code that constructs `new go.List()`/`Set()`/`Map()` directly.
+- `Geometry`/`PathFigure`/`PathSegment` — a real, programmatically-buildable
+  geometry object model for `Shape.geometry` (alongside the existing
+  `geometryString`), serializing into the same geometryString
+  mini-language under the hood so it reuses the existing rendering path.
+  `Geometry.parse`/`stringify` round-trip through that format.
+- `Brush` — a portable, serializable gradient/pattern description for
+  `Shape.fill`/`stroke` (`BrushLike = Brush | string | null`), resolved to a
+  real `CanvasGradient`/`CanvasPattern` at draw time by the new
+  `render/BrushResolver.ts`. Includes the static color utilities
+  (`lighten`/`darken`/`mix`/`isDark`/`randomColor`/`isValidColor`).
+- `Router`/`AvoidsNodesRouter` — a class-based routing-strategy API.
+  `AvoidsNodesRouter.routeLinks()` sets `Link.avoidObstacles = true` on its
+  links, reusing graphojs's existing obstacle-avoiding path computation
+  rather than duplicating it.
+- `HTMLInfo` — an HTML-based alternative to a `Panel` template for
+  `Part.contextMenu`/`toolTip`, giving `show`/`hide` full control over an
+  arbitrary HTML element. `Part.contextMenu`/`toolTip` now accept
+  `Panel | HTMLInfo | null`.
+- Pre-fab widgets constructible by name via `GraphObject.make`/`build`
+  (`$("Button", ...)`, or `$(go.Builders.Button, ...)`): `Button`,
+  `ToolTip`, `ContextMenu`, `ContextMenuButton`, `CheckBox`,
+  `CheckBoxButton`, `ToggleSwitch`/`Toggle`, `AutoRepeatButton` (currently
+  single-fire, like `Button` — graphojs has no `mouseDown`/`mouseUp`
+  dispatch yet to implement true repeat-while-held).
+- `GraphObject.isActionable` + `actionDown`/`actionMove`/`actionUp`/
+  `actionCancel`, dispatched by the new `ActionTool` — for building custom
+  controls inside a Part's visual tree without a new `Tool` subclass.
+- `DraggingInfo`, `DraggingOptions`, `RowColumnDefinition`, `PositionArray`
+  — real, correctly-shaped data/utility classes for API parity. Not yet
+  consulted internally by `DraggingTool`/`Panel`'s table layout, which keep
+  their own existing representations.
+- Per-algorithm `LayoutVertex`/`LayoutEdge`/`LayoutNetwork` subclasses
+  (`Circular*`, `ForceDirected*`, `LayeredDigraph*`, `Tree*`) with their
+  documented extra properties (`charge`/`mass`, `layer`/`column`,
+  `parent`/`children`, etc.). Real, constructible classes, but graphojs's
+  layouts compute internally rather than through these subclasses, so
+  overriding them doesn't change layout results — they exist for API
+  parity with ported code that references these types directly.
+- A full theming system: `Theme`, `Themes.Light`/`Dark` (reproducing GoJS's
+  documented palettes), `ThemeManager` (`currentTheme`/`defaultTheme`/
+  `themeMap`/`findValue`/`getValue`/`findTheme`/`set`), `ThemeBinding`, and
+  `GraphObject.theme()`/`themeData()`/`themeModel()`. `Diagram.themeManager`
+  is lazily created; switching `currentTheme` re-applies every `ThemeBinding`
+  on every part automatically. `themeModel()` currently behaves like
+  `themeData()` — graphojs has no `Model.modelData` (shared, model-wide
+  data) to source it from.
+
+### Fixed
+
+- `LinkLabelDraggingTool` (plus its `SetLinkLabelPositionCommand`/
+  `LinkLabelPosition`) was mistakenly added to `graphojs/go` in an earlier
+  1.2.0 pass — cross-checking against GoJS's real `.d.ts` shows it actually
+  ships from GoJS's `extensionsJSM/` folder (alongside `Buttons.ts`, where
+  `TreeExpanderButton` comes from), not the core `go` module.
+  `compatibility.md` already documented this correctly; reverted to match.
+  (`ReshapeLinkCommand` stays in `go.ts` — that one really is core, used by
+  `LinkReshapingTool`.)
+- `go.ts` now also exports `Quadtree` (lowercase "t") as an alias of
+  `QuadTree` — real GoJS uses that exact casing.
+- `LayerNames.Default` was `'Default'`; real GoJS uses the empty string
+  (`Part.layerName = ""` means "the default layer"). Also added the 4
+  layer names graphojs was missing (`ViewportBackground`,
+  `ViewportForeground`, `Adornment`, `Tool`) so `diagram.findLayer(...)`
+  round-trips the same names as real GoJS, though adornments/tool handles
+  don't yet render through them.
+- `Diagram.findHitGraphObject` subtracted the containing Part's bounds
+  before hit-testing, but every element's position is already tracked in
+  absolute diagram coordinates (set during `Panel.draw`'s layout passes)
+  — so it always missed and returned `null`. This silently broke
+  `GraphObject.click`/`doubleClick`/`contextClick` handlers on any
+  sub-object (buttons, checkboxes, etc.) and — since it's what
+  `ActionTool` uses to find the actionable object under the pointer — it
+  would have made every `isActionable` GraphObject entirely unresponsive
+  to real mouse input. Found via a real-browser Playwright test that
+  clicked an actionable button rather than calling the tool's methods
+  directly.
+- `ActionTool` was registered with the diagram's `ToolManager` but never
+  added to the `mouseDown`/`mouseMove`/`mouseUp` dispatch lists, so it
+  never actually ran during real interaction. Added it to the front of
+  both lists (its `canStart` only matches when an `isActionable` object
+  is directly under the pointer, so it can't steal clicks meant for
+  other tools).
+- `packages/core/package.json`'s `sideEffects` array didn't list
+  `panel/BuilderWidgets.js`/`.cjs` — the module that registers all
+  `GraphObject.make("Button", ...)`-style builders as a side effect of
+  being imported. Tree-shaking bundlers (esbuild, Vite, webpack) were
+  free to drop that import entirely, silently breaking every builder
+  widget in a real production build while unit tests (which don't
+  tree-shake) kept passing. Added it to `sideEffects`.
 
 ## [1.1.0] - 2026-08-20
 

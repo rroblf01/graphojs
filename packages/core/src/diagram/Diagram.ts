@@ -22,6 +22,7 @@ import type {
   NodeKey,
 } from '../model/Model.ts';
 import type { GraphObject } from '../panel/GraphObject.ts';
+import { HTMLInfo } from '../panel/HTMLInfo.ts';
 import { Panel } from '../panel/Panel.ts';
 import { Shape } from '../panel/Shape.ts';
 import { TextBlock } from '../panel/TextBlock.ts';
@@ -42,6 +43,8 @@ import { type DiagramJSON, Serializer } from '../serialization/Serializer.ts';
 import { PartPool } from '../spatial/PartPool.ts';
 import { QuadTree } from '../spatial/QuadTree.ts';
 import { VirtualizationManager } from '../spatial/VirtualizationManager.ts';
+import { ThemeManager } from '../theme/ThemeManager.ts';
+import { ActionTool } from '../tool/ActionTool.ts';
 import { ClickCreatingTool } from '../tool/ClickCreatingTool.ts';
 import { ClickSelectingTool } from '../tool/ClickSelectingTool.ts';
 import { ContextMenuTool } from '../tool/ContextMenuTool.ts';
@@ -294,6 +297,8 @@ export class Diagram {
   private _toolTipCurrentPart: Part | null = null;
   private _toolTipTimer: ReturnType<typeof setTimeout> | null = null;
   private _toolTipDismiss: (() => void) | null = null;
+  private _contextMenuHtmlInfo: HTMLInfo | null = null;
+  private _toolTipHtmlInfo: HTMLInfo | null = null;
   /** GoJS-compatible: delay (ms) before a part's `toolTip` Panel appears on hover. */
   toolTipDelay = 500;
   private backBuffer: HTMLCanvasElement | null = null;
@@ -484,6 +489,7 @@ export class Diagram {
   /** Register default interaction tools in GoJS priority order. */
   private registerDefaultTools(): void {
     const tm = this._toolManager;
+    tm.registerTool('action', new ActionTool());
     tm.registerTool('clickSelecting', new ClickSelectingTool());
     tm.registerTool('dragging', new DraggingTool());
     tm.registerTool('panning', new PanningTool());
@@ -505,10 +511,15 @@ export class Diagram {
     // empty-background click, ahead of the catch-all clickSelecting — rather
     // than after it, where clickSelecting's unconditional canStart would
     // always win first and clickCreating would never be reachable.
-    // linkLabelDragging is first: its canStart only matches the small label
+    // 'action' comes first: its canStart only matches a GraphObject with
+    // isActionable === true (buttons, checkboxes, etc. built via
+    // GraphObject.make string-dispatch), so it must win before any other
+    // tool's broader hit-test claims the same click on that same object.
+    // linkLabelDragging is next: its canStart only matches the small label
     // hit-box, so it must win before the broader relinking/resizing/etc.
     // hit-tests get a chance to claim the same click.
     for (const name of [
+      'action',
       'linkLabelDragging',
       'relinking',
       'resizing',
@@ -534,6 +545,7 @@ export class Diagram {
     const panning = tm.getTool('panning');
     if (panning) tm.addToolToList('mouseMove', panning);
     for (const name of [
+      'action',
       'linkLabelDragging',
       'dragging',
       'linking',
@@ -1103,6 +1115,12 @@ export class Diagram {
     if (!template) return;
     this.hideContextMenu();
 
+    if (template instanceof HTMLInfo) {
+      this._contextMenuHtmlInfo = template;
+      template.invokeShow(part, this, this._toolManager.getTool('contextMenu') ?? null);
+      return;
+    }
+
     this._contextMenuEl = this.renderFloatingPanel(template, e.clientX, e.clientY);
 
     const dismiss = (): void => {
@@ -1116,6 +1134,10 @@ export class Diagram {
 
   /** Hide any floating part context menu. */
   hideContextMenu(): void {
+    if (this._contextMenuHtmlInfo) {
+      this._contextMenuHtmlInfo.invokeHide(this, this._toolManager.getTool('contextMenu') ?? null);
+      this._contextMenuHtmlInfo = null;
+    }
     if (this._contextMenuEl) {
       this._contextMenuEl.remove();
       this._contextMenuEl = null;
@@ -1158,6 +1180,12 @@ export class Diagram {
     const template = part.toolTip;
     if (!template) return;
 
+    if (template instanceof HTMLInfo) {
+      this._toolTipHtmlInfo = template;
+      template.invokeShow(part, this, null);
+      return;
+    }
+
     const size = template.measureWithMargin();
     this._toolTipEl = this.renderFloatingPanel(
       template,
@@ -1184,6 +1212,10 @@ export class Diagram {
       this._toolTipTimer = null;
     }
     this._toolTipCurrentPart = null;
+    if (this._toolTipHtmlInfo) {
+      this._toolTipHtmlInfo.invokeHide(this, null);
+      this._toolTipHtmlInfo = null;
+    }
     if (this._toolTipDismiss) {
       window.removeEventListener('mousedown', this._toolTipDismiss);
       window.removeEventListener('wheel', this._toolTipDismiss);
@@ -1247,13 +1279,17 @@ export class Diagram {
     }
   }
 
-  /** Find the deepest GraphObject of a part's visual tree at a diagram point. */
-  private findHitGraphObject(part: Part, point: { x: number; y: number }): GraphObject | null {
+  /**
+   * Find the deepest GraphObject in `part`'s visual tree at the given
+   * diagram point. Every element's `_position`/`_actualSize` (set during
+   * `Panel.draw`'s layout passes) is already in absolute diagram
+   * coordinates, not relative to `part.bounds` — so `point` is passed to
+   * `panel.hitTest` unchanged.
+   */
+  findHitGraphObject(part: Part, point: { x: number; y: number }): GraphObject | null {
     const panel = part.panel;
     if (!panel) return null;
-    const localX = point.x - part.bounds.x;
-    const localY = point.y - part.bounds.y;
-    return panel.hitTest(localX, localY);
+    return panel.hitTest(point.x, point.y);
   }
 
   /** Handle keyboard shortcuts. */
@@ -2033,7 +2069,7 @@ export class Diagram {
         continue;
       }
       if (el.strokeWidth > 0) link.strokeWidth = el.strokeWidth;
-      if (el.stroke && el.stroke !== '#333333') link.stroke = el.stroke;
+      if (typeof el.stroke === 'string' && el.stroke !== '#333333') link.stroke = el.stroke;
       consumed.push(el);
     }
     for (const el of consumed) panel.remove(el);
@@ -2649,7 +2685,10 @@ export class Diagram {
     }
     for (const el of pattern.elements) {
       if (!(el instanceof Shape)) continue;
-      const lineStyle = { stroke: el.stroke, strokeWidth: el.strokeWidth };
+      const lineStyle = {
+        stroke: typeof el.stroke === 'string' ? el.stroke : '#e0e0e0',
+        strokeWidth: el.strokeWidth,
+      };
       if (el.shape === 'lineH') style.horizontal = lineStyle;
       else if (el.shape === 'lineV') style.vertical = lineStyle;
     }
@@ -2961,6 +3000,43 @@ export class Diagram {
   /** Get the tooltip manager, or null if disabled. */
   getTooltipManager(): TooltipManager | null {
     return this.tooltipManager;
+  }
+
+  private _themeManager: ThemeManager | null = null;
+
+  /**
+   * GoJS-compatible: the `ThemeManager` for this diagram, lazily created
+   * with the default `light`/`dark` themes on first access.
+   */
+  get themeManager(): ThemeManager {
+    if (!this._themeManager) {
+      this._themeManager = new ThemeManager();
+      this._themeManager.addDiagram(this);
+    }
+    return this._themeManager;
+  }
+
+  set themeManager(value: ThemeManager) {
+    this._themeManager?.removeDiagram(this);
+    this._themeManager = value;
+    value.addDiagram(this);
+    this.updateThemeBindings();
+  }
+
+  /**
+   * Re-apply every binding (including `ThemeBinding`s) on every part, so
+   * templates using `GraphObject.theme()`/`themeData()` pick up the
+   * current theme. Called automatically when `themeManager.currentTheme`
+   * changes or `themeManager.set(...)` is called.
+   */
+  updateThemeBindings(): void {
+    for (const [, part] of this.parts) {
+      if (part.bindings.length > 0 || part.panel !== null) {
+        const data = this.getDataForPart(part);
+        if (data) part.applyBindings(data);
+      }
+    }
+    this.invalidate();
   }
 
   /** Enable double-buffered rendering (render offscreen then blit). */
@@ -3927,6 +4003,7 @@ export class Diagram {
     // Destroy tooltip manager (removes any tooltip element/timeouts)
     this.tooltipManager?.destroy();
     this.tooltipManager = null;
+    this._themeManager?.removeDiagram(this);
 
     // Remove any floating part context menu / toolTip
     this.hideContextMenu();

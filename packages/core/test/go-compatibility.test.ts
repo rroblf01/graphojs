@@ -1,23 +1,24 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeAll, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import {
-  go,
-  GraphObject,
-  Shape,
-  TextBlock,
-  Panel,
-  Node,
-  Link,
-  Point,
-  Spot,
   Binding,
-  Rect,
-  Size,
-  Margin,
-  LayoutNetwork,
   Diagram,
   GraphLinksModel,
+  GraphObject,
+  go,
   InputEvent,
+  LayoutNetwork,
+  Link,
+  LinkLabelDraggingTool,
+  Margin,
+  Node,
+  Panel,
+  Point,
+  Rect,
+  Shape,
+  Size,
+  Spot,
+  TextBlock,
 } from '../src/index.ts';
 import { Group } from '../src/parts/Group.ts';
 
@@ -88,6 +89,17 @@ describe('GoJS Compatibility', () => {
       expect(go.Spot).toBeDefined();
       expect(go.Point).toBeDefined();
       expect(go.Rect).toBeDefined();
+    });
+
+    it("exposes Quadtree under real GoJS's exact casing, aliasing graphojs's own QuadTree", () => {
+      expect(go.Quadtree).toBeDefined();
+      expect(go.Quadtree).toBe(go.QuadTree);
+    });
+
+    it('does not export LinkLabelDraggingTool: real GoJS ships it as an extension outside go.*', () => {
+      expect((go as Record<string, unknown>).LinkLabelDraggingTool).toBeUndefined();
+      // Still available as a normal graphojs export, same as TreeExpanderButton/PanelExpanderButton.
+      expect(LinkLabelDraggingTool).toBeDefined();
     });
   });
 

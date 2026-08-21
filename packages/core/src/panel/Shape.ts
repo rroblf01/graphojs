@@ -1,6 +1,9 @@
+import type { BrushLike } from '../geometry/Brush.ts';
+import { Geometry } from '../geometry/Geometry.ts';
+import { Rect } from '../geometry/Rect.ts';
 import type { Size } from '../geometry/Size.ts';
 import { Size as SizeClass } from '../geometry/Size.ts';
-import { Rect } from '../geometry/Rect.ts';
+import { resolveBrushLike } from '../render/BrushResolver.ts';
 import { PathCache } from '../render/RenderCache.ts';
 import { ShapeRenderer } from '../shapes/ShapeRenderer.ts';
 import type { ShapeType } from '../shapes/ShapeTypes.ts';
@@ -71,8 +74,8 @@ export class Shape extends GraphObject {
   static readonly TabbedRectangle = 'tabbedRectangle';
 
   private _shape: ShapeType = 'rect';
-  private _fill = '#cccccc';
-  private _stroke = '#333333';
+  private _fill: BrushLike = '#cccccc';
+  private _stroke: BrushLike = '#333333';
   private _strokeWidth = 1;
   private _cornerRadius = 0;
 
@@ -98,11 +101,11 @@ export class Shape extends GraphObject {
     this._shape = normalizeShapeType(value);
   }
 
-  get fill(): string {
+  get fill(): BrushLike {
     return this._fill;
   }
 
-  set fill(value: string) {
+  set fill(value: BrushLike) {
     this._fill = value;
   }
 
@@ -125,11 +128,28 @@ export class Shape extends GraphObject {
     this._geometryString = value ?? '';
   }
 
-  get stroke(): string {
+  private _geometry: Geometry | null = null;
+
+  /**
+   * GoJS-compatible: a programmatically-built {@link Geometry} for this
+   * shape's outline (an alternative to setting {@link geometryString}
+   * directly). Serializes into `geometryString` under the hood via
+   * `Geometry.stringify`, reusing the same rendering path.
+   */
+  get geometry(): Geometry | null {
+    return this._geometry;
+  }
+
+  set geometry(value: Geometry | null) {
+    this._geometry = value;
+    this._geometryString = value ? Geometry.stringify(value) : '';
+  }
+
+  get stroke(): BrushLike {
     return this._stroke;
   }
 
-  set stroke(value: string) {
+  set stroke(value: BrushLike) {
     this._stroke = value;
   }
 
@@ -207,13 +227,13 @@ export class Shape extends GraphObject {
   }
 
   /** Fluent setter for fill. */
-  setFill(value: string): this {
+  setFill(value: BrushLike): this {
     this._fill = value;
     return this;
   }
 
   /** Fluent setter for stroke. */
-  setStroke(value: string): this {
+  setStroke(value: BrushLike): this {
     this._stroke = value;
     return this;
   }
@@ -239,6 +259,7 @@ export class Shape extends GraphObject {
     cloned._strokeWidth = this._strokeWidth;
     cloned._cornerRadius = this._cornerRadius;
     cloned._geometryString = this._geometryString;
+    cloned._geometry = this._geometry ? this._geometry.copy() : null;
     cloned._strokeCap = this._strokeCap;
     cloned._strokeJoin = this._strokeJoin;
     cloned.isPanelMain = this.isPanelMain;
@@ -275,8 +296,8 @@ export class Shape extends GraphObject {
     height: number,
   ): void {
     ctx.save();
-    ctx.fillStyle = this._fill;
-    ctx.strokeStyle = this._stroke;
+    ctx.fillStyle = resolveBrushLike(ctx, this._fill, x, y, width, height);
+    ctx.strokeStyle = resolveBrushLike(ctx, this._stroke, x, y, width, height);
     ctx.lineWidth = this._strokeWidth;
 
     if (this._geometryString) {

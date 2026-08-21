@@ -17,6 +17,8 @@ export class ShapeRenderer {
     this.ctx.beginPath();
 
     switch (type) {
+      case 'none':
+        break;
       case 'rect':
         this.ctx.rect(x, y, width, height);
         break;
@@ -25,6 +27,51 @@ export class ShapeRenderer {
         break;
       case 'roundedRect':
         this.renderRoundedRect(x, y, width, height, Math.min(width, height) * 0.1);
+        break;
+      case 'roundedTopRect': {
+        const r = Math.min(width, height) * 0.2;
+        this.ctx.roundRect(x, y, width, height, [r, r, 0, 0]);
+        break;
+      }
+      case 'roundedBottomRect': {
+        const r = Math.min(width, height) * 0.2;
+        this.ctx.roundRect(x, y, width, height, [0, 0, r, r]);
+        break;
+      }
+      case 'roundedLeftRect': {
+        const r = Math.min(width, height) * 0.2;
+        this.ctx.roundRect(x, y, width, height, [r, 0, 0, r]);
+        break;
+      }
+      case 'roundedRightRect': {
+        const r = Math.min(width, height) * 0.2;
+        this.ctx.roundRect(x, y, width, height, [0, r, r, 0]);
+        break;
+      }
+      case 'capsule':
+        this.ctx.roundRect(x, y, width, height, Math.min(width, height) / 2);
+        break;
+      case 'barH':
+        this.ctx.rect(x, y, width, height);
+        break;
+      case 'barV':
+        this.ctx.rect(x, y, width, height);
+        break;
+      case 'lineRight':
+        this.ctx.moveTo(x, y + height);
+        this.ctx.lineTo(x + width, y);
+        break;
+      case 'lineLeft':
+        this.ctx.moveTo(x + width, y + height);
+        this.ctx.lineTo(x, y);
+        break;
+      case 'lineUp':
+        this.ctx.moveTo(x, y + height);
+        this.ctx.lineTo(x + width, y);
+        break;
+      case 'lineDown':
+        this.ctx.moveTo(x, y);
+        this.ctx.lineTo(x + width, y + height);
         break;
       case 'diamond':
         this.renderDiamond(x, y, width, height);

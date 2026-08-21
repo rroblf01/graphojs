@@ -16,7 +16,9 @@
     "./dist/export/Palette.js",
     "./dist/export/Palette.cjs",
     "./dist/diagram/Diagram.js",
-    "./dist/diagram/Diagram.cjs"
+    "./dist/diagram/Diagram.cjs",
+    "./dist/panel/BuilderWidgets.js",
+    "./dist/panel/BuilderWidgets.cjs"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

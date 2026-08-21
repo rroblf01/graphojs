@@ -101,28 +101,52 @@ export class Layer {
   }
 }
 
-/** Built-in layer names. */
+/**
+ * Built-in layer names. GoJS-compatible: `Default` is the empty string
+ * (matching real GoJS — `Part.layerName = ""` means "the default layer"),
+ * not the literal name "Default".
+ */
 export const LayerNames = {
   Grid: 'Grid',
+  ViewportBackground: 'ViewportBackground',
   Background: 'Background',
-  Default: 'Default',
+  Default: '',
   Foreground: 'Foreground',
+  ViewportForeground: 'ViewportForeground',
+  Adornment: 'Adornment',
+  Tool: 'Tool',
 } as const;
 
 /** Default layer z-orders. */
 export const LayerDefaults = {
   Grid: -100,
+  ViewportBackground: -30,
   Background: -10,
   Default: 0,
   Foreground: 10,
+  ViewportForeground: 30,
+  Adornment: 50,
+  Tool: 100,
 } as const;
 
-/** Create a default set of layers. */
+/**
+ * Create the standard set of layers, in the same relative stacking order
+ * real GoJS uses. Only `Grid`/`Background`/`Default`/`Foreground` are
+ * currently drawn into by the renderer; `ViewportBackground`/
+ * `ViewportForeground`/`Adornment`/`Tool` exist so `diagram.findLayer(...)`/
+ * `part.layerName = ...` round-trip the same names as real GoJS, even
+ * though adornments and tool handles aren't yet routed through them (they
+ * render as a separate overlay pass today).
+ */
 export function createDefaultLayers(): Layer[] {
   return [
     new Layer(LayerNames.Grid, LayerDefaults.Grid),
+    new Layer(LayerNames.ViewportBackground, LayerDefaults.ViewportBackground),
     new Layer(LayerNames.Background, LayerDefaults.Background),
     new Layer(LayerNames.Default, LayerDefaults.Default),
     new Layer(LayerNames.Foreground, LayerDefaults.Foreground),
+    new Layer(LayerNames.ViewportForeground, LayerDefaults.ViewportForeground),
+    new Layer(LayerNames.Adornment, LayerDefaults.Adornment),
+    new Layer(LayerNames.Tool, LayerDefaults.Tool),
   ];
 }

@@ -2,9 +2,21 @@
  * Predefined shape types for nodes.
  */
 export type ShapeType =
+  | 'none'
   | 'rect'
   | 'ellipse'
   | 'roundedRect'
+  | 'roundedTopRect'
+  | 'roundedBottomRect'
+  | 'roundedLeftRect'
+  | 'roundedRightRect'
+  | 'capsule'
+  | 'barH'
+  | 'barV'
+  | 'lineRight'
+  | 'lineLeft'
+  | 'lineUp'
+  | 'lineDown'
   | 'diamond'
   | 'hexagon'
   | 'octagon'
@@ -108,6 +120,14 @@ export interface ShapeDefinition {
  * Registry of all available shapes.
  */
 export const SHAPES: Record<ShapeType, ShapeDefinition> = {
+  none: {
+    type: 'none',
+    name: 'None',
+    defaultWidth: 1,
+    defaultHeight: 1,
+    resizable: true,
+    hasPorts: false,
+  },
   rect: {
     type: 'rect',
     name: 'Rectangle',
@@ -115,6 +135,94 @@ export const SHAPES: Record<ShapeType, ShapeDefinition> = {
     defaultHeight: 60,
     resizable: true,
     hasPorts: true,
+  },
+  roundedTopRect: {
+    type: 'roundedTopRect',
+    name: 'Rounded Top Rectangle',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  roundedBottomRect: {
+    type: 'roundedBottomRect',
+    name: 'Rounded Bottom Rectangle',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  roundedLeftRect: {
+    type: 'roundedLeftRect',
+    name: 'Rounded Left Rectangle',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  roundedRightRect: {
+    type: 'roundedRightRect',
+    name: 'Rounded Right Rectangle',
+    defaultWidth: 100,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: true,
+  },
+  capsule: {
+    type: 'capsule',
+    name: 'Capsule',
+    defaultWidth: 100,
+    defaultHeight: 50,
+    resizable: true,
+    hasPorts: true,
+  },
+  barH: {
+    type: 'barH',
+    name: 'Horizontal Bar',
+    defaultWidth: 100,
+    defaultHeight: 20,
+    resizable: true,
+    hasPorts: false,
+  },
+  barV: {
+    type: 'barV',
+    name: 'Vertical Bar',
+    defaultWidth: 20,
+    defaultHeight: 100,
+    resizable: true,
+    hasPorts: false,
+  },
+  lineRight: {
+    type: 'lineRight',
+    name: 'Line Right',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: false,
+  },
+  lineLeft: {
+    type: 'lineLeft',
+    name: 'Line Left',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: false,
+  },
+  lineUp: {
+    type: 'lineUp',
+    name: 'Line Up',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: false,
+  },
+  lineDown: {
+    type: 'lineDown',
+    name: 'Line Down',
+    defaultWidth: 60,
+    defaultHeight: 60,
+    resizable: true,
+    hasPorts: false,
   },
   ellipse: {
     type: 'ellipse',
@@ -845,7 +953,24 @@ export function normalizeShapeType(value: string): ShapeType {
 
 /** GoJS figure names that don't match our internal keys exactly. */
 const GOJS_FIGURE_ALIASES: Record<string, ShapeType> = {
+  none: 'none',
   rectangle: 'rect',
+  border: 'rect',
+  borders: 'rect',
+  roundedtoprectangle: 'roundedTopRect',
+  roundedbottomrectangle: 'roundedBottomRect',
+  roundedleftrectangle: 'roundedLeftRect',
+  roundedrightrectangle: 'roundedRightRect',
+  capsule: 'capsule',
+  barh: 'barH',
+  barv: 'barV',
+  lineright: 'lineRight',
+  lineleft: 'lineLeft',
+  lineup: 'lineUp',
+  linedown: 'lineDown',
+  minusline: 'minus',
+  plusline: 'plus',
+  xline: 'x',
   roundedrectangle: 'roundedRect',
   roundedrect: 'roundedRect',
   ellipsis: 'ellipse',

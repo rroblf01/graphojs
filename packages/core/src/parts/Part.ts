@@ -73,6 +73,25 @@ export class Part {
     return this._key;
   }
 
+  private _name = '';
+
+  /**
+   * GoJS-compatible: an arbitrary name for this part. Real GoJS has this
+   * because `Part extends GraphObject`, which has its own `.name` (used
+   * for `findObject`-style lookups); graphojs's `Part` is a separate
+   * class, so it needs its own copy of the same property rather than
+   * inheriting it — most relevant for a bare decorative `Part` (see
+   * `Diagram.add`), which ported GoJS code may still identify by `.name`
+   * the way it would identify any other `GraphObject`.
+   */
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
   /** GoJS-compatible: Whether this part can be deleted. */
   get deletable(): boolean {
     return this._deletable;
@@ -665,6 +684,7 @@ export class Part {
   copy(): this {
     const cloned = Object.create(Object.getPrototypeOf(this)) as this;
     cloned._key = this._key;
+    cloned._name = this._name;
     cloned._bounds = this._bounds.clone();
     cloned._visible = this._visible;
     cloned._selectable = this._selectable;

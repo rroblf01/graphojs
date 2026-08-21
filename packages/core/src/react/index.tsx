@@ -356,4 +356,4 @@ export const ReactDiagram = forwardRef<ReactDiagramRef, ReactDiagramProps>(funct
   );
 });
 
-export const version: string = '1.5.0';
+export const version: string = '1.6.0';

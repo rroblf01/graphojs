@@ -5,6 +5,60 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-08-21
+
+Follow-up to 1.5.0, from a sixth round of the same migration report (a
+side-by-side GoJS/graphojs Gantt screenshot comparison, plus two small
+named-API gaps) — one of these turned out to be the most significant fix
+in this whole series. No breaking changes.
+
+### Fixed
+
+- **A `Node` never auto-sized to its own template's content — it always
+  fell back to a hardcoded 100x50 unless the model data had explicit
+  `width`/`height` fields.** Real GoJS has no such reserved data
+  properties: binding a `Shape`'s own `width` inside an `"Auto"` panel to
+  per-node data (the standard way a node is meant to auto-size to its
+  content — the same idiom behind any node that hugs its label) is
+  exactly what a Gantt bar template does, binding the *bar Shape's*
+  width to each task's duration rather than the model data's `width`
+  directly. Every bar rendered at the same ~100px width regardless of
+  its real duration, which is what the screenshot comparison showed:
+  GoJS's "Design" (5 days) and "Build" (10 days) bars scaled
+  proportionally to their length; graphojs's were the same width
+  regardless of duration. `updateNodeFromData` now measures the node's
+  own panel (after its bindings have been applied, so it reflects that
+  node's own data) and uses that for width/height whenever neither the
+  model data nor the template's own top-level property map (e.g.
+  `$(go.Node, { width: 150 }, ...)`, unaffected) supplies one explicitly.
+- `Diagram` defaulted `showGrid` to `true` (a visible 20px background
+  grid) — real GoJS's own `Diagram.grid` Panel exists by default but
+  starts `visible: false`; you opt in explicitly. This meant every
+  graphojs diagram that never touched grid settings at all rendered a
+  faint grid GoJS wouldn't — visible side by side in a Gantt chart
+  screenshot comparison as fine daily gridlines across the whole
+  timeline, where GoJS showed none. Defaulted `showGrid` to `false` to
+  match. Since `showGrid` was a private field with no public setter,
+  added `enableGrid()`/`disableGrid()`/`isGridEnabled()` (mirroring the
+  existing `enable/disableSnapToGrid()` shape) so it can still be turned
+  on after construction, not just via the constructor option.
+
+### Added
+
+- `Part.name` — real GoJS has this because `Part extends GraphObject`,
+  which owns `.name`; graphojs's `Part` is a separate class, so it had no
+  name of its own. Most relevant for a bare decorative `Part` (added in
+  1.4.0), which ported GoJS code may still identify by `.name` rather
+  than `.key`. `name` in a `Node`/`Link`/`Group` template's top-level
+  property map now also routes to the resulting Part (not the template's
+  wrapper Panel), matching how `visible`/`opacity`/`location`/etc. were
+  already handled there.
+- `TextBlock.OverflowClip`/`OverflowEllipsis` — named constants for
+  `TextBlock.overflow`, resolving to the same `"clip"`/`"ellipsis"`
+  strings it already accepted. Lets a ported GoJS template write
+  `overflow: go.TextBlock.OverflowEllipsis` instead of the literal
+  string.
+
 ## [1.5.0] - 2026-08-21
 
 Follow-up to 1.4.0, closing the remaining real gaps from a fifth round of
@@ -620,6 +674,7 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.6.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.6.0
 [1.5.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.5.0
 [1.4.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.4.0
 [1.3.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.3.0

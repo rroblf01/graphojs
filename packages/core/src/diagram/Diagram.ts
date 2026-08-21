@@ -87,7 +87,12 @@ export interface DiagramOptions {
   maxScale?: number;
   /** Grid size in pixels. Default: 20 */
   gridSize?: number;
-  /** Show grid background. Default: true */
+  /**
+   * Show grid background. Default: false, matching real GoJS — its own
+   * `Diagram.grid` Panel exists by default but starts `visible: false`;
+   * you opt in explicitly (`myDiagram.grid.visible = true`, or here,
+   * `showGrid: true`).
+   */
   showGrid?: boolean;
   /** Snap parts to the grid when moving. Default: false */
   snapToGrid?: boolean;
@@ -394,7 +399,7 @@ export class Diagram {
     this._minScale = resolvedOptions.minScale ?? 0.1;
     this._maxScale = resolvedOptions.maxScale ?? 10;
     this.gridSize = resolvedOptions.gridSize ?? 20;
-    this.showGrid = resolvedOptions.showGrid ?? true;
+    this.showGrid = resolvedOptions.showGrid ?? false;
     this.snapToGrid = resolvedOptions.snapToGrid ?? false;
     this.backgroundColor = resolvedOptions.backgroundColor ?? '#ffffff';
 
@@ -2132,6 +2137,28 @@ export class Diagram {
     if (node.bindings.length > 0 || node.panel !== null) {
       node.applyBindings(nodeData);
     }
+    // GoJS-compatible: when neither the model data nor the template
+    // itself gives an explicit width/height, the node auto-sizes to its
+    // template's own content (e.g. an "Auto" panel's main Shape bound to
+    // a per-node width, or a TextBlock bound to per-node text) — real
+    // GoJS never treats `width`/`height` as reserved model-data
+    // properties; it's the panel's natural `measure()` that determines a
+    // node's size unless you explicitly set/bind `Node.desiredSize`/
+    // `width`/`height` yourself (here, via the template's own top-level
+    // property map — `templateProperties` — checked below, so a template
+    // like `$(go.Node, { width: 150 }, ...)` still wins as before).
+    // Bindings must already be applied (just above) before measuring, so
+    // the panel reflects this node's own data, not the template default.
+    if (node.panel) {
+      const templateProps = node.panel.templateProperties;
+      const widthExplicit = nodeData.width !== undefined || templateProps.width !== undefined;
+      const heightExplicit = nodeData.height !== undefined || templateProps.height !== undefined;
+      if (!widthExplicit || !heightExplicit) {
+        const natural = node.panel.measure();
+        if (!widthExplicit) node.bounds.width = natural.width;
+        if (!heightExplicit) node.bounds.height = natural.height;
+      }
+    }
     this.hitIndex?.insertWithBounds(node.bounds, node);
     this.fireDiagramEvent('PartMoved', node, { x, y });
   }
@@ -3160,6 +3187,30 @@ export class Diagram {
   /** Check whether grid snapping is enabled. */
   isSnapToGridEnabled(): boolean {
     return this.snapToGrid;
+  }
+
+  /**
+   * GoJS-compatible: show the background grid — the closest equivalent of
+   * real GoJS's `myDiagram.grid.visible = true` (its `Diagram.grid` exists
+   * by default but starts invisible; here that's `showGrid`, `false` by
+   * default, toggled through this pair of methods rather than a settable
+   * property since `enableSnapToGrid`/`disableSnapToGrid` already
+   * established that shape for the closely-related `snapToGrid`).
+   */
+  enableGrid(): void {
+    this.showGrid = true;
+    this.invalidate();
+  }
+
+  /** Hide the background grid. */
+  disableGrid(): void {
+    this.showGrid = false;
+    this.invalidate();
+  }
+
+  /** Check whether the background grid is currently shown. */
+  isGridEnabled(): boolean {
+    return this.showGrid;
   }
 
   /** Set the grid size used for snapping. */

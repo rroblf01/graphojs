@@ -26,6 +26,7 @@ import { isPartCtor } from './PartRegistry.ts';
 export abstract class GraphObject {
   /** Properties that belong on the created Part, not on the template Panel. */
   protected static readonly PART_LEVEL_PROPS = new Set([
+    'name',
     'visible',
     'opacity',
     'location',

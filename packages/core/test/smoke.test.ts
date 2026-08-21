@@ -3,6 +3,6 @@ import { version } from '../src/index.js';
 
 describe('graphojs core', () => {
   it('exposes a version', () => {
-    expect(version).toBe('1.5.0');
+    expect(version).toBe('1.6.0');
   });
 });

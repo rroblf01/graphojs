@@ -26,6 +26,11 @@ function getMeasureContext(): CanvasRenderingContext2D | null {
  * A text element in a panel.
  */
 export class TextBlock extends GraphObject {
+  /** GoJS-compatible: named constant for `overflow` — clips overflowing text with no ellipsis. */
+  static readonly OverflowClip = 'clip';
+  /** GoJS-compatible: named constant for `overflow` — truncates overflowing text with an ellipsis ("…"). */
+  static readonly OverflowEllipsis = 'ellipsis';
+
   private _text = '';
   private _color = '#000000';
   private _font = '12px sans-serif';

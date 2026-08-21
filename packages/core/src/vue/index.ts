@@ -218,4 +218,4 @@ export const Overview = defineComponent({
   },
 });
 
-export const version: string = '1.5.0';
+export const version: string = '1.6.0';

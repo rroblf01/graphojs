@@ -3859,3 +3859,143 @@ describe('O42: a shown Part.toolTip immediately hid itself (positioned exactly u
     expect(el.style.pointerEvents).toBe('none');
   });
 });
+
+describe('O43: Diagram defaulted showGrid to true; real GoJS grid starts invisible', () => {
+  it('a diagram with no explicit showGrid renders no grid lines', () => {
+    const d = createDiagram();
+    // @ts-expect-error -- private, asserting the default directly
+    expect(d.showGrid).toBe(false);
+    expect(d.isGridEnabled()).toBe(false);
+  });
+
+  it('enableGrid()/disableGrid() toggle it, and the constructor option still works', () => {
+    const d = createDiagram();
+    d.enableGrid();
+    expect(d.isGridEnabled()).toBe(true);
+    d.disableGrid();
+    expect(d.isGridEnabled()).toBe(false);
+
+    const shown = new Diagram({ div: document.createElement('div'), showGrid: true });
+    diagrams.push(shown);
+    expect(shown.isGridEnabled()).toBe(true);
+  });
+});
+
+describe('O44: Part had no .name (real GoJS has it via Part extends GraphObject)', () => {
+  it('a bare Part can be named and found by name-based lookup patterns', () => {
+    const deco = new Part();
+    expect(deco.name).toBe('');
+    deco.name = 'frame';
+    expect(deco.name).toBe('frame');
+  });
+
+  it('copy() preserves the name', () => {
+    const deco = new Part();
+    deco.name = 'frame';
+    const copy = deco.copy();
+    expect(copy.name).toBe('frame');
+  });
+
+  it("a Node template's top-level {name: ...} names the resulting Part, not the wrapper Panel", () => {
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(Node, 'Auto', { name: 'taskNode' }, $(Shape, 'Rectangle'));
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.name).toBe('taskNode');
+  });
+});
+
+describe('O45: TextBlock.OverflowEllipsis/OverflowClip named constants did not exist', () => {
+  it('resolve to the same strings TextBlock.overflow already accepted', () => {
+    expect(TextBlock.OverflowEllipsis).toBe('ellipsis');
+    expect(TextBlock.OverflowClip).toBe('clip');
+
+    const tb = new TextBlock();
+    tb.overflow = TextBlock.OverflowEllipsis;
+    expect(tb.overflow).toBe('ellipsis');
+  });
+});
+
+describe('O46: a Node ignored its template content size, always defaulting to 100x50 unless nodeData.width/height was set', () => {
+  it('a Binding on an "Auto" panel\'s main Shape.width sizes the node to it, not to a hardcoded default', () => {
+    // The exact reported failure mode: a Gantt bar template binds the
+    // BAR Shape's own width to per-task data (barWidth) rather than
+    // binding a model-data `width` field directly — the real GoJS idiom
+    // for "the node auto-sizes to its content." Every bar rendered at
+    // the same ~100px default width regardless of its real duration.
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(
+        Shape,
+        'RoundedRectangle',
+        { name: 'BAR', height: 26, strokeWidth: 0 },
+        new Binding('width', 'barWidth'),
+      ),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, barWidth: 40 },
+        { key: 2, x: 0, y: 60, barWidth: 80 },
+      ],
+    });
+
+    const node1 = d.findNodeForKey(1) as Node;
+    const node2 = d.findNodeForKey(2) as Node;
+    expect(node1.bounds.width).toBe(40);
+    expect(node2.bounds.width).toBe(80);
+  });
+
+  it('re-measures when the bound data changes on an existing node', () => {
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(Shape, 'RoundedRectangle', { height: 26 }, new Binding('width', 'barWidth')),
+    );
+    const model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0, barWidth: 40 }] });
+    d.model = model;
+    expect((d.findNodeForKey(1) as Node).bounds.width).toBe(40);
+
+    model.setDataProperty(model.getNodeData(1)!, 'barWidth', 90);
+    expect((d.findNodeForKey(1) as Node).bounds.width).toBe(90);
+  });
+
+  it('an explicit nodeData.width still wins over the template content size (no regression)', () => {
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(Shape, 'RoundedRectangle', { height: 26 }, new Binding('width', 'barWidth')),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, width: 250, barWidth: 40 }],
+    });
+    // Explicit model-data width takes precedence over the content-driven size.
+    expect((d.findNodeForKey(1) as Node).bounds.width).toBe(250);
+  });
+
+  it("a template's own explicit {width, height} still wins (already-passing behavior, unaffected)", () => {
+    const $ = GraphObject.make;
+    const template = $(Node, { width: 150, height: 60 });
+    const d = createDiagram();
+    d.nodeTemplate = template;
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.width).toBe(150);
+    expect(node.height).toBe(60);
+  });
+
+  it('with no template and no explicit size, still falls back to the 100x50 default', () => {
+    const d = createDiagram();
+    d.model = new GraphLinksModel({ nodeDataArray: [{ key: 1, x: 0, y: 0 }] });
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.bounds.width).toBe(100);
+    expect(node.bounds.height).toBe(50);
+  });
+});

@@ -442,11 +442,13 @@ export abstract class GraphObject {
    * never set — NOT the object's current rendered size. Falling back to
    * `_actualSize` here (as this used to) makes every `measure()` override
    * (`Shape`/`TextBlock`/`Picture`/`Panel`, which all gate their real
-   * measurement behind `this.width > 0`) permanently "lock onto" whatever
-   * size an earlier — possibly premature, e.g. before a data binding
-   * applied the real text — layout pass happened to produce, since that
-   * stale actualSize then reads back as "an explicit width was set" on
-   * every later pass and skips remeasuring for good.
+   * measurement behind `!Number.isNaN(this.width)`) permanently "lock onto"
+   * whatever size an earlier — possibly premature, e.g. before a data
+   * binding applied the real text — layout pass happened to produce, since
+   * that stale actualSize then reads back as "an explicit width was set" on
+   * every later pass and skips remeasuring for good. Those callers must
+   * check for `NaN` specifically, not `> 0` — a `Binding` that legitimately
+   * resolves to `0` (e.g. a 0%-progress bar) is still an explicit width.
    */
   get width(): number {
     return this._desiredSize?.width ?? Number.NaN;

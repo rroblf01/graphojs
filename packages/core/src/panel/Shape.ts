@@ -285,15 +285,15 @@ export class Shape extends GraphObject {
   }
 
   override measure(): Size {
-    const w = this.width > 0 ? this.width : 100;
-    const h = this.height > 0 ? this.height : 60;
+    const w = Number.isNaN(this.width) ? 100 : this.width;
+    const h = Number.isNaN(this.height) ? 60 : this.height;
     return new SizeClass(w, h);
   }
 
   /** GoJS-compatible: The bounds of this shape's geometry (at its current size). */
   getGeometricBounds(): Rect {
-    const w = this.width > 0 ? this.width : this.actualSize.width;
-    const h = this.height > 0 ? this.height : this.actualSize.height;
+    const w = Number.isNaN(this.width) ? this.actualSize.width : this.width;
+    const h = Number.isNaN(this.height) ? this.actualSize.height : this.height;
     return new Rect(0, 0, w || 0, h || 0);
   }
 

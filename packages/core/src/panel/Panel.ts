@@ -318,8 +318,8 @@ export class Panel extends GraphObject {
 
   override measure(): Size {
     const size = this.measurePanel();
-    if (this.width > 0) size.width = this.width;
-    if (this.height > 0) size.height = this.height;
+    if (!Number.isNaN(this.width)) size.width = this.width;
+    if (!Number.isNaN(this.height)) size.height = this.height;
     return size;
   }
 
@@ -530,6 +530,7 @@ export class Panel extends GraphObject {
     if (cellWidth <= 0 || cellHeight <= 0) return;
 
     for (const el of this._elements) {
+      if (!el.visible) continue;
       if (el instanceof Shape && el.shape === 'lineH') {
         const interval = Math.max(1, Math.floor(el.interval));
         for (let row = 0, ty = y; ty <= y + height; row++, ty += cellHeight) {
@@ -602,7 +603,7 @@ export class Panel extends GraphObject {
       el.setPosition(elX, elY);
       el.setActualSize(elW, elH);
 
-      el.draw(ctx, elX, elY, elW, elH);
+      if (el.visible) el.draw(ctx, elX, elY, elW, elH);
 
       cursorMain +=
         (vertical ? elH : elW) + (mTop + (vertical ? (m?.bottom ?? 0) : 0)) + this._spacing;
@@ -649,7 +650,7 @@ export class Panel extends GraphObject {
     if (!main) return;
     main.setPosition(x, y);
     main.setActualSize(width, height);
-    main.draw(ctx, x, y, width, height);
+    if (main.visible) main.draw(ctx, x, y, width, height);
 
     // Remaining elements are positioned at their alignment spot (default:
     // centered), at their natural size — same convention as Spot/Table cells.
@@ -669,7 +670,7 @@ export class Panel extends GraphObject {
       );
       el.setPosition(box.x, box.y);
       el.setActualSize(box.width, box.height);
-      el.draw(ctx, box.x, box.y, box.width, box.height);
+      if (el.visible) el.draw(ctx, box.x, box.y, box.width, box.height);
     }
   }
 
@@ -695,7 +696,7 @@ export class Panel extends GraphObject {
       );
       el.setPosition(box.x, box.y);
       el.setActualSize(box.width, box.height);
-      el.draw(ctx, box.x, box.y, box.width, box.height);
+      if (el.visible) el.draw(ctx, box.x, box.y, box.width, box.height);
     }
   }
 
@@ -711,7 +712,7 @@ export class Panel extends GraphObject {
     if (!main) return;
     main.setPosition(x, y);
     main.setActualSize(width, height);
-    main.draw(ctx, x, y, width, height);
+    if (main.visible) main.draw(ctx, x, y, width, height);
   }
 
   private layoutPosition(
@@ -729,7 +730,7 @@ export class Panel extends GraphObject {
       const box = Panel.marginBox(x + (pos?.x ?? 0), y + (pos?.y ?? 0), outerW, outerH, el.margin);
       el.setPosition(box.x, box.y);
       el.setActualSize(box.width, box.height);
-      el.draw(ctx, box.x, box.y, box.width, box.height);
+      if (el.visible) el.draw(ctx, box.x, box.y, box.width, box.height);
     }
   }
 
@@ -835,11 +836,11 @@ export class Panel extends GraphObject {
         );
         el.setPosition(box.x, box.y);
         el.setActualSize(box.width, box.height);
-        el.draw(ctx, box.x, box.y, box.width, box.height);
+        if (el.visible) el.draw(ctx, box.x, box.y, box.width, box.height);
       } else {
         el.setPosition(cellX, cellY);
         el.setActualSize(cellW, cellH);
-        el.draw(ctx, cellX, cellY, cellW, cellH);
+        if (el.visible) el.draw(ctx, cellX, cellY, cellW, cellH);
       }
     }
   }

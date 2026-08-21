@@ -4128,3 +4128,165 @@ describe('O49: Panel had no findObject (real GoJS name), only findElement', () =
     expect(panel.findObject('missing')).toBeNull();
   });
 });
+
+describe('O50: Panel layout* functions drew invisible elements -- .visible was set but never consulted before .draw()', () => {
+  const $ = GraphObject.make;
+
+  function fillRectCalls(ctx: CanvasRenderingContext2D): number {
+    return (ctx.fillRect as ReturnType<typeof vi.fn>).mock.calls.length;
+  }
+
+  it('layoutStack ("Vertical") skips drawing an invisible child', () => {
+    const panel = $(
+      Panel,
+      'Vertical',
+      $(Shape, 'Rectangle', { width: 10, height: 10 }),
+      $(Shape, 'Rectangle', { width: 10, height: 10, visible: false }),
+    );
+    const ctx = mockContext();
+    panel.draw(ctx, 0, 0, 40, 40);
+    expect(fillRectCalls(ctx)).toBe(1);
+  });
+
+  it('layoutAuto ("Auto") skips drawing an invisible non-main element', () => {
+    const panel = $(
+      Panel,
+      'Auto',
+      $(Shape, 'Rectangle', { width: 40, height: 40 }),
+      $(Shape, 'Rectangle', { width: 10, height: 10, visible: false }),
+    );
+    const ctx = mockContext();
+    panel.draw(ctx, 0, 0, 40, 40);
+    expect(fillRectCalls(ctx)).toBe(1);
+  });
+
+  it('layoutAuto ("Auto") skips drawing an invisible main element', () => {
+    const panel = $(
+      Panel,
+      'Auto',
+      $(Shape, 'Rectangle', { width: 40, height: 40, visible: false }),
+    );
+    const ctx = mockContext();
+    panel.draw(ctx, 0, 0, 40, 40);
+    expect(fillRectCalls(ctx)).toBe(0);
+  });
+
+  it('layoutSpot ("Spot") skips drawing an invisible child', () => {
+    const panel = $(
+      Panel,
+      'Spot',
+      $(Shape, 'Rectangle', { width: 10, height: 10 }),
+      $(Shape, 'Rectangle', { width: 10, height: 10, visible: false }),
+    );
+    const ctx = mockContext();
+    panel.draw(ctx, 0, 0, 40, 40);
+    expect(fillRectCalls(ctx)).toBe(1);
+  });
+
+  it('layoutViewbox ("Viewbox") skips drawing an invisible main element', () => {
+    const panel = $(
+      Panel,
+      'Viewbox',
+      $(Shape, 'Rectangle', { width: 10, height: 10, visible: false }),
+    );
+    const ctx = mockContext();
+    panel.draw(ctx, 0, 0, 40, 40);
+    expect(fillRectCalls(ctx)).toBe(0);
+  });
+
+  it('layoutPosition ("Position") skips drawing an invisible child', () => {
+    const a = $(Shape, 'Rectangle', { width: 10, height: 10 });
+    a.setPosition(0, 0);
+    const b = $(Shape, 'Rectangle', { width: 10, height: 10, visible: false });
+    b.setPosition(5, 5);
+    const panel = $(Panel, 'Position', a, b);
+    const ctx = mockContext();
+    panel.draw(ctx, 0, 0, 40, 40);
+    expect(fillRectCalls(ctx)).toBe(1);
+  });
+
+  it('layoutTable ("Table") skips drawing an invisible cell', () => {
+    const a = $(Shape, 'Rectangle', { width: 10, height: 10 });
+    (a as Shape & { row: number; column: number }).row = 0;
+    (a as Shape & { row: number; column: number }).column = 0;
+    const b = $(Shape, 'Rectangle', { width: 10, height: 10, visible: false });
+    (b as Shape & { row: number; column: number }).row = 0;
+    (b as Shape & { row: number; column: number }).column = 1;
+    const panel = $(Panel, 'Table', a, b);
+    const ctx = mockContext();
+    panel.draw(ctx, 0, 0, 40, 40);
+    expect(fillRectCalls(ctx)).toBe(1);
+  });
+
+  it('layoutGrid ("Grid") skips tiling an invisible child entirely', () => {
+    const panel = $(
+      Panel,
+      'Grid',
+      { gridCellSize: new Size(10, 10) },
+      $(Shape, 'Circle', { visible: false }),
+    );
+    panel.width = 20;
+    panel.height = 20;
+    const ctx = mockContext();
+    panel.draw(ctx, 0, 0, 20, 20);
+    expect((ctx.ellipse as ReturnType<typeof vi.fn>).mock.calls.length).toBe(0);
+  });
+});
+
+describe('O51: Shape/TextBlock/Picture/Panel.measure() treated an explicit width/height of 0 as "unset"', () => {
+  it('Shape.measure() honors an explicit width/height of 0 instead of falling back to the figure default', () => {
+    const $ = GraphObject.make;
+    const shape = $(Shape, 'RoundedRectangle', { width: 0, height: 30 });
+    expect(shape.measure()).toEqual(new Size(0, 30));
+  });
+
+  it('Shape with no explicit width/height still falls back to the figure default (unaffected)', () => {
+    const $ = GraphObject.make;
+    const shape = $(Shape, 'RoundedRectangle');
+    expect(shape.measure()).toEqual(new Size(100, 60));
+  });
+
+  it('a Binding resolving to 0 sizes a progress-bar Shape to zero width, not the 100px default', () => {
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.nodeTemplate = $(
+      Node,
+      'Auto',
+      $(
+        Shape,
+        'RoundedRectangle',
+        { name: 'BAR', height: 10 },
+        new Binding('width', 'progressWidth'),
+      ),
+    );
+    d.model = new GraphLinksModel({
+      nodeDataArray: [{ key: 1, x: 0, y: 0, progressWidth: 0 }],
+    });
+    const node = d.findNodeForKey(1) as Node;
+    expect(node.bounds.width).toBe(0);
+  });
+
+  it('Shape.getGeometricBounds() honors an explicit width of 0', () => {
+    const $ = GraphObject.make;
+    const shape = $(Shape, 'Rectangle', { width: 0, height: 20 });
+    expect(shape.getGeometricBounds().width).toBe(0);
+  });
+
+  it('TextBlock.measure() honors an explicit width/height of 0', () => {
+    const $ = GraphObject.make;
+    const tb = $(TextBlock, 'hi', { width: 0, height: 0 });
+    expect(tb.measure()).toEqual(new Size(0, 0));
+  });
+
+  it('Picture.measure() honors an explicit width/height of 0', () => {
+    const $ = GraphObject.make;
+    const pic = $(Picture, { width: 0, height: 0 });
+    expect(pic.measure()).toEqual(new Size(0, 0));
+  });
+
+  it('Panel.measure() honors an explicit width/height of 0 override on top of its natural content size', () => {
+    const $ = GraphObject.make;
+    const panel = $(Panel, 'Auto', { width: 0 }, $(Shape, 'Rectangle', { width: 40, height: 40 }));
+    expect(panel.measure().width).toBe(0);
+  });
+});

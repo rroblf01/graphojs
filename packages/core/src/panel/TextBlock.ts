@@ -253,7 +253,7 @@ export class TextBlock extends GraphObject {
   }
 
   override measure(): Size {
-    if (this.width > 0 && this.height > 0) {
+    if (!Number.isNaN(this.width) && !Number.isNaN(this.height)) {
       return new SizeClass(this.width, this.height);
     }
 
@@ -274,8 +274,10 @@ export class TextBlock extends GraphObject {
         )
       : Math.max(1, ...lines.map((l) => l.length * fontSize * 0.6));
 
-    const width = this.width > 0 ? this.width : Math.max(10, maxLineWidth);
-    const height = this.height > 0 ? this.height : Math.max(10, lines.length * lineHeight);
+    const width = Number.isNaN(this.width) ? Math.max(10, maxLineWidth) : this.width;
+    const height = Number.isNaN(this.height)
+      ? Math.max(10, lines.length * lineHeight)
+      : this.height;
 
     return new SizeClass(width, height);
   }

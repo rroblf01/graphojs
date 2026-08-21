@@ -5,6 +5,34 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-08-21
+
+Two core rendering bugs from an eighth round of the same migration report —
+both confirmed by the reporter to reproduce identically in a literal,
+unmodified copy of the GoJS source file, ruling out anything in how the
+template was adapted. No breaking changes.
+
+### Fixed
+
+- **No `Panel` layout function (`layoutStack`/`layoutAuto`/`layoutSpot`/
+  `layoutTable`/`layoutPosition`/`layoutViewbox`/`layoutGrid`) checked an
+  element's `.visible` before drawing it.** A `Binding("visible", ...)`
+  that resolved to `false` left the property set correctly, but every
+  layout function called `.draw()` on every child unconditionally, so the
+  element painted anyway. Each layout function now skips the actual
+  `.draw()` call (position/size assignment is untouched) when
+  `el.visible` is `false`; `layoutGrid`'s tiling loop skips an invisible
+  child's tiling entirely.
+- **`Shape`/`TextBlock`/`Picture`/`Panel.measure()` all gated real
+  measurement behind `this.width > 0`, treating an explicitly-bound width
+  of `0` the same as "never set."** A `Binding("width", "progressWidth")`
+  that legitimately computes `0` (e.g. a 0%-progress bar) fell back to
+  the figure's default size (100x60 for a rounded rectangle) instead of
+  actually rendering at zero width. `GraphObject.width`/`height` already
+  return `NaN` (not `0`) when never explicitly set — the fix was for
+  every `measure()` override to check `Number.isNaN(this.width)` instead
+  of `this.width > 0`, so a real `0` is honored as an explicit size.
+
 ## [1.7.0] - 2026-08-21
 
 Follow-up to 1.6.0, from a seventh round of the same migration report plus
@@ -713,6 +741,7 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.8.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.8.0
 [1.7.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.7.0
 [1.6.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.6.0
 [1.5.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.5.0

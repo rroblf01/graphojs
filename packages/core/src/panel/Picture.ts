@@ -46,13 +46,16 @@ export class Picture extends GraphObject {
   }
 
   override measure(): Size {
-    if (this.width > 0 && this.height > 0) {
+    if (!Number.isNaN(this.width) && !Number.isNaN(this.height)) {
       return new SizeClass(this.width, this.height);
     }
     if (this._imageNaturalWidth > 0 && this._imageNaturalHeight > 0) {
       return new SizeClass(this._imageNaturalWidth, this._imageNaturalHeight);
     }
-    return new SizeClass(this.width > 0 ? this.width : 50, this.height > 0 ? this.height : 50);
+    return new SizeClass(
+      Number.isNaN(this.width) ? 50 : this.width,
+      Number.isNaN(this.height) ? 50 : this.height,
+    );
   }
 
   override draw(

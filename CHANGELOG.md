@@ -5,6 +5,47 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-08-21
+
+A ninth round of the same migration report, focused entirely on why Gantt
+dependency arrows still routed differently from GoJS after the 1.7.0
+corner-rounding fix. Root cause: a second, much simpler orthogonal router
+duplicated inside `Diagram.ts`, unrelated to (and bypassing) the one the
+1.7.0 fix touched. No breaking changes.
+
+### Fixed
+
+- **`Diagram`'s own model-sync path computed a link's route through a
+  second, cruder orthogonal implementation (`computeOrthogonalPath`) that
+  ignored `fromSpot`/`toSpot` entirely** — a leftover duplicate of the
+  proper router in `render/LinkRouter.ts` (the one already used by
+  `Canvas2DRenderer`, and the one the 1.7.0 corner-rounding fix modified).
+  It only ever ran for links with no cached `pathPoints`, which in
+  practice is close to never: every `GraphLinksModel` sync populates
+  `pathPoints` itself via this duplicate function, so the "real" router
+  was essentially dead code for ordinary data-driven links. This
+  duplicate compared only the two raw port coordinates — a Gantt
+  finish-to-start dependency (`fromSpot: RightSide`, `toSpot: LeftSide`)
+  typically has its ports land at the *same x*, since the next task
+  starts exactly where the previous one ends, and `dx === 0` made it fall
+  back to a dead-straight 2-point line, completely ignoring that the
+  template demanded exiting right and entering left. `Diagram.ts` now
+  calls the same `routeOrthogonal`/`routeCurved` functions
+  `Canvas2DRenderer` already uses, removing the duplicate entirely.
+- **`routeOrthogonal` itself had the same underlying flaw**: its
+  horizontal-exit/horizontal-entry ("Z-shape") and vertical-exit/entry
+  cases picked the route's turning point by interpolating linearly
+  between the two ports, so a forced exit/entry direction only produced a
+  visible bend when the ports happened to differ enough in position —
+  the same `fromPort.x === toPort.x` case above still degenerated to a
+  straight line even through the correct router. Rewrote it to use a
+  fixed-distance "stub" in each port's own forced direction (exit right,
+  then bridge, then enter left — or the vertical mirror), which never
+  collapses regardless of where the two nodes sit relative to each other;
+  also replaced the perpendicular exit/entry case's incorrect 2-turn path
+  (whose final segment didn't actually match the required entry
+  direction) with a straightforward single-turn L-shape.
+
 ## [1.8.0] - 2026-08-21
 
 Two core rendering bugs from an eighth round of the same migration report —
@@ -741,6 +782,7 @@ plus optional wrapper subpaths:
 - 5000-node + 5000-link graph in a real browser: model sync ~170 ms, first
   render ~35 ms, ~105 FPS during interaction.
 
+[1.9.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.9.0
 [1.8.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.8.0
 [1.7.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.7.0
 [1.6.0]: https://github.com/rroblf01/graphojs/releases/tag/v1.6.0

@@ -6,6 +6,16 @@ import type { Rect } from '../geometry/Rect.ts';
  * this signature aligned with the render-side cache key -- the actual
  * rounding is applied at draw time (see `Canvas2DRenderer.strokePath`).
  */
+// Minimum distance a route travels in its forced exit/entry direction
+// before it's allowed to turn -- without this, a fixed `fromSpot`/`toSpot`
+// on both ends (e.g. a Gantt finish-to-start dependency, which exits a
+// task's right edge and enters the next task's left edge) degenerates to a
+// dead-straight line whenever the two ports happen to land at the same x
+// (or y): interpolating the turn strictly between `from`/`to` collapses to
+// zero length exactly when the ports are aligned, which is the common case
+// for adjacent Gantt bars, not a rare one.
+const ORTHOGONAL_STUB = 20;
+
 export function routeOrthogonal(
   from: { x: number; y: number },
   to: { x: number; y: number },
@@ -16,45 +26,49 @@ export function routeOrthogonal(
   // Determine best exit direction from the from-node
   const fromDir = getExitDirection(from, fromNode, to);
   const toDir = getEntryDirection(to, toNode, from);
+  const fromHorizontal = fromDir === 'left' || fromDir === 'right';
+  const toHorizontal = toDir === 'left' || toDir === 'right';
 
-  const points: Array<{ x: number; y: number }> = [from];
-
-  // Build orthogonal path based on exit/entry directions
-  if (fromDir === 'right' || fromDir === 'left') {
-    const midX = (from.x + to.x) / 2;
-    if (toDir === 'top' || toDir === 'bottom') {
-      // L-shape: horizontal then vertical
-      points.push({ x: midX, y: from.y });
-      points.push({ x: midX, y: to.y });
-    } else {
-      // Z-shape: horizontal, vertical, horizontal
-      const midY = (from.y + to.y) / 2;
-      points.push({ x: midX, y: from.y });
-      points.push({ x: midX, y: midY });
-      points.push({ x: to.x, y: midY });
-    }
-  } else {
+  if (fromHorizontal && toHorizontal) {
+    // Same-axis (horizontal-exit, horizontal-entry) Z-shape: an exit stub,
+    // a vertical bridge, then an entry stub -- each stub is an absolute
+    // offset in its own forced direction, so it never collapses even when
+    // `from.x === to.x`.
+    const exitX = fromDir === 'right' ? from.x + ORTHOGONAL_STUB : from.x - ORTHOGONAL_STUB;
+    const entryX = toDir === 'right' ? to.x + ORTHOGONAL_STUB : to.x - ORTHOGONAL_STUB;
     const midY = (from.y + to.y) / 2;
-    if (toDir === 'left' || toDir === 'right') {
-      // L-shape: vertical then horizontal
-      points.push({ x: from.x, y: midY });
-      points.push({ x: to.x, y: midY });
-    } else {
-      // Z-shape: vertical, horizontal, vertical
-      const midX = (from.x + to.x) / 2;
-      points.push({ x: from.x, y: midY });
-      points.push({ x: midX, y: midY });
-      points.push({ x: midX, y: to.y });
-    }
+    return [
+      from,
+      { x: exitX, y: from.y },
+      { x: exitX, y: midY },
+      { x: entryX, y: midY },
+      { x: entryX, y: to.y },
+      to,
+    ];
   }
 
-  points.push(to);
+  if (!fromHorizontal && !toHorizontal) {
+    // Same-axis (vertical-exit, vertical-entry) Z-shape, mirrored.
+    const exitY = fromDir === 'bottom' ? from.y + ORTHOGONAL_STUB : from.y - ORTHOGONAL_STUB;
+    const entryY = toDir === 'bottom' ? to.y + ORTHOGONAL_STUB : to.y - ORTHOGONAL_STUB;
+    const midX = (from.x + to.x) / 2;
+    return [
+      from,
+      { x: from.x, y: exitY },
+      { x: midX, y: exitY },
+      { x: midX, y: entryY },
+      { x: to.x, y: entryY },
+      to,
+    ];
+  }
 
-  // Corner rounding (when `corner > 0`) is applied at draw time by the
-  // renderer via `ctx.arcTo`, which produces a real quarter-circle join --
-  // not here, since pre-chamfering the points would only approximate it
-  // with an extra straight segment.
-  return points;
+  // Perpendicular exit/entry (one horizontal, one vertical): a single-turn
+  // L-shape, turning exactly where the horizontal and vertical legs meet so
+  // the final approach into the entry side keeps its required orientation.
+  if (fromHorizontal) {
+    return [from, { x: to.x, y: from.y }, to];
+  }
+  return [from, { x: from.x, y: to.y }, to];
 }
 
 /**

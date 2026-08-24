@@ -100,6 +100,29 @@ describe('Link routing algorithms', () => {
     expect(pts[pts.length - 1]).toEqual(to);
   });
 
+  it('routeOrthogonal with a horizontal exit and horizontal entry never collapses to a straight line, even when the ports are x-aligned', () => {
+    // The realistic Gantt "finish-to-start" case: a dependency link whose
+    // fromSpot/toSpot force it to exit the source's right edge and enter
+    // the target's left edge. Since the next task typically starts exactly
+    // where the previous one ends, the two ports commonly land at the same
+    // x -- the old point-interpolated turn collapsed to zero width there,
+    // producing a dead-straight vertical line regardless of fromSpot/toSpot.
+    const from = { x: 100, y: 13 }; // fromNode's right edge (fromSpot: RightSide)
+    const to = { x: 100, y: 73 }; // toNode's left edge (toSpot: LeftSide), same x as `from`
+    const fromNode = { x: 0, y: 0, width: 100, height: 26 };
+    const toNode = { x: 100, y: 60, width: 100, height: 26 };
+    const pts = routeOrthogonal(from, to, fromNode, toNode, 6);
+
+    expect(pts[0]).toEqual(from);
+    expect(pts[pts.length - 1]).toEqual(to);
+    // The route must actually exit to the right of the source (x > 100)
+    // and enter from the left of the target (x < 100) at some point --
+    // not stay pinned to x === 100 throughout, which is what a collapsed
+    // straight line looks like.
+    expect(pts.some((p) => p.x > 100)).toBe(true);
+    expect(pts.some((p) => p.x < 100)).toBe(true);
+  });
+
   it('routeOrthogonal with corner rounding', () => {
     const from = { x: 50, y: 0 };
     const to = { x: 200, y: 150 };

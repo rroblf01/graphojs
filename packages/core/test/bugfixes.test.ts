@@ -4290,3 +4290,39 @@ describe('O51: Shape/TextBlock/Picture/Panel.measure() treated an explicit width
     expect(panel.measure().width).toBe(0);
   });
 });
+
+describe("O52: Diagram's own link-sync path routed with a second, cruder orthogonal implementation that ignored fromSpot/toSpot", () => {
+  it('a finish-to-start Gantt dependency (fromSpot: RightSide, toSpot: LeftSide, x-aligned ports) routes with a real bend, not a straight line', () => {
+    // This is the exact realistic case: Diagram's own model-sync path (not
+    // Canvas2DRenderer's fallback) used to compute pathPoints via a second,
+    // much simpler `computeOrthogonalPath(from, to)` that only compared raw
+    // port coordinates -- when `dx === 0` (the common case for a task whose
+    // start date equals the previous task's end date, so the ports land at
+    // the same x) it returned a dead-straight 2-point line, completely
+    // ignoring that fromSpot/toSpot demand exiting right and entering left.
+    const $ = GraphObject.make;
+    const d = createDiagram();
+    d.linkTemplate = $(Link, {
+      routing: 'orthogonal',
+      corner: 6,
+      fromSpot: Spot.RightSide,
+      toSpot: Spot.LeftSide,
+    });
+    d.model = new GraphLinksModel({
+      nodeDataArray: [
+        { key: 1, x: 0, y: 0, width: 100, height: 26 },
+        { key: 2, x: 100, y: 60, width: 100, height: 26 },
+      ],
+      linkDataArray: [{ from: 1, to: 2 }],
+    });
+    const link = [...d.links.values()][0] as Link;
+
+    expect(link.fromPort.x).toBe(100); // node1's right edge
+    expect(link.toPort.x).toBe(100); // node2's left edge -- same x as fromPort
+    expect(link.pathPoints.length).toBeGreaterThan(2);
+    // The route must actually exit right of node1 and enter left of node2,
+    // not stay pinned to x === 100 throughout (a collapsed straight line).
+    expect(link.pathPoints.some((p) => p.x > 100)).toBe(true);
+    expect(link.pathPoints.some((p) => p.x < 100)).toBe(true);
+  });
+});

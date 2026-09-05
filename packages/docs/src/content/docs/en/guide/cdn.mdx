@@ -23,7 +23,7 @@ upload it to any static hosting):
     <script type="importmap">
       {
         "imports": {
-          "graphojs/go": "https://unpkg.com/graphojs@1.0.0/dist/go.js"
+          "graphojs/go": "https://unpkg.com/graphojs@1.9.0/dist/go.js"
         }
       }
     </script>
@@ -76,13 +76,13 @@ upload it to any static hosting):
   version ships with changes, your page's behavior would change without you
   touching anything.
 - **unpkg doesn't resolve `package.json`'s `exports` subpaths on its
-  own**: requesting `https://unpkg.com/graphojs@1.0.0/go` directly returns
+  own**: requesting `https://unpkg.com/graphojs@1.9.0/go` directly returns
   `404` — you have to point at the real file inside `dist/`
-  (`https://unpkg.com/graphojs@1.0.0/dist/go.js`). The import map above
+  (`https://unpkg.com/graphojs@1.9.0/dist/go.js`). The import map above
   already does that translation for you: in your code you always import
   from the normal specifier `graphojs/go`, exactly like with npm.
 - This same pattern works for `graphojs/templates`
-  (`https://unpkg.com/graphojs@1.0.0/dist/templates.js`). For
+  (`https://unpkg.com/graphojs@1.9.0/dist/templates.js`). For
   `graphojs/react` or `graphojs/vue` you'd additionally need React/Vue as
   ES modules in the import map — for those cases, a bundler is still the
   more practical choice.
